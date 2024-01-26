@@ -2,10 +2,15 @@ package nl.novi.catsittermanager.models;
 
 import jakarta.persistence.*;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
+
+@Getter
+@Setter
 
 @Entity
 @Table(name = "users")
@@ -35,28 +40,27 @@ public class User {
     private boolean enabled = true;
 
     @Column
-    private String apikey;
+    private String name;
+
+    @Column
+    private String address;
+
+
 
     @Column
     private String email;
 
+    public User() {}
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) {
+    public User(String username, String password, Set<Authority> authorities, boolean enabled, String name, String address, String email) {
         this.username = username;
-    }
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
         this.password = password;
+        this.authorities = authorities;
+        this.enabled = enabled;
+        this.name = name;
+        this.address = address;
+        this.email = email;
     }
-    public boolean isEnabled() { return enabled;}
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
-    public String getApikey() { return apikey; }
-    public void setApikey(String apikey) { this.apikey = apikey; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email;}
 
     public Set<Authority> getAuthorities() { return authorities; }
     public void addAuthority(Authority authority) {
