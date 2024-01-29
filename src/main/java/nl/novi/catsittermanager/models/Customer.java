@@ -23,7 +23,7 @@ public class Customer extends User {
     @OneToMany(mappedBy = "customers")
     private List<Order> orderList = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "customers")
     private Set<Cat> catListByName = new HashSet<>(); // set i.v.m. geen dubbelingen wenselijk
 
     public Customer() {}
