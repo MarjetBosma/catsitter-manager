@@ -1,10 +1,8 @@
 package nl.novi.catsittermanager.models;
 
 import jakarta.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,9 +31,6 @@ public class User {
             fetch = FetchType.EAGER)
     private Set<Authority> authorities = new HashSet<>();
 
-
-    // Deze 3 variabelen zijn niet verplicht.
-    // Je mag ook een "String banaan;" toevoegen, als je dat graag wilt.
     @Column(nullable = false)
     private boolean enabled = true;
 
@@ -44,8 +39,6 @@ public class User {
 
     @Column
     private String address;
-
-
 
     @Column
     private String email;

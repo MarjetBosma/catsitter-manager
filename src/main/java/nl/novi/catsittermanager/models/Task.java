@@ -11,7 +11,7 @@ public class Task {
     private Long id;
     private String taskName;
 
-    private String taskInstruction;
+    private String taskInstruction; // enum van maken?
 
     private double priceOfTask;
 

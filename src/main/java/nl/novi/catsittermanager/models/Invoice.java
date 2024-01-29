@@ -20,7 +20,7 @@ public class Invoice {
 
     private LocalDate invoiceDate;
 
-    private int amount;
+    private double amount;
 
     @OneToOne
     private Order order;
