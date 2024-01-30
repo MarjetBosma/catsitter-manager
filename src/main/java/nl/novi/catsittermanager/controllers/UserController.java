@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<UserDto> createKlant(@RequestBody UserDto dto) {;
+    public ResponseEntity<UserDto> createKlant(@RequestBody UserDto dto) {
 
         String newUsername = userService.createUser(dto);
         userService.addAuthority(newUsername, "ROLE_USER");
@@ -125,7 +125,7 @@ public class UserController {
 
         if (username.equals(id)) {
             UserDto userDto = userService.getUser(id);
-            UserResponseDto responseDto = new UserResponseDto(userDto.getUsername(), userDto.getEmail(), userDto.getAuthorities());
+            UserResponseDto responseDto = new UserResponseDto(userDto.username, userDto.email, userDto.authorities);
             return ResponseEntity.ok(userDto);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
