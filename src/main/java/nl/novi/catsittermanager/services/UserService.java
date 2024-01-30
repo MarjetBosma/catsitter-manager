@@ -50,8 +50,7 @@ public class UserService {
 
     public String createUser(UserDto userDto) {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
-        userDto.setApikey(randomString);
-        userDto.setPassword(encoder.encode(userDto.getPassword()));
+        encoder.encode(userDto.password);
         User newUser = userRepository.save(toUser(userDto));
         return newUser.getUsername();
     }
@@ -63,7 +62,7 @@ public class UserService {
     public void updateUser(String username, UserDto newUser) {
         if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
         User user = userRepository.findById(username).get();
-        user.setPassword(newUser.getPassword());
+        user.setPassword(newUser.password);
         userRepository.save(user);
     }
 
@@ -71,7 +70,7 @@ public class UserService {
         if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
         User user = userRepository.findById(username).get();
         UserDto userDto = fromUser(user);
-        return userDto.getAuthorities();
+        return userDto.authorities;
     }
 
     public void addAuthority(String username, String authority) {
@@ -97,7 +96,6 @@ public class UserService {
         dto.username = user.getUsername();
         dto.password = user.getPassword();
         dto.enabled = user.isEnabled();
-        dto.apikey = user.getApikey();
         dto.email = user.getEmail();
         dto.authorities = user.getAuthorities();
 
@@ -108,11 +106,10 @@ public class UserService {
 
         var user = new User();
 
-        user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
-        user.setEnabled(userDto.getEnabled());
-        user.setApikey(userDto.getApikey());
-        user.setEmail(userDto.getEmail());
+        user.setUsername(userDto.username);
+        user.setPassword(userDto.password);
+        user.setEnabled(userDto.enabled);
+        user.setEmail(userDto.email);
 
         return user;
     }
