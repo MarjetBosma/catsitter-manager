@@ -14,10 +14,10 @@ public class CatInputDto {
     @Past
     public LocalDate dateOfBirth;
     public String breed;
+    public String generalInfo;
     public String veterinarianName;
     public int phoneVet;
     public String medicationName;
     public String medicationDose;
-    public String specialInstructions;
     public Customer ownerName;
 }

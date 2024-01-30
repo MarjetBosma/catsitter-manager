@@ -43,6 +43,8 @@ public class User {
     @Column
     private String email;
 
+    // Role toevoegen vanuit enum, nog uitzoeken
+
     public User() {}
 
     public User(String username, String password, Set<Authority> authorities, boolean enabled, String name, String address, String email) {

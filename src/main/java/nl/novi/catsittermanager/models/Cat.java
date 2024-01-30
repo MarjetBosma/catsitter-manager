@@ -23,6 +23,8 @@ public class Cat {
 
     private String breed;
 
+    private String generalInfo;
+
     private String veterinarianName;
 
     private int phoneVet;
@@ -31,25 +33,23 @@ public class Cat {
 
     private String medicationDose;
 
-    private String specialInstructions;
-
-    // photo
-
     @ManyToOne(fetch = FetchType.EAGER)
     private Customer ownerName;
 
+    // photo
+
     public Cat() {}
 
-    public Cat(Long id, String name, LocalDate dateOfBirth, String breed, String veterinarianName, int phoneVet, String medicationName, String medicationDose, String specialInstructions, Customer ownerName) {
+    public Cat(Long id, String name, LocalDate dateOfBirth, String breed, String generalInfo, String veterinarianName, int phoneVet, String medicationName, String medicationDose, String specialInstructions, Customer ownerName) {
         this.id = id;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.breed = breed;
+        this.generalInfo = generalInfo;
         this.veterinarianName = veterinarianName;
         this.phoneVet = phoneVet;
         this.medicationName = medicationName;
         this.medicationDose = medicationDose;
-        this.specialInstructions = specialInstructions;
         this.ownerName = ownerName;
     }
 
