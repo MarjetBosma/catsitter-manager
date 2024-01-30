@@ -1,5 +1,7 @@
 package nl.novi.catsittermanager.dtos.cat;
 
+import nl.novi.catsittermanager.models.Customer;
+
 import java.time.LocalDate;
 
 public class CatDto {
@@ -12,5 +14,6 @@ public class CatDto {
     public String medicationName;
     public String medicationDose;
     public String specialInstructions;
+    public Customer ownerName;
 
 }

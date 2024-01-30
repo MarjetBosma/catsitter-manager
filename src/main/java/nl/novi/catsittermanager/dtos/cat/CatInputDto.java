@@ -1,5 +1,7 @@
 package nl.novi.catsittermanager.dtos.cat;
 
+import nl.novi.catsittermanager.models.Customer;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 
@@ -17,4 +19,5 @@ public class CatInputDto {
     public String medicationName;
     public String medicationDose;
     public String specialInstructions;
+    public Customer ownerName;
 }
