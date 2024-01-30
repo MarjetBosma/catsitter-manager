@@ -1,6 +1,7 @@
 package nl.novi.catsittermanager.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -21,10 +22,14 @@ public class CatSitter extends User {
     @OneToMany(mappedBy = "catsitters")
     private List<Order> orderList = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "catsitters")
+    private List<Customer> customers = new ArrayList<>();
+
     public CatSitter() {}
 
-    public CatSitter(String about, List<Order> orderList) {
+    public CatSitter(String about, List<Order> orderList, List<Customer> customers) {
         this.about = about;
         this.orderList = orderList;
+        this.customers = customers;
     }
 }

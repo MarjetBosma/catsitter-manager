@@ -38,6 +38,8 @@ public class Order {
     @OneToOne
     private Invoice invoice;
 
+
+
     public Order() {
     }
 

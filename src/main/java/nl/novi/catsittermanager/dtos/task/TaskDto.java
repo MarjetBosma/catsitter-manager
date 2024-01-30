@@ -9,6 +9,4 @@ public class TaskDto {
     public Double priceOfTask;
 
     public Order order;
-
-
 }
