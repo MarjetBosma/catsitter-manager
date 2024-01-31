@@ -1,7 +1,12 @@
 package nl.novi.catsittermanager.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import nl.novi.catsittermanager.enumerations.TaskType;
+
+@Getter
+@Setter
 
 @Entity
 @Table(name = "tasks")

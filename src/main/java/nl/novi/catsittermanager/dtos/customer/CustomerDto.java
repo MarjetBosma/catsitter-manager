@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 public class CustomerDto {
+
+    public Long id;
     public int numberOfCats;
     public List<Order> orderList = new ArrayList<>();
     public Set<Cat> catListByName = new HashSet<>();

@@ -5,7 +5,7 @@ import nl.novi.catsittermanager.models.Customer;
 import java.time.LocalDate;
 
 public class CatDto {
-    public long id;
+    public Long id;
     public String name;
     public LocalDate dateOfBirth;
     public String breed;

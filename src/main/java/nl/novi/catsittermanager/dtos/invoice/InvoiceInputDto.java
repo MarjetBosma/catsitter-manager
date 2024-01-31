@@ -6,10 +6,10 @@ import nl.novi.catsittermanager.models.Order;
 import java.time.LocalDate;
 
 public class InvoiceInputDto {
-    public Long InvoiceNo;
+    public Long invoiceNo;
     public LocalDate invoiceDate;
     @Positive
-    public double amount;
+    public Double amount;
 
     public Order order;
 }
