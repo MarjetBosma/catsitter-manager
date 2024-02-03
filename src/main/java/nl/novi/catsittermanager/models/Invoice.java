@@ -20,14 +20,14 @@ public class Invoice {
 
     private LocalDate invoiceDate;
 
-    private int amount;
+    private Double amount;
 
     @OneToOne
     private Order order;
 
     public Invoice() {}
 
-    public Invoice(Long invoiceNo, LocalDate invoiceDate, int amount, Order order) {
+    public Invoice(Long invoiceNo, LocalDate invoiceDate, Double amount, Order order) {
         this.invoiceNo = invoiceNo;
         this.invoiceDate = invoiceDate;
         this.amount = amount;

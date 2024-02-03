@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -18,9 +18,16 @@ public class Order {
     @GeneratedValue
     private Long orderNo;
 
-    private int amountOfVisits;
+    private LocalDate startDate;
 
-    private List<Task> taskList = new ArrayList<>();
+    private LocalDate endDate;
+
+    private int dailyNumberOfVisits;
+
+    private int totalNumberOfVisits;
+
+    @OneToMany(mappedBy = "orders")
+    private List<Task> taskList;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Customer customer;
@@ -31,14 +38,17 @@ public class Order {
     @OneToOne
     private Invoice invoice;
 
-    @OneToMany(mappedBy = "orders")
-    private List<Order> orderList = new ArrayList<>();
 
-    public Order() {}
 
-    public Order(Long orderNo, int amountOfVisits, List<Task> taskList, Customer customer, CatSitter catSitter, Invoice invoice) {
+    public Order() {
+    }
+
+    public Order(Long orderNo, LocalDate startDate, LocalDate endDate, int dailyNumberOfVisits, int totalNumberOfVisits, List<Task> taskList, Customer customer, CatSitter catSitter, Invoice invoice) {
         this.orderNo = orderNo;
-        this.amountOfVisits = amountOfVisits;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.dailyNumberOfVisits = dailyNumberOfVisits;
+        this.totalNumberOfVisits = totalNumberOfVisits;
         this.taskList = taskList;
         this.customer = customer;
         this.catSitter = catSitter;
