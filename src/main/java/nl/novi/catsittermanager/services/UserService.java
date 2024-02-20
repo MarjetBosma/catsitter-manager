@@ -6,6 +6,7 @@ import nl.novi.catsittermanager.models.Authority;
 import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.repositories.UserRepository;
 import nl.novi.catsittermanager.utils.RandomStringGenerator;
+import nl.novi.catsittermanager.mappers.UserMapper.fromUser;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -89,28 +90,4 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public static UserDto fromUser(User user){
-
-        var dto = new UserDto();
-
-        dto.username = user.getUsername();
-        dto.password = user.getPassword();
-        dto.enabled = user.isEnabled();
-        dto.email = user.getEmail();
-        dto.authorities = user.getAuthorities();
-
-        return dto;
-    }
-
-    public User toUser(UserDto userDto) {
-
-        var user = new User();
-
-        user.setUsername(userDto.username);
-        user.setPassword(userDto.password);
-        user.setEnabled(userDto.enabled);
-        user.setEmail(userDto.email);
-
-        return user;
-    }
 }
