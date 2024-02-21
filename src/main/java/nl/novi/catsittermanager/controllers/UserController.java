@@ -4,7 +4,7 @@ import nl.novi.catsittermanager.dtos.user.UserDto;
 import nl.novi.catsittermanager.dtos.user.UserResponseDto;
 import nl.novi.catsittermanager.exceptions.BadRequestException;
 import nl.novi.catsittermanager.dtos.authority.AuthorityDto;
-import nl.novi.catsittermanager.services.UserService;
+import nl.novi.catsittermanager.services.UserServiceImplementation;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +22,9 @@ import java.util.List;
 
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImplementation userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserServiceImplementation userService) {
         this.userService = userService;
     }
 
