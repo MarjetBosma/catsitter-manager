@@ -16,7 +16,7 @@ public class CatInputDto {
     public String breed;
     public String generalInfo;
     public String veterinarianName;
-    public int phoneVet;
+    public int phoneVet; // moet 10 cijfers zijn
     public String medicationName;
     public String medicationDose;
     public Customer ownerName;

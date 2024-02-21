@@ -6,7 +6,7 @@ import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.services.OrderService;
+import nl.novi.catsittermanager.services.OrderServiceImplementation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +22,9 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 
 public class OrderController {
 
-    private final OrderService orderService;
+    private final OrderServiceImplementation orderService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderServiceImplementation orderService) {
         this.orderService = orderService;
     }
 
@@ -36,7 +36,7 @@ public class OrderController {
     @GetMapping("/{id}")
     public ResponseEntity<OrderDto> getOrder(@PathVariable Long id) {
         if (id > 0) {
-            OrderDto orderDto = OrderService.getOrderId();
+            OrderDto orderDto = OrderServiceImplementation.getOrderId();
             return ResponseEntity.ok(orderDto);
         } else {
             throw new RecordNotFoundException("No order found with this id");

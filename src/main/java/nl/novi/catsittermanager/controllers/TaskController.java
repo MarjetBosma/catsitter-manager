@@ -6,7 +6,7 @@ import nl.novi.catsittermanager.dtos.task.TaskDto;
 import nl.novi.catsittermanager.dtos.task.TaskInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.services.TaskService;
+import nl.novi.catsittermanager.services.TaskServiceImplementation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +22,9 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 
 public class TaskController {
 
-    private final TaskService taskService;
+    private final TaskServiceImplementation taskService;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskServiceImplementation taskService) {
         this.taskService = taskService;
     }
 
@@ -36,7 +36,7 @@ public class TaskController {
     @GetMapping("/{id}")
     public ResponseEntity<TaskDto> getTask(@PathVariable Long id) {
         if (id > 0) {
-            TaskDto taskDto = TaskService.getTaskId();
+            TaskDto taskDto = TaskServiceImplementation.getTaskId();
             return ResponseEntity.ok(taskDto);
         } else {
             throw new RecordNotFoundException("No task found with this id");

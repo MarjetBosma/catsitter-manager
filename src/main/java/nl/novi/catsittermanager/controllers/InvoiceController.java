@@ -6,7 +6,7 @@ import nl.novi.catsittermanager.dtos.invoice.InvoiceDto;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.services.InvoiceService;
+import nl.novi.catsittermanager.services.InvoiceServiceImplementation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +22,9 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 
 public class InvoiceController {
 
-    private final InvoiceService invoiceService;
+    private final InvoiceServiceImplementation invoiceService;
 
-    public InvoiceController(InvoiceService invoiceService) {
+    public InvoiceController(InvoiceServiceImplementation invoiceService) {
         this.invoiceService = invoiceService;
     }
 
@@ -36,7 +36,7 @@ public class InvoiceController {
     @GetMapping("/{id}")
     public ResponseEntity<InvoiceDto> getInvoice(@PathVariable Long id) {
         if (id > 0) {
-            InvoiceDto invoiceDto = InvoiceService.getInvoiceId();
+            InvoiceDto invoiceDto = InvoiceServiceImplementation.getInvoiceId();
             return ResponseEntity.ok(invoiceDto);
         } else {
             throw new RecordNotFoundException("No invoice found with this id");

@@ -6,7 +6,7 @@ import nl.novi.catsittermanager.dtos.catsitter.CatSitterDto;
 import nl.novi.catsittermanager.dtos.catsitter.CatSitterInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.services.CatSitterService;
+import nl.novi.catsittermanager.services.CatSitterServiceImplementation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +21,9 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 @RequestMapping("/catsitters")
 public class CatSitterController {
 
-    private final CatSitterService catSitterService;
+    private final CatSitterServiceImplementation catSitterService;
 
-    public CatSitterController(CatSitterService catSitterService) {
+    public CatSitterController(CatSitterServiceImplementation catSitterService) {
         this.catSitterService = catSitterService;
     }
 
@@ -35,7 +35,7 @@ public class CatSitterController {
     @GetMapping("/{id}")
     public ResponseEntity<CatSitterDto> getCatSitter(@PathVariable Long id) {
         if (id > 0) {
-            CatSitterDto catSitterDto = CatSitterService.getCatSitterId();
+            CatSitterDto catSitterDto = CatSitterServiceImplementation.getCatSitterId();
             return ResponseEntity.ok(catSitterDto);
         } else {
             throw new RecordNotFoundException("No cat sitter found with this id");

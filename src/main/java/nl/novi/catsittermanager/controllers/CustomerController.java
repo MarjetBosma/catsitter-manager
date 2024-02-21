@@ -6,7 +6,7 @@ import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.services.CustomerService;
+import nl.novi.catsittermanager.services.CustomerServiceImplementation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +22,9 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 
 public class CustomerController {
 
-    private final CustomerService customerService;
+    private final CustomerServiceImplementation customerService;
 
-    public CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerServiceImplementation customerService) {
         this.customerService = customerService;
     }
 
@@ -36,7 +36,7 @@ public class CustomerController {
     @GetMapping("/{id}")
     public ResponseEntity<CustomerDto> getCustomer(@PathVariable Long id) {
         if (id > 0) {
-            CustomerDto customerDto = CustomerService.getCustomerId();
+            CustomerDto customerDto = CustomerServiceImplementation.getCustomerId();
             return ResponseEntity.ok(customerDto);
         } else {
             throw new RecordNotFoundException("No customer found with this id");
