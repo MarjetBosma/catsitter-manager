@@ -1,4 +1,4 @@
-package nl.novi.catsittermanager.fllter;
+package nl.novi.catsittermanager.filter;
 
 import nl.novi.catsittermanager.services.CustomUserDetailsService;
 import nl.novi.catsittermanager.utils.JwtUtil;

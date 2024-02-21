@@ -25,27 +25,35 @@ public class Cat {
 
     private String generalInfo;
 
+    private Boolean spayedOrNeutered;
+
+    private Boolean vaccinated;
+
     private String veterinarianName;
 
-    private int phoneVet;
+    private String phoneVet;
 
     private String medicationName;
 
     private String medicationDose;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Customer ownerName;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    private Customer ownerName;
+
+    private String ownerName; // Alleen voor los testen Cat class zonder database
 
     // photo
 
     public Cat() {}
 
-    public Cat(Long id, String name, LocalDate dateOfBirth, String breed, String generalInfo, String veterinarianName, int phoneVet, String medicationName, String medicationDose, String specialInstructions, Customer ownerName) {
+    public Cat(Long id, String name, LocalDate dateOfBirth, String breed, String generalInfo, Boolean spayedOrNeutered, Boolean vaccinated, String veterinarianName, String phoneVet, String medicationName, String medicationDose, String ownerName) {
         this.id = id;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.breed = breed;
         this.generalInfo = generalInfo;
+        this.spayedOrNeutered = spayedOrNeutered;
+        this.vaccinated = vaccinated;
         this.veterinarianName = veterinarianName;
         this.phoneVet = phoneVet;
         this.medicationName = medicationName;

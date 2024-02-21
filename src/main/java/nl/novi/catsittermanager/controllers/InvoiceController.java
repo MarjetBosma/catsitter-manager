@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.controllers;
 
 import jakarta.validation.Valid;
 import nl.novi.catsittermanager.dtos.IdInputDto;
+import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceDto;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;

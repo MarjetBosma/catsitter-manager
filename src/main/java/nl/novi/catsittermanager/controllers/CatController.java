@@ -1,7 +1,5 @@
 package nl.novi.catsittermanager.controllers;
 
-import jakarta.validation.Valid;
-import nl.novi.catsittermanager.dtos.IdInputDto;
 import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
@@ -19,7 +17,6 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 
 @RestController
 @RequestMapping("/cats")
-
 public class CatController {
 
     private final CatServiceImplementation catService;
@@ -32,11 +29,12 @@ public class CatController {
     public ResponseEntity<List<CatDto>> getAllCats() {
         return ResponseEntity.ok(catService.getAllCats());
     }
+    // In de voorbeelden in de Spring lessen werden vooralsnog geen Response Entities gebruikt, maar wellicht moet dit wel als we werken met een database...?
 
     @GetMapping("/{id}")
-    public ResponseEntity<CatDto> getCat(@PathVariable Long id) {
+    public ResponseEntity<CatDto> getCat(@PathVariable("id") Long id) {
         if (id > 0) {
-            CatDto catDto = CatServiceImplementation.getCatId();
+            CatDto catDto = catService.getCatId();
             return ResponseEntity.ok(catDto);
         } else {
             throw new RecordNotFoundException("No cat found with this id");
@@ -44,7 +42,7 @@ public class CatController {
     }
 
     @PostMapping
-    public ResponseEntity<CatDto> addCat(@RequestBody CatInputDto catInputDto, BindingResult br) {
+    public ResponseEntity<CatDto> createCat(@RequestBody CatInputDto catInputDto, BindingResult br) {
         if (br.hasFieldErrors()) {
             throw new ValidationException(checkForBindingResult(br));
         } else {
@@ -59,21 +57,23 @@ public class CatController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CatDto> updateCat(@PathVariable long id, @RequestBody CatInputDto cat) {
-        CatDto changeCIModuleId = catService.updateCat(id, cat);
+    public ResponseEntity<CatDto> editCat(@PathVariable long idToEdit, @RequestBody CatInputDto cat) {
+        CatDto changeCatId = catService.editCat(idToEdit, cat);
 
         return ResponseEntity.ok().body(changeCatId);
     }
 
-    @PutMapping("/{id}/customer")
-    public ResponseEntity<Object> assignCustomerToCat(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-        catService.assignCustomerToCat(id, input.id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteCat(@PathVariable("id") long idToRemove) {
+        catService.deleteCat(idToRemove);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteCat(@PathVariable("id") Long id) {
-        catService.deleteCat(id);
-        return ResponseEntity.noContent().build();
-    }
+//    @PutMapping("/{id}/customer")
+//    public ResponseEntity<Object> assignCustomerToCat(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
+//        catService.assignCustomerToCat(id, input.id);
+//        return ResponseEntity.noContent().build();
+//    }
+
+
 }

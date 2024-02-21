@@ -6,7 +6,7 @@ import nl.novi.catsittermanager.models.Authority;
 import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.repositories.UserRepository;
 import nl.novi.catsittermanager.utils.RandomStringGenerator;
-import nl.novi.catsittermanager.mappers.UserMapper.fromUser;
+// import nl.novi.catsittermanager.mappers.UserMapper.fromUser;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
