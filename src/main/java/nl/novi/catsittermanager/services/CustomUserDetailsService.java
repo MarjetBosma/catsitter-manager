@@ -16,9 +16,9 @@ import java.util.Set;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserService userService;
+    private final UserServiceImplementation userService;
 
-    public CustomUserDetailsService(UserService userService) {
+    public CustomUserDetailsService(UserServiceImplementation userService) {
         this.userService = userService;
     }
 
