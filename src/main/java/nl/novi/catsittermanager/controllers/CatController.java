@@ -76,5 +76,4 @@ public class CatController {
         catService.deleteCat(id);
         return ResponseEntity.noContent().build();
     }
-
 }
