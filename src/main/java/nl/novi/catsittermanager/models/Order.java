@@ -1,6 +1,5 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,11 +10,11 @@ import java.util.List;
 @Getter
 @Setter
 
-@Entity
-@Table(name = "orders")
+//@Entity
+//@Table(name = "orders")
 public class Order {
-    @Id
-    @GeneratedValue
+//    @Id
+//    @GeneratedValue
     private Long orderNo;
 
     private LocalDate startDate;
@@ -26,16 +25,16 @@ public class Order {
 
     private int totalNumberOfVisits;
 
-    @OneToMany(mappedBy = "orders")
+//    @OneToMany(mappedBy = "orders")
     private List<Task> taskList;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+//    @ManyToOne(fetch = FetchType.EAGER)
     private Customer customer;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+//    @ManyToOne(fetch = FetchType.EAGER)
     private CatSitter catSitter;
 
-    @OneToOne
+//    @OneToOne
     private Invoice invoice;
 
 

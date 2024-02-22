@@ -1,6 +1,5 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,19 +9,19 @@ import java.time.LocalDate;
 @Getter
 @Setter
 
-@Entity
-@Table(name = "invoices")
+//@Entity
+//@Table(name = "invoices")
 public class Invoice {
 
-    @Id
-    @GeneratedValue
+//    @Id
+//    @GeneratedValue
     private Long invoiceNo;
 
     private LocalDate invoiceDate;
 
     private Double amount;
 
-    @OneToOne
+//    @OneToOne
     private Order order;
 
     public Invoice() {}

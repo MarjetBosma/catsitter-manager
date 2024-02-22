@@ -7,17 +7,37 @@ import jakarta.validation.constraints.Past;
 
 import java.time.LocalDate;
 
-public class CatInputDto {
+    public record CatInputDto (
 
-    @NotNull
-    public String name;
-    @Past
-    public LocalDate dateOfBirth;
-    public String breed;
-    public String generalInfo;
-    public String veterinarianName;
-    public int phoneVet; // moet 10 cijfers zijn
-    public String medicationName;
-    public String medicationDose;
-    public Customer ownerName;
-}
+            Long id, // wellicht weglaten als ik id's automatisch kan toekennen in de database
+            String name,
+            LocalDate dateOfBirth,
+            String breed,
+            String generalInfo,
+            Boolean spayedOrNeutered,
+            Boolean vaccinated,
+            String veterinarianName,
+            String phoneVet,
+            String medicationName,
+            String medicationDose,
+//    Customer ownerName
+            String ownerName // Alleen voor los testen Cat class zonder database
+
+    ) {}
+
+
+//    @NotNull
+//    public String name;
+//    @Past
+//    public LocalDate dateOfBirth; // omzetten naar DD-MM-JJJJ format
+//    public String breed;
+//    public String generalInfo;
+//    public Boolean spayedOrNeutered; // true/false omzetten naar ja/nee
+//    public Boolean vaccinated; // true/false omzetten naar ja/nee
+//    public String veterinarianName;
+//    public String  honeVet;
+//    public String medicationName; // hoe kun je meer medicamenten opgeven?
+//    public String medicationDose;
+////    public Customer ownerName;
+//    public String ownerName; // Alleen voor los testen Cat class zonder database
+//}

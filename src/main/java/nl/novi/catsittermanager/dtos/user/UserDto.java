@@ -1,13 +1,12 @@
 package nl.novi.catsittermanager.dtos.user;
 
-import jakarta.persistence.GeneratedValue;
 import nl.novi.catsittermanager.models.Authority;
 
 import java.util.Set;
 
 public class UserDto {
 
-    @GeneratedValue
+//    @GeneratedValue
     public Long id;
 
     public String username;
