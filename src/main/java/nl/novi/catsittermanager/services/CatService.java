@@ -8,8 +8,6 @@ import java.util.List;
 public interface CatService {
     List<CatDto> getAllCats();
 
-    CatDto getCat();
-
     CatDto getCat(long idToFind);
 
     CatDto createCat(CatInputDto catInputDto);

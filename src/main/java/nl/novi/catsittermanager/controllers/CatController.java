@@ -16,7 +16,7 @@ import java.util.List;
 import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
 
 @RestController
-@RequestMapping("/cats")
+@RequestMapping("/cat")
 public class CatController {
 
     private final CatServiceImplementation catService;
@@ -32,9 +32,9 @@ public class CatController {
     // In de voorbeelden in de Spring lessen werden vooralsnog geen Response Entities gebruikt, maar wellicht moet dit wel als we werken met een database...?
 
     @GetMapping("/{id}")
-    public ResponseEntity<CatDto> getCat(@PathVariable("id") Long id) {
-        if (id > 0) {
-            CatDto catDto = catService.getCatId();
+    public ResponseEntity<CatDto> getCat(@PathVariable("id") long idToFind) {
+        if (idToFind > 0) {
+            CatDto catDto = catService.getCat(idToFind);
             return ResponseEntity.ok(catDto);
         } else {
             throw new RecordNotFoundException("No cat found with this id");
@@ -51,7 +51,7 @@ public class CatController {
             URI uri = URI.create(
                     ServletUriComponentsBuilder
                             .fromCurrentRequest()
-                            .path("/" + savedCat.id).toUriString());
+                            .path("/" + savedCat).toUriString());
             return ResponseEntity.created(uri).body(savedCat);
         }
     }

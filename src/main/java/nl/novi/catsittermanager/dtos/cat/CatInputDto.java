@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Past;
 import java.time.LocalDate;
 
     public record CatInputDto (
+
+            Long id, // wellicht weglaten als ik id's automatisch kan toekennen in de database
             String name,
             LocalDate dateOfBirth,
             String breed,

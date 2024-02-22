@@ -1,20 +1,20 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.time.LocalDate;
 
 @Getter
 @Setter
 
-@Entity
-@Table(name = "cats")
+//@Entity
+//@Table(name = "cats")
 
 public class Cat {
 
-    @Id
-    @GeneratedValue
+//    @Id
+//    @GeneratedValue
     private Long id;
 
     private String name;

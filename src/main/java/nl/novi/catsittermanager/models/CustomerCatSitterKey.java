@@ -1,17 +1,14 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-
 import java.io.Serializable;
 
-@Embeddable
+//@Embeddable
 public class CustomerCatSitterKey implements Serializable {
 
-    @Column(name = "customer_id")
+//    @Column(name = "customer_id")
     private Long customerId;
 
-    @Column(name = "catsitter_id")
+//    @Column(name = "catsitter_id")
     private Long catSitterId;
 
     public CustomerCatSitterKey() {}

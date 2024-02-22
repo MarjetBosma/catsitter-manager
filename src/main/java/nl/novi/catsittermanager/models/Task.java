@@ -1,6 +1,5 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import nl.novi.catsittermanager.enumerations.TaskType;
@@ -8,19 +7,19 @@ import nl.novi.catsittermanager.enumerations.TaskType;
 @Getter
 @Setter
 
-@Entity
-@Table(name = "tasks")
+//@Entity
+//@Table(name = "tasks")
 public class Task {
 
-    @Id
-    @GeneratedValue
+//    @Id
+//    @GeneratedValue
     private Long id;
     private TaskType taskType;
     private String taskInstruction;
     private double priceOfTask;
     private String extraInstructions;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+//    @ManyToOne(fetch = FetchType.EAGER)
     private Order order;
 
     public Task() {}

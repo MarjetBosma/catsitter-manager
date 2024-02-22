@@ -1,6 +1,5 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,20 +11,20 @@ import java.util.Set;
 @Getter
 @Setter
 
-@Entity
-@Table(name = "customers")
+//@Entity
+//@Table(name = "customers")
 public class Customer extends User {
 
     private int numberOfCats;
 
-    @OneToMany(mappedBy = "customers")
+//    @OneToMany(mappedBy = "customers")
     private List<Order> orderList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "customers")
+//    @OneToMany(mappedBy = "customers")
     private Set<Cat> catListByName = new HashSet<>(); // set i.v.m. geen dubbelingen wenselijk
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "customers_catsitters", joinColumns = @JoinColumn(name = "customers_id"), inverseJoinColumns = @JoinColumn(name = "catsitters_id"))
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(name = "customers_catsitters", joinColumns = @JoinColumn(name = "customers_id"), inverseJoinColumns = @JoinColumn(name = "catsitters_id"))
 
     private List<CatSitter> catSitters = new ArrayList<>();
 

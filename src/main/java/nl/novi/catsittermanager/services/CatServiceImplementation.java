@@ -33,7 +33,7 @@ public class CatServiceImplementation implements CatService {
 
     public CatServiceImplementation() { // Bedoeld voor testen zonder database
         cats.add(new Cat(1L, "Firsa", LocalDate.parse("2006-07-01"), "Europese Korthaar", "Vriendelijke, maar verlegen kat", true, true, "Dierenkliniek Zuilen", "030-2446933", "Thiafeline", "5mg 1dd", "Marjet Bosma"));
-        cats.add(new Cat(2L, "Kees", LocalDate.parse("2009-04-10"), "Europese Korthaar", "Vertoont soms onverwachte agressie", true, true, "Dierenkliniek Hoevelaken", "030-2446933", null, null, "Marianne Bosma"));
+        cats.add(new Cat(2L, "Kees", LocalDate.parse("2009-04-10"), "Europese Korthaar", "Vertoont soms onverwachte agressie", true, true, "Dierenkliniek Hoevelaken", "038-4356712", null, null, "Marianne Bosma"));
     }
 
     @Override
@@ -127,7 +127,7 @@ public class CatServiceImplementation implements CatService {
                 return idToRemove;
             }
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id")
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id");
     }
 }
 
