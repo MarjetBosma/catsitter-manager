@@ -112,7 +112,9 @@ public class CatServiceImplementation implements CatService {
                 if (catInputDto.medicationDose() != null) { // mag eigenlijk wel null zijn indien kat geen medicatie heeft
                     cat.setMedicationDose(catInputDto.medicationDose());
                 }
-
+                if (catInputDto.ownerName() != null) {
+                    cat.setOwnerName(catInputDto.ownerName());
+                }
                 return CatMapper.transferToDto(cat);
             }
         }
@@ -120,11 +122,11 @@ public class CatServiceImplementation implements CatService {
     }
 
     @Override
-    public long deleteCat(long idToRemove) {
+    public void deleteCat(long idToRemove) {
         for (Cat cat : cats) {
             if (cat.getId() == idToRemove) {
                 cats.remove(cat);
-                return idToRemove;
+                return;
             }
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id");
