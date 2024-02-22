@@ -40,7 +40,7 @@ public class Cat {
 //    @ManyToOne(fetch = FetchType.EAGER)
 //    private Customer ownerName;
 
-    private String ownerName; // Alleen voor los testen Cat class zonder database
+    private String ownerName; // Dummy, alleen voor los testen Cat class zonder database
 
     // photo
 

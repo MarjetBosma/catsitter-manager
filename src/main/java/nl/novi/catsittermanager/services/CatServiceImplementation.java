@@ -52,7 +52,7 @@ public class CatServiceImplementation implements CatService {
     public CatDto getCat(long idToFind) { // Nu alleen nog voor gebruik zonder database
         for (Cat cat : cats) {
             if (cat.getId() == idToFind) {
-                return transferToDto(cat);
+                return CatMapper.transferToDto(cat);
             }
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id.");
@@ -118,7 +118,7 @@ public class CatServiceImplementation implements CatService {
                 return CatMapper.transferToDto(cat);
             }
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id.");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No catsitter found with this id.");
     }
 
     @Override

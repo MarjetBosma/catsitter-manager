@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
     public record CatInputDto (
 
-            Long id, // wellicht weglaten als ik id's automatisch kan toekennen in de database
+            Long id,  //Dummy, alleen voor testen in Postman zonder gebruik van superclass (User levert normaalgesproken de id)
             String name,
             LocalDate dateOfBirth,
             String breed,
@@ -21,7 +21,7 @@ import java.time.LocalDate;
             String medicationName,
             String medicationDose,
 //    Customer ownerName
-            String ownerName // Alleen voor los testen Cat class zonder database
+            String ownerName // Dummy, alleen voor los testen Cat class zonder database
 
     ) {}
 
