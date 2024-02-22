@@ -12,8 +12,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static nl.novi.catsittermanager.mappers.CatMapper.transferToDto;
-
 @Service
 public class CatServiceImplementation implements CatService {
 
@@ -42,7 +40,7 @@ public class CatServiceImplementation implements CatService {
         List<CatDto> catDtoList = new ArrayList<>();
 
         for (Cat cat : cats) {
-            CatDto catDto = transferToDto(cat);
+            CatDto catDto = CatMapper.transferToDto(cat);
             catDtoList.add(catDto);
         }
         return catDtoList;

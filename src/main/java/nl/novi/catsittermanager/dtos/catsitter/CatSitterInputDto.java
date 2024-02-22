@@ -8,7 +8,7 @@ import java.util.List;
 
 public record CatSitterInputDto (
 
-    Long id,  //Dummy, alleen voor testen in Postman zonder gebruik van superclass (User levert normaalgesproken de id)
+    Long id,  //Dummy, alleen voor testen in Postman zonder gebruik van superclass (User levert normaalgesproken de id), en moet sowieso niet in inputDto bij toekennning id door database
     String about,
 
 //    Order orderList = new ArrayList<>();,

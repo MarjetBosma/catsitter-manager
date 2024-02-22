@@ -9,11 +9,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CustomerDto {
+public record CustomerDto (
 
-    public Long id;
-    public int numberOfCats;
-    public List<Order> orderList = new ArrayList<>();
-    public Set<Cat> catListByName = new HashSet<>();
-    public List<CatSitter> catsitters = new ArrayList<>();
-}
+        Long id, //Dummy, alleen voor testen in Postman zonder gebruik van superclass (User levert normaalgesproken de id)
+
+        int numberOfCats,
+
+//    Order orderList = new ArrayList<>(),
+
+        String orderList, //Dummy, alleen voor los testen van de klasse in Postman zonder database
+
+//    Cat catListByName = new ArrayList<>(),
+
+        String catListByName, //Dummy, alleen voor los testen van de klasse in Postman zonder database
+
+//    CatSitter catSitterList = new ArrayList<>()
+
+        String catSitterList //Dummy, alleen voor los testen van de klasse in Postman zonder database
+) {}

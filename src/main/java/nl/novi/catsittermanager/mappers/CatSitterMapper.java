@@ -1,9 +1,6 @@
 package nl.novi.catsittermanager.mappers;
 
-import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.catsitter.CatSitterDto;
-import nl.novi.catsittermanager.dtos.catsitter.CatSitterInputDto;
-import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatSitter;
 
 public class CatSitterMapper {

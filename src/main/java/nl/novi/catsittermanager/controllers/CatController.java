@@ -60,14 +60,14 @@ public class CatController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CatDto> editCat(@PathVariable long idToEdit, @RequestBody CatInputDto cat) {
-        CatDto changeCatId = catService.editCat(idToEdit, cat);
+        CatDto editedCat = catService.editCat(idToEdit, cat);
 
-        return ResponseEntity.ok().body(changeCatId);
+        return ResponseEntity.ok().body(editedCat);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteCat(@PathVariable("id") long idToRemove) {
-        catService.deleteCat(idToRemove);
+    public ResponseEntity<Object> deleteCat(@PathVariable("id") long idToDelete) {
+        catService.deleteCat(idToDelete);
         return ResponseEntity.noContent().build();
     }
 
