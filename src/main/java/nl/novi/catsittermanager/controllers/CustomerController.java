@@ -34,7 +34,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerDto> getCustomer(@PathVariable Long idToFind) {
+    public ResponseEntity<CustomerDto> getCustomer(@PathVariable("id") Long idToFind) {
         if (idToFind > 0) {
             CustomerDto customerDto = customerService.getCustomer(idToFind);
             return ResponseEntity.ok(customerDto);
@@ -59,7 +59,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerDto> editCustomer(@PathVariable long idToEdit, @RequestBody CustomerInputDto customer) {
+    public ResponseEntity<CustomerDto> editCustomer(@PathVariable("id") long idToEdit, @RequestBody CustomerInputDto customer) {
         CustomerDto editedCustomer = customerService.editCustomer(idToEdit, customer);
 
         return ResponseEntity.ok().body(editedCustomer);

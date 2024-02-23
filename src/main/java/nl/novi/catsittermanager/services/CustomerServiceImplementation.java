@@ -1,11 +1,8 @@
 package nl.novi.catsittermanager.services;
 
-import nl.novi.catsittermanager.dtos.catsitter.CatSitterDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
-import nl.novi.catsittermanager.mappers.CatSitterMapper;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
-import nl.novi.catsittermanager.models.CatSitter;
 import nl.novi.catsittermanager.models.Customer;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,7 +27,6 @@ public class CustomerServiceImplementation implements CustomerService {
 //        this.catSitterService = catSitterService;
 //        this.orderService = orderService;
 //    }
-
 
     public CustomerServiceImplementation() { // Alleen voor testen zonder database
         customers.add(new Customer(1L,2, "Lijst van kattem op naam", "Lijst met orders", "Lijst met kattenoppassen"));
@@ -60,13 +56,7 @@ public class CustomerServiceImplementation implements CustomerService {
 
     @Override
     public CustomerDto createCustomer(CustomerInputDto customerInputDto) {
-        Customer newCustomer = new Customer(
-                customers.get(customers.size() - 1).getId(),
-                customerInputDto.numberOfCats(),
-                customerInputDto.orderList(),
-                customerInputDto.catListByName(),
-                customerInputDto.catSitterList()
-        );
+        Customer newCustomer = CustomerMapper.transferFromDto(customerInputDto);
         customers.add(newCustomer);
         return CustomerMapper.transferToDto(newCustomer);
     }

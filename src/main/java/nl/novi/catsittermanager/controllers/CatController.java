@@ -5,6 +5,7 @@ import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
+import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.services.CatServiceImplementation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -48,8 +49,7 @@ public class CatController {
         if (br.hasFieldErrors()) {
             throw new ValidationException(checkForBindingResult(br));
         } else {
-            CatDto savedCat;
-            savedCat = catService.createCat(catInputDto);
+            CatDto savedCat = catService.createCat(catInputDto);
             URI uri = URI.create(
                     ServletUriComponentsBuilder
                             .fromCurrentRequest()
@@ -59,7 +59,7 @@ public class CatController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CatDto> editCat(@PathVariable long idToEdit, @RequestBody CatInputDto cat) {
+    public ResponseEntity<CatDto> editCat(@PathVariable("id") long idToEdit, @RequestBody CatInputDto cat) {
         CatDto editedCat = catService.editCat(idToEdit, cat);
 
         return ResponseEntity.ok().body(editedCat);

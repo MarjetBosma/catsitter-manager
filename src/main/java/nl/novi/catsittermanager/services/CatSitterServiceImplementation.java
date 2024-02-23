@@ -57,12 +57,7 @@ public class CatSitterServiceImplementation implements CatSitterService {
 
     @Override
     public CatSitterDto createCatSitter(CatSitterInputDto catSitterInputDto) {
-        CatSitter newCatSitter = new CatSitter(
-                catSitters.get(catSitters.size() - 1).getId(),
-                catSitterInputDto.about(),
-                catSitterInputDto.orderList(),
-                catSitterInputDto.customerList()
-        );
+        CatSitter newCatSitter = CatSitterMapper.transferFromDto(catSitterInputDto);
         catSitters.add(newCatSitter);
         return CatSitterMapper.transferToDto(newCatSitter);
     }

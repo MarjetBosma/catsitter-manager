@@ -31,12 +31,12 @@ public class CatSitterController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CatSitterDto> getCatSitter(@PathVariable Long idToFind) {
+    public ResponseEntity<CatSitterDto> getCatSitter(@PathVariable("id") Long idToFind) {
         if (idToFind > 0) {
             CatSitterDto catSitterDto = catSitterService.getCatSitter(idToFind);
             return ResponseEntity.ok(catSitterDto);
         } else {
-            throw new RecordNotFoundException("No cat sitter found with this id");
+            throw new RecordNotFoundException("No catsitter found with this id");
         }
     }
 
@@ -56,7 +56,7 @@ public class CatSitterController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CatSitterDto> editCatSitter(@PathVariable long idToEdit, @RequestBody CatSitterInputDto catSitter) {
+    public ResponseEntity<CatSitterDto> editCatSitter(@PathVariable("id") long idToEdit, @RequestBody CatSitterInputDto catSitter) {
         CatSitterDto editedCatSitter= catSitterService.editCatSitter(idToEdit, catSitter);
 
         return ResponseEntity.ok().body(editedCatSitter);
