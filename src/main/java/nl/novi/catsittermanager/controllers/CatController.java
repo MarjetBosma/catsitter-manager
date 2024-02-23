@@ -5,7 +5,6 @@ import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.services.CatServiceImplementation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;

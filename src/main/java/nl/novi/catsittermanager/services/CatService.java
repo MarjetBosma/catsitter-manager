@@ -2,7 +2,6 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
-import nl.novi.catsittermanager.models.Cat;
 
 import java.util.List;
 

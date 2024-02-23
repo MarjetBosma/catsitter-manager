@@ -21,15 +21,19 @@ public class Invoice {
 
     private Double amount;
 
+    private Boolean paid;
+
 //    @OneToOne
-    private Order order;
+//    private Order order;
 
-    public Invoice() {}
+    private String order; // Dummy, alleen voor los testen Invoice class zonder database
 
-    public Invoice(Long invoiceNo, LocalDate invoiceDate, Double amount, Order order) {
+    public Invoice(long l, LocalDate parse, double v, boolean b, String hoortBijOrderX) {}
+
+    public Invoice(Long invoiceNo, LocalDate invoiceDate, Double amount, String order) {
         this.invoiceNo = invoiceNo;
         this.invoiceDate = invoiceDate;
         this.amount = amount;
-        this.order = order;
+        this.order = order; // object type bij database weer terugzetten naar Customer
     }
 }

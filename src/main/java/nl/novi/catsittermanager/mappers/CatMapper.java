@@ -18,7 +18,8 @@ public class CatMapper {
                           cat.getPhoneVet(),
                           cat.getMedicationName(),
                           cat.getMedicationDose(),
-                          cat.getOwnerName());
+                          cat.getOwnerName()
+        );
     }
 
     public static Cat transferFromDto(CatInputDto catInputDto) {
