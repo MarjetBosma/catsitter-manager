@@ -107,9 +107,9 @@ public class CatServiceImplementation implements CatService {
     }
 
     @Override
-    public void deleteCat(long idToRemove) {
+    public void deleteCat(long idToDelete) {
         for (Cat cat : cats) {
-            if (cat.getId() == idToRemove) {
+            if (cat.getId() == idToDelete) {
                 cats.remove(cat);
                 return;
             }

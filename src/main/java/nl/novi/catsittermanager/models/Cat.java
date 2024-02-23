@@ -58,7 +58,7 @@ public class Cat {
         this.phoneVet = phoneVet;
         this.medicationName = medicationName;
         this.medicationDose = medicationDose;
-        this.ownerName = ownerName;
+        this.ownerName = ownerName; // datatype bij database weer terugzetten naar Customer
     }
 
 }

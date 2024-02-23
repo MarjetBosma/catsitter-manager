@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
     public record CatInputDto (
 
-            Long id,  //Dummy, alleen voor testen in Postman zonder gebruik van superclass (User levert normaalgesproken de id), en moet sowieso niet in inputDto bij toekenning id door database
+            Long id,  //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
             String name,
             LocalDate dateOfBirth,
             String breed,
