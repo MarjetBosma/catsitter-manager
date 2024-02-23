@@ -6,15 +6,24 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderDto {
+public record OrderDto (
 
-    public Long orderNo;
-    public LocalDate startDate;
-    public LocalDate endDate;
-    public int dailyNumberOfVisits;
-    public int totalNumberOfVisits;
-    public List<Task> taskList = new ArrayList<>();
-    public Customer customer;
-    public CatSitter catSitter;
-    public Invoice invoice;
-}
+    Long orderNo,
+    LocalDate startDate,
+    LocalDate endDate,
+    int dailyNumberOfVisits,
+    int totalNumberOfVisits,
+
+//    List<Task> taskList,
+    String taskList, // Alleen voor los testen Order class zonder database
+
+//    Customer customer,
+    String customer,  // Alleen voor los testen Order class zonder database
+
+//    CatSitter catSitter,
+    String catSitter, // Alleen voor los testen Order class zonder database
+
+//    Invoice invoice
+    String invoice // Alleen voor los testen Order class zonder database
+
+) {}

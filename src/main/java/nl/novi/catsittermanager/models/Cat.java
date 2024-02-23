@@ -60,5 +60,4 @@ public class Cat {
         this.medicationDose = medicationDose;
         this.ownerName = ownerName; // datatype bij database weer terugzetten naar Customer
     }
-
 }
