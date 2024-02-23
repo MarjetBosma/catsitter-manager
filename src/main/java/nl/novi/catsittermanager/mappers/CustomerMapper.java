@@ -5,28 +5,46 @@ import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.models.Customer;
 
 public class CustomerMapper {
-    public CustomerDto transferToDto(Customer customer) {
 
-        CustomerDto customerDto = new CustomerDto();
-
-        // catSitterDto.id = catSitter.getId(); // deze komt uit superklasse User
-        customerDto.numberOfCats = customer.getNumberOfCats();
-        customerDto.orderList = customer.getOrderList();
-        customerDto.catListByName = customer.getCatListByName();
-        customerDto.catsitters = customer.getCatSitters();
-
-        return customerDto;
+    public static CustomerDto transferToDto(Customer customer) {
+        return new CustomerDto(customer.getId(), // Id is dummy, alleen voor separaat testen met Postman, komt normaalgesproken uit superklasse User
+                               customer.getNumberOfCats(),
+                               customer.getCatListByName(),
+                               customer.getOrderList(),
+                               customer.getCatSitterList()
+        );
     }
 
-    public Customer trasnferToCustomer(CustomerInputDto customerDto) {
-
-        Customer customer = new Customer();
-
-        customer.setNumberOfCats(customerDto.numberOfCats);
-        customer.setOrderList(customerDto.orderList);
-        customer.setCatListByName(customerDto.catListByName);
-        customer.setCatSitters(customerDto.catsitters);
-
-        return customer;
+    public static Customer transferFromDto(CustomerInputDto customerInputDto) {
+        return new Customer(customerInputDto.id(),
+                            customerInputDto.numberOfCats(),
+                            customerInputDto.catListByName(),
+                            customerInputDto.orderList(),
+                            customerInputDto.catSitterList()
+        );
     }
+//    public CustomerDto transferToDto(Customer customer) {
+//
+//        CustomerDto customerDto = new CustomerDto();
+//
+//        // catSitterDto.id = catSitter.getId(); // deze komt uit superklasse User
+//        customerDto.numberOfCats = customer.getNumberOfCats();
+//        customerDto.orderList = customer.getOrderList();
+//        customerDto.catListByName = customer.getCatListByName();
+//        customerDto.catsitters = customer.getCatSitters();
+//
+//        return customerDto;
+//    }
+//
+//    public Customer trasnferToCustomer(CustomerInputDto customerDto) {
+//
+//        Customer customer = new Customer();
+//
+//        customer.setNumberOfCats(customerDto.numberOfCats);
+//        customer.setOrderList(customerDto.orderList);
+//        customer.setCatListByName(customerDto.catListByName);
+//        customer.setCatSitters(customerDto.catsitters);
+//
+//        return customer;
+//    }
 }

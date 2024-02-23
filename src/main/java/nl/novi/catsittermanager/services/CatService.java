@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
+import nl.novi.catsittermanager.models.Cat;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface CatService {
 
     CatDto editCat(long idToEdit, CatInputDto catInputDto);
 
-    void deleteCat(long idToRemove);
+    void deleteCat(long idToDelete);
 }

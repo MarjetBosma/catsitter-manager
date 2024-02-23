@@ -24,7 +24,7 @@ public class CatSitter extends User {
 
     private String customerList; // Dummy, alleen voor testen zonder database
 
-    public CatSitter(Long id, String about, String orderList, String customerList) { // Dummy, alleen voor testen in Postman zonder database
+    public CatSitter(Long id, String about, String orderList, String customerList) { // Id is dummy, alleen voor separaat testen met Postman, komt normaalgesproken uit superklasse User
         this.id = id;
         this.about = about;
         this.orderList = orderList;

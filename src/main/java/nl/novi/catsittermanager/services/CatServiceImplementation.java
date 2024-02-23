@@ -12,8 +12,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static nl.novi.catsittermanager.mappers.CatMapper.transferToDto;
-
 @Service
 public class CatServiceImplementation implements CatService {
 
@@ -42,7 +40,7 @@ public class CatServiceImplementation implements CatService {
         List<CatDto> catDtoList = new ArrayList<>();
 
         for (Cat cat : cats) {
-            CatDto catDto = transferToDto(cat);
+            CatDto catDto = CatMapper.transferToDto(cat);
             catDtoList.add(catDto);
         }
         return catDtoList;
@@ -60,20 +58,7 @@ public class CatServiceImplementation implements CatService {
 
     @Override
     public CatDto createCat(CatInputDto catInputDto) {
-        Cat newCat = new Cat(
-                cats.get(cats.size() - 1).getId(),
-                catInputDto.name(),
-                catInputDto.dateOfBirth(),
-                catInputDto.breed(),
-                catInputDto.generalInfo(),
-                catInputDto.spayedOrNeutered(),
-                catInputDto.vaccinated(),
-                catInputDto.veterinarianName(),
-                catInputDto.phoneVet(),
-                catInputDto.medicationName(),
-                catInputDto.medicationDose(),
-                catInputDto.ownerName()
-        );
+        Cat newCat = CatMapper.transferFromDto(catInputDto);
         cats.add(newCat);
         return CatMapper.transferToDto(newCat);
     }
@@ -118,7 +103,7 @@ public class CatServiceImplementation implements CatService {
                 return CatMapper.transferToDto(cat);
             }
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No catsitter found with this id.");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id.");
     }
 
     @Override

@@ -11,21 +11,19 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static nl.novi.catsittermanager.mappers.CatMapper.transferToDto;
-
 @Service
 public class CatSitterServiceImplementation implements CatSitterService {
 
 //    private final CatSitterRepository catSitterRepos;
 //
-//    private final CustomerServiceImplementation customerService;
+//    private final CatSitterServiceImplementation catSitterService;
 //
 //    private final OrderServiceImplementation orderService;
 
     private List<CatSitter> catSitters = new ArrayList<>(); // voor testen zonder database
 
 //    public CatSitterServiceImplementation(CustomerServiceImplementation customerService, OrderServiceImplementation orderService) {
-//        this.catRepos = catRepos;
+//        this.catSitterRepos = catSitterRepos;
 //        this.customerService = customerService;
 //        this.orderService = orderService;
 //    }
@@ -54,17 +52,12 @@ public class CatSitterServiceImplementation implements CatSitterService {
                 return CatSitterMapper.transferToDto(catSitter);
             }
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id.");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No catsitter found with this id.");
     }
 
     @Override
     public CatSitterDto createCatSitter(CatSitterInputDto catSitterInputDto) {
-        CatSitter newCatSitter = new CatSitter(
-                catSitters.get(catSitters.size() - 1).getId(),
-                catSitterInputDto.about(),
-                catSitterInputDto.orderList(),
-                catSitterInputDto.customerList()
-        );
+        CatSitter newCatSitter = CatSitterMapper.transferFromDto(catSitterInputDto);
         catSitters.add(newCatSitter);
         return CatSitterMapper.transferToDto(newCatSitter);
     }
@@ -89,15 +82,17 @@ public class CatSitterServiceImplementation implements CatSitterService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No catsitter found with this id.");
     }
     @Override
-    public void deleteCatSitter(long idToRemove) {
+    public void deleteCatSitter(long idToDelete) {
             for (CatSitter catSitter : catSitters) {
-                if (catSitter.getId() == idToRemove) {
+                if (catSitter.getId() == idToDelete) {
                     catSitters.remove(catSitter);
                     return;
                 }
             }
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id");
         }
+
+        // Toevoegen: assignOrderToCatSitter, assignCustomerToCatSitter
 }
 
 

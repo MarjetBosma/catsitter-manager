@@ -1,6 +1,5 @@
 package nl.novi.catsittermanager.services;
 
-import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.catsitter.CatSitterDto;
 import nl.novi.catsittermanager.dtos.catsitter.CatSitterInputDto;
 
@@ -15,5 +14,5 @@ public interface CatSitterService {
 
     CatSitterDto editCatSitter(long idToEdit, CatSitterInputDto catSitterInputDto);
 
-    void deleteCatSitter(long idToRemove);
+    void deleteCatSitter(long idToDelete);
 }
