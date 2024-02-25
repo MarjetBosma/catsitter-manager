@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.models;
 
+import jakarta.validation.constraints.FutureOrPresent;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ public class Invoice {
 //    @GeneratedValue
     private Long invoiceNo;
 
+    @FutureOrPresent
     private LocalDate invoiceDate;
 
     private Double amount;
@@ -28,12 +30,13 @@ public class Invoice {
 
     private String order; // Dummy, alleen voor los testen Invoice class zonder database
 
-    public Invoice(long l, LocalDate parse, double v, boolean b, String hoortBijOrderX) {}
+    public Invoice() {}
 
-    public Invoice(Long invoiceNo, LocalDate invoiceDate, Double amount, String order) {
+    public Invoice(Long invoiceNo, LocalDate invoiceDate, Double amount, Boolean paid, String order) {
         this.invoiceNo = invoiceNo;
         this.invoiceDate = invoiceDate;
         this.amount = amount;
+        this.paid = paid;
         this.order = order; // object type bij database weer terugzetten naar Customer
     }
 }

@@ -8,7 +8,7 @@ public record InvoiceDto (
     Long invoiceNo,
     LocalDate invoiceDate,
     Double amount,
-    Boolean paid,
+    Boolean paid, // true/false omzetten naar ja/nee
 
 //    Order order
     String order // Dummy, alleen voor los testen Invoice class zonder database

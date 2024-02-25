@@ -29,8 +29,8 @@ public class InvoiceServiceImplementation implements InvoiceService {
 //    }
 
     public InvoiceServiceImplementation() { // Bedoeld voor testen zonder database
-        invoices.add(new Invoice(1L, LocalDate.parse("2023-09-15"), 300.00, true, "Hoort bij order X"));
-        invoices.add(new Invoice(2L, LocalDate.parse("2024-02-08"), 200.00, false, "Hoort bij order Y"));
+        invoices.add(new Invoice(1L, LocalDate.parse("2023-09-15"), 300.00, true, "Hoort bij order 1"));
+        invoices.add(new Invoice(2L, LocalDate.parse("2024-02-08"), 200.00, false, "Hoort bij order 2"));
     }
 
     @Override

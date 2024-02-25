@@ -2,9 +2,7 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
-import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.mappers.OrderMapper;
-import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

@@ -1,14 +1,19 @@
 package nl.novi.catsittermanager.dtos.task;
 
+import jakarta.validation.constraints.Positive;
 import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.models.Order;
 
-public class TaskInputDto {
-    public TaskType taskType;
-    public String taskInstruction;
-    public String extraInstructions;
-    public Double priceOfTask;
+public record TaskInputDto (
+        Long taskNo, //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
+        TaskType taskType,
+        String taskInstruction,
+        String extraInstructions,
+        @Positive
+        Double priceOfTask,
 
-    public Order order;
-}
+//    public Order order;
+        String order // Alleen voor los testen Task class zonder database
+
+) {}
 

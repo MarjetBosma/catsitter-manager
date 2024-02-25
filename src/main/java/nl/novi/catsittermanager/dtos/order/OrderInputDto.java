@@ -1,6 +1,7 @@
 package nl.novi.catsittermanager.dtos.order;
 
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import nl.novi.catsittermanager.models.*;
@@ -11,9 +12,13 @@ import java.util.List;
 public record OrderInputDto (
 
     Long orderNo, //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
+    @Future
     LocalDate startDate,
+    @Future
     LocalDate endDate,
+    @Positive
     int dailyNumberOfVisits,
+    @Positive
     int totalNumberOfVisits,
 
     //    List<Task> taskList,
