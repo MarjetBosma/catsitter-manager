@@ -1,5 +1,7 @@
 package nl.novi.catsittermanager.dtos.customer;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatSitter;
 import nl.novi.catsittermanager.models.Order;
@@ -11,6 +13,7 @@ public record CustomerInputDto (
 
     Long id, //Dummy, alleen voor testen in Postman zonder gebruik van superclass (User levert normaalgesproken de id), en moet sowieso niet in inputDto bij toekenning id door database
 
+    @Positive
     int numberOfCats,
 
 //    Order orderList = new ArrayList<>(),

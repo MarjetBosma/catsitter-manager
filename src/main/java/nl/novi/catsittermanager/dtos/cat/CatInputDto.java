@@ -10,7 +10,9 @@ import java.time.LocalDate;
     public record CatInputDto (
 
             Long id,  //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
+            @NotNull
             String name,
+            @Past
             LocalDate dateOfBirth,
             String breed,
             String generalInfo,

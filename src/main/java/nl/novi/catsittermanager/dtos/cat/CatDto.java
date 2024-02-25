@@ -10,8 +10,8 @@ public record CatDto (
     LocalDate dateOfBirth,
     String breed,
     String generalInfo,
-    Boolean spayedOrNeutered,
-    Boolean vaccinated,
+    Boolean spayedOrNeutered, // true/false omzetten naar ja/nee
+    Boolean vaccinated, // true/false omzetten naar ja/nee
     String veterinarianName,
     String phoneVet,
     String medicationName,

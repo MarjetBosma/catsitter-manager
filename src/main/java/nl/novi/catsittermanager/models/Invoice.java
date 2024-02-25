@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.models;
 
+import jakarta.validation.constraints.FutureOrPresent;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ public class Invoice {
 //    @GeneratedValue
     private Long invoiceNo;
 
+    @FutureOrPresent
     private LocalDate invoiceDate;
 
     private Double amount;

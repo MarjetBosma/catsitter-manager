@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.dtos.invoice;
 
+import jakarta.validation.constraints.NotNull;
 import nl.novi.catsittermanager.models.Order;
 
 import jakarta.validation.constraints.Positive;
