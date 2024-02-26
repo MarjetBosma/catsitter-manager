@@ -1,21 +1,23 @@
 package nl.novi.catsittermanager.dtos.user;
 
+import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.models.Authority;
 
 import java.util.Set;
 
-public class UserDto {
-
+public record UserDto (
 //    @GeneratedValue
-    public Long id;
+    Long id,
+    String username,
+    String password,
+    Role role,
 
-    public String username;
-    public String password;
-    public Boolean enabled;
+//    Set<Authority> authorities,
+    String authorities,
+    // Dummy, alleen voor los testen Cat class zonder database
+    Boolean enabled,
+    String name,
+    String address,
+    String email
 
-    public String name;
-    public String address;
-    public String email;
-    public Set<Authority> authorities;
-
-   }
+) {}

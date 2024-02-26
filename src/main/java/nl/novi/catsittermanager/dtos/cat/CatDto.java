@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public record CatDto (
     Long id,
     String name,
-    LocalDate dateOfBirth,
+    LocalDate dateOfBirth, // omzetten naar DD-MM-JJJJ format?
     String breed,
     String generalInfo,
     Boolean spayedOrNeutered, // true/false omzetten naar ja/nee

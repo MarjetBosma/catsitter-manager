@@ -1,24 +1,30 @@
 package nl.novi.catsittermanager.dtos.user;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.models.Authority;
 
 import jakarta.validation.constraints.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Set;
 
-public class UserInputDto {
+@Validated
+public record UserInputDto (
 
+    Long id,  //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
     @NotNull(message = "username is required")
-    public String username;
-
+    String username,
     @NotNull(message = "password is required")
-    public String password;
-    public Boolean enabled;
+    String password,
+    Role role,
 
-    public String name;
-    public String address;
-    public String email;
-    @JsonSerialize
-    public Set<Authority> authorities;
-}
+//    @JsonSerialize
+//    Set<Authority> authorities,
+    String authorities, // Dummy, alleen voor los testen Cat class zonder database
+    Boolean enabled,
+    String name,
+    String address,
+    String email
+
+) {}
