@@ -3,9 +3,9 @@ package nl.novi.catsittermanager.services;
 import nl.novi.catsittermanager.dtos.user.UserDto;
 import nl.novi.catsittermanager.dtos.user.UserInputDto;
 import nl.novi.catsittermanager.enumerations.Role;
-import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
+//import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import nl.novi.catsittermanager.mappers.UserMapper;
-import nl.novi.catsittermanager.models.Authority;
+//import nl.novi.catsittermanager.models.Authority;
 import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.utils.RandomStringGenerator;
 
