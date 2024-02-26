@@ -4,13 +4,14 @@ import nl.novi.catsittermanager.models.Customer;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
-
+    @Validated
     public record CatInputDto (
 
             Long id,  //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
-            @NotNull
+            @NotNull (message = "cat name is required")
             String name,
             @Past
             LocalDate dateOfBirth,
@@ -22,8 +23,10 @@ import java.time.LocalDate;
             String phoneVet,
             String medicationName,
             String medicationDose,
-//    Customer ownerName
-            String ownerName // Dummy, alleen voor los testen Cat class zonder database
+            //    @NotNull
+            //    Customer ownerName
+            @NotNull (message = "owner name is required")
+            String ownerName  // Dummy, alleen voor los testen Cat class zonder database
 
     ) {}
 
@@ -31,7 +34,7 @@ import java.time.LocalDate;
 //    @NotNull
 //    public String name;
 //    @Past
-//    public LocalDate dateOfBirth; // omzetten naar DD-MM-JJJJ format
+//    public LocalDate dateOfBirth;
 //    public String breed;
 //    public String generalInfo;
 //    public Boolean spayedOrNeutered; // true/false omzetten naar ja/nee

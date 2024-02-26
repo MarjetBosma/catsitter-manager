@@ -5,10 +5,12 @@ import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import nl.novi.catsittermanager.models.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Validated
 public record OrderInputDto (
 
     Long orderNo, //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
