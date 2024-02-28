@@ -14,20 +14,20 @@ public class OrderMapper {
                             order.getTotalNumberOfVisits(),
                             order.getTaskList(),
                             order.getCustomer(),
-                            order.getCatSitter(),
+                            order.getCatsitter(),
                             order.getInvoice()
         );
     }
 
     public static Order transferFromDto(OrderInputDto orderInputDto) {
-        return new Order(orderInputDto.orderNo(),
+        return new Order(orderInputDto.orderNo(), // In een latere fase deze hier niet meegeven, maar automatisch via database
                          orderInputDto.startDate(),
                          orderInputDto.endDate(),
                          orderInputDto.dailyNumberOfVisits(),
                          orderInputDto.totalNumberOfVisits(),
                          orderInputDto.taskList(),
                          orderInputDto.customer(),
-                         orderInputDto.catSitter(),
+                         orderInputDto.catsitter(),
                          orderInputDto.invoice()
         );
     }

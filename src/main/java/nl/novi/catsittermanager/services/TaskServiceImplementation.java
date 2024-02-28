@@ -86,11 +86,11 @@ public class TaskServiceImplementation implements TaskService {
     }
 
     @Override
-    public void deleteTask(long idToDelete) {
+    public long deleteTask(long idToDelete) {
         for (Task task : tasks) {
             if (task.getTaskNo() == idToDelete) {
                 tasks.remove(task);
-                return;
+                return idToDelete;
             }
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No task found with this id");

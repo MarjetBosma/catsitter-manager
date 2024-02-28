@@ -85,11 +85,11 @@ public class InvoiceServiceImplementation implements InvoiceService {
     }
 
     @Override
-    public void deleteInvoice(long idToDelete) {
+    public long deleteInvoice(long idToDelete) {
         for (Invoice invoice : invoices) {
             if (invoice.getInvoiceNo() == idToDelete) {
                 invoices.remove(invoice);
-                return;
+                return idToDelete;
             }
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No invoice found with this id.");

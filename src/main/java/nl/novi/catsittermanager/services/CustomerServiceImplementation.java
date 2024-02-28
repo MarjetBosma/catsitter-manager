@@ -4,40 +4,39 @@ import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.models.Customer;
+import nl.novi.catsittermanager.repositories.CustomerRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerServiceImplementation implements CustomerService {
 
-//    private final CustomerRepository catSitterRepos;
+    private final CustomerRepository customerRepos;
 //
 //    private final CatSitterServiceImplementation customerService;
 //
 //    private final OrderServiceImplementation orderService;
 
-    private List<Customer> customers = new ArrayList<>(); // voor testen zonder database
-
-//    public CustomerServiceImplementation(CatsitterServiceImplementation catSitterService, OrderServiceImplementation orderService) {
-//        this.customerRepos = customerRepos;
+    public CustomerServiceImplementation(CustomerRepository customerRepos
+//    , CatsitterServiceImplementation catSitterService, OrderServiceImplementation orderService
+    ) {
+        this.customerRepos = customerRepos;
 //        this.catSitterService = catSitterService;
 //        this.orderService = orderService;
-//    }
-
-    public CustomerServiceImplementation() { // Alleen voor testen zonder database
-        customers.add(new Customer(1L,2, "Lijst van kattem op naam", "Lijst met orders", "Lijst met kattenoppassen"));
-        customers.add(new Customer(2L,1, "Lijst van katten op naam", "Lijst met orders", "Lijst met kattenoppassen"));
     }
+
     @Override
     public List<CustomerDto> getAllCustomers() {
-        //        List<Customer> customerList = customerRepos.findAll(); // Deze is voor als de database gevuld is
         List<CustomerDto> customerDtoList = new ArrayList<>();
+        List<Customer> customerList = customerRepos.findAll();
 
-        for (Customer customer : customers) {
+        for (Customer customer : customerList) {
             CustomerDto customerDto = CustomerMapper.transferToDto(customer);
             customerDtoList.add(customerDto);
         }
@@ -46,54 +45,62 @@ public class CustomerServiceImplementation implements CustomerService {
 
     @Override
     public CustomerDto getCustomer(long idToFind) {
-        for (Customer customer : customers) {
-            if (customer.getId() == idToFind) {
-                return CustomerMapper.transferToDto(customer);
-            }
+        Optional<Customer> customerOptional = customerRepos.findById(idToFind);
+        if (customerOptional.isPresent()) {
+            return CustomerMapper.transferToDto(customerOptional.get());
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this id.");
+        else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this id.");
+        }
     }
 
     @Override
     public CustomerDto createCustomer(CustomerInputDto customerInputDto) {
-        Customer newCustomer = CustomerMapper.transferFromDto(customerInputDto);
-        customers.add(newCustomer);
+        Customer newCustomer = new Customer();
+        newCustomer.setNumberOfCats(customerInputDto.numberOfCats());
+        newCustomer.setCatListByName(customerInputDto.catListByName());
+        newCustomer.setOrderList(customerInputDto.orderList());
+        newCustomer.setCatsitterList(customerInputDto.catsitterList());
+        customerRepos.save(newCustomer);
         return CustomerMapper.transferToDto(newCustomer);
     }
 
     @Override
     public CustomerDto editCustomer(long idToEdit, CustomerInputDto customerInputDto) {
-        for (Customer customer : customers) {
-            if (customer.getId() == idToEdit) {
-                if (customerInputDto.numberOfCats() != 0) {
-                    customer.setNumberOfCats(customerInputDto.numberOfCats());
-                }
-                if (customerInputDto.orderList() != null) {
-                    customer.setOrderList(customerInputDto.orderList());
-                }
-                if (customerInputDto.catListByName() != null) {
-                    customer.setCatListByName(customerInputDto.catListByName());
-                }
-                if (customerInputDto.catSitterList() != null) {
-                    customer.setCatSitterList(customerInputDto.catSitterList());
-                }
-                return CustomerMapper.transferToDto(customer);
-            }
+        Optional<Customer> optionalCustomer = customerRepos.findById(idToEdit);
 
+        if (optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get();
+            if (customerInputDto.numberOfCats() != 0) {
+                customer.setNumberOfCats(customerInputDto.numberOfCats());
+            }
+            if (customerInputDto.orderList() != null) {
+                customer.setOrderList(customerInputDto.orderList());
+            }
+            if (customerInputDto.catListByName() != null) {
+                customer.setCatListByName(customerInputDto.catListByName());
+            }
+            if (customerInputDto.catsitterList() != null) {
+                customer.setCatsitterList(customerInputDto.catsitterList());
+            }
+            customerRepos.save(customer);
+            return CustomerMapper.transferToDto(customer);
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this id.");
+        else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this id.");
+        }
     }
 
     @Override
-    public void deleteCustomer(long idToDelete) {
-        for (Customer customer : customers) {
-            if (customer.getId() == idToDelete) {
-                customers.remove(customer);
-                return;
-            }
+    public String deleteCustomer(long idToDelete) {
+        Optional<Customer> optionalCustomer = customerRepos.findById(idToDelete);
+        if (optionalCustomer.isPresent()) {
+            customerRepos.deleteById((idToDelete));
+            return "Customer with id " + idToDelete + " removed from database";
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id");
+        else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id");
+        }
     }
-
-    // Toevoegen: assignCatToCustomer, assignCatSitterToCustomer, assignOrderToCustomer
 }
+// Toevoegen: assignCatToCustomer, assignCatSitterToCustomer, assignOrderToCustomer

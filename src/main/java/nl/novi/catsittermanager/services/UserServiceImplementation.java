@@ -97,11 +97,11 @@ public class UserServiceImplementation implements UserService {
     }
 
         @Override
-        public void deleteUser (long idToDelete) {
+        public long deleteUser (long idToDelete) {
             for (User user : users) {
                 if (user.getId() == idToDelete) {
                     users.remove(user);
-                    return;
+                    return idToDelete;
                 }
             }
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with this id.");

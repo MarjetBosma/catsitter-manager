@@ -16,5 +16,5 @@ public interface OrderService {
 
     OrderDto editOrder(long idToEdit, OrderInputDto orderInputDto);
 
-    void deleteOrder(long idToDelete);
+    String deleteOrder(long idToDelete);
 }

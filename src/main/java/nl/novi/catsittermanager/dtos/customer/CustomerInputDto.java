@@ -13,8 +13,6 @@ import java.util.List;
 @Validated
 public record CustomerInputDto (
 
-    Long id, //Dummy, alleen voor testen in Postman zonder gebruik van superclass (User levert normaalgesproken de id), en moet sowieso niet in inputDto bij toekenning id door database
-
     @Positive
     int numberOfCats,
 
@@ -26,8 +24,8 @@ public record CustomerInputDto (
 
     String catListByName, //Dummy, alleen voor los testen van de klasse in Postman zonder database
 
-//    CatSitter catSitterList = new ArrayList<>()
+//    Catsitter catsitterList = new ArrayList<>()
 
-    String catSitterList //Dummy, alleen voor los testen van de klasse in Postman zonder database
+    String catsitterList //Dummy, alleen voor los testen van de klasse in Postman zonder database
 
 ) {}

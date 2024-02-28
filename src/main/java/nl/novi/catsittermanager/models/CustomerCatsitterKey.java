@@ -3,7 +3,7 @@ package nl.novi.catsittermanager.models;
 import java.io.Serializable;
 
 //@Embeddable
-public class CustomerCatSitterKey implements Serializable {
+public class CustomerCatsitterKey implements Serializable {
 
 //    @Column(name = "customer_id")
     private Long customerId;
@@ -11,9 +11,9 @@ public class CustomerCatSitterKey implements Serializable {
 //    @Column(name = "catsitter_id")
     private Long catSitterId;
 
-    public CustomerCatSitterKey() {}
+    public CustomerCatsitterKey() {}
 
-    public CustomerCatSitterKey(Long customerId, Long catSitterId) {
+    public CustomerCatsitterKey(Long customerId, Long catSitterId) {
         this.customerId = customerId;
         this.catSitterId = catSitterId;
     }

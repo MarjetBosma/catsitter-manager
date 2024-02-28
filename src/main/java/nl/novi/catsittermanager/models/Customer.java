@@ -1,5 +1,7 @@
 package nl.novi.catsittermanager.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,11 +11,9 @@ import java.util.List;
 @Getter
 @Setter
 
-//@Entity
-//@Table(name = "customers")
+@Entity
+@Table(name = "customers")
 public class Customer extends User {
-
-    private Long id; //Dummy, alleen voor testen in Postman zonder gebruik van superclass (User levert normaalgesproken de id)
 
     private int numberOfCats;
 
@@ -32,22 +32,23 @@ public class Customer extends User {
 
 //    private List<CatSitter> catSitters = new ArrayList<>();
 
-    private String catSitterList; // Dummy, alleen voor testen zonder database
+    private String catsitterList; // Dummy, alleen voor testen zonder database
 
-    public Customer(Long id, int numberOfCats, String catListByName, String orderList, String catSitterList) { // Dummy, alleen voor testen in Postman zonder database
-        this.id = id;
+    public Customer() {}
+
+    public Customer(int numberOfCats, String catListByName, String orderList, String catSitterList) { // Dummy, alleen voor testen in Postman zonder database
         this.numberOfCats = numberOfCats;
         this.catListByName = catListByName;
         this.orderList = orderList;
-        this.catSitterList = catSitterList;
+        this.catsitterList = catSitterList;
     }
 
-//    public Customer(int numberOfCats, List<Cat> catListByName, List<Order> orderList, List<CatSitter> catSitterList) {
+//    public Customer(int numberOfCats, List<Cat> catListByName, List<Order> orderList, List<CatSitter> catsitterList) {
 //        super();
 //        this.numberOfCats = numberOfCats;
 //        this.orderList = orderList;
 //        this.catListByName = catListByName;
-//        this.catSitterList = catSitterList;
+//        this.catsitterList = catSitterList;
 //    }
 
 

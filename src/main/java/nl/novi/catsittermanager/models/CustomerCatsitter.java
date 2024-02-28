@@ -7,9 +7,9 @@ import lombok.Setter;
 @Setter
 
 //@Entity
-public class CustomerCatSitter {
+public class CustomerCatsitter {
 //    @EmbeddedId
-    private CustomerCatSitterKey id;
+    private CustomerCatsitterKey id;
 
 //    @ManyToOne
 //    @MapsId("customerId")
@@ -19,8 +19,8 @@ public class CustomerCatSitter {
 //    @ManyToOne
 //    @MapsId("catsitterId")
 //    @JoinColumn(name = "catsitter_id")
-    private CatSitter catSitter;
-    public CustomerCatSitterKey getId() {
+    private Catsitter catSitter;
+    public CustomerCatsitterKey getId() {
         return id;
     }
 }
