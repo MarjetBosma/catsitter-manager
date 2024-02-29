@@ -4,7 +4,6 @@ package nl.novi.catsittermanager.models;
 import lombok.Getter;
 import lombok.Setter;
 import nl.novi.catsittermanager.enumerations.Role;
-import nl.novi.catsittermanager.services.UserServiceImplementation;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -50,7 +49,7 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String username, String password, Role role, String authorities, boolean enabled, String name, String address, String email) {
+    public User(Long id, String username, String password, Role role, String authorities, Boolean enabled, String name, String address, String email) {
         this.username = username;
         this.password = password;
         this.role = role;

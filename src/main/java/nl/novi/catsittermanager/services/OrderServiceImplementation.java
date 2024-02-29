@@ -7,6 +7,7 @@ import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class OrderServiceImplementation implements OrderService {
     }
 
     @Override
-    public OrderDto createOrder(OrderInputDto orderInputDto) {
+    public OrderDto createOrder(@RequestBody OrderInputDto orderInputDto) {
         Order newOrder = new Order();
         newOrder.setStartDate(orderInputDto.startDate());
         newOrder.setEndDate(orderInputDto.endDate());

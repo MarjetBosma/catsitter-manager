@@ -130,4 +130,4 @@ public class CatServiceImplementation implements CatService {
     }
 }
 
-
+// methodes schrijven om Task aan andere entiteiten te koppelen

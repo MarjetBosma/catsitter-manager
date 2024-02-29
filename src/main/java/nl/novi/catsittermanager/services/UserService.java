@@ -15,6 +15,6 @@ public interface UserService {
 
     UserDto editUser(long IdToEdit, UserInputDto userInputDto);
 
-    long deleteUser(long IdToDelete);
+    String deleteUser(long IdToDelete);
 
 }

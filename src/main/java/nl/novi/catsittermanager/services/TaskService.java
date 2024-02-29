@@ -14,6 +14,6 @@ public interface TaskService {
 
     TaskDto editTask(long idToEdit, TaskInputDto taskInputDto);
 
-    long deleteTask(long idToDelete);
+    String deleteTask(long idToDelete);
 }
 

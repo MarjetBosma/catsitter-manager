@@ -1,7 +1,7 @@
 package nl.novi.catsittermanager.dtos.customer;
 
 import nl.novi.catsittermanager.models.Cat;
-import nl.novi.catsittermanager.models.CatSitter;
+import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Order;
 
 import java.util.ArrayList;
