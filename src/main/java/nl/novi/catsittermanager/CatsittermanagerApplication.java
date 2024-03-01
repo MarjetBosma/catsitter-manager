@@ -9,5 +9,4 @@ public class CatsittermanagerApplication {
     public static void main(String[] args) {
         SpringApplication.run(CatsittermanagerApplication.class, args);
     }
-
 }

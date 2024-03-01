@@ -14,6 +14,6 @@ public interface TaskService {
 
     TaskDto editTask(long idToEdit, TaskInputDto taskInputDto);
 
-    void deleteTask(long idToDelete);
+    long deleteTask(long idToDelete);
 }
 

@@ -1,7 +1,7 @@
 package nl.novi.catsittermanager.dtos.customer;
 
 import nl.novi.catsittermanager.models.Cat;
-import nl.novi.catsittermanager.models.CatSitter;
+import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Order;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.Set;
 
 public record CustomerDto (
 
-        Long id, //Dummy, alleen voor testen in Postman zonder gebruik van superclass (User levert normaalgesproken de id)
+        Long id,
 
         int numberOfCats,
 
@@ -23,7 +23,7 @@ public record CustomerDto (
 
         String catListByName, //Dummy, alleen voor los testen van de klasse in Postman zonder database
 
-//    CatSitter catSitterList = new ArrayList<>()
+//    CatSitter catsitterList = new ArrayList<>()
 
-        String catSitterList //Dummy, alleen voor los testen van de klasse in Postman zonder database
+        String catsitterList //Dummy, alleen voor los testen van de klasse in Postman zonder database
 ) {}

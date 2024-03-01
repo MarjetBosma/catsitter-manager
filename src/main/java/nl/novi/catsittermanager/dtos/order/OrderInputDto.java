@@ -29,8 +29,8 @@ public record OrderInputDto (
     //    Customer customer,
     String customer,  // Alleen voor los testen Order class zonder database
 
-    //    CatSitter catSitter,
-    String catSitter, // Alleen voor los testen Order class zonder database
+    //    Catsitter catsitter,
+    String catsitter, // Alleen voor los testen Order class zonder database
 
     //    Invoice invoice
     String invoice // Alleen voor los testen Order class zonder database

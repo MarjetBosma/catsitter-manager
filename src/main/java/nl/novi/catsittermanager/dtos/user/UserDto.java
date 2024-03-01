@@ -1,7 +1,7 @@
 package nl.novi.catsittermanager.dtos.user;
 
 import nl.novi.catsittermanager.enumerations.Role;
-import nl.novi.catsittermanager.models.Authority;
+//import nl.novi.catsittermanager.models.Authority;
 
 import java.util.Set;
 

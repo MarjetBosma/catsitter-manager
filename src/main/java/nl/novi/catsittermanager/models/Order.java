@@ -1,20 +1,26 @@
 package nl.novi.catsittermanager.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
 
 
 @Getter
 @Setter
 
-//@Entity
-//@Table(name = "orders")
+@Entity
+@Table(name = "orders")
 public class Order {
-//    @Id
-//    @GeneratedValue
+
+    @Id
+    @GeneratedValue
     private Long orderNo;
 
     private LocalDate startDate;
@@ -35,16 +41,15 @@ public class Order {
 
 //    @ManyToOne(fetch = FetchType.EAGER)
 //    private CatSitter catSitter;
-    private String catSitter; // Dummy, alleen voor los testen Cat class zonder database
+    private String catsitter; // Dummy, alleen voor los testen Cat class zonder database
 
 //    @OneToOne
 //    private Invoice invoice;
     private String invoice; // Dummy, alleen voor los testen Cat class zonder database
 
-    public Order() {
-    }
+    public Order() {}
 
-    public Order(Long orderNo, LocalDate startDate, LocalDate endDate, int dailyNumberOfVisits, int totalNumberOfVisits, String taskList, String customer, String catSitter, String invoice) {
+    public Order(Long orderNo, LocalDate startDate, LocalDate endDate, int dailyNumberOfVisits, int totalNumberOfVisits, String taskList, String customer, String catsitter, String invoice) {
         this.orderNo = orderNo;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -52,9 +57,7 @@ public class Order {
         this.totalNumberOfVisits = totalNumberOfVisits;
         this.taskList = taskList; // List van maken
         this.customer = customer; // datatype bij database weer terugzetten naar Customer
-        this.catSitter = catSitter; // datatype bij database weer terugzetten naar CatSitter
+        this.catsitter = catsitter; // datatype bij database weer terugzetten naar CatSitter
         this.invoice = invoice; // datatype bij database weer terugzetten naar Invoice
     }
-
-
 }

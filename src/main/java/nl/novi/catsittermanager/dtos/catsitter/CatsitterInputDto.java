@@ -1,16 +1,12 @@
 package nl.novi.catsittermanager.dtos.catsitter;
 
-import jakarta.validation.constraints.NotNull;
-import nl.novi.catsittermanager.models.Customer;
-import nl.novi.catsittermanager.models.Order;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Validated
-public record CatSitterInputDto (
-    Long id,  //Dummy, alleen voor testen in Postman zonder gebruik van superclass (User levert normaalgesproken de id), en moet sowieso niet in inputDto bij toekennning id door database
+public record CatsitterInputDto (
+
+    Long id,  //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
+
     String about,
 
 //    Order orderList = new ArrayList<>();,

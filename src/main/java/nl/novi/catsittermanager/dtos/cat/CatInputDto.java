@@ -30,19 +30,3 @@ import java.time.LocalDate;
 
     ) {}
 
-
-//    @NotNull
-//    public String name;
-//    @Past
-//    public LocalDate dateOfBirth;
-//    public String breed;
-//    public String generalInfo;
-//    public Boolean spayedOrNeutered; // true/false omzetten naar ja/nee
-//    public Boolean vaccinated; // true/false omzetten naar ja/nee
-//    public String veterinarianName;
-//    public String  honeVet;
-//    public String medicationName; // hoe kun je meer medicamenten opgeven?
-//    public String medicationDose;
-////    public Customer ownerName;
-//    public String ownerName; // Alleen voor los testen Cat class zonder database
-//}

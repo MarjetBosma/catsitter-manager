@@ -2,45 +2,37 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.dtos.user.UserDto;
 import nl.novi.catsittermanager.dtos.user.UserInputDto;
-import nl.novi.catsittermanager.enumerations.Role;
-import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
+//import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import nl.novi.catsittermanager.mappers.UserMapper;
-import nl.novi.catsittermanager.models.Authority;
+//import nl.novi.catsittermanager.models.Authority;
 import nl.novi.catsittermanager.models.User;
-import nl.novi.catsittermanager.utils.RandomStringGenerator;
+import nl.novi.catsittermanager.repositories.UserRepository;
 
 // import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserServiceImplementation implements UserService {
 
-//    private final UserRepository userRepository;
+    private final UserRepository userRepos;
 
-//    private PasswordEncoder encoder;
-
-    private List<User> users = new ArrayList<>(); // voor testen zonder database
-
-//    public UserServiceImplementation(UserRepository userRepository) {
-//        this.userRepository = userRepository;
-//    }
-
-    public UserServiceImplementation() { // voor testen zonder database
-        users.add(new User(1L, "HannahD", "Firsa2006", Role.USER, "authorities", false, "Hannah Daalder", "Kerkstraat 3, Ergenshuizen", "hannahdaalder@gmail.com" ));
-        users.add(new User(2L, "Catlover", "Cats4Ever", Role.ADMIN, "authorities", true, "Pietje Puk", "Straatweg 45 Grotestad", "pietjepuk@gmail.com"));
+    public UserServiceImplementation(UserRepository userRepos) {
+        this.userRepos = userRepos;
     }
+
     @Override
     public List<UserDto> getAllUsers() {
-//        List<User> userDtoList = userRepos.findAll(); // Deze is voor als de database gevuld is
         List<UserDto> userDtoList = new ArrayList<>();
-        for (User user : users) {
+        List<User> userList = userRepos.findAll();
+
+        for (User user : userList) {
             UserDto userDto = UserMapper.transferToDto(user);
             userDtoList.add(userDto);
         }
@@ -49,24 +41,35 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserDto getUser(long idToFind) {
-        for (User user : users) {
-            if (user.getId() == idToFind) {
-                return UserMapper.transferToDto(user);
-            }
+        Optional<User> userOptional = userRepos.findById(idToFind);
+        if (userOptional.isPresent()) {
+            return UserMapper.transferToDto(userOptional.get());
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with this id.");
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with this id.");
     }
 
     @Override
-    public UserDto createUser(UserInputDto userInputDto) {
-        User newUser = UserMapper.transferFromDto(userInputDto);
-        users.add(newUser);
+    public UserDto createUser(@RequestBody UserInputDto userInputDto) {
+        User newUser = new User();
+        newUser.setUsername(userInputDto.username());
+        newUser.setPassword(userInputDto.password());
+        newUser.setEmail(userInputDto.email());
+        newUser.setRole(userInputDto.role());
+        newUser.setAuthorities(userInputDto.authorities());
+        newUser.setEnabled(userInputDto.enabled());
+        newUser.setName(userInputDto.name());
+        newUser.setAddress(userInputDto.address());
+        newUser.setEmail(userInputDto.email());
+        userRepos.save(newUser);
         return UserMapper.transferToDto(newUser);
     }
     @Override
     public UserDto editUser(long idToEdit, UserInputDto userInputDto) {
-        for (User user : users) {
-            if (user.getId() == idToEdit) {
+        Optional<User> optionalUser = userRepos.findById(idToEdit);
+
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
                 if (userInputDto.username() != null) {
                     user.setUsername(userInputDto.username());
                 }
@@ -91,20 +94,22 @@ public class UserServiceImplementation implements UserService {
                 if (userInputDto.email() != null) {
                     user.setEmail(userInputDto.email());
                 }
-            }
+                userRepos.save(user);
+                return UserMapper.transferToDto(user);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with this id");
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with this id");
     }
 
         @Override
-        public void deleteUser (long idToDelete) {
-            for (User user : users) {
-                if (user.getId() == idToDelete) {
-                    users.remove(user);
-                    return;
-                }
+        public long deleteUser (long idToDelete) {
+            Optional<User> optionalUser = userRepos.findById(idToDelete);
+                if (optionalUser.isPresent()) {
+                    userRepos.deleteById(idToDelete);
+                    return idToDelete;
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with this id.");
             }
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with this id.");
         }
 
 //    public List<UserDto> getUsers() {
@@ -171,5 +176,4 @@ public class UserServiceImplementation implements UserService {
 //        user.removeAuthority(authorityToRemove);
 //        userRepository.save(user);
 //    }
-
     }

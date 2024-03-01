@@ -4,18 +4,20 @@ import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.models.Order;
+import nl.novi.catsittermanager.repositories.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderServiceImplementation implements OrderService {
 
-//    private final OrderRepository orderRepos;
+    private final OrderRepository orderRepos;
 //
 //    private final TaskRepository taskRepos;
 //
@@ -33,29 +35,27 @@ public class OrderServiceImplementation implements OrderService {
 //
 //    private final InvoiceServiceImplementation invoiceService;
 
-    private List<Order> orders = new ArrayList<>(); // voor testen zonder database
 
-//    public OrderServiceImplementation(OrderRepository orderRepos, TaskRepository taskRepos, TaskServiceImplementation taskService, CustomerRepository customerRepos, CustomerServiceImplementation customerService, CatSitterRepository catSitterRepos, CatSitterServiceImplementation catSitterService, InvoiceRepository invoiceRepos, InvoiceServiceImplementation invoiceService)) {
-//        this.orderRepos = catRepos;
+    public OrderServiceImplementation(OrderRepository orderRepos
+//            , TaskRepository taskRepos, TaskServiceImplementation taskService, CustomerRepository customerRepos, CustomerServiceImplementation customerService, CatSitterRepository catSitterRepos, CatSitterServiceImplementation catSitterService, InvoiceRepository invoiceRepos, InvoiceServiceImplementation invoiceService
+    ) {
+        this.orderRepos = orderRepos;
 //        this.taskRepos = taskRepos;
 //        this.taskService = taskService;
 //        this.customerRepos = customerRepos;
 //        this.customerService = customerService;
+//        this.catsitterRepos = catsitterRepos;
+//        this.catsitterService = catsitterService;
 //        this.invoiceRepos = invoiceRepos;
 //        this.invoiceService = invoiceService;
-//    }
-
-    public OrderServiceImplementation() { // Bedoeld voor testen zonder database
-        orders.add(new Order(1L, LocalDate.parse("2023-08-15"), LocalDate.parse("2023-08-30"), 2, 42, "takenlijst", "Marjet Bosma", "Karel Appel", "factuur"));
-        orders.add(new Order(1L, LocalDate.parse("2024-01-15"), LocalDate.parse("2024-02-15"), 1, 27, "takenlijst", "Marianne Bosma", "Liesje Peer", "factuur"));
     }
 
     @Override
     public List<OrderDto> getAllOrders() {
-//        List<Order> orderList = orderRepos.findAll(); // Deze is voor als de database gevuld is
         List<OrderDto> orderDtoList = new ArrayList<>();
+        List<Order> orderList = orderRepos.findAll();
 
-        for (Order order : orders) {
+        for (Order order : orderList) {
             OrderDto orderDto = OrderMapper.transferToDto(order);
             orderDtoList.add(orderDto);
         }
@@ -64,25 +64,34 @@ public class OrderServiceImplementation implements OrderService {
 
     @Override
     public OrderDto getOrder(long idToFind) {
-        for (Order order : orders) {
-            if (order.getOrderNo() == idToFind) {
-                return OrderMapper.transferToDto(order);
-            }
+        Optional<Order> orderOptional = orderRepos.findById(idToFind);
+            if (orderOptional.isPresent()) {
+                return OrderMapper.transferToDto(orderOptional.get());
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order found with this id.");
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order found with this id.");
     }
 
     @Override
-    public OrderDto createOrder(OrderInputDto orderInputDto) {
-        Order newOrder = OrderMapper.transferFromDto(orderInputDto);
-        orders.add(newOrder);
+    public OrderDto createOrder(@RequestBody OrderInputDto orderInputDto) {
+        Order newOrder = new Order();
+        newOrder.setStartDate(orderInputDto.startDate());
+        newOrder.setEndDate(orderInputDto.endDate());
+        newOrder.setDailyNumberOfVisits(orderInputDto.dailyNumberOfVisits());
+        newOrder.setTotalNumberOfVisits(orderInputDto.totalNumberOfVisits());
+        newOrder.setTaskList(orderInputDto.taskList());
+        newOrder.setCustomer(orderInputDto.customer());
+        newOrder.setCatsitter(orderInputDto.catsitter());
+        newOrder.setInvoice(orderInputDto.invoice());
+        orderRepos.save(newOrder);
         return OrderMapper.transferToDto(newOrder);
     }
 
     @Override
     public OrderDto editOrder(long idToEdit, OrderInputDto orderInputDto) {
-        for (Order order : orders) {
-            if (order.getOrderNo() == idToEdit) {
+        Optional<Order> optionalOrder = orderRepos.findById(idToEdit);
+            if (optionalOrder.isPresent()) {
+                Order order = optionalOrder.get();
                 if (orderInputDto.startDate() != null) {
                     order.setStartDate(orderInputDto.startDate());
                 }
@@ -101,27 +110,27 @@ public class OrderServiceImplementation implements OrderService {
                 if (orderInputDto.customer() != null) {
                     order.setCustomer(orderInputDto.customer());
                 }
-                if (orderInputDto.catSitter() != null) {
-                    order.setCatSitter(orderInputDto.catSitter());
+                if (orderInputDto.catsitter() != null) {
+                    order.setCatsitter(orderInputDto.catsitter());
                 }
                 if (orderInputDto.invoice() != null) {
                     order.setInvoice(orderInputDto.invoice());
                 }
                 return OrderMapper.transferToDto(order);
-            }
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order found with this id.");
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order found with this id.");
     }
 
     @Override
-    public void deleteOrder(long idToDelete) {
-        for (Order order : orders) {
-            if (order.getOrderNo() == idToDelete) {
-                orders.remove(order);
-                return;
-            }
+    public long deleteOrder(long idToDelete) {
+        Optional<Order> optionalOrder = orderRepos.findById(idToDelete);
+        if (optionalOrder.isPresent()) {
+            orderRepos.deleteById(idToDelete);
+            return idToDelete;
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order found with this id");
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order found with this id");
     }
 }
 

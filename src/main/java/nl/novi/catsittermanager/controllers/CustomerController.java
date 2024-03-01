@@ -68,7 +68,7 @@ public class CustomerController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCustomer(@PathVariable("id") Long idToDelete) {
         customerService.deleteCustomer(idToDelete);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("Customer with id " + idToDelete +  " removed from database");
     }
 
 

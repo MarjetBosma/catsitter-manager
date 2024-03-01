@@ -64,14 +64,13 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> editUser(@PathVariable("id") long idToEdit, @RequestBody UserInputDto user) {
         UserDto editedUser = userService.editUser(idToEdit, user);
-
         return ResponseEntity.ok().body(editedUser);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable("id") long idToDelete) {
         userService.deleteUser(idToDelete);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("User with id " + idToDelete +  " removed from database");
     }
 
 //    @GetMapping(value = "")

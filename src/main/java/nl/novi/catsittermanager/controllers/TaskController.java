@@ -67,7 +67,7 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteTask(@PathVariable("id") Long idToDelete) {
         taskService.deleteTask(idToDelete);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("Task with id " + idToDelete +  " removed from database");
     }
 
 //    @PutMapping("/{id}/order")

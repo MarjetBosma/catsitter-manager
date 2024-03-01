@@ -15,5 +15,5 @@ public interface CustomerService {
 
     CustomerDto editCustomer(long idToEdit, CustomerInputDto customerInputDto);
 
-    void deleteCustomer (long idToDelete);
+    long deleteCustomer (long idToDelete);
 }

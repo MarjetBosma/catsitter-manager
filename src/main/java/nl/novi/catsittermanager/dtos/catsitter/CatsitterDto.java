@@ -1,14 +1,8 @@
 package nl.novi.catsittermanager.dtos.catsitter;
 
-import nl.novi.catsittermanager.models.Customer;
-import nl.novi.catsittermanager.models.Order;
+public record CatsitterDto(
+        Long id,
 
-import java.util.ArrayList;
-import java.util.List;
-
-public record CatSitterDto (
-
-        Long id,  //Dummy, alleen voor testen in Postman zonder gebruik van superclass (User levert normaalgesproken de id)
         String about,
 
 //    Order orderList = new ArrayList<>(),

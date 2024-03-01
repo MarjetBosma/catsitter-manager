@@ -15,6 +15,5 @@ public interface UserService {
 
     UserDto editUser(long IdToEdit, UserInputDto userInputDto);
 
-    void deleteUser(long IdToDelete);
-
+    long deleteUser(long IdToDelete);
 }

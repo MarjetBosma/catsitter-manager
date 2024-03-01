@@ -2,7 +2,7 @@ package nl.novi.catsittermanager.dtos.user;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import nl.novi.catsittermanager.enumerations.Role;
-import nl.novi.catsittermanager.models.Authority;
+//import nl.novi.catsittermanager.models.Authority;
 
 import jakarta.validation.constraints.*;
 import org.springframework.validation.annotation.Validated;

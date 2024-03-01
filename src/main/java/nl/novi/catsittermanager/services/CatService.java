@@ -14,5 +14,5 @@ public interface CatService {
 
     CatDto editCat(long idToEdit, CatInputDto catInputDto);
 
-    void deleteCat(long idToDelete);
+    long deleteCat(long idToDelete);
 }
