@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,30 +17,29 @@ import java.time.LocalDate;
 public class Invoice {
 
     @Id
-    @GeneratedValue
+    @JoinColumn(name = "invoice_no")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long invoiceNo;
 
     @FutureOrPresent
     private LocalDate invoiceDate;
 
+    @Positive
     private Double amount;
 
     private Boolean paid;
 
-//    @OneToOne
-//    @Column(name = "\"order\"")
-//    private Order order;
-
-    @Column(name = "\"order\"")
-    private String order; // Dummy, alleen voor los testen Invoice class zonder database
+    @OneToOne(mappedBy = "invoice")
+    @PrimaryKeyJoinColumn
+    private Order order;
 
     public Invoice() {}
 
-    public Invoice(Long invoiceNo, LocalDate invoiceDate, Double amount, Boolean paid, String order) {
+    public Invoice(Long invoiceNo, LocalDate invoiceDate, Double amount, Boolean paid, Order order) {
         this.invoiceNo = invoiceNo;
         this.invoiceDate = invoiceDate;
         this.amount = amount;
         this.paid = paid;
-        this.order = order; // object type bij database weer terugzetten naar Customer
+        this.order = order;
     }
 }

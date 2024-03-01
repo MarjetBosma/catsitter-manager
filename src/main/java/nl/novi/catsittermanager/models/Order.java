@@ -1,9 +1,6 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
@@ -20,7 +17,7 @@ import java.time.LocalDate;
 public class Order {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long orderNo;
 
     private LocalDate startDate;
@@ -43,13 +40,13 @@ public class Order {
 //    private CatSitter catSitter;
     private String catsitter; // Dummy, alleen voor los testen Cat class zonder database
 
-//    @OneToOne
-//    private Invoice invoice;
-    private String invoice; // Dummy, alleen voor los testen Cat class zonder database
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn (name = "invoice_no")
+    private Invoice invoice;
 
     public Order() {}
 
-    public Order(Long orderNo, LocalDate startDate, LocalDate endDate, int dailyNumberOfVisits, int totalNumberOfVisits, String taskList, String customer, String catsitter, String invoice) {
+    public Order(Long orderNo, LocalDate startDate, LocalDate endDate, int dailyNumberOfVisits, int totalNumberOfVisits, String taskList, String customer, String catsitter, Invoice invoice) {
         this.orderNo = orderNo;
         this.startDate = startDate;
         this.endDate = endDate;

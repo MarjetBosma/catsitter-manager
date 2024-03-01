@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +54,7 @@ public class InvoiceServiceImplementation implements InvoiceService {
 
     @Override
     public InvoiceDto createInvoice(InvoiceInputDto invoiceInputDto) {
-        Invoice newInvoice = new Invoice();
+        Invoice newInvoice = new Invoice(invoiceInputDto.invoiceNo(), invoiceInputDto.invoiceDate(), invoiceInputDto.amount(), invoiceInputDto.paid(), invoiceInputDto.order());
         newInvoice.setInvoiceNo(invoiceInputDto.invoiceNo());
         newInvoice.setInvoiceDate(invoiceInputDto.invoiceDate());
         newInvoice.setAmount(invoiceInputDto.amount());

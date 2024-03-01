@@ -11,13 +11,11 @@ import java.time.LocalDate;
 @Validated
 public record InvoiceInputDto (
 
-    Long invoiceNo, //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
+    Long invoiceNo,
     LocalDate invoiceDate,
     @Positive
     Double amount,
     Boolean paid,
-
-//    Order order
-    String order // Dummy, alleen voor los testen Invoice class zonder database
+    Order order
 
 ) {}

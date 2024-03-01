@@ -1,7 +1,5 @@
 package nl.novi.catsittermanager.controllers;
 
-import jakarta.validation.Valid;
-import nl.novi.catsittermanager.dtos.IdInputDto;
 import nl.novi.catsittermanager.dtos.task.TaskDto;
 import nl.novi.catsittermanager.dtos.task.TaskInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;

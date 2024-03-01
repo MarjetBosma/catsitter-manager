@@ -13,7 +13,7 @@ import java.util.List;
 @Validated
 public record OrderInputDto (
 
-    Long orderNo, //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
+    Long orderNo,
     @Future
     LocalDate startDate,
     @Future
@@ -33,7 +33,7 @@ public record OrderInputDto (
     String catsitter, // Alleen voor los testen Order class zonder database
 
     //    Invoice invoice
-    String invoice // Alleen voor los testen Order class zonder database
+    Invoice invoice // Alleen voor los testen Order class zonder database
 
 ) {}
 

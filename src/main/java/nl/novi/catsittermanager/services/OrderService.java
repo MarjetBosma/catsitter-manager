@@ -17,4 +17,7 @@ public interface OrderService {
     OrderDto editOrder(long idToEdit, OrderInputDto orderInputDto);
 
     long deleteOrder(long idToDelete);
+
+    OrderDto assignInvoiceToOrder(long customerId, long invoiceId);
+
 }

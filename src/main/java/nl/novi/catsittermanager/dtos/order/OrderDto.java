@@ -23,7 +23,6 @@ public record OrderDto (
 //    CatSitter catSitter,
     String catSitter, // Alleen voor los testen Order class zonder database
 
-//    Invoice invoice
-    String invoice // Alleen voor los testen Order class zonder database
+    Invoice invoice
 
 ) {}

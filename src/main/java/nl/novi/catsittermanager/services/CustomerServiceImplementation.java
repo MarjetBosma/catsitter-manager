@@ -4,6 +4,7 @@ import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.models.Customer;
+import nl.novi.catsittermanager.repositories.CatRepository;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
 
 import org.springframework.http.HttpStatus;
@@ -18,17 +19,12 @@ import java.util.Optional;
 public class CustomerServiceImplementation implements CustomerService {
 
     private final CustomerRepository customerRepos;
-//
-//    private final CatSitterServiceImplementation customerService;
-//
-//    private final OrderServiceImplementation orderService;
 
-    public CustomerServiceImplementation(CustomerRepository customerRepos
-//    , CatsitterServiceImplementation catSitterService, OrderServiceImplementation orderService
-    ) {
+    private final CatRepository catRepos;
+
+    public CustomerServiceImplementation(CustomerRepository customerRepos, CatRepository catRepos) {
         this.customerRepos = customerRepos;
-//        this.catSitterService = catSitterService;
-//        this.orderService = orderService;
+        this.catRepos = catRepos;
     }
 
     @Override

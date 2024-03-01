@@ -16,7 +16,7 @@ public class InvoiceMapper {
     }
 
     public static Invoice transferFromDto(InvoiceInputDto invoiceInputDto) {
-        return new Invoice(invoiceInputDto.invoiceNo(), // In een latere fase deze hier niet meegeven, maar automatisch via database
+        return new Invoice(invoiceInputDto.invoiceNo(),
                            invoiceInputDto.invoiceDate(),
                            invoiceInputDto.amount(),
                            invoiceInputDto.paid(),
