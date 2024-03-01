@@ -1,6 +1,7 @@
 package nl.novi.catsittermanager.dtos.catsitter;
 
 public record CatsitterDto(
+        Long id,
 
         String about,
 

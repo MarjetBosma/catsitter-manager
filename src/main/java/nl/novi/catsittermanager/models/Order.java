@@ -60,6 +60,4 @@ public class Order {
         this.catsitter = catsitter; // datatype bij database weer terugzetten naar CatSitter
         this.invoice = invoice; // datatype bij database weer terugzetten naar Invoice
     }
-
-
 }

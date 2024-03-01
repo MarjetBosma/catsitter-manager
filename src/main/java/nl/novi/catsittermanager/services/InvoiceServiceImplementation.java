@@ -90,13 +90,12 @@ public class InvoiceServiceImplementation implements InvoiceService {
         }
     }
 
-
     @Override
-    public String deleteInvoice(long idToDelete) {
+    public long deleteInvoice(long idToDelete) {
         Optional<Invoice> optionalInvoice = invoiceRepos.findById(idToDelete);
         if (optionalInvoice.isPresent()) {
             invoiceRepos.deleteById(idToDelete);
-            return "Invoice with id " + idToDelete +  " removed from database";
+            return idToDelete;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No invoice found with this id.");
         }

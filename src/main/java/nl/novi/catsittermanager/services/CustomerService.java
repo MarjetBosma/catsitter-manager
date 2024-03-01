@@ -15,5 +15,5 @@ public interface CustomerService {
 
     CustomerDto editCustomer(long idToEdit, CustomerInputDto customerInputDto);
 
-    String deleteCustomer (long idToDelete);
+    long deleteCustomer (long idToDelete);
 }

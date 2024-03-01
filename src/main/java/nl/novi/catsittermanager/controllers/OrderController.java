@@ -68,7 +68,7 @@ public class OrderController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteOrder(@PathVariable("id") long idToDelete) {
         orderService.deleteOrder(idToDelete);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("Order with id " + idToDelete +  " removed from database");
     }
 
 //    @PutMapping("/{id}/catsitter")

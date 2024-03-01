@@ -5,6 +5,8 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public record CatsitterInputDto (
 
+    Long id,  //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
+
     String about,
 
 //    Order orderList = new ArrayList<>();,

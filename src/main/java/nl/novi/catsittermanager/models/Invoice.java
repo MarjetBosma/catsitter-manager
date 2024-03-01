@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.models;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,12 +11,12 @@ import java.time.LocalDate;
 @Getter
 @Setter
 
-//@Entity
-//@Table(name = "invoices")
+@Entity
+@Table(name = "invoices")
 public class Invoice {
 
-//    @Id
-//    @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long invoiceNo;
 
     @FutureOrPresent
@@ -26,8 +27,10 @@ public class Invoice {
     private Boolean paid;
 
 //    @OneToOne
+//    @Column(name = "\"order\"")
 //    private Order order;
 
+    @Column(name = "\"order\"")
     private String order; // Dummy, alleen voor los testen Invoice class zonder database
 
     public Invoice() {}

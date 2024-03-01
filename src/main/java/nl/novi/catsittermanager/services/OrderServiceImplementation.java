@@ -123,11 +123,11 @@ public class OrderServiceImplementation implements OrderService {
     }
 
     @Override
-    public String deleteOrder(long idToDelete) {
+    public long deleteOrder(long idToDelete) {
         Optional<Order> optionalOrder = orderRepos.findById(idToDelete);
         if (optionalOrder.isPresent()) {
             orderRepos.deleteById(idToDelete);
-            return "Order with id " + idToDelete + " removed from database";
+            return idToDelete;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order found with this id");
         }

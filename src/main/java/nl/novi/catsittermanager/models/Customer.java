@@ -15,6 +15,8 @@ import java.util.List;
 @Table(name = "customers")
 public class Customer extends User {
 
+    private Long id; // Moet eigenlijk worden overgenomen van User, uitzoeken hoe dit werkt
+
     private int numberOfCats;
 
 //    @OneToMany(mappedBy = "customers")
@@ -36,11 +38,12 @@ public class Customer extends User {
 
     public Customer() {}
 
-    public Customer(int numberOfCats, String catListByName, String orderList, String catSitterList) { // Dummy, alleen voor testen in Postman zonder database
+    public Customer(int numberOfCats, String catListByName, String orderList, String catsitterList) { // Dummy, alleen voor testen in Postman zonder database
+        super();
         this.numberOfCats = numberOfCats;
         this.catListByName = catListByName;
         this.orderList = orderList;
-        this.catsitterList = catSitterList;
+        this.catsitterList = catsitterList;
     }
 
 //    public Customer(int numberOfCats, List<Cat> catListByName, List<Order> orderList, List<CatSitter> catsitterList) {

@@ -68,6 +68,7 @@ public class CatServiceImplementation implements CatService {
         newCat.setPhoneVet(catInputDto.phoneVet());
         newCat.setMedicationName(catInputDto.medicationName());
         newCat.setMedicationDose(catInputDto.medicationDose());
+        newCat.setOwnerName(catInputDto.ownerName());
         catRepos.save(newCat);
         return CatMapper.transferToDto(newCat);
     }
@@ -119,11 +120,11 @@ public class CatServiceImplementation implements CatService {
     }
 
     @Override
-    public String deleteCat(long idToDelete) {
+    public long deleteCat(long idToDelete) {
         Optional<Cat> optionalCat = catRepos.findById(idToDelete);
         if (optionalCat.isPresent()) {
             catRepos.deleteById(idToDelete);
-            return "Cat with id " + idToDelete +  " removed from database";
+            return idToDelete;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id");
         }

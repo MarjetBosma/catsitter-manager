@@ -15,5 +15,5 @@ public interface InvoiceService {
 
     InvoiceDto editInvoice(long noToEdit, InvoiceInputDto invoiceInputDto);
 
-    String deleteInvoice(long noToDelete);
+    long deleteInvoice(long noToDelete);
 }

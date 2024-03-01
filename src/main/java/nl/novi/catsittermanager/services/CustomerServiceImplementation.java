@@ -92,11 +92,11 @@ public class CustomerServiceImplementation implements CustomerService {
     }
 
     @Override
-    public String deleteCustomer(long idToDelete) {
+    public long deleteCustomer(long idToDelete) {
         Optional<Customer> optionalCustomer = customerRepos.findById(idToDelete);
         if (optionalCustomer.isPresent()) {
             customerRepos.deleteById((idToDelete));
-            return "Customer with id " + idToDelete + " removed from database";
+            return idToDelete;
         }
         else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id");

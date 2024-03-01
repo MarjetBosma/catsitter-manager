@@ -7,7 +7,8 @@ import nl.novi.catsittermanager.models.Customer;
 public class CustomerMapper {
 
     public static CustomerDto transferToDto(Customer customer) {
-        return new CustomerDto(customer.getNumberOfCats(),
+        return new CustomerDto(customer.getId(),
+                               customer.getNumberOfCats(),
                                customer.getCatListByName(),
                                customer.getOrderList(),
                                customer.getCatsitterList()
@@ -21,28 +22,4 @@ public class CustomerMapper {
                             customerInputDto.catsitterList()
         );
     }
-//    public CustomerDto transferToDto(Customer customer) {
-//
-//        CustomerDto customerDto = new CustomerDto();
-//
-//        // catSitterDto.id = catSitter.getId(); // deze komt uit superklasse User
-//        customerDto.numberOfCats = customer.getNumberOfCats();
-//        customerDto.orderList = customer.getOrderList();
-//        customerDto.catListByName = customer.getCatListByName();
-//        customerDto.catsitters = customer.getCatSitters();
-//
-//        return customerDto;
-//    }
-//
-//    public Customer trasnferToCustomer(CustomerInputDto customerDto) {
-//
-//        Customer customer = new Customer();
-//
-//        customer.setNumberOfCats(customerDto.numberOfCats);
-//        customer.setOrderList(customerDto.orderList);
-//        customer.setCatListByName(customerDto.catListByName);
-//        customer.setCatSitters(customerDto.catsitters);
-//
-//        return customer;
-//    }
 }

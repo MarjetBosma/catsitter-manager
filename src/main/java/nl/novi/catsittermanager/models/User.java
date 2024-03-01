@@ -1,25 +1,28 @@
 package nl.novi.catsittermanager.models;
 
-
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import nl.novi.catsittermanager.enumerations.Role;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
 
-//@Entity
-//@Table(name = "users")
-public class User {
+@Entity
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User implements Serializable {
 
-//    @Id
+    @Id
+    @GeneratedValue
     private Long id;
 //    @Column(nullable = false, unique = true)
     private String username;
-    //    @Column(nullable = false, length = 255)
+//    @Column(nullable = false, length = 255)
     private String password;
 
     private Role role;

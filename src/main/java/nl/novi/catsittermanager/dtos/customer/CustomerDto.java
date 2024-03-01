@@ -11,6 +11,8 @@ import java.util.Set;
 
 public record CustomerDto (
 
+        Long id,
+
         int numberOfCats,
 
 //    Order orderList = new ArrayList<>(),

@@ -65,7 +65,7 @@ public class CatsitterController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCatsitter(@PathVariable("id") Long idToDelete) {
         catsitterService.deleteCatsitter(idToDelete);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("Catsitter with id " + idToDelete +  " removed from database");
     }
 
 //    @PutMapping("/{id}/customer")

@@ -2,7 +2,6 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.dtos.task.TaskDto;
 import nl.novi.catsittermanager.dtos.task.TaskInputDto;
-import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.mappers.TaskMapper;
 import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.repositories.TaskRepository;
@@ -91,11 +90,11 @@ public class TaskServiceImplementation implements TaskService {
     }
 
     @Override
-    public String deleteTask(long idToDelete) {
+    public long deleteTask(long idToDelete) {
         Optional<Task> optionalTask = taskRepos.findById(idToDelete);
         if (optionalTask.isPresent()) {
             taskRepos.deleteById(idToDelete);
-            return "Task with id " + idToDelete +  " removed from database";
+            return idToDelete;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No task found with this id");
         }

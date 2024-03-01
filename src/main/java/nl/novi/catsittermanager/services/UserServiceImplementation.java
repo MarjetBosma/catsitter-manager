@@ -2,13 +2,11 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.dtos.user.UserDto;
 import nl.novi.catsittermanager.dtos.user.UserInputDto;
-import nl.novi.catsittermanager.enumerations.Role;
 //import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import nl.novi.catsittermanager.mappers.UserMapper;
 //import nl.novi.catsittermanager.models.Authority;
 import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.repositories.UserRepository;
-import nl.novi.catsittermanager.utils.RandomStringGenerator;
 
 // import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.http.HttpStatus;
@@ -19,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserServiceImplementation implements UserService {
@@ -60,9 +57,10 @@ public class UserServiceImplementation implements UserService {
         newUser.setEmail(userInputDto.email());
         newUser.setRole(userInputDto.role());
         newUser.setAuthorities(userInputDto.authorities());
-        newUser.getEnabled(userInputDto.enabled());
-        newUser.getName(userInputDto.name());
-        newUser.getEmail(userInputDto.email());
+        newUser.setEnabled(userInputDto.enabled());
+        newUser.setName(userInputDto.name());
+        newUser.setAddress(userInputDto.address());
+        newUser.setEmail(userInputDto.email());
         userRepos.save(newUser);
         return UserMapper.transferToDto(newUser);
     }
@@ -104,11 +102,11 @@ public class UserServiceImplementation implements UserService {
     }
 
         @Override
-        public String deleteUser (long idToDelete) {
+        public long deleteUser (long idToDelete) {
             Optional<User> optionalUser = userRepos.findById(idToDelete);
                 if (optionalUser.isPresent()) {
                     userRepos.deleteById(idToDelete);
-                    return "User with id " + idToDelete +  " removed from database";
+                    return idToDelete;
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with this id.");
             }
