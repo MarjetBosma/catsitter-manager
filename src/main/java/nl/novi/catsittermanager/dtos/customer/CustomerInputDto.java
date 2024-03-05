@@ -14,18 +14,14 @@ import java.util.List;
 public record CustomerInputDto (
 
     @Positive
+    Long id,
+
     int numberOfCats,
 
-//    Order orderList = new ArrayList<>(),
+    Order order,
 
-    String orderList, //Dummy, alleen voor los testen van de klasse in Postman zonder database
+    Cat cat,
 
-//    Cat catListByName = new ArrayList<>(),
-
-    String catListByName, //Dummy, alleen voor los testen van de klasse in Postman zonder database
-
-//    Catsitter catsitterList = new ArrayList<>()
-
-    String catsitterList //Dummy, alleen voor los testen van de klasse in Postman zonder database
+    Catsitter catsitter
 
 ) {}

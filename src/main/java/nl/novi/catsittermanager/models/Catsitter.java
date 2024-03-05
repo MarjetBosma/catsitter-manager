@@ -21,30 +21,19 @@ public class Catsitter extends User {
 
     private String about;
 
-//    @OneToMany(mappedBy = "catsitters")
-//    private List<Order> orderList = new ArrayList<>();
+    @OneToMany(mappedBy = "catsitters")
+    private Order order;
 
-    private String orderList; // Dummy, alleen voor testen zonder database
 
-//    @ManyToMany(mappedBy = "catsitters")
-//    private List<Customer> customerList = new ArrayList<>();
-
-    private String customerList; // Dummy, alleen voor testen zonder database
+    @ManyToMany(mappedBy = "customers")
+    private Customer customer;
 
     public Catsitter() {}
 
-    public Catsitter(String about, String orderList, String customerList) {
+    public Catsitter(String about, Order order, Customer customer) {
         super();
         this.about = about;
-        this.orderList = orderList;
-        this.customerList = customerList;
+        this.order = order;
+        this.customer = customer;
     }
-
-//    public Catsitter(String about, List<Order> orderList, List<Customer> customers) {
-//        super();
-//        this.about = about;
-//        this.orderList = orderList;
-//        this.customerList = customers;
-//    }
-
 }

@@ -1,13 +1,14 @@
 package nl.novi.catsittermanager.dtos.catsitter;
 
+import nl.novi.catsittermanager.models.Customer;
+import nl.novi.catsittermanager.models.Order;
+
 public record CatsitterDto(
         Long id,
 
         String about,
 
-//    Order orderList = new ArrayList<>(),
-        String orderList, //Dummy, alleen voor los testen van de klasse in Postman zonder database
+        Order order,
 
-//    Customer customerList = new ArrayList<>()
-        String customerList //Dummy, alleen voor los testen van de klasse in Postman zonder database
+        Customer customer
 ) {}

@@ -52,11 +52,11 @@ public class CustomerServiceImplementation implements CustomerService {
 
     @Override
     public CustomerDto createCustomer(CustomerInputDto customerInputDto) {
-        Customer newCustomer = new Customer();
+        Customer newCustomer = new Customer(customerInputDto.numberOfCats(), customerInputDto.cat(), customerInputDto.order(), customerInputDto.catsitter());
         newCustomer.setNumberOfCats(customerInputDto.numberOfCats());
-        newCustomer.setCatListByName(customerInputDto.catListByName());
-        newCustomer.setOrderList(customerInputDto.orderList());
-        newCustomer.setCatsitterList(customerInputDto.catsitterList());
+        newCustomer.setCat(customerInputDto.cat());
+        newCustomer.setOrder(customerInputDto.order());
+        newCustomer.setCatsitter(customerInputDto.catsitter());
         customerRepos.save(newCustomer);
         return CustomerMapper.transferToDto(newCustomer);
     }
@@ -70,14 +70,14 @@ public class CustomerServiceImplementation implements CustomerService {
             if (customerInputDto.numberOfCats() != 0) {
                 customer.setNumberOfCats(customerInputDto.numberOfCats());
             }
-            if (customerInputDto.orderList() != null) {
-                customer.setOrderList(customerInputDto.orderList());
+            if (customerInputDto.order() != null) {
+                customer.setOrder(customerInputDto.order());
             }
-            if (customerInputDto.catListByName() != null) {
-                customer.setCatListByName(customerInputDto.catListByName());
+            if (customerInputDto.cat() != null) {
+                customer.setCat(customerInputDto.cat());
             }
-            if (customerInputDto.catsitterList() != null) {
-                customer.setCatsitterList(customerInputDto.catsitterList());
+            if (customerInputDto.catsitter() != null) {
+                customer.setCatsitter(customerInputDto.catsitter());
             }
             customerRepos.save(customer);
             return CustomerMapper.transferToDto(customer);

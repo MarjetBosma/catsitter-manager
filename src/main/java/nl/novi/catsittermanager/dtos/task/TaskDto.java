@@ -9,8 +9,6 @@ public record TaskDto (
     String taskInstruction,
     String extraInstructions,
     Double priceOfTask,
-
-//    public Order order;
-    String order // Alleen voor los testen Task class zonder database
+    Order order
 
 ) {}
