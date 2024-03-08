@@ -67,10 +67,4 @@ public class InvoiceController {
         invoiceService.deleteInvoice(idToDelete);
         return ResponseEntity.ok().body("Invoice with id " + idToDelete +  " removed from database");
     }
-
-//    @PutMapping("/{id}/order")
-//    public ResponseEntity<Object> assignOrderToInvoice(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-//        invoiceService.assignOrderToInvoice(id, input.id);
-//        return ResponseEntity.noContent().build();
-//    }
 }

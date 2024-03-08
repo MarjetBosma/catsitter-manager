@@ -5,8 +5,10 @@ import nl.novi.catsittermanager.dtos.order.OrderInputDto;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.models.Order;
+import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.repositories.OrderRepository;
 import nl.novi.catsittermanager.repositories.InvoiceRepository;
+import nl.novi.catsittermanager.repositories.TaskRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,9 +24,12 @@ public class OrderServiceImplementation implements OrderService {
     private final OrderRepository orderRepos;
     private final InvoiceRepository invoiceRepos;
 
-    public OrderServiceImplementation(OrderRepository orderRepos, InvoiceRepository invoiceRepos) {
+    private final TaskRepository taskRepos;
+
+    public OrderServiceImplementation(OrderRepository orderRepos, InvoiceRepository invoiceRepos, TaskRepository taskRepos) {
         this.orderRepos = orderRepos;
         this.invoiceRepos = invoiceRepos;
+        this.taskRepos = taskRepos;
     }
 
     @Override
@@ -56,7 +61,7 @@ public class OrderServiceImplementation implements OrderService {
         newOrder.setEndDate(orderInputDto.endDate());
         newOrder.setDailyNumberOfVisits(orderInputDto.dailyNumberOfVisits());
         newOrder.setTotalNumberOfVisits(orderInputDto.totalNumberOfVisits());
-        newOrder.setTaskList(orderInputDto.taskList());
+        newOrder.setTask(orderInputDto.task());
         newOrder.setCustomer(orderInputDto.customer());
         newOrder.setCatsitter(orderInputDto.catsitter());
         newOrder.setInvoice(orderInputDto.invoice());
@@ -81,8 +86,8 @@ public class OrderServiceImplementation implements OrderService {
                 if (orderInputDto.totalNumberOfVisits() != 0) {
                     order.setTotalNumberOfVisits(orderInputDto.totalNumberOfVisits());
                 }
-                if (orderInputDto.taskList() != null) {
-                    order.setTaskList(orderInputDto.taskList());
+                if (orderInputDto.task() != null) {
+                    order.setTask(orderInputDto.task());
                 }
                 if (orderInputDto.customer() != null) {
                     order.setCustomer(orderInputDto.customer());
@@ -124,6 +129,23 @@ public class OrderServiceImplementation implements OrderService {
             return OrderMapper.transferToDto(order);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order or invoice found with this id");
+        }
+    }
+
+    @Override
+    public OrderDto assignTaskToOrder(long orderId, long taskId) {
+        Optional<Order> optionalOrder = orderRepos.findById(orderId);
+        Optional<Task> optionalTask= taskRepos.findById(taskId);
+
+        if (optionalOrder.isPresent() && optionalTask.isPresent()) {
+            Order order = optionalOrder.get();
+            Task task = optionalTask.get();
+
+            order.setTask(task);
+            orderRepos.save(order);
+            return OrderMapper.transferToDto(order);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order or task found with this id");
         }
     }
 }

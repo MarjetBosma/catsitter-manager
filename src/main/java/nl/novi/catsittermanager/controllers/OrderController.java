@@ -69,10 +69,12 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}/{invoiceId}")
-    public OrderDto assignInvoiceToOrder(@PathVariable("personId") Long orderId, @PathVariable("invoiceId") long invoiceId) {
-        orderService.assignInvoiceToOrder(orderId, invoiceId);
+    public OrderDto assignInvoiceToOrder(@PathVariable("orderId") long orderId, @PathVariable("invoiceId") long invoiceId) {
         return orderService.assignInvoiceToOrder(orderId, invoiceId);
     }
 
-// toevoegen relaties catsitter, customer, task
+    @PutMapping("/{orderId}/{taskId}")
+    public OrderDto assignTaskToOrder(@PathVariable("personId") long orderId, @PathVariable("taskId") long taskId) {
+        return orderService.assignTaskToOrder(orderId, taskId);
+    }
 }

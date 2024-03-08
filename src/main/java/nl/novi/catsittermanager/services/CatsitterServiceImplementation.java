@@ -3,9 +3,13 @@ package nl.novi.catsittermanager.services;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterDto;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterInputDto;
 import nl.novi.catsittermanager.mappers.CatsitterMapper;
+import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.models.Catsitter;
+import nl.novi.catsittermanager.models.Customer;
+import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CatsitterRepository;
 
+import nl.novi.catsittermanager.repositories.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,14 +23,11 @@ public class CatsitterServiceImplementation implements CatsitterService {
 
     private final CatsitterRepository catsitterRepos;
 
-//    private final OrderServiceImplementation orderService;
+    private final OrderRepository orderRepos;
 
-    public CatsitterServiceImplementation(CatsitterRepository catsitterRepos
-//            , CustomerServiceImplementation customerService, OrderServiceImplementation orderService
-    ) {
+    public CatsitterServiceImplementation(CatsitterRepository catsitterRepos, OrderRepository orderRepos) {
         this.catsitterRepos = catsitterRepos;
-//        this.customerService = customerService;
-//        this.orderService = orderService;
+        this.orderRepos = orderRepos;
     }
 
     @Override
@@ -54,8 +55,8 @@ public class CatsitterServiceImplementation implements CatsitterService {
     public CatsitterDto createCatsitter(CatsitterInputDto catsitterInputDto) {
         Catsitter newCatsitter = new Catsitter();
         newCatsitter.setAbout(catsitterInputDto.about());
-        newCatsitter.setOrderList(catsitterInputDto.orderList());
-        newCatsitter.setCustomerList(catsitterInputDto.customerList());
+        newCatsitter.setOrder(catsitterInputDto.order());
+        newCatsitter.setCustomer(catsitterInputDto.customer());
         catsitterRepos.save(newCatsitter);
         return CatsitterMapper.transferToDto(newCatsitter);
     }
@@ -69,11 +70,11 @@ public class CatsitterServiceImplementation implements CatsitterService {
             if (catsitterInputDto.about() != null) {
                 catsitter.setAbout(catsitterInputDto.about());
             }
-            if (catsitterInputDto.orderList() != null) {
-                catsitter.setOrderList(catsitterInputDto.orderList());
+            if (catsitterInputDto.order() != null) {
+                catsitter.setOrder(catsitterInputDto.order());
             }
-            if (catsitterInputDto.customerList() != null) {
-                catsitter.setCustomerList(catsitterInputDto.customerList());
+            if (catsitterInputDto.customer() != null) {
+                catsitter.setCustomer(catsitterInputDto.customer());
             }
             catsitterRepos.save(catsitter);
             return CatsitterMapper.transferToDto(catsitter);
@@ -93,8 +94,26 @@ public class CatsitterServiceImplementation implements CatsitterService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id");
         }
     }
+
+    @Override
+    public CatsitterDto assignOrderToCatsitter(long catsitterId, long orderNo) {
+        Optional<Catsitter> optionalCatsitter = catsitterRepos.findById(catsitterId);
+        Optional<Order> optionalOrder = orderRepos.findById(orderNo);
+
+        if (optionalCatsitter.isPresent() && optionalOrder.isPresent()) {
+            Catsitter catsitter = optionalCatsitter.get();
+            Order order = optionalOrder.get();
+
+            catsitter.setOrder(order);
+            catsitterRepos.save(catsitter);
+            return CatsitterMapper.transferToDto(catsitter);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer or car found with this id");
+        }
+    }
 }
-// Toevoegen: assignOrderToCatSitter, assignCustomerToCatSitter
+
+
 
 
 

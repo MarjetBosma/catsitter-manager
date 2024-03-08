@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterDto;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterInputDto;
+import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.CatsitterServiceImplementation;
@@ -68,16 +69,9 @@ public class CatsitterController {
         return ResponseEntity.ok().body("Catsitter with id " + idToDelete +  " removed from database");
     }
 
-//    @PutMapping("/{id}/customer")
-//    public ResponseEntity<Object> assignCustomerToCatsitter(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-//        catsitterService.assignCustomerToCatsitter(id, input.id);
-//        return ResponseEntity.noContent().build();
-//    }
-
-//    @PutMapping("/{id}/order")
-//    public ResponseEntity<Object> assignOrderToCatsitter(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-//        catsitterService.assignOrderToCatsitter(id, input.id);
-//        return ResponseEntity.noContent().build();
-//    }
+    @PutMapping("/{customerId}/{orderId}")
+    public CatsitterDto assignOrderToCatsitter(@PathVariable("customerId") Long catsitterId, @PathVariable("orderId") long orderId) {
+        return catsitterService.assignOrderToCatsitter(catsitterId, orderId);
+    }
 
 }
