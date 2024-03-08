@@ -12,22 +12,15 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class InvoiceServiceImplementation implements InvoiceService {
 
     private final InvoiceRepository invoiceRepos;
 
-//    private final OrderRepository orderRepos;
-
-//    private final OrderServiceImplementation orderService;
-
-
-    public InvoiceServiceImplementation(InvoiceRepository invoiceRepos
-//    , OrderServiceImplementation orderService
-    ) {
+    public InvoiceServiceImplementation(InvoiceRepository invoiceRepos) {
         this.invoiceRepos = invoiceRepos;
-//        this.orderService = orderService;
     }
 
     @Override
@@ -43,10 +36,10 @@ public class InvoiceServiceImplementation implements InvoiceService {
     }
 
     @Override
-    public InvoiceDto getInvoice(long idToFind) {
+    public InvoiceDto getInvoice(UUID idToFind) {
         Optional<Invoice> invoiceOptional = invoiceRepos.findById(idToFind);
         if (invoiceOptional.isPresent()) {
-                return InvoiceMapper.transferToDto(invoiceOptional.get());
+            return InvoiceMapper.transferToDto(invoiceOptional.get());
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No invoice found with this id.");
         }
@@ -54,18 +47,19 @@ public class InvoiceServiceImplementation implements InvoiceService {
 
     @Override
     public InvoiceDto createInvoice(InvoiceInputDto invoiceInputDto) {
-        Invoice newInvoice = new Invoice(invoiceInputDto.invoiceNo(), invoiceInputDto.invoiceDate(), invoiceInputDto.amount(), invoiceInputDto.paid(), invoiceInputDto.order());
-        newInvoice.setInvoiceNo(invoiceInputDto.invoiceNo());
-        newInvoice.setInvoiceDate(invoiceInputDto.invoiceDate());
-        newInvoice.setAmount(invoiceInputDto.amount());
-        newInvoice.setPaid(invoiceInputDto.paid());
-        newInvoice.setOrder(invoiceInputDto.order());
-        invoiceRepos.save(newInvoice);
-        return InvoiceMapper.transferToDto(newInvoice);
+//        Invoice newInvoice = new Invoice(invoiceInputDto.invoiceNo(), invoiceInputDto.invoiceDate(), invoiceInputDto.amount(), invoiceInputDto.paid(), invoiceInputDto.order());
+//        newInvoice.setInvoiceNo(invoiceInputDto.invoiceNo());
+//        newInvoice.setInvoiceDate(invoiceInputDto.invoiceDate());
+//        newInvoice.setAmount(invoiceInputDto.amount());
+//        newInvoice.setPaid(invoiceInputDto.paid());
+//        newInvoice.setOrder(invoiceInputDto.order());
+//        invoiceRepos.save(newInvoice);
+//        return InvoiceMapper.transferToDto(newInvoice);
+        return null;
     }
 
     @Override
-    public InvoiceDto editInvoice(long idToEdit, InvoiceInputDto invoiceInputDto) {
+    public InvoiceDto editInvoice(UUID idToEdit, InvoiceInputDto invoiceInputDto) {
         Optional<Invoice> optionalInvoice = invoiceRepos.findById(idToEdit);
 
         if (optionalInvoice.isPresent()) {
@@ -90,7 +84,7 @@ public class InvoiceServiceImplementation implements InvoiceService {
     }
 
     @Override
-    public long deleteInvoice(long idToDelete) {
+    public UUID deleteInvoice(UUID idToDelete) {
         Optional<Invoice> optionalInvoice = invoiceRepos.findById(idToDelete);
         if (optionalInvoice.isPresent()) {
             invoiceRepos.deleteById(idToDelete);

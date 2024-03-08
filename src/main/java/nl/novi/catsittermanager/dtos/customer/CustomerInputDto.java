@@ -1,27 +1,25 @@
 package nl.novi.catsittermanager.dtos.customer;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Order;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Validated
-public record CustomerInputDto (
+public record CustomerInputDto(
 
-    @Positive
-    Long id,
+        UUID id,
 
-    int numberOfCats,
+        int numberOfCats,
 
-    Order order,
+        List<Order> order,
 
-    Cat cat,
+        List<Cat> cat,
 
-    Catsitter catsitter
+        List<Catsitter> catsitter
 
-) {}
+) {
+}

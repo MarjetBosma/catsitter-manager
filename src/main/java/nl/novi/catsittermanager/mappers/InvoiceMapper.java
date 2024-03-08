@@ -8,19 +8,19 @@ public class InvoiceMapper {
 
     public static InvoiceDto transferToDto(Invoice invoice) {
         return new InvoiceDto(invoice.getInvoiceNo(),
-                              invoice.getInvoiceDate(),
-                              invoice.getAmount(),
-                              invoice.getPaid(),
-                              invoice.getOrder()
+                invoice.getInvoiceDate(),
+                invoice.getAmount(),
+                invoice.getPaid(),
+                invoice.getOrder()
         );
     }
 
     public static Invoice transferFromDto(InvoiceInputDto invoiceInputDto) {
-        return new Invoice(invoiceInputDto.invoiceNo(),
-                           invoiceInputDto.invoiceDate(),
-                           invoiceInputDto.amount(),
-                           invoiceInputDto.paid(),
-                           invoiceInputDto.order()
-        );
+        return Invoice.builder().invoiceNo(invoiceInputDto.invoiceNo())
+                .invoiceDate(invoiceInputDto.invoiceDate())
+                .amount(invoiceInputDto.amount())
+                .paid(invoiceInputDto.paid())
+                .order(invoiceInputDto.order())
+                .build();
     }
 }

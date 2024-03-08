@@ -2,7 +2,6 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.dtos.task.TaskDto;
 import nl.novi.catsittermanager.dtos.task.TaskInputDto;
-import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.TaskServiceImplementation;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
 
@@ -32,13 +32,13 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDto> getTask(@PathVariable("id") long idToFind) {
-        if (idToFind > 0) {
-            TaskDto taskDto = taskService.getTask(idToFind);
-            return ResponseEntity.ok(taskDto);
-        } else {
-            throw new RecordNotFoundException("No task found with this id");
-        }
+    public ResponseEntity<TaskDto> getTask(@PathVariable("id") UUID idToFind) {
+
+        TaskDto taskDto = taskService.getTask(idToFind);
+        return ResponseEntity.ok(taskDto);
+
+//            throw new RecordNotFoundException("No task found with this id");
+
     }
 
     @PostMapping
@@ -56,22 +56,15 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskDto> editTask(@PathVariable("id") long id, @RequestBody TaskInputDto task) {
+    public ResponseEntity<TaskDto> editTask(@PathVariable("id") UUID id, @RequestBody TaskInputDto task) {
         TaskDto editedTask = taskService.editTask(id, task);
 
         return ResponseEntity.ok().body(editedTask);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTask(@PathVariable("id") Long idToDelete) {
+    public ResponseEntity<Object> deleteTask(@PathVariable("id") UUID idToDelete) {
         taskService.deleteTask(idToDelete);
-        return ResponseEntity.ok().body("Task with id " + idToDelete +  " removed from database");
+        return ResponseEntity.ok().body("Task with id " + idToDelete + " removed from database");
     }
-
-//    @PutMapping("/{id}/order")
-//    public ResponseEntity<Object> assignOrderToTask(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-//        taskService.assignOrderToTask(id, input.id);
-//        return ResponseEntity.noContent().build();
-//    }
-
 }

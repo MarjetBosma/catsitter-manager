@@ -8,17 +8,18 @@ public class CatsitterMapper {
 
     public static CatsitterDto transferToDto(Catsitter catsitter) {
         return new CatsitterDto(catsitter.getId(),
-                                catsitter.getAbout(),
-                                catsitter.getOrder(),
-                                catsitter.getCustomer()
+                catsitter.getAbout(),
+                catsitter.getOrder(),
+                catsitter.getCustomer()
         );
     }
 
     public static Catsitter transferFromDto(CatsitterInputDto catsitterInputDto) {
-        return new Catsitter(
-                             catsitterInputDto.about(),
-                             catsitterInputDto.order(),
-                             catsitterInputDto.customer()
-        );
+        return Catsitter.builder()
+                .id(catsitterInputDto.id())
+                .about(catsitterInputDto.about())
+                .order(catsitterInputDto.order())
+                .customer(catsitterInputDto.customer())
+                .build();
     }
 }

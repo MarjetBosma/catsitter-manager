@@ -4,17 +4,20 @@ import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
 import org.springframework.validation.annotation.Validated;
 
-@Validated
-public record CatsitterInputDto (
+import java.util.List;
+import java.util.UUID;
 
-        Long id,
+@Validated
+public record CatsitterInputDto(
+
+        UUID id,
 
         String about,
 
-        Order order,
+        List<Order> order,
 
-        Customer customer
+        List<Customer> customer
 
 
-) {}
-
+) {
+}

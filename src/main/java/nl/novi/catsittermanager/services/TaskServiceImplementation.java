@@ -10,42 +10,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImplementation implements TaskService {
 
-    private final TaskRepository taskRepos;
+    private final TaskRepository taskRepository;
 
-//    private final OrderRepository orderRepos;
-//
-//    private final OrderServiceImplementation orderService;
-
-    public TaskServiceImplementation(TaskRepository taskRepos
-//    , OrderRepository orderRepos, OrderServiceImplementation orderService
-    ) {
-        this.taskRepos = taskRepos;
-//        this.orderRepos = orderRepos;
-//        this.orderService = orderService;
+    public TaskServiceImplementation(final TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
     }
 
     @Override
     public List<TaskDto> getAllTasks() {
-        List<TaskDto> taskDtoList = new ArrayList<>();
-        List<Task> taskList = taskRepos.findAll();
-
-        for (Task task : taskList) {
-            TaskDto taskDto = TaskMapper.transferToDto(task);
-            taskDtoList.add(taskDto);
-        }
-        return taskDtoList;
+        return taskRepository.findAll()
+                .stream()
+                .map(TaskMapper::transferToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public TaskDto getTask(long idToFind) {
-        Optional<Task> taskOptional = taskRepos.findById(idToFind);
+    public TaskDto getTask(final UUID idToFind) {
+        Optional<Task> taskOptional = taskRepository.findById(idToFind);
         if (taskOptional.isPresent()) {
             return TaskMapper.transferToDto(taskOptional.get());
         } else {
@@ -61,45 +50,42 @@ public class TaskServiceImplementation implements TaskService {
         newTask.setTaskInstruction(taskInputDto.taskInstruction());
         newTask.setExtraInstructions(taskInputDto.extraInstructions());
         newTask.setOrder(taskInputDto.order());
-        taskRepos.save(newTask);
+        taskRepository.save(newTask);
         return TaskMapper.transferToDto(newTask);
     }
 
     @Override
-    public TaskDto editTask(long idToEdit, TaskInputDto taskInputDto) {
-        Optional<Task> optionalTask = taskRepos.findById(idToEdit);
+    public TaskDto editTask(UUID idToEdit, TaskInputDto taskInputDto) {
+        Optional<Task> optionalTask = taskRepository.findById(idToEdit);
 
-            if (optionalTask.isPresent()) {
-                Task task  = optionalTask.get();
-                if (taskInputDto.taskType() != null) {
-                    task.setTaskType(taskInputDto.taskType());
-                }
-                if (task.getTaskInstruction() != null) {
-                    task.setTaskInstruction(taskInputDto.taskInstruction());
-                }
-                if (taskInputDto.extraInstructions() != null) { // Mag eigenlijk wel null zijn, is optioneel
-                    task.setExtraInstructions(taskInputDto.extraInstructions());
-                }
-                if (taskInputDto.priceOfTask() != 0) {
-                    task.setPriceOfTask(taskInputDto.priceOfTask());
-                }
-                return TaskMapper.transferToDto(task);
-            } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No task found with this id.");
+        if (optionalTask.isPresent()) {
+            Task task = optionalTask.get();
+            if (taskInputDto.taskType() != null) {
+                task.setTaskType(taskInputDto.taskType());
+            }
+            if (task.getTaskInstruction() != null) {
+                task.setTaskInstruction(taskInputDto.taskInstruction());
+            }
+            if (taskInputDto.extraInstructions() != null) { // Mag eigenlijk wel null zijn, is optioneel
+                task.setExtraInstructions(taskInputDto.extraInstructions());
+            }
+            if (taskInputDto.priceOfTask() != 0) {
+                task.setPriceOfTask(taskInputDto.priceOfTask());
+            }
+            return TaskMapper.transferToDto(task);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No task found with this id.");
         }
     }
 
     @Override
-    public long deleteTask(long idToDelete) {
-        Optional<Task> optionalTask = taskRepos.findById(idToDelete);
+    public UUID deleteTask(UUID idToDelete) {
+        Optional<Task> optionalTask = taskRepository.findById(idToDelete);
         if (optionalTask.isPresent()) {
-            taskRepos.deleteById(idToDelete);
+            taskRepository.deleteById(idToDelete);
             return idToDelete;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No task found with this id");
         }
     }
 }
-
-
-// methodes schrijven om Task aan andere entiteiten te koppelen

@@ -4,16 +4,17 @@ import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface CustomerService {
 
     List<CustomerDto> getAllCustomers();
 
-    CustomerDto getCustomer(long idToFind);
+    CustomerDto getCustomer(UUID idToFind);
 
     CustomerDto createCustomer(CustomerInputDto customerInputDto);
 
-    CustomerDto editCustomer(long idToEdit, CustomerInputDto customerInputDto);
+    CustomerDto editCustomer(UUID idToEdit, CustomerInputDto customerInputDto);
 
-    long deleteCustomer (long idToDelete);
+    UUID deleteCustomer(UUID idToDelete);
 }

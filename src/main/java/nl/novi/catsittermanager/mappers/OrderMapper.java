@@ -8,27 +8,27 @@ public class OrderMapper {
 
     public static OrderDto transferToDto(Order order) {
         return new OrderDto(order.getOrderNo(),
-                            order.getStartDate(),
-                            order.getEndDate(),
-                            order.getDailyNumberOfVisits(),
-                            order.getTotalNumberOfVisits(),
-                            order.getTaskList(),
-                            order.getCustomer(),
-                            order.getCatsitter(),
-                            order.getInvoice()
+                order.getStartDate(),
+                order.getEndDate(),
+                order.getDailyNumberOfVisits(),
+                order.getTotalNumberOfVisits(),
+                order.getTask(),
+                order.getCustomer(),
+                order.getCatsitter(),
+                order.getInvoice()
         );
     }
 
     public static Order transferFromDto(OrderInputDto orderInputDto) {
-        return new Order(orderInputDto.orderNo(),
-                         orderInputDto.startDate(),
-                         orderInputDto.endDate(),
-                         orderInputDto.dailyNumberOfVisits(),
-                         orderInputDto.totalNumberOfVisits(),
-                         orderInputDto.taskList(),
-                         orderInputDto.customer(),
-                         orderInputDto.catsitter(),
-                         orderInputDto.invoice()
-        );
+        return Order.builder().orderNo(orderInputDto.orderNo())
+                .startDate(orderInputDto.startDate())
+                .endDate(orderInputDto.endDate())
+                .dailyNumberOfVisits(orderInputDto.dailyNumberOfVisits())
+                .totalNumberOfVisits(orderInputDto.totalNumberOfVisits())
+                .task(orderInputDto.task())
+                .customer(orderInputDto.customer())
+                .catsitter(orderInputDto.catsitter())
+                .invoice(orderInputDto.invoice())
+                .build();
     }
 }

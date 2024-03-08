@@ -5,17 +5,19 @@ import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Order;
 
 import java.util.List;
+import java.util.UUID;
 
-public record CustomerDto (
+public record CustomerDto(
 
-        Long id,
+        UUID id,
 
         int numberOfCats,
 
-        Order order,
+        List<Order> order,
 
-        Cat cats,
+        List<Cat> cats,
 
-        Catsitter catsitter
+        List<Catsitter> catsitter
 
-) {}
+) {
+}

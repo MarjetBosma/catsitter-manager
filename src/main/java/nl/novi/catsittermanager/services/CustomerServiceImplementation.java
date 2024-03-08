@@ -6,7 +6,6 @@ import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.repositories.CatRepository;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CustomerServiceImplementation implements CustomerService {
@@ -40,29 +40,30 @@ public class CustomerServiceImplementation implements CustomerService {
     }
 
     @Override
-    public CustomerDto getCustomer(long idToFind) {
+    public CustomerDto getCustomer(UUID idToFind) {
         Optional<Customer> customerOptional = customerRepos.findById(idToFind);
         if (customerOptional.isPresent()) {
             return CustomerMapper.transferToDto(customerOptional.get());
-        }
-        else {
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this id.");
         }
     }
 
     @Override
     public CustomerDto createCustomer(CustomerInputDto customerInputDto) {
-        Customer newCustomer = new Customer(customerInputDto.numberOfCats(), customerInputDto.cat(), customerInputDto.order(), customerInputDto.catsitter());
-        newCustomer.setNumberOfCats(customerInputDto.numberOfCats());
-        newCustomer.setCat(customerInputDto.cat());
-        newCustomer.setOrder(customerInputDto.order());
-        newCustomer.setCatsitter(customerInputDto.catsitter());
-        customerRepos.save(newCustomer);
-        return CustomerMapper.transferToDto(newCustomer);
+        Customer customer = Customer.builder()
+                .numberOfCats(customerInputDto.numberOfCats())
+                .cat(customerInputDto.cat())
+                .order(customerInputDto.order())
+                .catsitter(customerInputDto.catsitter())
+                .build();
+
+        customerRepos.save(customer);
+        return CustomerMapper.transferToDto(customer);
     }
 
     @Override
-    public CustomerDto editCustomer(long idToEdit, CustomerInputDto customerInputDto) {
+    public CustomerDto editCustomer(UUID idToEdit, CustomerInputDto customerInputDto) {
         Optional<Customer> optionalCustomer = customerRepos.findById(idToEdit);
 
         if (optionalCustomer.isPresent()) {
@@ -81,20 +82,18 @@ public class CustomerServiceImplementation implements CustomerService {
             }
             customerRepos.save(customer);
             return CustomerMapper.transferToDto(customer);
-        }
-        else {
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this id.");
         }
     }
 
     @Override
-    public long deleteCustomer(long idToDelete) {
+    public UUID deleteCustomer(UUID idToDelete) {
         Optional<Customer> optionalCustomer = customerRepos.findById(idToDelete);
         if (optionalCustomer.isPresent()) {
             customerRepos.deleteById((idToDelete));
             return idToDelete;
-        }
-        else {
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id");
         }
     }

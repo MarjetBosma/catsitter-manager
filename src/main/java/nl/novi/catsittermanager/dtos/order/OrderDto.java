@@ -1,25 +1,29 @@
 package nl.novi.catsittermanager.dtos.order;
 
-import nl.novi.catsittermanager.models.*;
+import nl.novi.catsittermanager.models.Catsitter;
+import nl.novi.catsittermanager.models.Customer;
+import nl.novi.catsittermanager.models.Invoice;
+import nl.novi.catsittermanager.models.Task;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public record OrderDto (
+public record OrderDto(
 
-    Long orderNo,
-    LocalDate startDate,
-    LocalDate endDate,
-    int dailyNumberOfVisits,
-    int totalNumberOfVisits,
+        UUID orderNo,
+        LocalDate startDate,
+        LocalDate endDate,
+        int dailyNumberOfVisits,
+        int totalNumberOfVisits,
 
-    Task task,
+        List<Task> task,
 
-    Customer customer,
+        Customer customer,
 
-    Catsitter catsitter,
+        Catsitter catsitter,
 
-    Invoice invoice
+        Invoice invoice
 
-) {}
+) {
+}

@@ -5,15 +5,15 @@ import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.repositories.CatRepository;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CatServiceImplementation implements CatService {
@@ -35,24 +35,16 @@ public class CatServiceImplementation implements CatService {
 
     @Override
     public List<CatDto> getAllCats() {
-        List<CatDto> catDtoList = new ArrayList<>();
-        List<Cat> catList = catRepos.findAll();
-
-        for (Cat cat : catList) {
-            CatDto catDto = CatMapper.transferToDto(cat);
-            catDtoList.add(catDto);
-        }
-        return catDtoList;
+        return catRepos.findAll().stream()
+                .map(CatMapper::transferToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public CatDto getCat(long idToFind) {
-        Optional<Cat> catOptional = catRepos.findById(idToFind);
-        if (catOptional.isPresent()) {
-            return CatMapper.transferToDto(catOptional.get());
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id.");
-        }
+    public CatDto getCat(UUID idToFind) {
+        return catRepos.findById(idToFind)
+                .map(CatMapper::transferToDto)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
     }
 
     @Override
@@ -74,7 +66,7 @@ public class CatServiceImplementation implements CatService {
     }
 
     @Override
-    public CatDto editCat(long idToEdit, CatInputDto catInputDto) {
+    public CatDto editCat(UUID idToEdit, CatInputDto catInputDto) {
         Optional<Cat> optionalCat = catRepos.findById(idToEdit);
 
         if (optionalCat.isPresent()) {
@@ -120,14 +112,9 @@ public class CatServiceImplementation implements CatService {
     }
 
     @Override
-    public long deleteCat(long idToDelete) {
-        Optional<Cat> optionalCat = catRepos.findById(idToDelete);
-        if (optionalCat.isPresent()) {
-            catRepos.deleteById(idToDelete);
-            return idToDelete;
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id");
-        }
+    public UUID deleteCat(UUID idToDelete) {
+        catRepos.deleteById(idToDelete);
+        return idToDelete;
     }
 }
 

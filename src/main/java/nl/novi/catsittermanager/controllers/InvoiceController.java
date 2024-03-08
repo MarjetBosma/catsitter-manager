@@ -2,7 +2,6 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.dtos.invoice.InvoiceDto;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceInputDto;
-import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.InvoiceServiceImplementation;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
 
@@ -32,13 +32,13 @@ public class InvoiceController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InvoiceDto> getInvoice(@PathVariable("id") long idToFind) {
-        if (idToFind > 0) {
-            InvoiceDto invoiceDto = invoiceService.getInvoice(idToFind);
-            return ResponseEntity.ok(invoiceDto);
-        } else {
-            throw new RecordNotFoundException("No invoice found with this number");
-        }
+    public ResponseEntity<InvoiceDto> getInvoice(@PathVariable("id") UUID idToFind) {
+//        if (idToFind > 0) {
+        InvoiceDto invoiceDto = invoiceService.getInvoice(idToFind);
+        return ResponseEntity.ok(invoiceDto);
+//        } else {
+//            throw new RecordNotFoundException("No invoice found with this number");
+//        }
     }
 
     @PostMapping
@@ -56,16 +56,16 @@ public class InvoiceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InvoiceDto> editCustomer(@PathVariable("id") long idToEdit, @RequestBody InvoiceInputDto invoice) {
+    public ResponseEntity<InvoiceDto> editCustomer(@PathVariable("id") UUID idToEdit, @RequestBody InvoiceInputDto invoice) {
         InvoiceDto editedInvoice = invoiceService.editInvoice(idToEdit, invoice);
 
         return ResponseEntity.ok().body(editedInvoice);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteInvoice(@PathVariable("id") long idToDelete) {
+    public ResponseEntity<Object> deleteInvoice(@PathVariable("id") UUID idToDelete) {
         invoiceService.deleteInvoice(idToDelete);
-        return ResponseEntity.ok().body("Invoice with id " + idToDelete +  " removed from database");
+        return ResponseEntity.ok().body("Invoice with id " + idToDelete + " removed from database");
     }
 
 //    @PutMapping("/{id}/order")

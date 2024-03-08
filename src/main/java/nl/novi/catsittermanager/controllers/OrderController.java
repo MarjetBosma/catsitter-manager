@@ -2,7 +2,6 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
-import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.OrderServiceImplementation;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
 
@@ -32,13 +32,13 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDto> getOrder(@PathVariable("id") long idToFind) {
-        if (idToFind > 0) {
-            OrderDto orderDto = orderService.getOrder(idToFind);
-            return ResponseEntity.ok(orderDto);
-        } else {
-            throw new RecordNotFoundException("No order found with this id");
-        }
+    public ResponseEntity<OrderDto> getOrder(@PathVariable("id") UUID idToFind) {
+//        if (idToFind > 0) {
+        OrderDto orderDto = orderService.getOrder(idToFind);
+        return ResponseEntity.ok(orderDto);
+//        } else {
+//            throw new RecordNotFoundException("No order found with this id");
+//        }
     }
 
     @PostMapping
@@ -57,19 +57,19 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderDto> editOrder(@PathVariable("id") long idToEdit, @RequestBody OrderInputDto order) {
+    public ResponseEntity<OrderDto> editOrder(@PathVariable("id") UUID idToEdit, @RequestBody OrderInputDto order) {
         OrderDto changeOrderId = orderService.editOrder(idToEdit, order);
         return ResponseEntity.ok().body(changeOrderId);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteOrder(@PathVariable("id") long idToDelete) {
+    public ResponseEntity<Object> deleteOrder(@PathVariable("id") UUID idToDelete) {
         orderService.deleteOrder(idToDelete);
-        return ResponseEntity.ok().body("Order with id " + idToDelete +  " removed from database");
+        return ResponseEntity.ok().body("Order with id " + idToDelete + " removed from database");
     }
 
     @PutMapping("/{orderId}/{invoiceId}")
-    public OrderDto assignInvoiceToOrder(@PathVariable("personId") Long orderId, @PathVariable("invoiceId") long invoiceId) {
+    public OrderDto assignInvoiceToOrder(@PathVariable("personId") UUID orderId, @PathVariable("invoiceId") UUID invoiceId) {
         orderService.assignInvoiceToOrder(orderId, invoiceId);
         return orderService.assignInvoiceToOrder(orderId, invoiceId);
     }

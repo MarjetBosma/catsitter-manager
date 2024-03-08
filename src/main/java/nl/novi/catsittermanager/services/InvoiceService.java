@@ -4,16 +4,17 @@ import nl.novi.catsittermanager.dtos.invoice.InvoiceDto;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceInputDto;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface InvoiceService {
 
     List<InvoiceDto> getAllInvoices();
 
-    InvoiceDto getInvoice(long noToFind);
+    InvoiceDto getInvoice(UUID noToFind);
 
     InvoiceDto createInvoice(InvoiceInputDto invoiceInputDto);
 
-    InvoiceDto editInvoice(long noToEdit, InvoiceInputDto invoiceInputDto);
+    InvoiceDto editInvoice(UUID noToEdit, InvoiceInputDto invoiceInputDto);
 
-    long deleteInvoice(long noToDelete);
+    UUID deleteInvoice(UUID noToDelete);
 }

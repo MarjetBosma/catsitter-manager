@@ -1,35 +1,38 @@
 package nl.novi.catsittermanager.dtos.order;
 
 import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import nl.novi.catsittermanager.models.*;
+import nl.novi.catsittermanager.models.Catsitter;
+import nl.novi.catsittermanager.models.Customer;
+import nl.novi.catsittermanager.models.Invoice;
+import nl.novi.catsittermanager.models.Task;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Validated
-public record OrderInputDto (
+public record OrderInputDto(
 
-    Long orderNo,
-    @Future
-    LocalDate startDate,
-    @Future
-    LocalDate endDate,
-    @Positive
-    int dailyNumberOfVisits,
-    @Positive
-    int totalNumberOfVisits,
+        UUID orderNo,
+        @Future
+        LocalDate startDate,
+        @Future
+        LocalDate endDate,
+        @Positive
+        int dailyNumberOfVisits,
+        @Positive
+        int totalNumberOfVisits,
 
-    Task task,
+        List<Task> task,
 
-    Customer customer,
+        Customer customer,
 
-    Catsitter catsitter,
+        Catsitter catsitter,
 
-    Invoice invoice
+        Invoice invoice
 
-) {}
+) {
+}
 

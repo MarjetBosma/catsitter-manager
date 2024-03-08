@@ -8,18 +8,18 @@ public class CustomerMapper {
 
     public static CustomerDto transferToDto(Customer customer) {
         return new CustomerDto(customer.getId(),
-                               customer.getNumberOfCats(),
-                               customer.getOrder(),
-                               customer.getCat(),
-                               customer.getCatsitter()
+                customer.getNumberOfCats(),
+                customer.getOrder(),
+                customer.getCat(),
+                customer.getCatsitter()
         );
     }
 
     public static Customer transferFromDto(CustomerInputDto customerInputDto) {
-        return new Customer(customerInputDto.numberOfCats(),
-                            customerInputDto.cat(),
-                            customerInputDto.order(),
-                            customerInputDto.catsitter()
-        );
+        return Customer.builder().numberOfCats(customerInputDto.numberOfCats())
+                .cat(customerInputDto.cat())
+                .order(customerInputDto.order())
+                .catsitter(customerInputDto.catsitter())
+                .build();
     }
 }
