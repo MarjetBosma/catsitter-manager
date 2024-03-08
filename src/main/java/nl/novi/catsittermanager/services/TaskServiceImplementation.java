@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.dtos.task.TaskDto;
 import nl.novi.catsittermanager.dtos.task.TaskInputDto;
+import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.mappers.TaskMapper;
 import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.repositories.TaskRepository;
@@ -13,44 +14,30 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImplementation implements TaskService {
 
     private final TaskRepository taskRepos;
 
-//    private final OrderRepository orderRepos;
-//
-//    private final OrderServiceImplementation orderService;
-
-    public TaskServiceImplementation(TaskRepository taskRepos
-//    , OrderRepository orderRepos, OrderServiceImplementation orderService
-    ) {
+    public TaskServiceImplementation(TaskRepository taskRepos) {
         this.taskRepos = taskRepos;
-//        this.orderRepos = orderRepos;
-//        this.orderService = orderService;
     }
 
     @Override
     public List<TaskDto> getAllTasks() {
-        List<TaskDto> taskDtoList = new ArrayList<>();
-        List<Task> taskList = taskRepos.findAll();
-
-        for (Task task : taskList) {
-            TaskDto taskDto = TaskMapper.transferToDto(task);
-            taskDtoList.add(taskDto);
-        }
-        return taskDtoList;
+        return taskRepos.findAll().stream()
+                .map(TaskMapper::transferToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public TaskDto getTask(long idToFind) {
-        Optional<Task> taskOptional = taskRepos.findById(idToFind);
-        if (taskOptional.isPresent()) {
-            return TaskMapper.transferToDto(taskOptional.get());
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No task found with this id.");
-        }
+    public TaskDto getTask(UUID idToFind) {
+        return taskRepos.findById(idToFind)
+                .map(TaskMapper::transferToDto)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
     }
 
     @Override
@@ -66,7 +53,7 @@ public class TaskServiceImplementation implements TaskService {
     }
 
     @Override
-    public TaskDto editTask(long idToEdit, TaskInputDto taskInputDto) {
+    public TaskDto editTask(UUID idToEdit, TaskInputDto taskInputDto) {
         Optional<Task> optionalTask = taskRepos.findById(idToEdit);
 
             if (optionalTask.isPresent()) {
@@ -90,14 +77,9 @@ public class TaskServiceImplementation implements TaskService {
     }
 
     @Override
-    public long deleteTask(long idToDelete) {
-        Optional<Task> optionalTask = taskRepos.findById(idToDelete);
-        if (optionalTask.isPresent()) {
-            taskRepos.deleteById(idToDelete);
-            return idToDelete;
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No task found with this id");
-        }
+    public UUID deleteTask(UUID idToDelete) {
+        taskRepos.deleteById(idToDelete);
+        return idToDelete;
     }
 }
 

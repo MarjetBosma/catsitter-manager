@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
 
@@ -32,17 +33,13 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDto> getOrder(@PathVariable("id") long idToFind) {
-        if (idToFind > 0) {
+    public ResponseEntity<OrderDto> getOrder(@PathVariable("id") final UUID idToFind) {
             OrderDto orderDto = orderService.getOrder(idToFind);
             return ResponseEntity.ok(orderDto);
-        } else {
-            throw new RecordNotFoundException("No order found with this id");
-        }
     }
 
     @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@RequestBody OrderInputDto orderInputDto, BindingResult br) {
+    public ResponseEntity<OrderDto> createOrder(@RequestBody final OrderInputDto orderInputDto, final BindingResult br) {
         if (br.hasFieldErrors()) {
             throw new ValidationException(checkForBindingResult(br));
         } else {
@@ -57,24 +54,24 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderDto> editOrder(@PathVariable("id") long idToEdit, @RequestBody OrderInputDto order) {
+    public ResponseEntity<OrderDto> editOrder(@PathVariable("id") final UUID idToEdit, @RequestBody final OrderInputDto order) {
         OrderDto changeOrderId = orderService.editOrder(idToEdit, order);
         return ResponseEntity.ok().body(changeOrderId);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteOrder(@PathVariable("id") long idToDelete) {
+    public ResponseEntity<Object> deleteOrder(@PathVariable("id") final UUID idToDelete) {
         orderService.deleteOrder(idToDelete);
         return ResponseEntity.ok().body("Order with id " + idToDelete +  " removed from database");
     }
 
-    @PutMapping("/{orderId}/{invoiceId}")
-    public OrderDto assignInvoiceToOrder(@PathVariable("orderId") long orderId, @PathVariable("invoiceId") long invoiceId) {
-        return orderService.assignInvoiceToOrder(orderId, invoiceId);
-    }
-
-    @PutMapping("/{orderId}/{taskId}")
-    public OrderDto assignTaskToOrder(@PathVariable("personId") long orderId, @PathVariable("taskId") long taskId) {
-        return orderService.assignTaskToOrder(orderId, taskId);
-    }
+//    @PutMapping("/{orderId}/{invoiceId}")
+//    public OrderDto assignInvoiceToOrder(@PathVariable("orderId") long orderId, @PathVariable("invoiceId") long invoiceId) {
+//        return orderService.assignInvoiceToOrder(orderId, invoiceId);
+//    }
+//
+//    @PutMapping("/{orderId}/{taskId}")
+//    public OrderDto assignTaskToOrder(@PathVariable("personId") long orderId, @PathVariable("taskId") long taskId) {
+//        return orderService.assignTaskToOrder(orderId, taskId);
+//    }
 }

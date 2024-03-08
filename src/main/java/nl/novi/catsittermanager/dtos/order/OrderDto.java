@@ -5,21 +5,19 @@ import nl.novi.catsittermanager.models.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public record OrderDto (
 
-    Long orderNo,
+    UUID orderNo,
     LocalDate startDate,
     LocalDate endDate,
-    int dailyNumberOfVisits,
+    int dailyNumberOVisits,
     int totalNumberOfVisits,
-
-    Task task,
-
+    List<Task> task,
     Customer customer,
-
     Catsitter catsitter,
-
     Invoice invoice
 
-) {}
+) {
+}

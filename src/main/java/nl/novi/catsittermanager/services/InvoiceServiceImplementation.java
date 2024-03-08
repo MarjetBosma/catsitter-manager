@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.dtos.invoice.InvoiceDto;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceInputDto;
+import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.mappers.InvoiceMapper;
 import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.repositories.InvoiceRepository;
@@ -12,44 +13,30 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class InvoiceServiceImplementation implements InvoiceService {
 
     private final InvoiceRepository invoiceRepos;
 
-//    private final OrderRepository orderRepos;
-
-//    private final OrderServiceImplementation orderService;
-
-
-    public InvoiceServiceImplementation(InvoiceRepository invoiceRepos
-//    , OrderServiceImplementation orderService
-    ) {
+    public InvoiceServiceImplementation(InvoiceRepository invoiceRepos) {
         this.invoiceRepos = invoiceRepos;
-//        this.orderService = orderService;
     }
 
     @Override
     public List<InvoiceDto> getAllInvoices() {
-        List<Invoice> invoiceList = invoiceRepos.findAll();
-        List<InvoiceDto> invoiceDtoList = new ArrayList<>();
-
-        for (Invoice invoice : invoiceList) {
-            InvoiceDto invoiceDto = InvoiceMapper.transferToDto(invoice);
-            invoiceDtoList.add(invoiceDto);
-        }
-        return invoiceDtoList;
+        return invoiceRepos.findAll().stream()
+                .map(InvoiceMapper::transferToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public InvoiceDto getInvoice(long idToFind) {
-        Optional<Invoice> invoiceOptional = invoiceRepos.findById(idToFind);
-        if (invoiceOptional.isPresent()) {
-                return InvoiceMapper.transferToDto(invoiceOptional.get());
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No invoice found with this id.");
-        }
+    public InvoiceDto getInvoice(UUID idToFind) {
+        return invoiceRepos.findById(idToFind)
+                .map(InvoiceMapper::transferToDto)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
     }
 
     @Override
@@ -65,7 +52,7 @@ public class InvoiceServiceImplementation implements InvoiceService {
     }
 
     @Override
-    public InvoiceDto editInvoice(long idToEdit, InvoiceInputDto invoiceInputDto) {
+    public InvoiceDto editInvoice(UUID idToEdit, InvoiceInputDto invoiceInputDto) {
         Optional<Invoice> optionalInvoice = invoiceRepos.findById(idToEdit);
 
         if (optionalInvoice.isPresent()) {
@@ -90,13 +77,8 @@ public class InvoiceServiceImplementation implements InvoiceService {
     }
 
     @Override
-    public long deleteInvoice(long idToDelete) {
-        Optional<Invoice> optionalInvoice = invoiceRepos.findById(idToDelete);
-        if (optionalInvoice.isPresent()) {
-            invoiceRepos.deleteById(idToDelete);
-            return idToDelete;
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No invoice found with this id.");
-        }
+    public UUID deleteInvoice(UUID idToDelete) {
+        invoiceRepos.deleteById(idToDelete);
+        return idToDelete;
     }
 }

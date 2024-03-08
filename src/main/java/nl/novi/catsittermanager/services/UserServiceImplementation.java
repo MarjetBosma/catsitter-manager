@@ -3,6 +3,7 @@ package nl.novi.catsittermanager.services;
 import nl.novi.catsittermanager.dtos.user.UserDto;
 import nl.novi.catsittermanager.dtos.user.UserInputDto;
 //import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
+import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.mappers.UserMapper;
 //import nl.novi.catsittermanager.models.Authority;
 import nl.novi.catsittermanager.models.User;
@@ -17,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImplementation implements UserService {
@@ -29,24 +32,16 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
-        List<UserDto> userDtoList = new ArrayList<>();
-        List<User> userList = userRepos.findAll();
-
-        for (User user : userList) {
-            UserDto userDto = UserMapper.transferToDto(user);
-            userDtoList.add(userDto);
-        }
-        return userDtoList;
+        return userRepos.findAll().stream()
+                .map(UserMapper::transferToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public UserDto getUser(long idToFind) {
-        Optional<User> userOptional = userRepos.findById(idToFind);
-        if (userOptional.isPresent()) {
-            return UserMapper.transferToDto(userOptional.get());
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with this id.");
-        }
+    public UserDto getUser(UUID idToFind) {
+        return userRepos.findById(idToFind)
+                .map(UserMapper::transferToDto)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
     }
 
     @Override
@@ -65,7 +60,7 @@ public class UserServiceImplementation implements UserService {
         return UserMapper.transferToDto(newUser);
     }
     @Override
-    public UserDto editUser(long idToEdit, UserInputDto userInputDto) {
+    public UserDto editUser(UUID idToEdit, UserInputDto userInputDto) {
         Optional<User> optionalUser = userRepos.findById(idToEdit);
 
             if (optionalUser.isPresent()) {
@@ -102,14 +97,9 @@ public class UserServiceImplementation implements UserService {
     }
 
         @Override
-        public long deleteUser (long idToDelete) {
-            Optional<User> optionalUser = userRepos.findById(idToDelete);
-                if (optionalUser.isPresent()) {
-                    userRepos.deleteById(idToDelete);
-                    return idToDelete;
-            } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with this id.");
-            }
+        public UUID deleteUser (UUID idToDelete) {
+            userRepos.deleteById(idToDelete);
+            return idToDelete;
         }
 
 //    public List<UserDto> getUsers() {

@@ -5,14 +5,17 @@ import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.models.Order;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.UUID;
+
 @Validated
 public record TaskInputDto (
-        Long taskNo, //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
+        UUID taskNo,
         TaskType taskType,
         String taskInstruction,
         String extraInstructions,
         @Positive
         Double priceOfTask,
         Order order
-) {}
+) {
+}
 

@@ -11,48 +11,32 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CatServiceImplementation implements CatService {
 
     private final CatRepository catRepos;
 
-//    private final CustomerRepository customerRepos;
-//
-//    private final CustomerServiceImplementation customerService;
-
-    public CatServiceImplementation(CatRepository catRepos
-//            , CustomerRepository customerRepos, CustomerServiceImplementation customerService
-    ) {
+    public CatServiceImplementation(CatRepository catRepos) {
         this.catRepos = catRepos;
-//        this.customerRepos = customerRepos;
-//        this.customerService = customerService;
     }
-
 
     @Override
     public List<CatDto> getAllCats() {
-        List<CatDto> catDtoList = new ArrayList<>();
-        List<Cat> catList = catRepos.findAll();
-
-        for (Cat cat : catList) {
-            CatDto catDto = CatMapper.transferToDto(cat);
-            catDtoList.add(catDto);
-        }
-        return catDtoList;
+        return catRepos.findAll().stream()
+                .map(CatMapper::transferToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public CatDto getCat(long idToFind) {
-        Optional<Cat> catOptional = catRepos.findById(idToFind);
-        if (catOptional.isPresent()) {
-            return CatMapper.transferToDto(catOptional.get());
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id.");
-        }
+    public CatDto getCat(UUID idToFind) {
+        return catRepos.findById(idToFind)
+                .map(CatMapper::transferToDto)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
     }
 
     @Override
@@ -74,7 +58,7 @@ public class CatServiceImplementation implements CatService {
     }
 
     @Override
-    public CatDto editCat(long idToEdit, CatInputDto catInputDto) {
+    public CatDto editCat(UUID idToEdit, CatInputDto catInputDto) {
         Optional<Cat> optionalCat = catRepos.findById(idToEdit);
 
         if (optionalCat.isPresent()) {
@@ -114,21 +98,15 @@ public class CatServiceImplementation implements CatService {
             }
             catRepos.save(cat);
             return CatMapper.transferToDto(cat);
-        } else {
+        }
+        else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id.");
         }
     }
 
     @Override
-    public long deleteCat(long idToDelete) {
-        Optional<Cat> optionalCat = catRepos.findById(idToDelete);
-        if (optionalCat.isPresent()) {
+    public UUID deleteCat(UUID idToDelete) {
             catRepos.deleteById(idToDelete);
             return idToDelete;
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id");
-        }
     }
 }
-
-// methodes schrijven om Task aan andere entiteiten te koppelen

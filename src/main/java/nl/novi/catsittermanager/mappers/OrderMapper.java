@@ -20,15 +20,15 @@ public class OrderMapper {
     }
 
     public static Order transferFromDto(OrderInputDto orderInputDto) {
-        return new Order(orderInputDto.orderNo(),
-                         orderInputDto.startDate(),
-                         orderInputDto.endDate(),
-                         orderInputDto.dailyNumberOfVisits(),
-                         orderInputDto.totalNumberOfVisits(),
-                         orderInputDto.task(),
-                         orderInputDto.customer(),
-                         orderInputDto.catsitter(),
-                         orderInputDto.invoice()
-        );
+        return Order.builder().orderNo(orderInputDto.orderNo())
+                .startDate(orderInputDto.startDate())
+                .endDate(orderInputDto.endDate())
+                .dailyNumberOfVisits(orderInputDto.dailyNumberOfVisits())
+                .totalNumberOfVisits(orderInputDto.totalNumberOfVisits())
+                .task(orderInputDto.task())
+                .customer(orderInputDto.customer())
+                .catsitter(orderInputDto.catsitter())
+                .invoice(orderInputDto.invoice())
+                .build();
     }
 }

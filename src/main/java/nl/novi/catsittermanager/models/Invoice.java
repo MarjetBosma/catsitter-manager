@@ -3,15 +3,17 @@ package nl.novi.catsittermanager.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Positive;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 
 @Getter
 @Setter
-
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "invoices")
 public class Invoice {
@@ -19,7 +21,7 @@ public class Invoice {
     @Id
     @JoinColumn(name = "invoice_no")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long invoiceNo;
+    private UUID invoiceNo;
 
     @FutureOrPresent
     private LocalDate invoiceDate;
@@ -33,13 +35,4 @@ public class Invoice {
     @PrimaryKeyJoinColumn
     private Order order;
 
-    public Invoice() {}
-
-    public Invoice(Long invoiceNo, LocalDate invoiceDate, Double amount, Boolean paid, Order order) {
-        this.invoiceNo = invoiceNo;
-        this.invoiceDate = invoiceDate;
-        this.amount = amount;
-        this.paid = paid;
-        this.order = order;
-    }
 }

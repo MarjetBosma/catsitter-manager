@@ -4,16 +4,17 @@ import nl.novi.catsittermanager.dtos.user.UserDto;
 import nl.novi.catsittermanager.dtos.user.UserInputDto;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UserService {
 
     List<UserDto> getAllUsers();
 
-    UserDto getUser(long idToFind);
+    UserDto getUser(UUID idToFind);
 
     UserDto createUser(UserInputDto userInputDto);
 
-    UserDto editUser(long IdToEdit, UserInputDto userInputDto);
+    UserDto editUser(UUID IdToEdit, UserInputDto userInputDto);
 
-    long deleteUser(long IdToDelete);
+    UUID deleteUser(UUID IdToDelete);
 }

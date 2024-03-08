@@ -20,15 +20,12 @@ public class UserMapper {
     }
 
     public static User transferFromDto(UserInputDto userInputDto) {
-        return new User(userInputDto.id(), // In een latere fase deze hier niet meegeven, maar automatisch via database
-                        userInputDto.username(),
-                        userInputDto.password(),
-                        userInputDto.role(),
-                        userInputDto.authorities(),
-                        userInputDto.enabled(),
-                        userInputDto.name(),
-                        userInputDto.address(),
-                        userInputDto.email()
-        );
+    return User.builder().id(userInputDto.id())
+                .username(userInputDto.username())
+                .password(userInputDto.password())
+                .role(userInputDto.role())
+                .address(userInputDto.address())
+                .email(userInputDto.email())
+                .build();
     }
 }

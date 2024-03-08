@@ -5,21 +5,18 @@ import nl.novi.catsittermanager.dtos.order.OrderInputDto;
 import nl.novi.catsittermanager.dtos.order.OrderDto;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface OrderService {
 
     List<OrderDto> getAllOrders();
 
-    OrderDto getOrder(long idToFind);
+    OrderDto getOrder(UUID idToFind);
 
     OrderDto createOrder(OrderInputDto orderInputDto);
 
-    OrderDto editOrder(long idToEdit, OrderInputDto orderInputDto);
+    OrderDto editOrder(UUID idToEdit, OrderInputDto orderInputDto);
 
-    long deleteOrder(long idToDelete);
-
-    OrderDto assignInvoiceToOrder(long orderId, long invoiceId);
-
-    OrderDto assignTaskToOrder(long orderId, long taskId);
+    UUID deleteOrder(UUID idToDelete);
 
 }

@@ -19,4 +19,5 @@ public record CatDto (
     String medicationDose,
     Customer ownerName
 
-) {}
+) {
+}

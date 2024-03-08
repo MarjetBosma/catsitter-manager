@@ -13,8 +13,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
+
+// was verwijderd door Dennis???
 
 @RestController
 @RequestMapping("/catsitter")
@@ -32,17 +35,13 @@ public class CatsitterController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CatsitterDto> getCatSitter(@PathVariable("id") Long idToFind) {
-        if (idToFind > 0) {
+    public ResponseEntity<CatsitterDto> getCatSitter(@PathVariable("id") final UUID idToFind) {
             CatsitterDto catsitterDto = catsitterService.getCatsitter(idToFind);
             return ResponseEntity.ok(catsitterDto);
-        } else {
-            throw new RecordNotFoundException("No catsitter found with this id");
-        }
     }
 
     @PostMapping
-    public ResponseEntity<CatsitterDto> addCatSitter(@RequestBody CatsitterInputDto catsitterInputDto, BindingResult br) {
+    public ResponseEntity<CatsitterDto> addCatSitter(@RequestBody final CatsitterInputDto catsitterInputDto, final BindingResult br) {
         if (br.hasFieldErrors()) {
             throw new ValidationException(checkForBindingResult(br));
         } else {
@@ -57,21 +56,21 @@ public class CatsitterController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CatsitterDto> editCatsitter(@PathVariable("id") long idToEdit, @RequestBody CatsitterInputDto catsitter) {
+    public ResponseEntity<CatsitterDto> editCatsitter(@PathVariable("id") final UUID idToEdit, @RequestBody final CatsitterInputDto catsitter) {
         CatsitterDto editedCatsitter = catsitterService.editCatsitter(idToEdit, catsitter);
 
         return ResponseEntity.ok().body(editedCatsitter);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteCatsitter(@PathVariable("id") Long idToDelete) {
+    public ResponseEntity<Object> deleteCatsitter(@PathVariable("id") final UUID idToDelete) {
         catsitterService.deleteCatsitter(idToDelete);
         return ResponseEntity.ok().body("Catsitter with id " + idToDelete +  " removed from database");
     }
 
-    @PutMapping("/{customerId}/{orderId}")
-    public CatsitterDto assignOrderToCatsitter(@PathVariable("customerId") Long catsitterId, @PathVariable("orderId") long orderId) {
-        return catsitterService.assignOrderToCatsitter(catsitterId, orderId);
-    }
+//    @PutMapping("/{customerId}/{orderId}")
+//    public CatsitterDto assignOrderToCatsitter(@PathVariable("customerId") Long catsitterId, @PathVariable("orderId") long orderId) {
+//        return catsitterService.assignOrderToCatsitter(catsitterId, orderId);
+//    }
 
 }

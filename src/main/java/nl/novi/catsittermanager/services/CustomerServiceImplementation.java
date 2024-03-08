@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
+import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
@@ -17,58 +18,47 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerServiceImplementation implements CustomerService {
 
     private final CustomerRepository customerRepos;
 
-    private final CatRepository catRepos;
 
-    private final OrderRepository orderRepos;
-
-    public CustomerServiceImplementation(CustomerRepository customerRepos, CatRepository catRepos, OrderRepository orderRepos) {
+    public CustomerServiceImplementation(CustomerRepository customerRepos) {
         this.customerRepos = customerRepos;
-        this.catRepos = catRepos;
-        this.orderRepos = orderRepos;
     }
 
     @Override
     public List<CustomerDto> getAllCustomers() {
-        List<CustomerDto> customerDtoList = new ArrayList<>();
-        List<Customer> customerList = customerRepos.findAll();
-
-        for (Customer customer : customerList) {
-            CustomerDto customerDto = CustomerMapper.transferToDto(customer);
-            customerDtoList.add(customerDto);
-        }
-        return customerDtoList;
+        return customerRepos.findAll().stream()
+                .map(CustomerMapper::transferToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public CustomerDto getCustomer(long idToFind) {
-        Optional<Customer> customerOptional = customerRepos.findById(idToFind);
-        if (customerOptional.isPresent()) {
-            return CustomerMapper.transferToDto(customerOptional.get());
-        }
-        else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this id.");
-        }
+    public CustomerDto getCustomer(UUID idToFind) {
+        return customerRepos.findById(idToFind)
+                .map(CustomerMapper::transferToDto)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
     }
 
     @Override
     public CustomerDto createCustomer(CustomerInputDto customerInputDto) {
-        Customer newCustomer = new Customer(customerInputDto.numberOfCats(), customerInputDto.cat(), customerInputDto.order(), customerInputDto.catsitter());
-        newCustomer.setNumberOfCats(customerInputDto.numberOfCats());
-        newCustomer.setCat(customerInputDto.cat());
-        newCustomer.setOrder(customerInputDto.order());
-        newCustomer.setCatsitter(customerInputDto.catsitter());
-        customerRepos.save(newCustomer);
-        return CustomerMapper.transferToDto(newCustomer);
+        Customer customer = Customer.builder()
+                .numberOfCats(customerInputDto.numberOfCats())
+                .cat(customerInputDto.cat())
+                .order(customerInputDto.order())
+                .catsitter(customerInputDto.catsitter())
+                .build();
+        customerRepos.save(customer);
+        return CustomerMapper.transferToDto(customer);
     }
 
     @Override
-    public CustomerDto editCustomer(long idToEdit, CustomerInputDto customerInputDto) {
+    public CustomerDto editCustomer(UUID idToEdit, CustomerInputDto customerInputDto) {
         Optional<Customer> optionalCustomer = customerRepos.findById(idToEdit);
 
         if (optionalCustomer.isPresent()) {
@@ -94,48 +84,42 @@ public class CustomerServiceImplementation implements CustomerService {
     }
 
     @Override
-    public long deleteCustomer(long idToDelete) {
-        Optional<Customer> optionalCustomer = customerRepos.findById(idToDelete);
-        if (optionalCustomer.isPresent()) {
-            customerRepos.deleteById((idToDelete));
-            return idToDelete;
-        }
-        else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id");
-        }
+    public UUID deleteCustomer(UUID idToDelete) {
+        customerRepos.deleteById(idToDelete);
+        return idToDelete;
     }
 
-    @Override
-    public CustomerDto assignCatToCustomer(Long customerId, long catId) {
-        Optional<Customer> optionalCustomer = customerRepos.findById(customerId);
-        Optional<Cat> optionalCat = catRepos.findById(catId);
+//    @Override
+//    public CustomerDto assignCatToCustomer(Long customerId, long catId) {
+//        Optional<Customer> optionalCustomer = customerRepos.findById(customerId);
+//        Optional<Cat> optionalCat = catRepos.findById(catId);
+//
+//        if (optionalCustomer.isPresent() && optionalCat.isPresent()) {
+//            Customer customer = optionalCustomer.get();
+//            Cat cat = optionalCat.get();
+//
+//            customer.setCat(cat);
+//            customerRepos.save(customer);
+//            return CustomerMapper.transferToDto(customer);
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer or car found with this id");
+//        }
+//    }
 
-        if (optionalCustomer.isPresent() && optionalCat.isPresent()) {
-            Customer customer = optionalCustomer.get();
-            Cat cat = optionalCat.get();
-
-            customer.setCat(cat);
-            customerRepos.save(customer);
-            return CustomerMapper.transferToDto(customer);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer or car found with this id");
-        }
-    }
-
-    @Override
-    public CustomerDto assignOrderToCustomer(long customerId, long orderNo) {
-        Optional<Customer> optionalCustomer = customerRepos.findById(customerId);
-        Optional<Order> optionalOrder = orderRepos.findById(orderNo);
-
-        if (optionalCustomer.isPresent() && optionalOrder.isPresent()) {
-            Customer customer = optionalCustomer.get();
-            Order order = optionalOrder.get();
-
-            customer.setOrder(order);
-            customerRepos.save(customer);
-            return CustomerMapper.transferToDto(customer);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer or car found with this id");
-        }
-    }
+//    @Override
+//    public CustomerDto assignOrderToCustomer(long customerId, long orderNo) {
+//        Optional<Customer> optionalCustomer = customerRepos.findById(customerId);
+//        Optional<Order> optionalOrder = orderRepos.findById(orderNo);
+//
+//        if (optionalCustomer.isPresent() && optionalOrder.isPresent()) {
+//            Customer customer = optionalCustomer.get();
+//            Order order = optionalOrder.get();
+//
+//            customer.setOrder(order);
+//            customerRepos.save(customer);
+//            return CustomerMapper.transferToDto(customer);
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer or car found with this id");
+//        }
+//    }
 }

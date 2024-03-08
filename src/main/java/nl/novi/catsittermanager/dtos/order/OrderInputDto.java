@@ -9,11 +9,12 @@ import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Validated
 public record OrderInputDto (
 
-    Long orderNo,
+    UUID orderNo,
     @Future
     LocalDate startDate,
     @Future
@@ -22,14 +23,11 @@ public record OrderInputDto (
     int dailyNumberOfVisits,
     @Positive
     int totalNumberOfVisits,
-
-    Task task,
-
+    List<Task> task,
     Customer customer,
-
     Catsitter catsitter,
-
     Invoice invoice
 
-) {}
+) {
+}
 

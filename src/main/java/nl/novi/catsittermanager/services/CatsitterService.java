@@ -6,17 +6,17 @@ import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.models.Catsitter;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface CatsitterService {
     List<CatsitterDto> getAllCatsitters();
 
-    CatsitterDto getCatsitter(long idToFind);
+    CatsitterDto getCatsitter(UUID idToFind);
 
     CatsitterDto createCatsitter(CatsitterInputDto catSitterInputDto);
 
-    CatsitterDto editCatsitter(long idToEdit, CatsitterInputDto catSitterInputDto);
+    CatsitterDto editCatsitter(UUID idToEdit, CatsitterInputDto catSitterInputDto);
 
-    String deleteCatsitter(long idToDelete);
+    UUID deleteCatsitter(UUID idToDelete);
 
-    CatsitterDto assignOrderToCatsitter(long catsitterId, long orderId);
 }

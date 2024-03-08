@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
 
@@ -32,17 +33,13 @@ public class InvoiceController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InvoiceDto> getInvoice(@PathVariable("id") long idToFind) {
-        if (idToFind > 0) {
+    public ResponseEntity<InvoiceDto> getInvoice(@PathVariable("id") final UUID idToFind) {
             InvoiceDto invoiceDto = invoiceService.getInvoice(idToFind);
             return ResponseEntity.ok(invoiceDto);
-        } else {
-            throw new RecordNotFoundException("No invoice found with this number");
-        }
     }
 
     @PostMapping
-    public ResponseEntity<InvoiceDto> createInvoice(@RequestBody InvoiceInputDto invoiceInputDto, BindingResult br) {
+    public ResponseEntity<InvoiceDto> createInvoice(@RequestBody final InvoiceInputDto invoiceInputDto, final BindingResult br) {
         if (br.hasFieldErrors()) {
             throw new ValidationException(checkForBindingResult(br));
         } else {
@@ -56,14 +53,13 @@ public class InvoiceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InvoiceDto> editCustomer(@PathVariable("id") long idToEdit, @RequestBody InvoiceInputDto invoice) {
+    public ResponseEntity<InvoiceDto> editCustomer(@PathVariable("id") final UUID idToEdit, @RequestBody final InvoiceInputDto invoice) {
         InvoiceDto editedInvoice = invoiceService.editInvoice(idToEdit, invoice);
-
         return ResponseEntity.ok().body(editedInvoice);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteInvoice(@PathVariable("id") long idToDelete) {
+    public ResponseEntity<Object> deleteInvoice(@PathVariable("id") final UUID idToDelete) {
         invoiceService.deleteInvoice(idToDelete);
         return ResponseEntity.ok().body("Invoice with id " + idToDelete +  " removed from database");
     }

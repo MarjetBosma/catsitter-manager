@@ -13,7 +13,6 @@ import java.util.UUID;
     public record CatInputDto (
 
         UUID id,
-        //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
         @NotNull (message = "cat name is required")
         String name,
         @Past
@@ -29,5 +28,6 @@ import java.util.UUID;
         @NotNull (message = "owner name is required")
             Customer ownerName
 
-    ) {}
+    ) {
+    }
 

@@ -16,10 +16,10 @@ public class CustomerMapper {
     }
 
     public static Customer transferFromDto(CustomerInputDto customerInputDto) {
-        return new Customer(customerInputDto.numberOfCats(),
-                            customerInputDto.cat(),
-                            customerInputDto.order(),
-                            customerInputDto.catsitter()
-        );
+        return Customer.builder().numberOfCats(customerInputDto.numberOfCats())
+                .cat(customerInputDto.cat())
+                .order(customerInputDto.order())
+                .catsitter(customerInputDto.catsitter())
+                .build();
     }
 }

@@ -1,41 +1,38 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "customers")
 public class Customer extends User {
 
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private int numberOfCats;
 
     @OneToMany(mappedBy = "customers")
-    private Order order;
+    private List<Order> order;
 
     @OneToMany(mappedBy = "customers")
-    private Cat cat;
+    private List<Cat> cat;
 
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    @JoinTable(name = "customers_catsitters", joinColumns = @JoinColumn(name = "customers_id"), inverseJoinColumns = @JoinColumn(name = "catsitters_id"))
-    private Catsitter catsitter;
+    @ManyToMany
+    @JoinTable(name = "customers_catsitters",
+            joinColumns = @JoinColumn(name = "customers_id"),
+            inverseJoinColumns = @JoinColumn(name = "catsitters_id"))
 
-    public Customer() {}
+    private List<Catsitter> catsitter;
 
-    public Customer(int numberOfCats, Cat cat, Order order, Catsitter catsitter) {
-        super();
-        this.numberOfCats = numberOfCats;
-        this.cat = cat;
-        this.order = order;
-        this.catsitter = catsitter;
-    }
 }
 
 
