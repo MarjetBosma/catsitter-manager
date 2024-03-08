@@ -24,8 +24,7 @@ public class Catsitter extends User {
     @OneToMany(mappedBy = "catsitters")
     private Order order;
 
-
-    @ManyToMany(mappedBy = "customers")
+//    @ManyToMany(mappedBy = "customers")
     private Customer customer;
 
     public Catsitter() {}

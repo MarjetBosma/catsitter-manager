@@ -3,10 +3,13 @@ package nl.novi.catsittermanager.services;
 import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
+import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
+import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CatRepository;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
 
+import nl.novi.catsittermanager.repositories.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,9 +25,12 @@ public class CustomerServiceImplementation implements CustomerService {
 
     private final CatRepository catRepos;
 
-    public CustomerServiceImplementation(CustomerRepository customerRepos, CatRepository catRepos) {
+    private final OrderRepository orderRepos;
+
+    public CustomerServiceImplementation(CustomerRepository customerRepos, CatRepository catRepos, OrderRepository orderRepos) {
         this.customerRepos = customerRepos;
         this.catRepos = catRepos;
+        this.orderRepos = orderRepos;
     }
 
     @Override
@@ -98,5 +104,38 @@ public class CustomerServiceImplementation implements CustomerService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id");
         }
     }
+
+    @Override
+    public CustomerDto assignCatToCustomer(Long customerId, long catId) {
+        Optional<Customer> optionalCustomer = customerRepos.findById(customerId);
+        Optional<Cat> optionalCat = catRepos.findById(catId);
+
+        if (optionalCustomer.isPresent() && optionalCat.isPresent()) {
+            Customer customer = optionalCustomer.get();
+            Cat cat = optionalCat.get();
+
+            customer.setCat(cat);
+            customerRepos.save(customer);
+            return CustomerMapper.transferToDto(customer);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer or car found with this id");
+        }
+    }
+
+    @Override
+    public CustomerDto assignOrderToCustomer(long customerId, long orderNo) {
+        Optional<Customer> optionalCustomer = customerRepos.findById(customerId);
+        Optional<Order> optionalOrder = orderRepos.findById(orderNo);
+
+        if (optionalCustomer.isPresent() && optionalOrder.isPresent()) {
+            Customer customer = optionalCustomer.get();
+            Order order = optionalOrder.get();
+
+            customer.setOrder(order);
+            customerRepos.save(customer);
+            return CustomerMapper.transferToDto(customer);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer or car found with this id");
+        }
+    }
 }
-// Toevoegen: assignCatToCustomer, assignCatSitterToCustomer, assignOrderToCustomer

@@ -18,6 +18,8 @@ public interface OrderService {
 
     long deleteOrder(long idToDelete);
 
-    OrderDto assignInvoiceToOrder(long customerId, long invoiceId);
+    OrderDto assignInvoiceToOrder(long orderId, long invoiceId);
+
+    OrderDto assignTaskToOrder(long orderId, long taskId);
 
 }

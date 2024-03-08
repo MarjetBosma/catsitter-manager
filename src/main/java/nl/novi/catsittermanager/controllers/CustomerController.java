@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
+import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.CustomerServiceImplementation;
@@ -69,23 +70,14 @@ public class CustomerController {
         return ResponseEntity.ok().body("Customer with id " + idToDelete +  " removed from database");
     }
 
+    @PutMapping("/{customerId}/{catId}")
+    public CustomerDto assignCatToCustomer(@PathVariable("customerId") Long customerId, @PathVariable("catId") long catId) {
+        return customerService.assignCatToCustomer(customerId, catId);
+    }
 
-//    @PutMapping("/{id}/catsitter")
-//    public ResponseEntity<Object> assignCatSitterToCustomer(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-//        customerService.assignCatSitterToCustomer(id, input.id);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    @PutMapping("/{id}/order")
-//    public ResponseEntity<Object> assignOrderToCustomer(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-//        customerService.assignOrderToCustomer(id, input.id);
-//        return ResponseEntity.noContent().build();
-//    }
-
-//    @PutMapping("/{id}/cat")
-//    public ResponseEntity<Object> assignCatToCustomer(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-//        customerService.assignCatToCustomer(id, input.id);
-//        return ResponseEntity.noContent().build();
-//    }
+    @PutMapping("/{customerId}/{orderId}")
+    public CustomerDto assignOrderToCustomer(@PathVariable("customerId") Long customerId, @PathVariable("orderId") long orderId) {
+        return customerService.assignOrderToCustomer(customerId, orderId);
+    }
 
 }
