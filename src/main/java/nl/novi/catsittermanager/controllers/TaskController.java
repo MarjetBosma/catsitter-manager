@@ -1,7 +1,5 @@
 package nl.novi.catsittermanager.controllers;
 
-import jakarta.validation.Valid;
-import nl.novi.catsittermanager.dtos.IdInputDto;
 import nl.novi.catsittermanager.dtos.task.TaskDto;
 import nl.novi.catsittermanager.dtos.task.TaskInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
@@ -18,7 +16,7 @@ import java.util.List;
 import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
 
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/task")
 
 public class TaskController {
 
@@ -34,9 +32,9 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDto> getTask(@PathVariable Long id) {
-        if (id > 0) {
-            TaskDto taskDto = TaskServiceImplementation.getTaskId();
+    public ResponseEntity<TaskDto> getTask(@PathVariable("id") long idToFind) {
+        if (idToFind > 0) {
+            TaskDto taskDto = taskService.getTask(idToFind);
             return ResponseEntity.ok(taskDto);
         } else {
             throw new RecordNotFoundException("No task found with this id");
@@ -44,37 +42,36 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskDto> addTask(@RequestBody TaskInputDto taskInputDto, BindingResult br) {
+    public ResponseEntity<TaskDto> createTask(@RequestBody TaskInputDto taskInputDto, BindingResult br) {
         if (br.hasFieldErrors()) {
             throw new ValidationException(checkForBindingResult(br));
         } else {
-            TaskDto savedTask;
-            savedTask = taskService.createTask(taskInputDto);
+            TaskDto savedTask = taskService.createTask(taskInputDto);
             URI uri = URI.create(
                     ServletUriComponentsBuilder
                             .fromCurrentRequest()
-                            .path("/" + savedTask.id).toUriString());
+                            .path("/" + savedTask).toUriString());
             return ResponseEntity.created(uri).body(savedTask);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskDto> updateTask(@PathVariable long id, @RequestBody TaskInputDto task) {
-        TaskDto changeTaskId = taskService.updateTask(id, task);
+    public ResponseEntity<TaskDto> editTask(@PathVariable("id") long id, @RequestBody TaskInputDto task) {
+        TaskDto editedTask = taskService.editTask(id, task);
 
-        return ResponseEntity.ok().body(changeTaskId);
-    }
-
-    @PutMapping("/{id}/order")
-    public ResponseEntity<Object> assignOrderToTask(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-        taskService.assignOrderToTask(id, input.id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(editedTask);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTask(@PathVariable("id") Long id) {
-        taskService.deleteTask(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Object> deleteTask(@PathVariable("id") Long idToDelete) {
+        taskService.deleteTask(idToDelete);
+        return ResponseEntity.ok().body("Task with id " + idToDelete +  " removed from database");
     }
+
+//    @PutMapping("/{id}/order")
+//    public ResponseEntity<Object> assignOrderToTask(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
+//        taskService.assignOrderToTask(id, input.id);
+//        return ResponseEntity.noContent().build();
+//    }
 
 }

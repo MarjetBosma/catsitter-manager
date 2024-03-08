@@ -3,17 +3,20 @@ package nl.novi.catsittermanager.dtos.cat;
 import nl.novi.catsittermanager.models.Customer;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
-public class CatDto {
-    public Long id;
-    public String name;
-    public LocalDate dateOfBirth;
-    public String breed;
-    public String generalInfo;
-    public String veterinarianName;
-    public int phoneVet;
-    public String medicationName;
-    public String medicationDose;
-    public Customer ownerName;
+public record CatDto (
+    UUID id,
+    String name,
+    LocalDate dateOfBirth, // omzetten naar DD-MM-JJJJ format?
+    String breed,
+    String generalInfo,
+    Boolean spayedOrNeutered, // true/false omzetten naar ja/nee
+    Boolean vaccinated, // true/false omzetten naar ja/nee
+    String veterinarianName,
+    String phoneVet,
+    String medicationName,
+    String medicationDose,
+    Customer ownerName
 
-}
+) {}

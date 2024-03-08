@@ -1,7 +1,5 @@
 package nl.novi.catsittermanager.controllers;
 
-import jakarta.validation.Valid;
-import nl.novi.catsittermanager.dtos.IdInputDto;
 import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
@@ -18,7 +16,7 @@ import java.util.List;
 import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/order")
 
 public class OrderController {
 
@@ -34,9 +32,9 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDto> getOrder(@PathVariable Long id) {
-        if (id > 0) {
-            OrderDto orderDto = OrderServiceImplementation.getOrderId();
+    public ResponseEntity<OrderDto> getOrder(@PathVariable("id") long idToFind) {
+        if (idToFind > 0) {
+            OrderDto orderDto = orderService.getOrder(idToFind);
             return ResponseEntity.ok(orderDto);
         } else {
             throw new RecordNotFoundException("No order found with this id");
@@ -44,7 +42,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderDto> addOrder(@RequestBody OrderInputDto orderInputDto, BindingResult br) {
+    public ResponseEntity<OrderDto> createOrder(@RequestBody OrderInputDto orderInputDto, BindingResult br) {
         if (br.hasFieldErrors()) {
             throw new ValidationException(checkForBindingResult(br));
         } else {
@@ -53,45 +51,30 @@ public class OrderController {
             URI uri = URI.create(
                     ServletUriComponentsBuilder
                             .fromCurrentRequest()
-                            .path("/" + savedOrder.id).toUriString());
+                            .path("/" + savedOrder).toUriString());
             return ResponseEntity.created(uri).body(savedOrder);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderDto> updateOrder(@PathVariable long id, @RequestBody OrderInputDto cat) {
-        OrderDto changeOrderId = orderService.updateOrder(id, cat);
-
+    public ResponseEntity<OrderDto> editOrder(@PathVariable("id") long idToEdit, @RequestBody OrderInputDto order) {
+        OrderDto changeOrderId = orderService.editOrder(idToEdit, order);
         return ResponseEntity.ok().body(changeOrderId);
     }
 
-    @PutMapping("/{id}/catsitter")
-    public ResponseEntity<Object> assignCatSitterToOrder(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-        orderService.assignCatSitterToOrder(id, input.id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{id}/customer")
-    public ResponseEntity<Object> assignCustomerToOrder(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-        orderService.assignCustomerToOrder(id, input.id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{id}/invoice")
-    public ResponseEntity<Object> assignInvoiceToOrder(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-        orderService.assignInvoiceToOrder(id, input.id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{id}/task")
-    public ResponseEntity<Object> assignTaskToOrder(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-        orderService.assignTaskToOrder(id, input.id);
-        return ResponseEntity.noContent().build();
-    }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteOrder(@PathVariable("id") Long id) {
-        orderService.deleteOrder(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Object> deleteOrder(@PathVariable("id") long idToDelete) {
+        orderService.deleteOrder(idToDelete);
+        return ResponseEntity.ok().body("Order with id " + idToDelete +  " removed from database");
+    }
+
+    @PutMapping("/{orderId}/{invoiceId}")
+    public OrderDto assignInvoiceToOrder(@PathVariable("orderId") long orderId, @PathVariable("invoiceId") long invoiceId) {
+        return orderService.assignInvoiceToOrder(orderId, invoiceId);
+    }
+
+    @PutMapping("/{orderId}/{taskId}")
+    public OrderDto assignTaskToOrder(@PathVariable("personId") long orderId, @PathVariable("taskId") long taskId) {
+        return orderService.assignTaskToOrder(orderId, taskId);
     }
 }

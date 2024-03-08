@@ -4,20 +4,30 @@ import nl.novi.catsittermanager.models.Customer;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
-public class CatInputDto {
+@Validated
+    public record CatInputDto (
 
-    @NotNull
-    public String name;
-    @Past
-    public LocalDate dateOfBirth;
-    public String breed;
-    public String generalInfo;
-    public String veterinarianName;
-    public int phoneVet;
-    public String medicationName;
-    public String medicationDose;
-    public Customer ownerName;
-}
+        UUID id,
+        //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
+        @NotNull (message = "cat name is required")
+        String name,
+        @Past
+        LocalDate dateOfBirth,
+        String breed,
+        String generalInfo,
+        Boolean spayedOrNeutered,
+        Boolean vaccinated,
+        String veterinarianName,
+        String phoneVet,
+        String medicationName,
+        String medicationDose,
+        @NotNull (message = "owner name is required")
+            Customer ownerName
+
+    ) {}
+

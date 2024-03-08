@@ -1,28 +1,35 @@
 package nl.novi.catsittermanager.dtos.order;
 
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import nl.novi.catsittermanager.models.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-public class OrderInputDto {
+@Validated
+public record OrderInputDto (
 
+    Long orderNo,
     @Future
-    public LocalDate startDate;
+    LocalDate startDate,
     @Future
-    public LocalDate endDate;
+    LocalDate endDate,
     @Positive
-    public int dailyNumberOfVisits;
+    int dailyNumberOfVisits,
     @Positive
-    public int totalNumberOfVisits;
-    public List<Task> taskList = new ArrayList<>();
-    @NotNull(message = "customer is required")
-    public Customer customer;
-    @NotNull(message = "catsitter is required")
-    public CatSitter catSitter;
-    public Invoice invoice;
-}
+    int totalNumberOfVisits,
+
+    Task task,
+
+    Customer customer,
+
+    Catsitter catsitter,
+
+    Invoice invoice
+
+) {}
+

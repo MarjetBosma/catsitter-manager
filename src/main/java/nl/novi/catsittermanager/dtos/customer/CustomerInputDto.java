@@ -1,17 +1,27 @@
 package nl.novi.catsittermanager.dtos.customer;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import nl.novi.catsittermanager.models.Cat;
-import nl.novi.catsittermanager.models.CatSitter;
+import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Order;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class CustomerInputDto {
-    public int numberOfCats;
-    public List<Order> orderList = new ArrayList<>();
-    public Set<Cat> catListByName = new HashSet<>();
-    public List<CatSitter> catsitters = new ArrayList<>();
-}
+@Validated
+public record CustomerInputDto (
+
+    @Positive
+    Long id,
+
+    int numberOfCats,
+
+    Order order,
+
+    Cat cat,
+
+    Catsitter catsitter
+
+) {}

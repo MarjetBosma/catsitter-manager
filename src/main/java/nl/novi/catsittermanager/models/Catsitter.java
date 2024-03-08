@@ -15,21 +15,24 @@ import java.util.List;
 
 @Entity
 @Table(name = "catsitters")
-public class CatSitter extends User {
+public class Catsitter extends User {
+
+    private Long id; // Moet eigenlijk worden overgenomen van User, uitzoeken hoe dit werkt
 
     private String about;
 
     @OneToMany(mappedBy = "catsitters")
-    private List<Order> orderList = new ArrayList<>();
+    private Order order;
 
-    @ManyToMany(mappedBy = "catsitters")
-    private List<Customer> customers = new ArrayList<>();
+//    @ManyToMany(mappedBy = "customers")
+    private Customer customer;
 
-    public CatSitter() {}
+    public Catsitter() {}
 
-    public CatSitter(String about, List<Order> orderList, List<Customer> customers) {
+    public Catsitter(String about, Order order, Customer customer) {
+        super();
         this.about = about;
-        this.orderList = orderList;
-        this.customers = customers;
+        this.order = order;
+        this.customer = customer;
     }
 }

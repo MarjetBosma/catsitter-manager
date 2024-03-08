@@ -3,7 +3,9 @@ package nl.novi.catsittermanager.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import nl.novi.catsittermanager.enumerations.Role;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,57 +14,65 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User implements Serializable {
 
-
-    // Deze eerste 3 variabelen zijn verplicht om te kunnen inloggen met een username, password en rol.
     @Id
-    @Column(nullable = false, unique = true)
+    @GeneratedValue
+    private Long id;
+//    @Column(nullable = false, unique = true)
     private String username;
-
-    @Column(nullable = false, length = 255)
+//    @Column(nullable = false, length = 255)
     private String password;
 
-    @OneToMany(
-            targetEntity = Authority.class,
-            mappedBy = "username",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER)
-    private Set<Authority> authorities = new HashSet<>();
+    private Role role;
 
-    @Column(nullable = false)
-    private boolean enabled = true;
+//    @OneToMany(
+//            targetEntity = Authority.class,
+//            mappedBy = "username",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true,
+//            fetch = FetchType.EAGER)
+//    private Set<Authority> authorities = new HashSet<>();
 
-    @Column
+    String authorities; // Dummy, alleen voor testen zonder database
+
+    //    @Column(nullable = false)
+    private Boolean enabled;
+
+    //    @Column
     private String name;
 
-    @Column
+    //    @Column
     private String address;
 
-    @Column
+    //    @Column
     private String email;
 
-    // Role toevoegen vanuit enum, nog uitzoeken
+    public User() {
+    }
 
-    public User() {}
-
-    public User(String username, String password, Set<Authority> authorities, boolean enabled, String name, String address, String email) {
+    public User(Long id, String username, String password, Role role, String authorities, Boolean enabled, String name, String address, String email) {
         this.username = username;
         this.password = password;
-        this.authorities = authorities;
+        this.role = role;
+        this.authorities = authorities;  // Bij gebruik database datatype terugzetten naar Set
         this.enabled = enabled;
         this.name = name;
         this.address = address;
         this.email = email;
     }
 
-    public Set<Authority> getAuthorities() { return authorities; }
-    public void addAuthority(Authority authority) {
-        this.authorities.add(authority);
-    }
-    public void removeAuthority(Authority authority) {
-        this.authorities.remove(authority);
-    }
+//    public Set<Authority> getAuthorities() {
+//        return authorities;
+//    }
+//
+//    public void addAuthority(Authority authority) {
+//        this.authorities.add(authority);
+//    }
+//
+//    public void removeAuthority(Authority authority) {
+//        this.authorities.remove(authority);
+//    }
 
 }

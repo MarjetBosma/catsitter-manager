@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
 
 
 @Getter
@@ -14,8 +13,9 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 public class Order {
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long orderNo;
 
     private LocalDate startDate;
@@ -27,31 +27,29 @@ public class Order {
     private int totalNumberOfVisits;
 
     @OneToMany(mappedBy = "orders")
-    private List<Task> taskList;
+    private Task task;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Customer customer;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private CatSitter catSitter;
+    private Catsitter catsitter;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn (name = "invoice_no")
     private Invoice invoice;
 
+    public Order() {}
 
-
-    public Order() {
-    }
-
-    public Order(Long orderNo, LocalDate startDate, LocalDate endDate, int dailyNumberOfVisits, int totalNumberOfVisits, List<Task> taskList, Customer customer, CatSitter catSitter, Invoice invoice) {
+    public Order(Long orderNo, LocalDate startDate, LocalDate endDate, int dailyNumberOfVisits, int totalNumberOfVisits, Task task, Customer customer, Catsitter catsitter, Invoice invoice) {
         this.orderNo = orderNo;
         this.startDate = startDate;
         this.endDate = endDate;
         this.dailyNumberOfVisits = dailyNumberOfVisits;
         this.totalNumberOfVisits = totalNumberOfVisits;
-        this.taskList = taskList;
+        this.task = task;
         this.customer = customer;
-        this.catSitter = catSitter;
+        this.catsitter = catsitter;
         this.invoice = invoice;
     }
 }

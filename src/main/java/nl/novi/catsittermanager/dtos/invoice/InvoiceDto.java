@@ -4,11 +4,11 @@ import nl.novi.catsittermanager.models.Order;
 
 import java.time.LocalDate;
 
-public class InvoiceDto {
-    public Long invoiceNo;
-    public LocalDate invoiceDate;
-    public Double amount;
+public record InvoiceDto (
+    Long invoiceNo,
+    LocalDate invoiceDate,
+    Double amount,
+    Boolean paid, // true/false omzetten naar ja/nee
+    Order order
 
-    public Order order;
-
-}
+) {}
