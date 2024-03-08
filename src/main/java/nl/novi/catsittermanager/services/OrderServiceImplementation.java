@@ -3,8 +3,10 @@ package nl.novi.catsittermanager.services;
 import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
 import nl.novi.catsittermanager.mappers.OrderMapper;
+import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.OrderRepository;
+import nl.novi.catsittermanager.repositories.InvoiceRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,36 +20,11 @@ import java.util.Optional;
 public class OrderServiceImplementation implements OrderService {
 
     private final OrderRepository orderRepos;
-//
-//    private final TaskRepository taskRepos;
-//
-//    private final TaskImplementationService;
-//
-//    private final CustomerRepository customerRepos;
-//
-//    private final CustomerServiceImplementation customerService;
-//
-//    private final CatSitterRepository catSitterRepos;
-//
-//    private final CatSitterServiceImplementation catSitterService;
-//
-//    private final InvoiceRepository invoiceRepos;
-//
-//    private final InvoiceServiceImplementation invoiceService;
+    private final InvoiceRepository invoiceRepos;
 
-
-    public OrderServiceImplementation(OrderRepository orderRepos
-//            , TaskRepository taskRepos, TaskServiceImplementation taskService, CustomerRepository customerRepos, CustomerServiceImplementation customerService, CatSitterRepository catSitterRepos, CatSitterServiceImplementation catSitterService, InvoiceRepository invoiceRepos, InvoiceServiceImplementation invoiceService
-    ) {
+    public OrderServiceImplementation(OrderRepository orderRepos, InvoiceRepository invoiceRepos) {
         this.orderRepos = orderRepos;
-//        this.taskRepos = taskRepos;
-//        this.taskService = taskService;
-//        this.customerRepos = customerRepos;
-//        this.customerService = customerService;
-//        this.catsitterRepos = catsitterRepos;
-//        this.catsitterService = catsitterService;
-//        this.invoiceRepos = invoiceRepos;
-//        this.invoiceService = invoiceService;
+        this.invoiceRepos = invoiceRepos;
     }
 
     @Override
@@ -132,6 +109,22 @@ public class OrderServiceImplementation implements OrderService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order found with this id");
         }
     }
+
+    @Override
+    public OrderDto assignInvoiceToOrder(long customerId, long invoiceId) {
+        Optional<Order> optionalOrder = orderRepos.findById(customerId);
+        Optional<Invoice> optionalInvoice = invoiceRepos.findById(invoiceId);
+
+        if (optionalOrder.isPresent() && optionalInvoice.isPresent()) {
+            Order order = optionalOrder.get();
+            Invoice invoice = optionalInvoice.get();
+
+            order.setInvoice(invoice);
+            orderRepos.save(order);
+            return OrderMapper.transferToDto(order);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order or invoice found with this id");
+        }
+    }
 }
 
-// methodes schrijven om Order aan andere entiteiten te koppelen

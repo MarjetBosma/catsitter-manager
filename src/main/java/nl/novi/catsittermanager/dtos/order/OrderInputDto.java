@@ -13,7 +13,7 @@ import java.util.List;
 @Validated
 public record OrderInputDto (
 
-    Long orderNo, //Dummy, alleen voor testen in Postman, later id automatisch meegeven via database
+    Long orderNo,
     @Future
     LocalDate startDate,
     @Future
@@ -23,32 +23,13 @@ public record OrderInputDto (
     @Positive
     int totalNumberOfVisits,
 
-    //    List<Task> taskList,
-    String taskList, // Alleen voor los testen Order class zonder database
+    Task task,
 
-    //    Customer customer,
-    String customer,  // Alleen voor los testen Order class zonder database
+    Customer customer,
 
-    //    Catsitter catsitter,
-    String catsitter, // Alleen voor los testen Order class zonder database
+    Catsitter catsitter,
 
-    //    Invoice invoice
-    String invoice // Alleen voor los testen Order class zonder database
+    Invoice invoice
 
 ) {}
-
-//    @Future
-//    public LocalDate startDate;
-//    @Future
-//    public LocalDate endDate;
-//    @Positive
-//    public int dailyNumberOfVisits;
-//    @Positive
-//    public int totalNumberOfVisits;
-//    public List<Task> taskList = new ArrayList<>();
-//    @NotNull(message = "customer is required")
-//    public Customer customer;
-//    @NotNull(message = "catsitter is required")
-//    public CatSitter catSitter;
-//    public Invoice invoice;
 

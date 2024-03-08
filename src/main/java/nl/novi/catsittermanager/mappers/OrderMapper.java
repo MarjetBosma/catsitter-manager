@@ -20,7 +20,7 @@ public class OrderMapper {
     }
 
     public static Order transferFromDto(OrderInputDto orderInputDto) {
-        return new Order(orderInputDto.orderNo(), // In een latere fase deze hier niet meegeven, maar automatisch via database
+        return new Order(orderInputDto.orderNo(),
                          orderInputDto.startDate(),
                          orderInputDto.endDate(),
                          orderInputDto.dailyNumberOfVisits(),

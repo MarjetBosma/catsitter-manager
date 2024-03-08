@@ -14,16 +14,12 @@ public record OrderDto (
     int dailyNumberOfVisits,
     int totalNumberOfVisits,
 
-//    List<Task> taskList,
-    String taskList, // Alleen voor los testen Order class zonder database
+    Task task,
 
-//    Customer customer,
-    String customer,  // Alleen voor los testen Order class zonder database
+    Customer customer,
 
-//    CatSitter catSitter,
-    String catSitter, // Alleen voor los testen Order class zonder database
+    Catsitter catsitter,
 
-//    Invoice invoice
-    String invoice // Alleen voor los testen Order class zonder database
+    Invoice invoice
 
 ) {}

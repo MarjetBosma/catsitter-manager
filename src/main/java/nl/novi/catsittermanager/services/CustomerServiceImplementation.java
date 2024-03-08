@@ -4,6 +4,7 @@ import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.models.Customer;
+import nl.novi.catsittermanager.repositories.CatRepository;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
 
 import org.springframework.http.HttpStatus;
@@ -18,17 +19,12 @@ import java.util.Optional;
 public class CustomerServiceImplementation implements CustomerService {
 
     private final CustomerRepository customerRepos;
-//
-//    private final CatSitterServiceImplementation customerService;
-//
-//    private final OrderServiceImplementation orderService;
 
-    public CustomerServiceImplementation(CustomerRepository customerRepos
-//    , CatsitterServiceImplementation catSitterService, OrderServiceImplementation orderService
-    ) {
+    private final CatRepository catRepos;
+
+    public CustomerServiceImplementation(CustomerRepository customerRepos, CatRepository catRepos) {
         this.customerRepos = customerRepos;
-//        this.catSitterService = catSitterService;
-//        this.orderService = orderService;
+        this.catRepos = catRepos;
     }
 
     @Override
@@ -56,11 +52,11 @@ public class CustomerServiceImplementation implements CustomerService {
 
     @Override
     public CustomerDto createCustomer(CustomerInputDto customerInputDto) {
-        Customer newCustomer = new Customer();
+        Customer newCustomer = new Customer(customerInputDto.numberOfCats(), customerInputDto.cat(), customerInputDto.order(), customerInputDto.catsitter());
         newCustomer.setNumberOfCats(customerInputDto.numberOfCats());
-        newCustomer.setCatListByName(customerInputDto.catListByName());
-        newCustomer.setOrderList(customerInputDto.orderList());
-        newCustomer.setCatsitterList(customerInputDto.catsitterList());
+        newCustomer.setCat(customerInputDto.cat());
+        newCustomer.setOrder(customerInputDto.order());
+        newCustomer.setCatsitter(customerInputDto.catsitter());
         customerRepos.save(newCustomer);
         return CustomerMapper.transferToDto(newCustomer);
     }
@@ -74,14 +70,14 @@ public class CustomerServiceImplementation implements CustomerService {
             if (customerInputDto.numberOfCats() != 0) {
                 customer.setNumberOfCats(customerInputDto.numberOfCats());
             }
-            if (customerInputDto.orderList() != null) {
-                customer.setOrderList(customerInputDto.orderList());
+            if (customerInputDto.order() != null) {
+                customer.setOrder(customerInputDto.order());
             }
-            if (customerInputDto.catListByName() != null) {
-                customer.setCatListByName(customerInputDto.catListByName());
+            if (customerInputDto.cat() != null) {
+                customer.setCat(customerInputDto.cat());
             }
-            if (customerInputDto.catsitterList() != null) {
-                customer.setCatsitterList(customerInputDto.catsitterList());
+            if (customerInputDto.catsitter() != null) {
+                customer.setCatsitter(customerInputDto.catsitter());
             }
             customerRepos.save(customer);
             return CustomerMapper.transferToDto(customer);

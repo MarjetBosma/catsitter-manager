@@ -1,12 +1,10 @@
 package nl.novi.catsittermanager.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -15,46 +13,29 @@ import java.util.List;
 @Table(name = "customers")
 public class Customer extends User {
 
-    private Long id; // Moet eigenlijk worden overgenomen van User, uitzoeken hoe dit werkt
+    private Long id;
 
     private int numberOfCats;
 
-//    @OneToMany(mappedBy = "customers")
-//    private List<Order> orderList = new ArrayList<>();
+    @OneToMany(mappedBy = "customers")
+    private Order order;
 
-    private String orderList; // Dummy, alleen voor testen zonder database
-
-//    @OneToMany(mappedBy = "customers")
-//    private List<Cat> catListByName = new ArrayList<>();
-
-    private String catListByName; // Dummy, alleen voor testen zonder database
+    @OneToMany(mappedBy = "customers")
+    private Cat cat;
 
 //    @ManyToMany(fetch = FetchType.EAGER)
 //    @JoinTable(name = "customers_catsitters", joinColumns = @JoinColumn(name = "customers_id"), inverseJoinColumns = @JoinColumn(name = "catsitters_id"))
-
-//    private List<CatSitter> catSitters = new ArrayList<>();
-
-    private String catsitterList; // Dummy, alleen voor testen zonder database
+    private Catsitter catsitter;
 
     public Customer() {}
 
-    public Customer(int numberOfCats, String catListByName, String orderList, String catsitterList) { // Dummy, alleen voor testen in Postman zonder database
+    public Customer(int numberOfCats, Cat cat, Order order, Catsitter catsitter) {
         super();
         this.numberOfCats = numberOfCats;
-        this.catListByName = catListByName;
-        this.orderList = orderList;
-        this.catsitterList = catsitterList;
+        this.cat = cat;
+        this.order = order;
+        this.catsitter = catsitter;
     }
-
-//    public Customer(int numberOfCats, List<Cat> catListByName, List<Order> orderList, List<CatSitter> catsitterList) {
-//        super();
-//        this.numberOfCats = numberOfCats;
-//        this.orderList = orderList;
-//        this.catListByName = catListByName;
-//        this.catsitterList = catSitterList;
-//    }
-
-
 }
 
 

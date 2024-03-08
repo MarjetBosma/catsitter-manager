@@ -13,9 +13,6 @@ public record TaskInputDto (
         String extraInstructions,
         @Positive
         Double priceOfTask,
-
-//    public Order order;
-        String order // Alleen voor los testen Task class zonder database
-
+        Order order
 ) {}
 

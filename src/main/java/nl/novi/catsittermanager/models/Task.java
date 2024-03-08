@@ -20,21 +20,18 @@ public class Task {
     private String extraInstructions;
     private double priceOfTask;
 
-//    @Column(name = "\"order\"")
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    private Order order;
-
     @Column(name = "\"order\"")
-    private String order; // Dummy, alleen voor los testen Cat class zonder database
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Order order;
 
     public Task() {}
 
-    public Task(Long taskNo, TaskType taskType, String taskInstruction, String extraInstructions, double priceOfTask, String order) {
+    public Task(Long taskNo, TaskType taskType, String taskInstruction, String extraInstructions, double priceOfTask, Order order) {
         this.taskNo = taskNo;
         this.taskType = taskType;
         this.taskInstruction = taskInstruction;
         this.extraInstructions = extraInstructions;
         this.priceOfTask = priceOfTask;
-        this.order = order; // datatype bij database weer terugzetten naar Order
+        this.order = order;
     }
 }

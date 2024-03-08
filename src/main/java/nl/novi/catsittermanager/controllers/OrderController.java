@@ -1,7 +1,5 @@
 package nl.novi.catsittermanager.controllers;
 
-import jakarta.validation.Valid;
-import nl.novi.catsittermanager.dtos.IdInputDto;
 import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
@@ -61,7 +59,6 @@ public class OrderController {
     @PutMapping("/{id}")
     public ResponseEntity<OrderDto> editOrder(@PathVariable("id") long idToEdit, @RequestBody OrderInputDto order) {
         OrderDto changeOrderId = orderService.editOrder(idToEdit, order);
-
         return ResponseEntity.ok().body(changeOrderId);
     }
 
@@ -71,27 +68,11 @@ public class OrderController {
         return ResponseEntity.ok().body("Order with id " + idToDelete +  " removed from database");
     }
 
-//    @PutMapping("/{id}/catsitter")
-//    public ResponseEntity<Object> assignCatSitterToOrder(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-//        orderService.assignCatSitterToOrder(id, input.id);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    @PutMapping("/{id}/customer")
-//    public ResponseEntity<Object> assignCustomerToOrder(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-//        orderService.assignCustomerToOrder(id, input.id);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    @PutMapping("/{id}/invoice")
-//    public ResponseEntity<Object> assignInvoiceToOrder(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-//        orderService.assignInvoiceToOrder(id, input.id);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    @PutMapping("/{id}/task")
-//    public ResponseEntity<Object> assignTaskToOrder(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-//        orderService.assignTaskToOrder(id, input.id);
-//        return ResponseEntity.noContent().build();
-//    }
+    @PutMapping("/{orderId}/{invoiceId}")
+    public OrderDto assignInvoiceToOrder(@PathVariable("personId") Long orderId, @PathVariable("invoiceId") long invoiceId) {
+        orderService.assignInvoiceToOrder(orderId, invoiceId);
+        return orderService.assignInvoiceToOrder(orderId, invoiceId);
+    }
+
+// toevoegen relaties catsitter, customer, task
 }
