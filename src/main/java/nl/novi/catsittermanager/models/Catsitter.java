@@ -11,7 +11,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(builderMethodName = "CatsitterBuilder")
 @Entity
 @Table(name = "catsitters")
 public class Catsitter extends User {
@@ -21,10 +21,10 @@ public class Catsitter extends User {
 
     private String about;
 
-    @OneToMany(mappedBy = "catsitters")
+    @OneToMany(mappedBy = "catsitter")
     private List<Order> order;
 
-    @ManyToMany(mappedBy = "customers")
+    @ManyToMany(mappedBy = "catsitter")
     private List<Customer> customer;
 
 }

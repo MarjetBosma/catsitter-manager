@@ -15,7 +15,7 @@ public class CatsitterMapper {
     }
 
     public static Catsitter transferFromDto(CatsitterInputDto catsitterInputDto) {
-        return Catsitter.builder()
+        return Catsitter.CatsitterBuilder()
                 .id(catsitterInputDto.id())
                 .about(catsitterInputDto.about())
                 .order(catsitterInputDto.order())

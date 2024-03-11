@@ -29,7 +29,7 @@ public class Order {
 
     private int totalNumberOfVisits;
 
-    @OneToMany(mappedBy = "orders")
+    @OneToMany(mappedBy = "order")
     private List<Task> task;
 
     @ManyToOne(fetch = FetchType.EAGER)

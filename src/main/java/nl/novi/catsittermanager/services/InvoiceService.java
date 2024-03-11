@@ -17,4 +17,5 @@ public interface InvoiceService {
     InvoiceDto editInvoice(UUID noToEdit, InvoiceInputDto invoiceInputDto);
 
     UUID deleteInvoice(UUID noToDelete);
+
 }

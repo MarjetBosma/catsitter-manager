@@ -41,7 +41,7 @@ public class CatsitterServiceImplementation implements CatsitterService {
 
     @Override
     public CatsitterDto createCatsitter(CatsitterInputDto catsitterInputDto) {
-        Catsitter catsitter = Catsitter.builder()
+        Catsitter catsitter = Catsitter.CatsitterBuilder()
                 .about(catsitterInputDto.about())
                 .order(catsitterInputDto.order())
                 .customer(catsitterInputDto.customer())

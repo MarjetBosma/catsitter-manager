@@ -16,7 +16,7 @@ public class CustomerMapper {
     }
 
     public static Customer transferFromDto(CustomerInputDto customerInputDto) {
-        return Customer.builder().numberOfCats(customerInputDto.numberOfCats())
+        return Customer.CustomerBuilder().numberOfCats(customerInputDto.numberOfCats())
                 .cat(customerInputDto.cat())
                 .order(customerInputDto.order())
                 .catsitter(customerInputDto.catsitter())

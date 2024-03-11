@@ -35,12 +35,12 @@ public class CustomerServiceImplementation implements CustomerService {
     public CustomerDto getCustomer(UUID idToFind) {
         return customerRepos.findById(idToFind)
                 .map(CustomerMapper::transferToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this id."));
     }
 
     @Override
     public CustomerDto createCustomer(CustomerInputDto customerInputDto) {
-        Customer customer = Customer.builder()
+        Customer customer = Customer.CustomerBuilder()
                 .numberOfCats(customerInputDto.numberOfCats())
                 .cat(customerInputDto.cat())
                 .order(customerInputDto.order())

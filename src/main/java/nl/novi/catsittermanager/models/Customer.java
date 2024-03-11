@@ -10,7 +10,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(builderMethodName = "CustomerBuilder")
 @Entity
 @Table(name = "customers")
 public class Customer extends User {
@@ -20,17 +20,16 @@ public class Customer extends User {
 
     private int numberOfCats;
 
-    @OneToMany(mappedBy = "customers")
+    @OneToMany(mappedBy = "customer")
     private List<Order> order;
 
-    @OneToMany(mappedBy = "customers")
+    @OneToMany(mappedBy = "ownerName")
     private List<Cat> cat;
 
     @ManyToMany
     @JoinTable(name = "customers_catsitters",
             joinColumns = @JoinColumn(name = "customers_id"),
             inverseJoinColumns = @JoinColumn(name = "catsitters_id"))
-
     private List<Catsitter> catsitter;
 
 }
