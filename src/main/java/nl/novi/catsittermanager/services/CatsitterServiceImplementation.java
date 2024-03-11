@@ -6,7 +6,6 @@ import nl.novi.catsittermanager.mappers.CatsitterMapper;
 import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.repositories.CatsitterRepository;
 
-import nl.novi.catsittermanager.repositories.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,11 +20,8 @@ public class CatsitterServiceImplementation implements CatsitterService {
 
     private final CatsitterRepository catsitterRepos;
 
-    private final OrderRepository orderRepos;
-
-    public CatsitterServiceImplementation(CatsitterRepository catsitterRepos, OrderRepository orderRepos) {
+    public CatsitterServiceImplementation(CatsitterRepository catsitterRepos) {
         this.catsitterRepos = catsitterRepos;
-        this.orderRepos = orderRepos;
     }
 
     @Override
@@ -45,12 +41,13 @@ public class CatsitterServiceImplementation implements CatsitterService {
 
     @Override
     public CatsitterDto createCatsitter(CatsitterInputDto catsitterInputDto) {
-        Catsitter newCatsitter = new Catsitter();
-        newCatsitter.setAbout(catsitterInputDto.about()); // list?
-        newCatsitter.setOrder(catsitterInputDto.order()); // list?
-        newCatsitter.setCustomer(catsitterInputDto.customer()); // list?
-        catsitterRepos.save(newCatsitter);
-        return CatsitterMapper.transferToDto(newCatsitter);
+        Catsitter catsitter = Catsitter.builder()
+                .about(catsitterInputDto.about())
+                .order(catsitterInputDto.order())
+                .customer(catsitterInputDto.customer())
+                .build();
+        catsitterRepos.save(catsitter);
+        return CatsitterMapper.transferToDto(catsitter);
     }
 
     @Override
@@ -62,10 +59,10 @@ public class CatsitterServiceImplementation implements CatsitterService {
             if (catsitterInputDto.about() != null) {
                 catsitter.setAbout(catsitterInputDto.about());
             }
-            if (catsitterInputDto.order() != null) { // list?
+            if (catsitterInputDto.order() != null) {
                 catsitter.setOrder(catsitterInputDto.order());
             }
-            if (catsitterInputDto.customer() != null) { // list?
+            if (catsitterInputDto.customer() != null) {
                 catsitter.setCustomer(catsitterInputDto.customer());
             }
             catsitterRepos.save(catsitter);

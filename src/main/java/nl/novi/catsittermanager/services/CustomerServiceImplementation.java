@@ -2,20 +2,14 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
-import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
-import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
-import nl.novi.catsittermanager.models.Order;
-import nl.novi.catsittermanager.repositories.CatRepository;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
 
-import nl.novi.catsittermanager.repositories.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +19,6 @@ import java.util.stream.Collectors;
 public class CustomerServiceImplementation implements CustomerService {
 
     private final CustomerRepository customerRepos;
-
 
     public CustomerServiceImplementation(CustomerRepository customerRepos) {
         this.customerRepos = customerRepos;

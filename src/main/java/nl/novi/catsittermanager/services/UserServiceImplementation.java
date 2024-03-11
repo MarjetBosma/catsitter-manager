@@ -46,18 +46,18 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserDto createUser(@RequestBody UserInputDto userInputDto) {
-        User newUser = new User();
-        newUser.setUsername(userInputDto.username());
-        newUser.setPassword(userInputDto.password());
-        newUser.setEmail(userInputDto.email());
-        newUser.setRole(userInputDto.role());
-        newUser.setAuthorities(userInputDto.authorities());
-        newUser.setEnabled(userInputDto.enabled());
-        newUser.setName(userInputDto.name());
-        newUser.setAddress(userInputDto.address());
-        newUser.setEmail(userInputDto.email());
-        userRepos.save(newUser);
-        return UserMapper.transferToDto(newUser);
+        User user = User.builder()
+                .username(userInputDto.username())
+                .password(userInputDto.password())
+                .role(userInputDto.role())
+                .authorities(userInputDto.authorities())
+                .enabled(userInputDto.enabled())
+                .name(userInputDto.name())
+                .address(userInputDto.address())
+                .email(userInputDto.email())
+                .build();
+        userRepos.save(user);
+        return UserMapper.transferToDto(user);
     }
     @Override
     public UserDto editUser(UUID idToEdit, UserInputDto userInputDto) {

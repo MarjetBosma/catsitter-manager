@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Catsitter extends User {
 
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id; // Moet eigenlijk worden overgenomen van User, uitzoeken hoe dit werkt
+    private UUID id;
 
     private String about;
 
