@@ -15,15 +15,10 @@ import java.util.UUID;
 @Table(name = "customers")
 public class Customer extends User {
 
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
-    private int numberOfCats;
-
     @OneToMany(mappedBy = "customer")
     private List<Order> order;
 
-    @OneToMany(mappedBy = "ownerName")
+    @OneToMany(mappedBy = "owner")
     private List<Cat> cat;
 
     @ManyToMany

@@ -17,7 +17,7 @@ public record CatDto (
     String phoneVet,
     String medicationName,
     String medicationDose,
-    Customer ownerName
+    String ownerName
 
 ) {
 }

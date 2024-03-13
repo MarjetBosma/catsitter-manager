@@ -7,8 +7,7 @@ import nl.novi.catsittermanager.models.User;
 public class UserMapper {
 
     public static UserDto transferToDto(User user) {
-        return new UserDto(user.getId(),
-                           user.getUsername(),
+        return new UserDto(user.getUsername(),
                            user.getPassword(),
                            user.getRole(),
                            user.getAuthorities(),
@@ -20,7 +19,7 @@ public class UserMapper {
     }
 
     public static User transferFromDto(UserInputDto userInputDto) {
-    return User.builder().id(userInputDto.id())
+    return User.builder()
                 .username(userInputDto.username())
                 .password(userInputDto.password())
                 .role(userInputDto.role())

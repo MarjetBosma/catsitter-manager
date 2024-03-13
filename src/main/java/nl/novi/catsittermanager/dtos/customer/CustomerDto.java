@@ -9,8 +9,8 @@ import java.util.UUID;
 
 public record CustomerDto (
 
-        UUID id,
-        int numberOfCats,
+        //TODO add user fields
+
         List<Order> order,
         List<Cat> cats,
         List<Catsitter> catsitter

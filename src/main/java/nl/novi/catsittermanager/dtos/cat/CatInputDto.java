@@ -26,7 +26,7 @@ import java.util.UUID;
         String medicationName,
         String medicationDose,
         @NotNull (message = "owner name is required")
-            Customer ownerName
+        String ownerName
 
     ) {
     }
