@@ -7,7 +7,6 @@ import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.repositories.CatRepository;
-
 import nl.novi.catsittermanager.repositories.CustomerRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,9 +22,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CatServiceImplementation implements CatService {
 
-    private final CustomerRepository customerRepos;
-
     private final CatRepository catRepos;
+    private final CustomerRepository customerRepository;
 
     @Override
     public List<CatDto> getAllCats() {
@@ -45,8 +43,10 @@ public class CatServiceImplementation implements CatService {
     public CatDto createCat(@RequestBody CatInputDto catInputDto) {
         Cat newCat = CatMapper.transferFromDto(catInputDto);
 
-        Customer owner = customerRepos.getReferenceById(catInputDto.ownerId());
+        //TODO: check if owner exists
+        Customer owner = customerRepository.getByUsername(catInputDto.ownerName());
         newCat.setOwner(owner);
+
         catRepos.save(newCat);
         return CatMapper.transferToDto(newCat);
     }
@@ -87,20 +87,19 @@ public class CatServiceImplementation implements CatService {
             if (catInputDto.medicationDose() != null) { // mag eigenlijk wel null zijn indien kat geen medicatie heeft
                 cat.setMedicationDose(catInputDto.medicationDose());
             }
-//            if (catInputDto.ownerId() != null) {
-//                cat.setOwner(catInputDto.owner());
-//            }
+
+            //TODO: check if owner is updated
+
             catRepos.save(cat);
             return CatMapper.transferToDto(cat);
-        }
-        else {
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id.");
         }
     }
 
     @Override
     public UUID deleteCat(UUID idToDelete) {
-            catRepos.deleteById(idToDelete);
-            return idToDelete;
+        catRepos.deleteById(idToDelete);
+        return idToDelete;
     }
 }

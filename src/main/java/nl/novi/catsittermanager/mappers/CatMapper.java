@@ -18,7 +18,7 @@ public class CatMapper {
                           cat.getPhoneVet(),
                           cat.getMedicationName(),
                           cat.getMedicationDose(),
-                          cat.getOwner().getId()
+                          cat.getOwner().getName()
         );
     }
 

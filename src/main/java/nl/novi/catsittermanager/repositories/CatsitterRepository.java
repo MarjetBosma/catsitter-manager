@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface CatsitterRepository extends JpaRepository<Catsitter, UUID> {
+    Catsitter getByUsername(String Username);
 }

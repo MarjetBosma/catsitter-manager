@@ -9,15 +9,14 @@ import java.util.Set;
 import java.util.UUID;
 
 public record UserDto (
-
     String username,
     String password,
-    String email,
     Role role,
     Set<Authority> authorities,
     Boolean enabled,
     String name,
-    String address
+    String address,
+    String email
 
 ) {
 }

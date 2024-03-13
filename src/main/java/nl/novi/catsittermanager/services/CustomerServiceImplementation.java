@@ -41,7 +41,6 @@ public class CustomerServiceImplementation implements CustomerService {
     @Override
     public CustomerDto createCustomer(CustomerInputDto customerInputDto) {
         Customer customer = Customer.CustomerBuilder()
-                .numberOfCats(customerInputDto.numberOfCats())
                 .cat(customerInputDto.cat())
                 .order(customerInputDto.order())
                 .catsitter(customerInputDto.catsitter())
@@ -56,9 +55,6 @@ public class CustomerServiceImplementation implements CustomerService {
 
         if (optionalCustomer.isPresent()) {
             Customer customer = optionalCustomer.get();
-            if (customerInputDto.numberOfCats() != 0) {
-                customer.setNumberOfCats(customerInputDto.numberOfCats());
-            }
             if (customerInputDto.order() != null) {
                 customer.setOrder(customerInputDto.order());
             }

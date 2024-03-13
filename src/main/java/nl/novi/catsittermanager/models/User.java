@@ -1,7 +1,19 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nl.novi.catsittermanager.enumerations.Role;
 
 import java.io.Serializable;
@@ -19,17 +31,14 @@ import java.util.Set;
 public class User implements Serializable {
 
     @Id
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false, length = 255)
     private String password;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
     private Role role;
 
-    @Getter
     @OneToMany(
             targetEntity = Authority.class,
             mappedBy = "username",
@@ -47,6 +56,8 @@ public class User implements Serializable {
     @Column
     private String address;
 
+    @Column
+    private String email;
 
     public void addAuthority(Authority authority) {
         this.authorities.add(authority);

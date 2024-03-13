@@ -43,6 +43,6 @@ public class Cat {
     @ManyToOne(fetch = FetchType.EAGER)
     private Customer owner;
 
-    private byte[] photo;
+//    private byte[] photo;
 
 }
