@@ -40,17 +40,17 @@
 //    }
 //
 //    /*
-//    Deze methode geeft het JWT token terug wanneer de gebruiker de juiste inloggegevens op geeft.
+//    Deze methode geeft het JWT token terug wanneer de gebruiker de juiste inloggegevens opgeeft.
 //     */
 //    @PostMapping(value = "/authenticate")
 //    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
 //
-//        String username = authenticationRequest.getUsername();
+//        String email = authenticationRequest.getEmail();
 //        String password = authenticationRequest.getPassword();
 //
 //        try {
 //            authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(username, password)
+//                    new UsernamePasswordAuthenticationToken(email, password)
 //            );
 //        }
 //        catch (BadCredentialsException ex) {
@@ -58,7 +58,7 @@
 //        }
 //
 //        final UserDetails userDetails = userDetailsService
-//                .loadUserByUsername(username);
+//                .loadUserByUsername(email);
 //
 //        final String jwt = jwtUtil.generateToken(userDetails);
 //

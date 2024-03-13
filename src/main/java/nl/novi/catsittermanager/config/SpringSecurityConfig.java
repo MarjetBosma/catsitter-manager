@@ -23,12 +23,14 @@
 //@EnableWebSecurity
 //public class SpringSecurityConfig {
 //
-//    private final CustomUserDetailsService customUserDetailsService;
+////    private final CustomUserDetailsService customUserDetailsService;
 //
 //    private final JwtRequestFilter jwtRequestFilter;
 //
-//    public SpringSecurityConfig(CustomUserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter) {
-//        this.customUserDetailsService = userDetailsService;
+//    public SpringSecurityConfig(
+////            CustomUserDetailsService userDetailsService,
+//                                JwtRequestFilter jwtRequestFilter) {
+////        this.customUserDetailsService = userDetailsService;
 //        this.jwtRequestFilter = jwtRequestFilter;
 //    }
 //
@@ -46,11 +48,11 @@
 //    public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
 //        var auth = new DaoAuthenticationProvider();
 //        auth.setPasswordEncoder(passwordEncoder);
-//        auth.setUserDetailsService(customUserDetailsService);
+////        auth.setUserDetailsService(customUserDetailsService);
 //        return new ProviderManager(auth);
 //    }
 //
-//    // Authorizatie met jwt
+//    // Authorisatie met jwt
 //    @Bean
 //    protected SecurityFilterChain filter (HttpSecurity http) throws Exception {
 //
@@ -61,7 +63,7 @@
 //                .cors(Customizer.withDefaults())
 //                .authorizeHttpRequests(auth ->
 //                                auth
-//                                        // Wanneer je deze uncomments, staat je hele security open. Je hebt dan alleen nog een jwt nodig.
+//                                        // Wanneer je deze uncomment, staat je hele security open. Je hebt dan alleen nog een jwt nodig.
 ////                .requestMatchers("/**").permitAll()
 //                                        .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
 //                                        .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
@@ -71,11 +73,10 @@
 //                                        .requestMatchers("/authenticate").permitAll()/*alleen dit punt mag toegankelijk zijn voor niet ingelogde gebruikers*/
 //                                        .requestMatchers("/authenticated").authenticated()
 //                                        .requestMatchers("/authenticate").permitAll()
-//                                        .anyRequest().denyAll() /*Deze voeg je altijd als laatste toe, om een default beveiliging te hebben voor eventuele vergeten endpoints of endpoints die je later toevoegd. */
+//                                        .anyRequest().denyAll() /*Deze voeg je altijd als laatste toe, om een default beveiliging te hebben voor eventuele vergeten endpoints of endpoints die je later toevoegt. */
 //                )
 //                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 //        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 //        return http.build();
 //    }
-//
 //}

@@ -2,19 +2,27 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.dtos.user.UserDto;
 import nl.novi.catsittermanager.dtos.user.UserInputDto;
+import nl.novi.catsittermanager.models.Authority;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 public interface UserService {
 
     List<UserDto> getAllUsers();
 
-    UserDto getUser(UUID idToFind);
+    UserDto getUser(String username);
 
     UserDto createUser(UserInputDto userInputDto);
 
-    UserDto editUser(UUID IdToEdit, UserInputDto userInputDto);
+    UserDto editUser(String username, UserInputDto userInputDto);
 
-    UUID deleteUser(UUID IdToDelete);
+    String deleteUser(String username);
+
+    Set<Authority> getAuthorities(String username);
+
+    void addAuthority(String username, String authority);
+
+    void removeAuthority(String username, String authority);
+
 }
