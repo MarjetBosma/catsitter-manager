@@ -15,6 +15,7 @@ import java.util.UUID;
 @Table(name = "customers")
 public class Customer extends User {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
@@ -23,7 +24,7 @@ public class Customer extends User {
     @OneToMany(mappedBy = "customer")
     private List<Order> order;
 
-    @OneToMany(mappedBy = "ownerName")
+    @OneToMany(mappedBy = "owner")
     private List<Cat> cat;
 
     @ManyToMany

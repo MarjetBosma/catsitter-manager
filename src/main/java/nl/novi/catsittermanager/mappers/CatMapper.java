@@ -18,7 +18,7 @@ public class CatMapper {
                           cat.getPhoneVet(),
                           cat.getMedicationName(),
                           cat.getMedicationDose(),
-                          cat.getOwnerName()
+                          cat.getOwner().getId()
         );
     }
 
@@ -34,7 +34,6 @@ public class CatMapper {
                 .veterinarianName(catInputDto.veterinarianName())
                 .phoneVet(catInputDto.phoneVet())
                 .medicationDose(catInputDto.medicationDose())
-                .ownerName(catInputDto.ownerName())
                 .build();
     }
 }

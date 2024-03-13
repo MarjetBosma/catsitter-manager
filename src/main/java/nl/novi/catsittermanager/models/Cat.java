@@ -18,7 +18,7 @@ public class Cat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id; //
+    private UUID id;
 
     private String name;
 
@@ -41,7 +41,7 @@ public class Cat {
     private String medicationDose;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Customer ownerName;
+    private Customer owner;
 
     private byte[] photo;
 

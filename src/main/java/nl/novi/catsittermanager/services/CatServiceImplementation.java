@@ -1,11 +1,14 @@
 package nl.novi.catsittermanager.services;
 
+import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.models.Cat;
+import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.repositories.CatRepository;
 
+import nl.novi.catsittermanager.repositories.CustomerRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,13 +20,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CatServiceImplementation implements CatService {
 
-    private final CatRepository catRepos;
+    private final CustomerRepository customerRepos;
 
-    public CatServiceImplementation(CatRepository catRepos) {
-        this.catRepos = catRepos;
-    }
+    private final CatRepository catRepos;
 
     @Override
     public List<CatDto> getAllCats() {
@@ -41,18 +43,10 @@ public class CatServiceImplementation implements CatService {
 
     @Override
     public CatDto createCat(@RequestBody CatInputDto catInputDto) {
-        Cat newCat = new Cat();
-        newCat.setName(catInputDto.name());
-        newCat.setDateOfBirth(catInputDto.dateOfBirth());
-        newCat.setBreed(catInputDto.breed());
-        newCat.setGeneralInfo(catInputDto.generalInfo());
-        newCat.setSpayedOrNeutered(catInputDto.spayedOrNeutered());
-        newCat.setVaccinated(catInputDto.vaccinated());
-        newCat.setVeterinarianName(catInputDto.veterinarianName());
-        newCat.setPhoneVet(catInputDto.phoneVet());
-        newCat.setMedicationName(catInputDto.medicationName());
-        newCat.setMedicationDose(catInputDto.medicationDose());
-        newCat.setOwnerName(catInputDto.ownerName());
+        Cat newCat = CatMapper.transferFromDto(catInputDto);
+
+        Customer owner = customerRepos.getReferenceById(catInputDto.ownerId());
+        newCat.setOwner(owner);
         catRepos.save(newCat);
         return CatMapper.transferToDto(newCat);
     }
@@ -93,9 +87,9 @@ public class CatServiceImplementation implements CatService {
             if (catInputDto.medicationDose() != null) { // mag eigenlijk wel null zijn indien kat geen medicatie heeft
                 cat.setMedicationDose(catInputDto.medicationDose());
             }
-            if (catInputDto.ownerName() != null) {
-                cat.setOwnerName(catInputDto.ownerName());
-            }
+//            if (catInputDto.ownerId() != null) {
+//                cat.setOwner(catInputDto.owner());
+//            }
             catRepos.save(cat);
             return CatMapper.transferToDto(cat);
         }
