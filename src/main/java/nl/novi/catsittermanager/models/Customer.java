@@ -15,7 +15,6 @@ import java.util.UUID;
 @Table(name = "customers")
 public class Customer extends User {
 
-    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
@@ -24,7 +23,7 @@ public class Customer extends User {
     @OneToMany(mappedBy = "customer")
     private List<Order> order;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "ownerName")
     private List<Cat> cat;
 
     @ManyToMany
@@ -32,7 +31,6 @@ public class Customer extends User {
             joinColumns = @JoinColumn(name = "customers_id"),
             inverseJoinColumns = @JoinColumn(name = "catsitters_id"))
     private List<Catsitter> catsitter;
-
 }
 
 

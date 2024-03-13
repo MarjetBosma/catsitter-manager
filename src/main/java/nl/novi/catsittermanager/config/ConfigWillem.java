@@ -27,7 +27,7 @@ public class ConfigWillem {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth ->
                                 auth
-                                        // Wanneer je deze uncomments, staat je hele security open. Je hebt dan alleen nog een jwt nodig.
+                                        // Wanneer je deze uncomment, staat je hele security open. Je hebt dan alleen nog een jwt nodig.
                 .requestMatchers("/**").permitAll()
 //                                        .requestMatchers(HttpMethod.POST, "/user").hasRole("ADMIN")
 //                                        .requestMatchers(HttpMethod.GET,"/user").hasRole("ADMIN")
