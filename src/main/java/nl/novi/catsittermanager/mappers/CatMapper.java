@@ -18,24 +18,22 @@ public class CatMapper {
                           cat.getPhoneVet(),
                           cat.getMedicationName(),
                           cat.getMedicationDose(),
-                          cat.getOwnerName()
+                          cat.getOwner().getUsername()
         );
     }
 
     public static Cat transferFromDto(CatInputDto catInputDto) {
-        return new Cat(catInputDto.id(), // In een latere fase deze hier niet meegeven, maar automatisch via database
-                       catInputDto.name(),
-                       catInputDto.dateOfBirth(),
-                       catInputDto.breed(),
-                       catInputDto.generalInfo(),
-                       catInputDto.spayedOrNeutered(),
-                       catInputDto.vaccinated(),
-                       catInputDto.veterinarianName(),
-                       catInputDto.phoneVet(),
-                       catInputDto.phoneVet(),
-                       catInputDto.medicationDose(),
-                       catInputDto.ownerName()
-        );
+        return Cat.builder()
+                .name(catInputDto.name())
+                .dateOfBirth(catInputDto.dateOfBirth())
+                .breed(catInputDto.breed())
+                .generalInfo(catInputDto.generalInfo())
+                .spayedOrNeutered(catInputDto.spayedOrNeutered())
+                .vaccinated(catInputDto.vaccinated())
+                .veterinarianName(catInputDto.veterinarianName())
+                .phoneVet(catInputDto.phoneVet())
+                .medicationDose(catInputDto.medicationDose())
+                .build();
     }
 }
 

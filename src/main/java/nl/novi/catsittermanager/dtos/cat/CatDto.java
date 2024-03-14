@@ -1,7 +1,5 @@
 package nl.novi.catsittermanager.dtos.cat;
 
-import nl.novi.catsittermanager.models.Customer;
-
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -17,6 +15,7 @@ public record CatDto (
     String phoneVet,
     String medicationName,
     String medicationDose,
-    Customer ownerName
+    String ownerUsername
 
-) {}
+) {
+}

@@ -16,12 +16,12 @@ public class TaskMapper {
     }
 
     public static Task transferFromDto(TaskInputDto taskInputDto) {
-        return new Task(taskInputDto.taskNo(), // In een latere fase deze hier niet meegeven, maar automatisch via database
-                        taskInputDto.taskType(),
-                        taskInputDto.taskInstruction(),
-                        taskInputDto.extraInstructions(),
-                        taskInputDto.priceOfTask(),
-                        taskInputDto.order()
-        );
+        return Task.builder().taskNo(taskInputDto.taskNo())
+                .taskType(taskInputDto.taskType())
+                .taskInstruction(taskInputDto.taskInstruction())
+                .extraInstructions(taskInputDto.extraInstructions())
+                .priceOfTask(taskInputDto.priceOfTask())
+                .order(taskInputDto.order())
+                .build();
     }
 }

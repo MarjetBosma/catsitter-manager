@@ -2,9 +2,8 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.dtos.task.TaskDto;
 import nl.novi.catsittermanager.dtos.task.TaskInputDto;
-import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.services.TaskServiceImplementation;
+import nl.novi.catsittermanager.services.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
 
@@ -20,9 +20,9 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 
 public class TaskController {
 
-    private final TaskServiceImplementation taskService;
+    private final TaskService taskService;
 
-    public TaskController(TaskServiceImplementation taskService) {
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
@@ -32,17 +32,13 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDto> getTask(@PathVariable("id") long idToFind) {
-        if (idToFind > 0) {
+    public ResponseEntity<TaskDto> getTask(@PathVariable("id") final UUID idToFind) {
             TaskDto taskDto = taskService.getTask(idToFind);
             return ResponseEntity.ok(taskDto);
-        } else {
-            throw new RecordNotFoundException("No task found with this id");
-        }
     }
 
     @PostMapping
-    public ResponseEntity<TaskDto> createTask(@RequestBody TaskInputDto taskInputDto, BindingResult br) {
+    public ResponseEntity<TaskDto> createTask(@RequestBody final TaskInputDto taskInputDto, final BindingResult br) {
         if (br.hasFieldErrors()) {
             throw new ValidationException(checkForBindingResult(br));
         } else {
@@ -56,14 +52,13 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskDto> editTask(@PathVariable("id") long id, @RequestBody TaskInputDto task) {
+    public ResponseEntity<TaskDto> editTask(@PathVariable("id") final UUID id, @RequestBody final TaskInputDto task) {
         TaskDto editedTask = taskService.editTask(id, task);
-
         return ResponseEntity.ok().body(editedTask);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTask(@PathVariable("id") Long idToDelete) {
+    public ResponseEntity<Object> deleteTask(@PathVariable("id") final UUID idToDelete) {
         taskService.deleteTask(idToDelete);
         return ResponseEntity.ok().body("Task with id " + idToDelete +  " removed from database");
     }

@@ -15,10 +15,12 @@ public class CatsitterMapper {
     }
 
     public static Catsitter transferFromDto(CatsitterInputDto catsitterInputDto) {
-        return new Catsitter(
-                             catsitterInputDto.about(),
-                             catsitterInputDto.order(),
-                             catsitterInputDto.customer()
-        );
+        return Catsitter.CatsitterBuilder()
+                .id(catsitterInputDto.id())
+                .about(catsitterInputDto.about())
+                .order(catsitterInputDto.order())
+                .customer(catsitterInputDto.customer())
+                .build();
     }
 }
+

@@ -2,18 +2,78 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.dtos.invoice.InvoiceDto;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceInputDto;
+import nl.novi.catsittermanager.mappers.InvoiceMapper;
+import nl.novi.catsittermanager.models.Invoice;
+import nl.novi.catsittermanager.repositories.InvoiceRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
-public interface InvoiceService {
+@Service
+public class InvoiceService {
 
-    List<InvoiceDto> getAllInvoices();
+    private final InvoiceRepository invoiceRepos;
 
-    InvoiceDto getInvoice(long noToFind);
+    public InvoiceService(InvoiceRepository invoiceRepos) {
+        this.invoiceRepos = invoiceRepos;
+    }
 
-    InvoiceDto createInvoice(InvoiceInputDto invoiceInputDto);
+    public List<InvoiceDto> getAllInvoices() {
+        return invoiceRepos.findAll().stream()
+                .map(InvoiceMapper::transferToDto)
+                .collect(Collectors.toList());
+    }
 
-    InvoiceDto editInvoice(long noToEdit, InvoiceInputDto invoiceInputDto);
+    public InvoiceDto getInvoice(UUID idToFind) {
+        return invoiceRepos.findById(idToFind)
+                .map(InvoiceMapper::transferToDto)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
+    }
 
-    long deleteInvoice(long noToDelete);
+    public InvoiceDto createInvoice(InvoiceInputDto invoiceInputDto) {
+        Invoice newInvoice = new Invoice(invoiceInputDto.invoiceNo(), invoiceInputDto.invoiceDate(), invoiceInputDto.amount(), invoiceInputDto.paid(), invoiceInputDto.order());
+        newInvoice.setInvoiceNo(invoiceInputDto.invoiceNo());
+        newInvoice.setInvoiceDate(invoiceInputDto.invoiceDate());
+        newInvoice.setAmount(invoiceInputDto.amount());
+        newInvoice.setPaid(invoiceInputDto.paid());
+        newInvoice.setOrder(invoiceInputDto.order());
+        invoiceRepos.save(newInvoice);
+        return InvoiceMapper.transferToDto(newInvoice);
+    }
+
+    public InvoiceDto editInvoice(UUID idToEdit, InvoiceInputDto invoiceInputDto) {
+        Optional<Invoice> optionalInvoice = invoiceRepos.findById(idToEdit);
+
+        if (optionalInvoice.isPresent()) {
+            Invoice invoice = optionalInvoice.get();
+            if (invoiceInputDto.invoiceDate() != null) {
+                invoice.setInvoiceNo(invoiceInputDto.invoiceNo());
+            }
+            if (invoice.getInvoiceDate() != null) {
+                invoice.setAmount(invoiceInputDto.amount());
+            }
+            if (invoice.getPaid() != null) {
+                invoice.setPaid(invoiceInputDto.paid());
+            }
+            if (invoice.getOrder() != null) {
+                invoice.setOrder(invoiceInputDto.order());
+            }
+            invoiceRepos.save(invoice);
+            return InvoiceMapper.transferToDto(invoice);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No invoice found with this id.");
+        }
+    }
+
+    public UUID deleteInvoice(UUID idToDelete) {
+        invoiceRepos.deleteById(idToDelete);
+        return idToDelete;
+    }
+
+
 }

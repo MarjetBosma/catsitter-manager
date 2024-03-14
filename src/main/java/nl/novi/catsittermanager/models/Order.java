@@ -1,22 +1,25 @@
 package nl.novi.catsittermanager.models;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
 
 
 @Getter
 @Setter
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "orders")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long orderNo;
+    private UUID orderNo;
 
     private LocalDate startDate;
 
@@ -26,8 +29,8 @@ public class Order {
 
     private int totalNumberOfVisits;
 
-    @OneToMany(mappedBy = "orders")
-    private Task task;
+    @OneToMany(mappedBy = "order")
+    private List<Task> task;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Customer customer;
@@ -39,17 +42,4 @@ public class Order {
     @JoinColumn (name = "invoice_no")
     private Invoice invoice;
 
-    public Order() {}
-
-    public Order(Long orderNo, LocalDate startDate, LocalDate endDate, int dailyNumberOfVisits, int totalNumberOfVisits, Task task, Customer customer, Catsitter catsitter, Invoice invoice) {
-        this.orderNo = orderNo;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.dailyNumberOfVisits = dailyNumberOfVisits;
-        this.totalNumberOfVisits = totalNumberOfVisits;
-        this.task = task;
-        this.customer = customer;
-        this.catsitter = catsitter;
-        this.invoice = invoice;
-    }
 }

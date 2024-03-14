@@ -2,9 +2,8 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.dtos.user.UserDto;
 import nl.novi.catsittermanager.dtos.user.UserInputDto;
-import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.services.UserServiceImplementation;
+import nl.novi.catsittermanager.services.UserService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -13,8 +12,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,9 +25,9 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 
 public class UserController {
 
-    private final UserServiceImplementation userService;
+    private final UserService userService;
 
-    public UserController(UserServiceImplementation userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -38,17 +37,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("id") long idToFind) {
-        if (idToFind > 0) {
+    public ResponseEntity<UserDto> getUser(@PathVariable("id") final UUID idToFind) {
             UserDto userDto = userService.getUser(idToFind);
             return ResponseEntity.ok(userDto);
-        } else {
-            throw new RecordNotFoundException("No user found with this id");
-        }
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserInputDto userInputDto, BindingResult br) {
+    public ResponseEntity<UserDto> createUser(@RequestBody final UserInputDto userInputDto, final BindingResult br) {
         if (br.hasFieldErrors()) {
             throw new ValidationException(checkForBindingResult(br));
         } else {
@@ -62,13 +57,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> editUser(@PathVariable("id") long idToEdit, @RequestBody UserInputDto user) {
+    public ResponseEntity<UserDto> editUser(@PathVariable("id") final UUID idToEdit, @RequestBody final UserInputDto user) {
         UserDto editedUser = userService.editUser(idToEdit, user);
         return ResponseEntity.ok().body(editedUser);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable("id") long idToDelete) {
+    public ResponseEntity<Object> deleteUser(@PathVariable("id") final UUID idToDelete) {
         userService.deleteUser(idToDelete);
         return ResponseEntity.ok().body("User with id " + idToDelete +  " removed from database");
     }
