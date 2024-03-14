@@ -15,8 +15,6 @@ import java.util.UUID;
 
 import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
 
-// was verwijderd door Dennis???
-
 @RestController
 @RequestMapping("/catsitter")
 public class CatsitterController {

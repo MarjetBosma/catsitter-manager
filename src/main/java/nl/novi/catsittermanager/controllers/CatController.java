@@ -3,7 +3,7 @@ package nl.novi.catsittermanager.controllers;
 import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.services.CatServiceImplementation;
+import nl.novi.catsittermanager.services.CatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +19,9 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 @RequestMapping("/cat")
 public class CatController {
 
-    private final CatServiceImplementation catService;
+    private final CatService catService;
 
-    public CatController(CatServiceImplementation catService) {
+    public CatController(CatService catService) {
         this.catService = catService;
     }
 
