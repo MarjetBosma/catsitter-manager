@@ -2,10 +2,8 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterDto;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterInputDto;
-import nl.novi.catsittermanager.dtos.customer.CustomerDto;
-import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.services.CatsitterServiceImplementation;
+import nl.novi.catsittermanager.services.CatsitterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +21,9 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 @RequestMapping("/catsitter")
 public class CatsitterController {
 
-    private final CatsitterServiceImplementation catsitterService;
+    private final CatsitterService catsitterService;
 
-    public CatsitterController(CatsitterServiceImplementation catsitterService) {
+    public CatsitterController(CatsitterService catsitterService) {
         this.catsitterService = catsitterService;
     }
 

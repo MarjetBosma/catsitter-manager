@@ -2,9 +2,8 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
-import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.services.OrderServiceImplementation;
+import nl.novi.catsittermanager.services.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +20,9 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 
 public class OrderController {
 
-    private final OrderServiceImplementation orderService;
+    private final OrderService orderService;
 
-    public OrderController(OrderServiceImplementation orderService) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 

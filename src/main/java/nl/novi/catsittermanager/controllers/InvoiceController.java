@@ -2,9 +2,8 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.dtos.invoice.InvoiceDto;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceInputDto;
-import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.services.InvoiceServiceImplementation;
+import nl.novi.catsittermanager.services.InvoiceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +20,9 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 
 public class InvoiceController {
 
-    private final InvoiceServiceImplementation invoiceService;
+    private final InvoiceService invoiceService;
 
-    public InvoiceController(InvoiceServiceImplementation invoiceService) {
+    public InvoiceController(InvoiceService invoiceService) {
         this.invoiceService = invoiceService;
     }
 

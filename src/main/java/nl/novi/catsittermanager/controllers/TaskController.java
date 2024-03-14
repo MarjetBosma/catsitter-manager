@@ -2,9 +2,8 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.dtos.task.TaskDto;
 import nl.novi.catsittermanager.dtos.task.TaskInputDto;
-import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.services.TaskServiceImplementation;
+import nl.novi.catsittermanager.services.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +20,9 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 
 public class TaskController {
 
-    private final TaskServiceImplementation taskService;
+    private final TaskService taskService;
 
-    public TaskController(TaskServiceImplementation taskService) {
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 

@@ -9,9 +9,4 @@ import java.util.UUID;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, String> {
-
-    Optional<Customer> findByUsername(String Username);
-
-    String deleteByUsername(String username);
-
 }

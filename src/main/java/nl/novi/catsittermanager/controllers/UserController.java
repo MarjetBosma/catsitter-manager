@@ -2,9 +2,8 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.dtos.user.UserDto;
 import nl.novi.catsittermanager.dtos.user.UserInputDto;
-import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.services.UserServiceImplementation;
+import nl.novi.catsittermanager.services.UserService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -15,7 +14,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,9 +25,9 @@ import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBind
 
 public class UserController {
 
-    private final UserServiceImplementation userService;
+    private final UserService userService;
 
-    public UserController(UserServiceImplementation userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
