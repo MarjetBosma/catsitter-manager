@@ -9,13 +9,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Validated
-public record CustomerInputDto (
-
-    UUID id,
-    int numberOfCats,
-    List<Order> order,
-    List<Cat> cat,
-    List<Catsitter> catsitter
-
+public record CustomerInputDto(
+        String username,
+        String password,
+        String name,
+        String address,
+        String email
 ) {
 }

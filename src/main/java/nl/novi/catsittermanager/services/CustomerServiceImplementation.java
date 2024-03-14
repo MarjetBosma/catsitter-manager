@@ -3,6 +3,7 @@ package nl.novi.catsittermanager.services;
 import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
+import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
 
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,50 +34,56 @@ public class CustomerServiceImplementation implements CustomerService {
     }
 
     @Override
-    public CustomerDto getCustomer(UUID idToFind) {
-        return customerRepos.findById(idToFind)
+    public CustomerDto getCustomer(String username) {
+        return customerRepos.findByUsername(username)
                 .map(CustomerMapper::transferToDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this id."));
     }
 
     @Override
-    public CustomerDto createCustomer(CustomerInputDto customerInputDto) {
-        Customer customer = Customer.CustomerBuilder()
-                .cat(customerInputDto.cat())
-                .order(customerInputDto.order())
-                .catsitter(customerInputDto.catsitter())
-                .build();
+    public CustomerDto createCustomer(final CustomerInputDto customerInputDto) {
+
+        Customer customer = CustomerMapper.transferFromDto(customerInputDto);
+        customer.setEnabled(true);
+        customer.setCats(new ArrayList<Cat>());
+
         customerRepos.save(customer);
         return CustomerMapper.transferToDto(customer);
     }
 
     @Override
-    public CustomerDto editCustomer(UUID idToEdit, CustomerInputDto customerInputDto) {
-        Optional<Customer> optionalCustomer = customerRepos.findById(idToEdit);
+    public CustomerDto editCustomer(String username, CustomerInputDto customerInputDto) {
+        Optional<Customer> optionalCustomer = customerRepos.findByUsername(username);
 
         if (optionalCustomer.isPresent()) {
             Customer customer = optionalCustomer.get();
-            if (customerInputDto.order() != null) {
-                customer.setOrder(customerInputDto.order());
+            if (customerInputDto.username() != null) {
+                customer.setUsername(customerInputDto.username());
             }
-            if (customerInputDto.cat() != null) {
-                customer.setCat(customerInputDto.cat());
+            if (customerInputDto.password() != null) {
+                customer.setPassword(customerInputDto.password());
             }
-            if (customerInputDto.catsitter() != null) {
-                customer.setCatsitter(customerInputDto.catsitter());
+            if (customerInputDto.name() != null) {
+                customer.setName(customerInputDto.name());
+            }
+            if (customerInputDto.address() != null) {
+                customer.setAddress(customerInputDto.address());
+            }
+            if (customerInputDto.email() != null) {
+                customer.setEmail(customerInputDto.email());
             }
             customerRepos.save(customer);
             return CustomerMapper.transferToDto(customer);
         }
         else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this id.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this username.");
         }
     }
 
     @Override
-    public UUID deleteCustomer(UUID idToDelete) {
-        customerRepos.deleteById(idToDelete);
-        return idToDelete;
+    public String deleteCustomer(String username) {
+        customerRepos.deleteById(username);
+        return username;
     }
 
 //    @Override

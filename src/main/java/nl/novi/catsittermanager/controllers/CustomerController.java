@@ -33,9 +33,9 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CustomerDto> getCustomer(@PathVariable("id") final UUID idToFind) {
-            CustomerDto customerDto = customerService.getCustomer(idToFind);
+    @GetMapping("/{username}")
+    public ResponseEntity<CustomerDto> getCustomer(@PathVariable("username") final String username) {
+            CustomerDto customerDto = customerService.getCustomer(username);
             return ResponseEntity.ok(customerDto);
     }
 
@@ -54,16 +54,16 @@ public class CustomerController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CustomerDto> editCustomer(@PathVariable("id") final UUID idToEdit, @RequestBody final CustomerInputDto customer) {
-        CustomerDto editedCustomer = customerService.editCustomer(idToEdit, customer);
+    @PutMapping("/{username}")
+    public ResponseEntity<CustomerDto> editCustomer(@PathVariable("username") final String username, @RequestBody final CustomerInputDto customer) {
+        CustomerDto editedCustomer = customerService.editCustomer(username, customer);
         return ResponseEntity.ok().body(editedCustomer);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteCustomer(@PathVariable("id") final UUID idToDelete) {
-        customerService.deleteCustomer(idToDelete);
-        return ResponseEntity.ok().body("Customer with id " + idToDelete +  " removed from database");
+    @DeleteMapping("/{username}")
+    public ResponseEntity<Object> deleteCustomer(@PathVariable("username") final String username) {
+        customerService.deleteCustomer(username);
+        return ResponseEntity.ok().body("Customer " + username +  " removed from database");
     }
 
 //    @PutMapping("/{customerId}/{catId}")

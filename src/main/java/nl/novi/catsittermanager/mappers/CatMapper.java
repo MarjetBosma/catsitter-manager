@@ -18,13 +18,12 @@ public class CatMapper {
                           cat.getPhoneVet(),
                           cat.getMedicationName(),
                           cat.getMedicationDose(),
-                          cat.getOwner().getName()
+                          cat.getOwner().getUsername()
         );
     }
 
     public static Cat transferFromDto(CatInputDto catInputDto) {
         return Cat.builder()
-                .id(catInputDto.id())
                 .name(catInputDto.name())
                 .dateOfBirth(catInputDto.dateOfBirth())
                 .breed(catInputDto.breed())

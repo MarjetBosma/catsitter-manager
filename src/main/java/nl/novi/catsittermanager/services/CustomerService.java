@@ -11,12 +11,12 @@ public interface CustomerService {
 
     List<CustomerDto> getAllCustomers();
 
-    CustomerDto getCustomer(UUID idToFind);
+    CustomerDto getCustomer(String username);
 
     CustomerDto createCustomer(CustomerInputDto customerInputDto);
 
-    CustomerDto editCustomer(UUID idToEdit, CustomerInputDto customerInputDto);
+    CustomerDto editCustomer(String username, CustomerInputDto customerInputDto);
 
-    UUID deleteCustomer (UUID idToDelete);
+    String deleteCustomer (String username);
 
 }

@@ -43,8 +43,9 @@ public class CatServiceImplementation implements CatService {
     public CatDto createCat(@RequestBody CatInputDto catInputDto) {
         Cat newCat = CatMapper.transferFromDto(catInputDto);
 
-        //TODO: check if owner exists
-        Customer owner = customerRepository.getByUsername(catInputDto.ownerName());
+        //TODO: check if owner exists and do a nice catch
+        Customer owner = customerRepository.findById(catInputDto.ownerUsername()).orElseThrow();
+
         newCat.setOwner(owner);
 
         catRepos.save(newCat);
