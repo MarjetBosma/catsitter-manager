@@ -30,9 +30,9 @@ public class CatsitterController {
         return ResponseEntity.ok(catsitterService.getAllCatsitters());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CatsitterDto> getCatSitter(@PathVariable("id") final UUID idToFind) {
-            CatsitterDto catsitterDto = catsitterService.getCatsitter(idToFind);
+    @GetMapping("/{username}")
+    public ResponseEntity<CatsitterDto> getCatSitter(@PathVariable("id") final String username) {
+            CatsitterDto catsitterDto = catsitterService.getCatsitter(username);
             return ResponseEntity.ok(catsitterDto);
     }
 
@@ -51,17 +51,17 @@ public class CatsitterController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CatsitterDto> editCatsitter(@PathVariable("id") final UUID idToEdit, @RequestBody final CatsitterInputDto catsitter) {
-        CatsitterDto editedCatsitter = catsitterService.editCatsitter(idToEdit, catsitter);
+    @PutMapping("/{username}")
+    public ResponseEntity<CatsitterDto> editCatsitter(@PathVariable("username") final String username, @RequestBody final CatsitterInputDto catsitter) {
+        CatsitterDto editedCatsitter = catsitterService.editCatsitter(username, catsitter);
 
         return ResponseEntity.ok().body(editedCatsitter);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteCatsitter(@PathVariable("id") final UUID idToDelete) {
-        catsitterService.deleteCatsitter(idToDelete);
-        return ResponseEntity.ok().body("Catsitter with id " + idToDelete +  " removed from database");
+    @DeleteMapping("/{username}")
+    public ResponseEntity<Object> deleteCatsitter(@PathVariable("username") final String username) {
+        catsitterService.deleteCatsitter(username);
+        return ResponseEntity.ok().body("Catsitter " + username +  " removed from database");
     }
 
 //    @PutMapping("/{customerId}/{orderId}")

@@ -3,8 +3,10 @@ package nl.novi.catsittermanager.mappers;
 import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.models.Cat;
+import nl.novi.catsittermanager.repositories.CustomerRepository;
 
 public class CatMapper {
+
 
     public static CatDto transferToDto(Cat cat) {
         return new CatDto(cat.getId(),

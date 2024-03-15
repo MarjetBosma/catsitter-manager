@@ -24,7 +24,7 @@ public class Task {
     private double priceOfTask;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "\"order\"")
-    private Order order;
+    @JoinColumn(name = "order_no")
+    private Order orders;
 
 }

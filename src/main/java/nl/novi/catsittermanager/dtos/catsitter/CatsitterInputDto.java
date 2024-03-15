@@ -9,11 +9,15 @@ import java.util.UUID;
 
 @Validated
 public record CatsitterInputDto (
-
-        UUID id,
+        String username,
+        String password,
+        String name,
+        String address,
+        String email,
         String about,
-        List<Order> order,
-        List<Customer> customer
+        List<Order> orders
+
+//        List<Customer> customers
 
 ) {
 }

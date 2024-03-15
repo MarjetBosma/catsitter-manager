@@ -10,22 +10,22 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@SuperBuilder(builderMethodName = "CustomerBuilder")
 @Entity
 @Table(name = "customers")
 public class Customer extends User {
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
-    private List<Order> order;
+    @OneToMany(mappedBy = "customers")
+    private List<Order> orders;
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "owner")
     private List<Cat> cats;
 
-    @ManyToMany
-    @JoinTable(name = "customers_catsitters",
-            joinColumns = @JoinColumn(name = "customers_id"),
-            inverseJoinColumns = @JoinColumn(name = "catsitters_id"))
-    private List<Catsitter> catsitter;
+//    @ManyToMany
+//    @JoinTable(name = "customers_catsitters",
+//            joinColumns = @JoinColumn(name = "customer_id"),
+//            inverseJoinColumns = @JoinColumn(name = "catsitter_id"))
+//    private List<Catsitter> catsitters;
 
 }
 

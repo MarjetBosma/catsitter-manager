@@ -41,9 +41,9 @@ public class OrderService {
         newOrder.setEndDate(orderInputDto.endDate());
         newOrder.setDailyNumberOfVisits(orderInputDto.dailyNumberOfVisits());
         newOrder.setTotalNumberOfVisits(orderInputDto.totalNumberOfVisits());
-        newOrder.setTask(orderInputDto.task());
-        newOrder.setCustomer(orderInputDto.customer());
-        newOrder.setCatsitter(orderInputDto.catsitter());
+        newOrder.setTasks(orderInputDto.task());
+        newOrder.setCustomers(orderInputDto.customer());
+        newOrder.setCatsitters(orderInputDto.catsitter());
         newOrder.setInvoice(orderInputDto.invoice());
         orderRepos.save(newOrder);
         return OrderMapper.transferToDto(newOrder);
@@ -66,13 +66,13 @@ public class OrderService {
                     order.setTotalNumberOfVisits(orderInputDto.totalNumberOfVisits());
                 }
                 if (orderInputDto.task() != null) {
-                    order.setTask(orderInputDto.task());
+                    order.setTasks(orderInputDto.task());
                 }
                 if (orderInputDto.customer() != null) {
-                    order.setCustomer(orderInputDto.customer());
+                    order.setCustomers(orderInputDto.customer());
                 }
                 if (orderInputDto.catsitter() != null) {
-                    order.setCatsitter(orderInputDto.catsitter());
+                    order.setCatsitters(orderInputDto.catsitter());
                 }
                 if (orderInputDto.invoice() != null) {
                     order.setInvoice(orderInputDto.invoice());

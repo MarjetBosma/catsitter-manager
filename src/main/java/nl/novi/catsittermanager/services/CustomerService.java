@@ -5,6 +5,7 @@ import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
+import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
 
 import org.springframework.http.HttpStatus;
@@ -38,11 +39,10 @@ public class CustomerService {
     }
 
     public CustomerDto createCustomer(final CustomerInputDto customerInputDto) {
-
         Customer customer = CustomerMapper.transferFromDto(customerInputDto);
         customer.setEnabled(true);
         customer.setCats(new ArrayList<Cat>());
-
+        customer.setOrders(new ArrayList<Order>());
         customerRepos.save(customer);
         return CustomerMapper.transferToDto(customer);
     }
@@ -67,6 +67,12 @@ public class CustomerService {
             if (customerInputDto.email() != null) {
                 customer.setEmail(customerInputDto.email());
             }
+            if (customerInputDto.orders() != null) {
+                customer.setOrders(customerInputDto.orders());
+            }
+//            if (customerInputDto.catsitters() != null) {
+//                customer.setCatsitters(customerInputDto.catsitters());
+//            }
             customerRepos.save(customer);
             return CustomerMapper.transferToDto(customer);
         }

@@ -1,16 +1,18 @@
 package nl.novi.catsittermanager.dtos.catsitter;
 
-import nl.novi.catsittermanager.models.Customer;
-import nl.novi.catsittermanager.models.Order;
-
 import java.util.List;
-import java.util.UUID;
 
 public record CatsitterDto(
-        UUID id,
+
+        String username,
+        String password,
+        String name,
+        String address,
+        String email,
         String about,
-        List<Order> order,
-        List<Customer> customer
+        List<nl.novi.catsittermanager.dtos.order.OrderDto> order
+
+//        List<Customer> customer
 
 ) {
 }

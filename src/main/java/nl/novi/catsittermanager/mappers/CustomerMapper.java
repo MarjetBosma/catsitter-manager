@@ -13,17 +13,21 @@ public class CustomerMapper {
                 customer.getName(),
                 customer.getAddress(),
                 customer.getEmail(),
-                customer.getCats().stream().map(CatMapper::transferToDto).toList()
+                customer.getCats().stream().map(CatMapper::transferToDto).toList(),
+                customer.getOrders().stream().map(OrderMapper::transferToDto).toList()
+//                customer.getCatsitters().stream().map(CatsitterMapper::transferToDto).toList()
         );
     }
 
     public static Customer transferFromDto(CustomerInputDto customerInputDto) {
-        return Customer.builder()
+        return Customer.CustomerBuilder()
                 .username(customerInputDto.username())
                 .password(customerInputDto.password())
                 .name(customerInputDto.name())
                 .address(customerInputDto.address())
                 .email(customerInputDto.email())
+                .orders(customerInputDto.orders())
+//                .catsitters(customerInputDto.catsitters())
                 .build();
     }
 }

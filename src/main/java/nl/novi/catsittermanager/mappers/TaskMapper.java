@@ -11,7 +11,7 @@ public class TaskMapper {
                 task.getTaskInstruction(),
                 task.getExtraInstructions(),
                 task.getPriceOfTask(),
-                task.getOrder()
+                task.getOrders()
         );
     }
 
@@ -21,7 +21,7 @@ public class TaskMapper {
                 .taskInstruction(taskInputDto.taskInstruction())
                 .extraInstructions(taskInputDto.extraInstructions())
                 .priceOfTask(taskInputDto.priceOfTask())
-                .order(taskInputDto.order())
+                .orders(taskInputDto.order())
                 .build();
     }
 }

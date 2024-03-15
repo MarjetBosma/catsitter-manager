@@ -42,7 +42,7 @@ public class TaskService {
         newTask.setTaskType(taskInputDto.taskType());
         newTask.setTaskInstruction(taskInputDto.taskInstruction());
         newTask.setExtraInstructions(taskInputDto.extraInstructions());
-        newTask.setOrder(taskInputDto.order());
+        newTask.setOrders(taskInputDto.order());
         taskRepos.save(newTask);
         return TaskMapper.transferToDto(newTask);
     }

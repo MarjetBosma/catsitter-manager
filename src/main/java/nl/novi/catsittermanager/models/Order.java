@@ -29,14 +29,14 @@ public class Order {
 
     private int totalNumberOfVisits;
 
-    @OneToMany(mappedBy = "order")
-    private List<Task> task;
+    @OneToMany(mappedBy = "orders")
+    private List<Task> tasks;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Customer customer;
+    private Customer customers;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Catsitter catsitter;
+    private Catsitter catsitters;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn (name = "invoice_no")

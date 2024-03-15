@@ -7,19 +7,27 @@ import nl.novi.catsittermanager.models.Catsitter;
 public class CatsitterMapper {
 
     public static CatsitterDto transferToDto(Catsitter catsitter) {
-        return new CatsitterDto(catsitter.getId(),
+        return new CatsitterDto(catsitter.getUsername(),
+                                catsitter.getPassword(),
+                                catsitter.getName(),
+                                catsitter.getAddress(),
+                                catsitter.getEmail(),
                                 catsitter.getAbout(),
-                                catsitter.getOrder(),
-                                catsitter.getCustomer()
+                                catsitter.getOrders().stream().map(OrderMapper::transferToDto).toList()
+//                                catsitter.getCustomers().stream().map(CustomerMapper::transferToDto).toList()
         );
     }
 
     public static Catsitter transferFromDto(CatsitterInputDto catsitterInputDto) {
         return Catsitter.CatsitterBuilder()
-                .id(catsitterInputDto.id())
+                .username(catsitterInputDto.username())
+                .password(catsitterInputDto.password())
+                .name(catsitterInputDto.name())
+                .address(catsitterInputDto.address())
+                .email(catsitterInputDto.email())
                 .about(catsitterInputDto.about())
-                .order(catsitterInputDto.order())
-                .customer(catsitterInputDto.customer())
+                .orders(catsitterInputDto.orders())
+//                .customers(catsitterInputDto.customers())
                 .build();
     }
 }

@@ -4,12 +4,14 @@ import nl.novi.catsittermanager.dtos.catsitter.CatsitterDto;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterInputDto;
 import nl.novi.catsittermanager.mappers.CatsitterMapper;
 import nl.novi.catsittermanager.models.Catsitter;
+import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CatsitterRepository;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,48 +33,63 @@ public class CatsitterService {
                 .collect(Collectors.toList());
     }
 
-    public CatsitterDto getCatsitter(UUID idToFind) {
-        return catsitterRepos.findById(idToFind)
+    public CatsitterDto getCatsitter(String username) {
+        return catsitterRepos.findById(username)
                 .map(CatsitterMapper::transferToDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No catsitter found with this id."));
     }
 
-    public CatsitterDto createCatsitter(CatsitterInputDto catsitterInputDto) {
-        Catsitter catsitter = Catsitter.CatsitterBuilder()
-                .about(catsitterInputDto.about())
-                .order(catsitterInputDto.order())
-                .customer(catsitterInputDto.customer())
-                .build();
+    public CatsitterDto createCatsitter(final CatsitterInputDto catsitterInputDto) {
+        Catsitter catsitter = CatsitterMapper.transferFromDto((catsitterInputDto));
+        catsitter.setEnabled(true);
+        catsitter.setAbout(catsitterInputDto.about());
+        catsitter.setOrders(new ArrayList<Order>());
         catsitterRepos.save(catsitter);
         return CatsitterMapper.transferToDto(catsitter);
     }
 
-    public CatsitterDto editCatsitter(UUID idToEdit, CatsitterInputDto catsitterInputDto) {
-        Optional<Catsitter> optionalCatsitter = catsitterRepos.findById(idToEdit);
+    public CatsitterDto editCatsitter(String username, CatsitterInputDto catsitterInputDto) {
+        Optional<Catsitter> optionalCatsitter = catsitterRepos.findById(username);
 
         if (optionalCatsitter.isPresent()) {
             Catsitter catsitter = optionalCatsitter.get();
+            if (catsitterInputDto.username() != null) {
+                catsitter.setUsername(catsitterInputDto.username());
+            }
+            if (catsitterInputDto.password() != null) {
+                catsitter.setPassword(catsitterInputDto.password());
+            }
+            if (catsitterInputDto.name() != null) {
+                catsitter.setName(catsitterInputDto.name());
+            }
+            if (catsitterInputDto.address() != null) {
+                catsitter.setAddress(catsitterInputDto.address());
+            }
+            if (catsitterInputDto.email() != null) {
+                catsitter.setEmail(catsitterInputDto.email());
+            }
             if (catsitterInputDto.about() != null) {
                 catsitter.setAbout(catsitterInputDto.about());
             }
-            if (catsitterInputDto.order() != null) {
-                catsitter.setOrder(catsitterInputDto.order());
+            if (catsitterInputDto.orders() != null) {
+                catsitter.setOrders(catsitterInputDto.orders());
             }
-            if (catsitterInputDto.customer() != null) {
-                catsitter.setCustomer(catsitterInputDto.customer());
-            }
+//            if (catsitterInputDto.customers() != null) {
+//                catsitter.setCustomers(catsitterInputDto.customers());
+//            }
             catsitterRepos.save(catsitter);
             return CatsitterMapper.transferToDto(catsitter);
+            }
+            else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No catsitter found with this id.");
+            }
         }
-        else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No catsitter found with this id.");
-        }
-    }
 
-    public UUID deleteCatsitter(UUID idToDelete) {
-        catsitterRepos.deleteById(idToDelete);
-        return idToDelete;
-    }
+        public String deleteCatsitter (String username) {
+            catsitterRepos.deleteById(username);
+            return username;
+        }
+
 
 //    @Override
 //    public CatsitterDto assignOrderToCatsitter(long catsitterId, long orderNo) {
@@ -91,6 +108,7 @@ public class CatsitterService {
 //        }
 //    }
 }
+
 
 
 

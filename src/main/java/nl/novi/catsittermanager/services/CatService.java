@@ -40,11 +40,10 @@ public class CatService {
     public CatDto createCat(@RequestBody CatInputDto catInputDto) {
         Cat newCat = CatMapper.transferFromDto(catInputDto);
 
-        //TODO: check if owner exists and do a nice catch
-        Customer owner = customerRepository.findById(catInputDto.ownerUsername()).orElseThrow();
+        Customer owner = customerRepository.findById(catInputDto.ownerUsername())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found"));
 
         newCat.setOwner(owner);
-
         catRepos.save(newCat);
         return CatMapper.transferToDto(newCat);
     }
@@ -78,21 +77,23 @@ public class CatService {
             if (catInputDto.phoneVet() != null) {
                 cat.setPhoneVet(catInputDto.phoneVet());
             }
-            if (catInputDto.medicationName() != null) { // mag eigenlijk wel null zijn indien kat geen medicatie heeft
+            if (catInputDto.medicationName() != null) {
                 cat.setMedicationName(catInputDto.medicationName());
             }
-            if (catInputDto.medicationDose() != null) { // mag eigenlijk wel null zijn indien kat geen medicatie heeft
+            if (catInputDto.medicationDose() != null) {
                 cat.setMedicationDose(catInputDto.medicationDose());
             }
-
-            //TODO: check if owner is updated
-
-            catRepos.save(cat);
-            return CatMapper.transferToDto(cat);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id.");
+            if (catInputDto.ownerUsername() != null) {
+                Customer owner = customerRepository.findById(catInputDto.ownerUsername())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found"));
+                cat.setOwner(owner);
+            }
+        catRepos.save(cat);
+        return CatMapper.transferToDto(cat);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id.");
+            }
         }
-    }
 
     public UUID deleteCat(UUID idToDelete) {
         catRepos.deleteById(idToDelete);

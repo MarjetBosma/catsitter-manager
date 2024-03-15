@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface CatsitterRepository extends JpaRepository<Catsitter, UUID> {
+public interface CatsitterRepository extends JpaRepository<Catsitter, String> {
 }

@@ -12,9 +12,9 @@ public class OrderMapper {
                             order.getEndDate(),
                             order.getDailyNumberOfVisits(),
                             order.getTotalNumberOfVisits(),
-                            order.getTask(),
-                            order.getCustomer(),
-                            order.getCatsitter(),
+                            order.getTasks(),
+                            order.getCustomers(),
+                            order.getCatsitters(),
                             order.getInvoice()
         );
     }
@@ -25,9 +25,9 @@ public class OrderMapper {
                 .endDate(orderInputDto.endDate())
                 .dailyNumberOfVisits(orderInputDto.dailyNumberOfVisits())
                 .totalNumberOfVisits(orderInputDto.totalNumberOfVisits())
-                .task(orderInputDto.task())
-                .customer(orderInputDto.customer())
-                .catsitter(orderInputDto.catsitter())
+                .tasks(orderInputDto.task())
+                .customers(orderInputDto.customer())
+                .catsitters(orderInputDto.catsitter())
                 .invoice(orderInputDto.invoice())
                 .build();
     }
