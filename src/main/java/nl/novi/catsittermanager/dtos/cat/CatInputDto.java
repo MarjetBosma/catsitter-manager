@@ -13,6 +13,7 @@ import java.time.LocalDate;
         String name,
         @Past
         LocalDate dateOfBirth,
+        String gender,
         String breed,
         String generalInfo,
         Boolean spayedOrNeutered,

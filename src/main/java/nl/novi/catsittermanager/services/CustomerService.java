@@ -39,12 +39,12 @@ public class CustomerService {
     }
 
     public CustomerDto createCustomer(final CustomerInputDto customerInputDto) {
-        Customer customer = CustomerMapper.transferFromDto(customerInputDto);
-        customer.setEnabled(true);
-        customer.setCats(new ArrayList<Cat>());
-        customer.setOrders(new ArrayList<Order>());
-        customerRepos.save(customer);
-        return CustomerMapper.transferToDto(customer);
+        Customer newCustomer = CustomerMapper.transferFromDto(customerInputDto);
+        newCustomer.setEnabled(true);
+        newCustomer.setCats(new ArrayList<Cat>());
+        newCustomer.setOrders(new ArrayList<Order>());
+        customerRepos.save(newCustomer);
+        return CustomerMapper.transferToDto(newCustomer);
     }
 
     public CustomerDto editCustomer(String username, CustomerInputDto customerInputDto) {

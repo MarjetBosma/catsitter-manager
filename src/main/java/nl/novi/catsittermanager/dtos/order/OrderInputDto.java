@@ -14,7 +14,6 @@ import java.util.UUID;
 @Validated
 public record OrderInputDto (
 
-    UUID orderNo,
     @Future
     LocalDate startDate,
     @Future

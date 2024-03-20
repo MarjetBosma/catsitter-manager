@@ -37,12 +37,8 @@ public class TaskService {
     }
 
     public TaskDto createTask(@RequestBody TaskInputDto taskInputDto) {
-        Task newTask = new Task();
-        newTask.setTaskNo(taskInputDto.taskNo());
-        newTask.setTaskType(taskInputDto.taskType());
-        newTask.setTaskInstruction(taskInputDto.taskInstruction());
-        newTask.setExtraInstructions(taskInputDto.extraInstructions());
-        newTask.setOrders(taskInputDto.order());
+        Task newTask = TaskMapper.transferFromDto((taskInputDto));
+        newTask.setOrder(taskInputDto.order());
         taskRepos.save(newTask);
         return TaskMapper.transferToDto(newTask);
     }
@@ -58,11 +54,14 @@ public class TaskService {
                 if (task.getTaskInstruction() != null) {
                     task.setTaskInstruction(taskInputDto.taskInstruction());
                 }
-                if (taskInputDto.extraInstructions() != null) { // Mag eigenlijk wel null zijn, is optioneel
+                if (taskInputDto.extraInstructions() != null) {
                     task.setExtraInstructions(taskInputDto.extraInstructions());
                 }
                 if (taskInputDto.priceOfTask() != 0) {
                     task.setPriceOfTask(taskInputDto.priceOfTask());
+                }
+                if (taskInputDto.order() != null) {
+                    task.setOrder(taskInputDto.order());
                 }
                 return TaskMapper.transferToDto(task);
             } else {
@@ -76,5 +75,3 @@ public class TaskService {
     }
 }
 
-
-// methodes schrijven om Task aan andere entiteiten te koppelen

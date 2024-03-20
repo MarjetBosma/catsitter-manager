@@ -4,6 +4,8 @@ import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.models.Order;
+import nl.novi.catsittermanager.repositories.CatsitterRepository;
+import nl.novi.catsittermanager.repositories.CustomerRepository;
 import nl.novi.catsittermanager.repositories.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,8 +22,14 @@ public class OrderService {
 
     private final OrderRepository orderRepos;
 
-    public OrderService(OrderRepository orderRepos) {
+    private final CustomerRepository customerRepos;
+
+    private final CatsitterRepository catsitterRepos;
+
+    public OrderService(OrderRepository orderRepos, CustomerRepository customerRepos, CatsitterRepository catsitterRepos) {
         this.orderRepos = orderRepos;
+        this.customerRepos = customerRepos;
+        this.catsitterRepos = catsitterRepos;
     }
 
     public List<OrderDto> getAllOrders() {
@@ -36,14 +44,10 @@ public class OrderService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
     }
     public OrderDto createOrder(@RequestBody OrderInputDto orderInputDto) {
-        Order newOrder = new Order();
-        newOrder.setStartDate(orderInputDto.startDate());
-        newOrder.setEndDate(orderInputDto.endDate());
-        newOrder.setDailyNumberOfVisits(orderInputDto.dailyNumberOfVisits());
-        newOrder.setTotalNumberOfVisits(orderInputDto.totalNumberOfVisits());
+        Order newOrder = OrderMapper.transferFromDto(orderInputDto);
         newOrder.setTasks(orderInputDto.task());
-        newOrder.setCustomers(orderInputDto.customer());
-        newOrder.setCatsitters(orderInputDto.catsitter());
+        newOrder.setCustomer(orderInputDto.customer());
+        newOrder.setCatsitter(orderInputDto.catsitter());
         newOrder.setInvoice(orderInputDto.invoice());
         orderRepos.save(newOrder);
         return OrderMapper.transferToDto(newOrder);
@@ -69,10 +73,10 @@ public class OrderService {
                     order.setTasks(orderInputDto.task());
                 }
                 if (orderInputDto.customer() != null) {
-                    order.setCustomers(orderInputDto.customer());
+                    order.setCustomer(orderInputDto.customer());
                 }
                 if (orderInputDto.catsitter() != null) {
-                    order.setCatsitters(orderInputDto.catsitter());
+                    order.setCatsitter(orderInputDto.catsitter());
                 }
                 if (orderInputDto.invoice() != null) {
                     order.setInvoice(orderInputDto.invoice());

@@ -40,12 +40,12 @@ public class CatsitterService {
     }
 
     public CatsitterDto createCatsitter(final CatsitterInputDto catsitterInputDto) {
-        Catsitter catsitter = CatsitterMapper.transferFromDto((catsitterInputDto));
-        catsitter.setEnabled(true);
-        catsitter.setAbout(catsitterInputDto.about());
-        catsitter.setOrders(new ArrayList<Order>());
-        catsitterRepos.save(catsitter);
-        return CatsitterMapper.transferToDto(catsitter);
+        Catsitter newCatsitter = CatsitterMapper.transferFromDto((catsitterInputDto));
+        newCatsitter.setEnabled(true);
+        newCatsitter.setAbout(catsitterInputDto.about());
+        newCatsitter.setOrders(new ArrayList<Order>());
+        catsitterRepos.save(newCatsitter);
+        return CatsitterMapper.transferToDto(newCatsitter);
     }
 
     public CatsitterDto editCatsitter(String username, CatsitterInputDto catsitterInputDto) {

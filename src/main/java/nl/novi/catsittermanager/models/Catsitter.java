@@ -18,7 +18,7 @@ public class Catsitter extends User {
 
     private String about;
 
-    @OneToMany(mappedBy = "catsitters")
+    @OneToMany(mappedBy = "catsitter")
     private List<Order> orders;
 
 //    @ManyToMany(mappedBy = "catsitters")

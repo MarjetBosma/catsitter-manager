@@ -13,21 +13,20 @@ public class OrderMapper {
                             order.getDailyNumberOfVisits(),
                             order.getTotalNumberOfVisits(),
                             order.getTasks(),
-                            order.getCustomers(),
-                            order.getCatsitters(),
+                            order.getCustomer(),
+                            order.getCatsitter(),
                             order.getInvoice()
         );
     }
 
     public static Order transferFromDto(OrderInputDto orderInputDto) {
-        return Order.builder().orderNo(orderInputDto.orderNo())
-                .startDate(orderInputDto.startDate())
+        return Order.builder().startDate(orderInputDto.startDate())
                 .endDate(orderInputDto.endDate())
                 .dailyNumberOfVisits(orderInputDto.dailyNumberOfVisits())
                 .totalNumberOfVisits(orderInputDto.totalNumberOfVisits())
                 .tasks(orderInputDto.task())
-                .customers(orderInputDto.customer())
-                .catsitters(orderInputDto.catsitter())
+                .customer(orderInputDto.customer())
+                .catsitter(orderInputDto.catsitter())
                 .invoice(orderInputDto.invoice())
                 .build();
     }

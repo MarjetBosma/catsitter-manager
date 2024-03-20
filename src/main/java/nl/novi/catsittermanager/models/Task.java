@@ -23,8 +23,8 @@ public class Task {
     private String extraInstructions;
     private double priceOfTask;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_no")
-    private Order orders;
+    private Order order;
 
 }

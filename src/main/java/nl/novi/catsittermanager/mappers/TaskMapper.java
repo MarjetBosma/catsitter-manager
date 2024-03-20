@@ -11,17 +11,16 @@ public class TaskMapper {
                 task.getTaskInstruction(),
                 task.getExtraInstructions(),
                 task.getPriceOfTask(),
-                task.getOrders()
+                task.getOrder()
         );
     }
 
     public static Task transferFromDto(TaskInputDto taskInputDto) {
-        return Task.builder().taskNo(taskInputDto.taskNo())
-                .taskType(taskInputDto.taskType())
+        return Task.builder().taskType(taskInputDto.taskType())
                 .taskInstruction(taskInputDto.taskInstruction())
                 .extraInstructions(taskInputDto.extraInstructions())
                 .priceOfTask(taskInputDto.priceOfTask())
-                .orders(taskInputDto.order())
+                .order(taskInputDto.order())
                 .build();
     }
 }

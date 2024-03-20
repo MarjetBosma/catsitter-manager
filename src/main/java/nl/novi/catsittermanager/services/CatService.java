@@ -59,6 +59,9 @@ public class CatService {
             if (catInputDto.dateOfBirth() != null) {
                 cat.setDateOfBirth(catInputDto.dateOfBirth());
             }
+            if (catInputDto.gender() != null) {
+                cat.setGender(catInputDto.gender());
+            }
             if (catInputDto.breed() != null) {
                 cat.setBreed(catInputDto.breed());
             }

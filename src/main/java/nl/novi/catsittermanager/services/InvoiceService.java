@@ -36,11 +36,7 @@ public class InvoiceService {
     }
 
     public InvoiceDto createInvoice(InvoiceInputDto invoiceInputDto) {
-        Invoice newInvoice = new Invoice(invoiceInputDto.invoiceNo(), invoiceInputDto.invoiceDate(), invoiceInputDto.amount(), invoiceInputDto.paid(), invoiceInputDto.order());
-        newInvoice.setInvoiceNo(invoiceInputDto.invoiceNo());
-        newInvoice.setInvoiceDate(invoiceInputDto.invoiceDate());
-        newInvoice.setAmount(invoiceInputDto.amount());
-        newInvoice.setPaid(invoiceInputDto.paid());
+        Invoice newInvoice = InvoiceMapper.transferFromDto((invoiceInputDto));
         newInvoice.setOrder(invoiceInputDto.order());
         invoiceRepos.save(newInvoice);
         return InvoiceMapper.transferToDto(newInvoice);

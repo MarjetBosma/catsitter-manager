@@ -24,6 +24,8 @@ public class Cat {
 
     private LocalDate dateOfBirth;
 
+    private String gender;
+
     private String breed;
 
     private String generalInfo;
@@ -40,7 +42,7 @@ public class Cat {
 
     private String medicationDose;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Customer owner;
 
     private byte[] photo;
