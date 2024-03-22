@@ -1,11 +1,16 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.OneToMany;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -20,8 +25,5 @@ public class Catsitter extends User {
 
     @OneToMany(mappedBy = "catsitter")
     private List<Order> orders;
-
-//    @ManyToMany(mappedBy = "catsitters")
-//    private List<Customer> customers;
 
 }

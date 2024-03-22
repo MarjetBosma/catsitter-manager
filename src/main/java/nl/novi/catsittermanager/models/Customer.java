@@ -1,7 +1,13 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.OneToMany;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -20,12 +26,6 @@ public class Customer extends User {
 
     @OneToMany(mappedBy = "owner")
     private List<Cat> cats;
-
-//    @ManyToMany
-//    @JoinTable(name = "customers_catsitters",
-//            joinColumns = @JoinColumn(name = "customer_id"),
-//            inverseJoinColumns = @JoinColumn(name = "catsitter_id"))
-//    private List<Catsitter> catsitters;
 
 }
 

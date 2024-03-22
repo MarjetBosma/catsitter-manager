@@ -4,6 +4,7 @@ import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.OrderService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -64,13 +65,4 @@ public class OrderController {
         return ResponseEntity.ok().body("Order with id " + idToDelete +  " removed from database");
     }
 
-//    @PutMapping("/{orderId}/{invoiceId}")
-//    public OrderDto assignInvoiceToOrder(@PathVariable("orderId") long orderId, @PathVariable("invoiceId") long invoiceId) {
-//        return orderService.assignInvoiceToOrder(orderId, invoiceId);
-//    }
-//
-//    @PutMapping("/{orderId}/{taskId}")
-//    public OrderDto assignTaskToOrder(@PathVariable("personId") long orderId, @PathVariable("taskId") long taskId) {
-//        return orderService.assignTaskToOrder(orderId, taskId);
-//    }
 }

@@ -2,8 +2,8 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.exceptions.BadRequestException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
-// import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

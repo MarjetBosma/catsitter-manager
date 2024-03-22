@@ -16,7 +16,5 @@ public record CustomerDto (
         List<CatDto> cats,
         List<OrderDto> orders
 
-//        List<Catsitter> catsitters
-
 ) {
 }

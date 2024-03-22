@@ -4,6 +4,7 @@ import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.CustomerService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -62,15 +63,5 @@ public class CustomerController {
         customerService.deleteCustomer(username);
         return ResponseEntity.ok().body("Customer " + username +  " removed from database");
     }
-
-//    @PutMapping("/{customerId}/{catId}")
-//    public CustomerDto assignCatToCustomer(@PathVariable("customerId") Long customerId, @PathVariable("catId") long catId) {
-//        return customerService.assignCatToCustomer(customerId, catId);
-//    }
-//
-//    @PutMapping("/{customerId}/{orderId}")
-//    public CustomerDto assignOrderToCustomer(@PathVariable("customerId") Long customerId, @PathVariable("orderId") long orderId) {
-//        return customerService.assignOrderToCustomer(customerId, orderId);
-//    }
 
 }

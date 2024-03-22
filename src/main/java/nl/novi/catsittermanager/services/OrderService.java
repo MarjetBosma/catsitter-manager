@@ -4,13 +4,14 @@ import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.models.Order;
-import nl.novi.catsittermanager.repositories.CatsitterRepository;
-import nl.novi.catsittermanager.repositories.CustomerRepository;
 import nl.novi.catsittermanager.repositories.OrderRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,19 +19,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepos;
-
-    private final CustomerRepository customerRepos;
-
-    private final CatsitterRepository catsitterRepos;
-
-    public OrderService(OrderRepository orderRepos, CustomerRepository customerRepos, CatsitterRepository catsitterRepos) {
-        this.orderRepos = orderRepos;
-        this.customerRepos = customerRepos;
-        this.catsitterRepos = catsitterRepos;
-    }
 
     public List<OrderDto> getAllOrders() {
         return orderRepos.findAll().stream()
@@ -92,38 +84,5 @@ public class OrderService {
         return idToDelete;
     }
 
-//    @Override
-//    public OrderDto assignInvoiceToOrder(long customerId, long invoiceId) {
-//        Optional<Order> optionalOrder = orderRepos.findById(customerId);
-//        Optional<Invoice> optionalInvoice = invoiceRepos.findById(invoiceId);
-//
-//        if (optionalOrder.isPresent() && optionalInvoice.isPresent()) {
-//            Order order = optionalOrder.get();
-//            Invoice invoice = optionalInvoice.get();
-//
-//            order.setInvoice(invoice);
-//            orderRepos.save(order);
-//            return OrderMapper.transferToDto(order);
-//        } else {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order or invoice found with this id");
-//        }
-//    }
-//
-//    @Override
-//    public OrderDto assignTaskToOrder(long orderId, long taskId) {
-//        Optional<Order> optionalOrder = orderRepos.findById(orderId);
-//        Optional<Task> optionalTask= taskRepos.findById(taskId);
-//
-//        if (optionalOrder.isPresent() && optionalTask.isPresent()) {
-//            Order order = optionalOrder.get();
-//            Task task = optionalTask.get();
-//
-//            order.setTask(task);
-//            orderRepos.save(order);
-//            return OrderMapper.transferToDto(order);
-//        } else {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order or task found with this id");
-//        }
-//    }
 }
 

@@ -4,6 +4,7 @@ import nl.novi.catsittermanager.dtos.catsitter.CatsitterDto;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterInputDto;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.CatsitterService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 
 import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
 
@@ -63,10 +63,5 @@ public class CatsitterController {
         catsitterService.deleteCatsitter(username);
         return ResponseEntity.ok().body("Catsitter " + username +  " removed from database");
     }
-
-//    @PutMapping("/{customerId}/{orderId}")
-//    public CatsitterDto assignOrderToCatsitter(@PathVariable("customerId") Long catsitterId, @PathVariable("orderId") long orderId) {
-//        return catsitterService.assignOrderToCatsitter(catsitterId, orderId);
-//    }
 
 }

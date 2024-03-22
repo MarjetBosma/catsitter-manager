@@ -20,7 +20,8 @@ public class OrderMapper {
     }
 
     public static Order transferFromDto(OrderInputDto orderInputDto) {
-        return Order.builder().startDate(orderInputDto.startDate())
+        return Order.builder()
+                .startDate(orderInputDto.startDate())
                 .endDate(orderInputDto.endDate())
                 .dailyNumberOfVisits(orderInputDto.dailyNumberOfVisits())
                 .totalNumberOfVisits(orderInputDto.totalNumberOfVisits())

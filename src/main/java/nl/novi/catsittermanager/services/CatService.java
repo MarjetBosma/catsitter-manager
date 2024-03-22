@@ -1,6 +1,5 @@
 package nl.novi.catsittermanager.services;
 
-import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.mappers.CatMapper;
@@ -8,10 +7,13 @@ import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.repositories.CatRepository;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;

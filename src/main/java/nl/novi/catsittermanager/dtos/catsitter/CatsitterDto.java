@@ -10,9 +10,7 @@ public record CatsitterDto(
         String address,
         String email,
         String about,
-        List<nl.novi.catsittermanager.dtos.order.OrderDto> order
-
-//        List<Customer> customer
+        List<nl.novi.catsittermanager.dtos.order.OrderDto> customers
 
 ) {
 }

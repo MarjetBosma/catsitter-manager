@@ -14,7 +14,6 @@ public class CatsitterMapper {
                                 catsitter.getEmail(),
                                 catsitter.getAbout(),
                                 catsitter.getOrders().stream().map(OrderMapper::transferToDto).toList()
-//                                catsitter.getCustomers().stream().map(CustomerMapper::transferToDto).toList()
         );
     }
 
@@ -27,7 +26,6 @@ public class CatsitterMapper {
                 .email(catsitterInputDto.email())
                 .about(catsitterInputDto.about())
                 .orders(catsitterInputDto.orders())
-//                .customers(catsitterInputDto.customers())
                 .build();
     }
 }

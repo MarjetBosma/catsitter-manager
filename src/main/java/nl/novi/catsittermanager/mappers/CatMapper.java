@@ -6,7 +6,6 @@ import nl.novi.catsittermanager.models.Cat;
 
 public class CatMapper {
 
-
     public static CatDto transferToDto(Cat cat) {
         return new CatDto(cat.getId(),
                           cat.getName(),

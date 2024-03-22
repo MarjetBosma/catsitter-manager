@@ -5,10 +5,13 @@ import nl.novi.catsittermanager.dtos.task.TaskInputDto;
 import nl.novi.catsittermanager.mappers.TaskMapper;
 import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.repositories.TaskRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,13 +19,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TaskService {
 
     private final TaskRepository taskRepos;
-
-    public TaskService(TaskRepository taskRepos) {
-        this.taskRepos = taskRepos;
-    }
 
     public List<TaskDto> getAllTasks() {
         return taskRepos.findAll().stream()
@@ -73,5 +73,6 @@ public class TaskService {
         taskRepos.deleteById(idToDelete);
         return idToDelete;
     }
+
 }
 

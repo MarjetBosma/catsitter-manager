@@ -12,19 +12,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CustomerService {
 
     private final CustomerRepository customerRepos;
-
-    public CustomerService(CustomerRepository customerRepos) {
-        this.customerRepos = customerRepos;
-    }
 
     public List<CustomerDto> getAllCustomers() {
         return customerRepos.findAll().stream()
@@ -70,9 +69,6 @@ public class CustomerService {
             if (customerInputDto.orders() != null) {
                 customer.setOrders(customerInputDto.orders());
             }
-//            if (customerInputDto.catsitters() != null) {
-//                customer.setCatsitters(customerInputDto.catsitters());
-//            }
             customerRepos.save(customer);
             return CustomerMapper.transferToDto(customer);
         }
@@ -86,37 +82,4 @@ public class CustomerService {
         return username;
     }
 
-//    @Override
-//    public CustomerDto assignCatToCustomer(Long customerId, long catId) {
-//        Optional<Customer> optionalCustomer = customerRepos.findById(customerId);
-//        Optional<Cat> optionalCat = catRepos.findById(catId);
-//
-//        if (optionalCustomer.isPresent() && optionalCat.isPresent()) {
-//            Customer customer = optionalCustomer.get();
-//            Cat cat = optionalCat.get();
-//
-//            customer.setCat(cat);
-//            customerRepos.save(customer);
-//            return CustomerMapper.transferToDto(customer);
-//        } else {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer or car found with this id");
-//        }
-//    }
-
-//    @Override
-//    public CustomerDto assignOrderToCustomer(long customerId, long orderNo) {
-//        Optional<Customer> optionalCustomer = customerRepos.findById(customerId);
-//        Optional<Order> optionalOrder = orderRepos.findById(orderNo);
-//
-//        if (optionalCustomer.isPresent() && optionalOrder.isPresent()) {
-//            Customer customer = optionalCustomer.get();
-//            Order order = optionalOrder.get();
-//
-//            customer.setOrder(order);
-//            customerRepos.save(customer);
-//            return CustomerMapper.transferToDto(customer);
-//        } else {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer or car found with this id");
-//        }
-//    }
 }

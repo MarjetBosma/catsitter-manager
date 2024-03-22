@@ -17,7 +17,5 @@ public record CustomerInputDto(
         String email,
         List<Order> orders
 
-//        List<Catsitter> catsitters
-
 ) {
 }
