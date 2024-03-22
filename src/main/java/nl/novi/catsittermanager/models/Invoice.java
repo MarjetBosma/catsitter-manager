@@ -1,9 +1,19 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.Positive;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -23,10 +33,8 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private UUID invoiceNo;
 
-    @FutureOrPresent
     private LocalDate invoiceDate;
 
-    @Positive
     private Double amount;
 
     private Boolean paid;

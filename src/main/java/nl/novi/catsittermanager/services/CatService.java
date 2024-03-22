@@ -1,6 +1,5 @@
 package nl.novi.catsittermanager.services;
 
-import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.mappers.CatMapper;
@@ -8,10 +7,13 @@ import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.repositories.CatRepository;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,11 +42,10 @@ public class CatService {
     public CatDto createCat(@RequestBody CatInputDto catInputDto) {
         Cat newCat = CatMapper.transferFromDto(catInputDto);
 
-        //TODO: check if owner exists and do a nice catch
-        Customer owner = customerRepository.findById(catInputDto.ownerUsername()).orElseThrow();
+        Customer owner = customerRepository.findById(catInputDto.ownerUsername())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found"));
 
         newCat.setOwner(owner);
-
         catRepos.save(newCat);
         return CatMapper.transferToDto(newCat);
     }
@@ -59,6 +60,9 @@ public class CatService {
             }
             if (catInputDto.dateOfBirth() != null) {
                 cat.setDateOfBirth(catInputDto.dateOfBirth());
+            }
+            if (catInputDto.gender() != null) {
+                cat.setGender(catInputDto.gender());
             }
             if (catInputDto.breed() != null) {
                 cat.setBreed(catInputDto.breed());
@@ -78,21 +82,23 @@ public class CatService {
             if (catInputDto.phoneVet() != null) {
                 cat.setPhoneVet(catInputDto.phoneVet());
             }
-            if (catInputDto.medicationName() != null) { // mag eigenlijk wel null zijn indien kat geen medicatie heeft
+            if (catInputDto.medicationName() != null) {
                 cat.setMedicationName(catInputDto.medicationName());
             }
-            if (catInputDto.medicationDose() != null) { // mag eigenlijk wel null zijn indien kat geen medicatie heeft
+            if (catInputDto.medicationDose() != null) {
                 cat.setMedicationDose(catInputDto.medicationDose());
             }
-
-            //TODO: check if owner is updated
-
-            catRepos.save(cat);
-            return CatMapper.transferToDto(cat);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id.");
+            if (catInputDto.ownerUsername() != null) {
+                Customer owner = customerRepository.findById(catInputDto.ownerUsername())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found"));
+                cat.setOwner(owner);
+            }
+        catRepos.save(cat);
+        return CatMapper.transferToDto(cat);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id.");
+            }
         }
-    }
 
     public UUID deleteCat(UUID idToDelete) {
         catRepos.deleteById(idToDelete);

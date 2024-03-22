@@ -4,6 +4,7 @@ import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.CatService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -61,11 +62,5 @@ public class CatController {
         catService.deleteCat(idToDelete);
         return ResponseEntity.ok().body("Cat with id " + idToDelete +  " removed from database");
     }
-
-//    @PutMapping("/{id}/customer")
-//    public ResponseEntity<Object> assignCustomerToCat(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-//        catService.assignCustomerToCat(id, input.id);
-//        return ResponseEntity.noContent().build();
-//    }
 
 }

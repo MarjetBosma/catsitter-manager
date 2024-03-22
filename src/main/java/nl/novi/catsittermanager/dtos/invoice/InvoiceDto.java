@@ -9,7 +9,7 @@ public record InvoiceDto (
     UUID invoiceNo,
     LocalDate invoiceDate,
     Double amount,
-    Boolean paid, // true/false omzetten naar ja/nee
+    Boolean paid,
     Order order
 
 ) {

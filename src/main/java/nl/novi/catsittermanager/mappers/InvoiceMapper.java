@@ -16,7 +16,7 @@ public class InvoiceMapper {
     }
 
     public static Invoice transferFromDto(InvoiceInputDto invoiceInputDto) {
-        return Invoice.builder().invoiceNo(invoiceInputDto.invoiceNo())
+        return Invoice.builder()
                 .invoiceDate(invoiceInputDto.invoiceDate())
                 .amount(invoiceInputDto.amount())
                 .paid(invoiceInputDto.paid())

@@ -9,28 +9,26 @@
 //import org.springframework.security.core.userdetails.UserDetailsService;
 //import org.springframework.stereotype.Service;
 //
+//import lombok.RequiredArgsConstructor;
+//
 //import java.util.ArrayList;
 //import java.util.List;
 //import java.util.Set;
 //
 //@Service
+//@RequiredArgsConstructor
 //public class CustomUserDetailsService implements UserDetailsService {
 //
-//    private final UserServiceImplementation userService;
-//
-//    public CustomUserDetailsService(UserServiceImplementation userService) {
-//        this.userService = userService;
-//    }
+//    private final UserService userService;
 //
 //
 //    @Override
 //    public UserDetails loadUserByUsername(String username) {
 //        UserDto userDto = userService.getUser(username);
 //
+//        String password = userDto.password();
 //
-//        String password = userDto.password;
-//
-//        Set<Authority> authorities = userDto.authorities;
+//        Set<Authority> authorities = userDto.authorities();
 //        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 //        for (Authority authority: authorities) {
 //            grantedAuthorities.add(new SimpleGrantedAuthority(authority.getAuthority()));

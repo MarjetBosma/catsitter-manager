@@ -5,10 +5,13 @@ import nl.novi.catsittermanager.dtos.task.TaskInputDto;
 import nl.novi.catsittermanager.mappers.TaskMapper;
 import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.repositories.TaskRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,13 +19,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TaskService {
 
     private final TaskRepository taskRepos;
-
-    public TaskService(TaskRepository taskRepos) {
-        this.taskRepos = taskRepos;
-    }
 
     public List<TaskDto> getAllTasks() {
         return taskRepos.findAll().stream()
@@ -37,11 +37,7 @@ public class TaskService {
     }
 
     public TaskDto createTask(@RequestBody TaskInputDto taskInputDto) {
-        Task newTask = new Task();
-        newTask.setTaskNo(taskInputDto.taskNo());
-        newTask.setTaskType(taskInputDto.taskType());
-        newTask.setTaskInstruction(taskInputDto.taskInstruction());
-        newTask.setExtraInstructions(taskInputDto.extraInstructions());
+        Task newTask = TaskMapper.transferFromDto((taskInputDto));
         newTask.setOrder(taskInputDto.order());
         taskRepos.save(newTask);
         return TaskMapper.transferToDto(newTask);
@@ -58,11 +54,14 @@ public class TaskService {
                 if (task.getTaskInstruction() != null) {
                     task.setTaskInstruction(taskInputDto.taskInstruction());
                 }
-                if (taskInputDto.extraInstructions() != null) { // Mag eigenlijk wel null zijn, is optioneel
+                if (taskInputDto.extraInstructions() != null) {
                     task.setExtraInstructions(taskInputDto.extraInstructions());
                 }
                 if (taskInputDto.priceOfTask() != 0) {
                     task.setPriceOfTask(taskInputDto.priceOfTask());
+                }
+                if (taskInputDto.order() != null) {
+                    task.setOrder(taskInputDto.order());
                 }
                 return TaskMapper.transferToDto(task);
             } else {
@@ -74,7 +73,6 @@ public class TaskService {
         taskRepos.deleteById(idToDelete);
         return idToDelete;
     }
+
 }
 
-
-// methodes schrijven om Task aan andere entiteiten te koppelen

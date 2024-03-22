@@ -9,19 +9,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class InvoiceService {
 
     private final InvoiceRepository invoiceRepos;
-
-    public InvoiceService(InvoiceRepository invoiceRepos) {
-        this.invoiceRepos = invoiceRepos;
-    }
 
     public List<InvoiceDto> getAllInvoices() {
         return invoiceRepos.findAll().stream()
@@ -36,11 +35,7 @@ public class InvoiceService {
     }
 
     public InvoiceDto createInvoice(InvoiceInputDto invoiceInputDto) {
-        Invoice newInvoice = new Invoice(invoiceInputDto.invoiceNo(), invoiceInputDto.invoiceDate(), invoiceInputDto.amount(), invoiceInputDto.paid(), invoiceInputDto.order());
-        newInvoice.setInvoiceNo(invoiceInputDto.invoiceNo());
-        newInvoice.setInvoiceDate(invoiceInputDto.invoiceDate());
-        newInvoice.setAmount(invoiceInputDto.amount());
-        newInvoice.setPaid(invoiceInputDto.paid());
+        Invoice newInvoice = InvoiceMapper.transferFromDto((invoiceInputDto));
         newInvoice.setOrder(invoiceInputDto.order());
         invoiceRepos.save(newInvoice);
         return InvoiceMapper.transferToDto(newInvoice);
@@ -52,10 +47,7 @@ public class InvoiceService {
         if (optionalInvoice.isPresent()) {
             Invoice invoice = optionalInvoice.get();
             if (invoiceInputDto.invoiceDate() != null) {
-                invoice.setInvoiceNo(invoiceInputDto.invoiceNo());
-            }
-            if (invoice.getInvoiceDate() != null) {
-                invoice.setAmount(invoiceInputDto.amount());
+                invoice.setInvoiceDate(invoiceInputDto.invoiceDate());
             }
             if (invoice.getPaid() != null) {
                 invoice.setPaid(invoiceInputDto.paid());
@@ -74,6 +66,5 @@ public class InvoiceService {
         invoiceRepos.deleteById(idToDelete);
         return idToDelete;
     }
-
 
 }

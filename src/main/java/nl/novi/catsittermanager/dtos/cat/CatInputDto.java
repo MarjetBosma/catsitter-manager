@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.dtos.cat;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
         String name,
         @Past
         LocalDate dateOfBirth,
+        String gender,
         String breed,
         String generalInfo,
         Boolean spayedOrNeutered,

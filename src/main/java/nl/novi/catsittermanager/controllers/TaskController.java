@@ -4,6 +4,7 @@ import nl.novi.catsittermanager.dtos.task.TaskDto;
 import nl.novi.catsittermanager.dtos.task.TaskInputDto;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.TaskService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -62,11 +63,5 @@ public class TaskController {
         taskService.deleteTask(idToDelete);
         return ResponseEntity.ok().body("Task with id " + idToDelete +  " removed from database");
     }
-
-//    @PutMapping("/{id}/order")
-//    public ResponseEntity<Object> assignOrderToTask(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-//        taskService.assignOrderToTask(id, input.id);
-//        return ResponseEntity.noContent().build();
-//    }
 
 }

@@ -6,11 +6,12 @@ import java.util.UUID;
 public record CatDto (
     UUID id,
     String name,
-    LocalDate dateOfBirth, // omzetten naar DD-MM-JJJJ format?
+    LocalDate dateOfBirth,
+    String gender,
     String breed,
     String generalInfo,
-    Boolean spayedOrNeutered, // true/false omzetten naar ja/nee
-    Boolean vaccinated, // true/false omzetten naar ja/nee
+    Boolean spayedOrNeutered,
+    Boolean vaccinated,
     String veterinarianName,
     String phoneVet,
     String medicationName,

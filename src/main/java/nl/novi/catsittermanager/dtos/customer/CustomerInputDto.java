@@ -14,6 +14,8 @@ public record CustomerInputDto(
         String password,
         String name,
         String address,
-        String email
+        String email,
+        List<Order> orders
+
 ) {
 }

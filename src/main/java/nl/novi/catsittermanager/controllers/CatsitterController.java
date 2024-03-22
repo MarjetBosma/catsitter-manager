@@ -4,6 +4,7 @@ import nl.novi.catsittermanager.dtos.catsitter.CatsitterDto;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterInputDto;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.CatsitterService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 
 import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
 
@@ -30,9 +30,9 @@ public class CatsitterController {
         return ResponseEntity.ok(catsitterService.getAllCatsitters());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CatsitterDto> getCatSitter(@PathVariable("id") final UUID idToFind) {
-            CatsitterDto catsitterDto = catsitterService.getCatsitter(idToFind);
+    @GetMapping("/{username}")
+    public ResponseEntity<CatsitterDto> getCatSitter(@PathVariable("id") final String username) {
+            CatsitterDto catsitterDto = catsitterService.getCatsitter(username);
             return ResponseEntity.ok(catsitterDto);
     }
 
@@ -51,22 +51,17 @@ public class CatsitterController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CatsitterDto> editCatsitter(@PathVariable("id") final UUID idToEdit, @RequestBody final CatsitterInputDto catsitter) {
-        CatsitterDto editedCatsitter = catsitterService.editCatsitter(idToEdit, catsitter);
+    @PutMapping("/{username}")
+    public ResponseEntity<CatsitterDto> editCatsitter(@PathVariable("username") final String username, @RequestBody final CatsitterInputDto catsitter) {
+        CatsitterDto editedCatsitter = catsitterService.editCatsitter(username, catsitter);
 
         return ResponseEntity.ok().body(editedCatsitter);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteCatsitter(@PathVariable("id") final UUID idToDelete) {
-        catsitterService.deleteCatsitter(idToDelete);
-        return ResponseEntity.ok().body("Catsitter with id " + idToDelete +  " removed from database");
+    @DeleteMapping("/{username}")
+    public ResponseEntity<Object> deleteCatsitter(@PathVariable("username") final String username) {
+        catsitterService.deleteCatsitter(username);
+        return ResponseEntity.ok().body("Catsitter " + username +  " removed from database");
     }
-
-//    @PutMapping("/{customerId}/{orderId}")
-//    public CatsitterDto assignOrderToCatsitter(@PathVariable("customerId") Long catsitterId, @PathVariable("orderId") long orderId) {
-//        return catsitterService.assignOrderToCatsitter(catsitterId, orderId);
-//    }
 
 }

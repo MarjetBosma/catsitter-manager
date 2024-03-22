@@ -1,30 +1,29 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.OneToMany;
 
-import java.util.ArrayList;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder(builderMethodName = "CatsitterBuilder")
+@SuperBuilder(builderMethodName = "CatsitterBuilder")
 @Entity
 @Table(name = "catsitters")
 public class Catsitter extends User {
 
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
     private String about;
 
     @OneToMany(mappedBy = "catsitter")
-    private List<Order> order;
-
-    @ManyToMany(mappedBy = "catsitter")
-    private List<Customer> customer;
+    private List<Order> orders;
 
 }

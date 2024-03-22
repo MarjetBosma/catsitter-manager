@@ -16,7 +16,7 @@ public class TaskMapper {
     }
 
     public static Task transferFromDto(TaskInputDto taskInputDto) {
-        return Task.builder().taskNo(taskInputDto.taskNo())
+        return Task.builder()
                 .taskType(taskInputDto.taskType())
                 .taskInstruction(taskInputDto.taskInstruction())
                 .extraInstructions(taskInputDto.extraInstructions())

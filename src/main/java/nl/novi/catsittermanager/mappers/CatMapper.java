@@ -10,6 +10,7 @@ public class CatMapper {
         return new CatDto(cat.getId(),
                           cat.getName(),
                           cat.getDateOfBirth(),
+                          cat.getGender(),
                           cat.getBreed(),
                           cat.getGeneralInfo(),
                           cat.getSpayedOrNeutered(),
@@ -26,12 +27,14 @@ public class CatMapper {
         return Cat.builder()
                 .name(catInputDto.name())
                 .dateOfBirth(catInputDto.dateOfBirth())
+                .gender(catInputDto.gender())
                 .breed(catInputDto.breed())
                 .generalInfo(catInputDto.generalInfo())
                 .spayedOrNeutered(catInputDto.spayedOrNeutered())
                 .vaccinated(catInputDto.vaccinated())
                 .veterinarianName(catInputDto.veterinarianName())
                 .phoneVet(catInputDto.phoneVet())
+                .medicationName(catInputDto.medicationName())
                 .medicationDose(catInputDto.medicationDose())
                 .build();
     }
