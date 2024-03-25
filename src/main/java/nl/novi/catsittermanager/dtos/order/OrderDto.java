@@ -1,9 +1,9 @@
 package nl.novi.catsittermanager.dtos.order;
 
+import nl.novi.catsittermanager.dtos.task.TaskDto;
 import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Invoice;
-import nl.novi.catsittermanager.models.Task;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,7 +16,7 @@ public record OrderDto(
         LocalDate endDate,
         int dailyNumberOVisits,
         int totalNumberOfVisits,
-        List<Task> task,
+        List<TaskDto> tasks,
         Customer customer,
         Catsitter catsitter,
         Invoice invoice

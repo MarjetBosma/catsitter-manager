@@ -5,7 +5,9 @@ import nl.novi.catsittermanager.dtos.invoice.InvoiceDto;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceInputDto;
 import nl.novi.catsittermanager.mappers.InvoiceMapper;
 import nl.novi.catsittermanager.models.Invoice;
+import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.InvoiceRepository;
+import nl.novi.catsittermanager.repositories.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class InvoiceService {
 
     private final InvoiceRepository invoiceRepos;
+    private final OrderRepository orderRepos;
 
     public List<InvoiceDto> getAllInvoices() {
         return invoiceRepos.findAll().stream()
@@ -35,6 +38,8 @@ public class InvoiceService {
 
     public InvoiceDto createInvoice(InvoiceInputDto invoiceInputDto) {
         Invoice newInvoice = InvoiceMapper.transferFromInputDto((invoiceInputDto));
+        Order order = orderRepos.findById(invoiceInputDto.orderNo())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
         invoiceRepos.save(newInvoice);
         return InvoiceMapper.transferToDto(newInvoice);
     }

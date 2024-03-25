@@ -38,7 +38,7 @@ public class CatsitterService {
 
     public CatsitterDto createCatsitter(final CatsitterInputDto catsitterInputDto) {
         Catsitter newCatsitter = CatsitterMapper.transferFromInputDto((catsitterInputDto));
-        newCatsitter.enable();
+        newCatsitter.setEnabled(true);
         newCatsitter.setRole(Role.USER);
         newCatsitter.setOrders(new ArrayList<Order>());
         catsitterRepos.save(newCatsitter);

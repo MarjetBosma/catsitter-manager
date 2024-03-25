@@ -17,7 +17,7 @@ public class OrderMapper {
                 order.getEndDate(),
                 order.getDailyNumberOfVisits(),
                 order.getTotalNumberOfVisits(),
-                order.getTasks(),
+                order.getTasks().stream().map(TaskMapper::transferToDto).toList(),
                 order.getCustomer(),
                 order.getCatsitter(),
                 order.getInvoice()
@@ -33,7 +33,7 @@ public class OrderMapper {
                 .tasks(new ArrayList<>())
                 .customer(new Customer())
                 .catsitter(new Catsitter())
-                .invoice(new Invoice())
+                // .invoice(new Invoice())
                 .build();
     }
 }

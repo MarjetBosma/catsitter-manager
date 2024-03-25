@@ -6,6 +6,7 @@ import nl.novi.catsittermanager.models.Order;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Validated
 public record InvoiceInputDto(
@@ -14,7 +15,7 @@ public record InvoiceInputDto(
         LocalDate invoiceDate,
         @Positive
         Double amount,
-        Boolean paid
-
+        Boolean paid,
+        UUID orderNo
 ) {
 }

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class CatService {
 
     private final CatRepository catRepos;
-    private final CustomerRepository customerRepository;
+    private final CustomerRepository customerRepos;
 
     public List<CatDto> getAllCats() {
         return catRepos.findAll().stream()
@@ -38,11 +38,9 @@ public class CatService {
     }
 
     public CatDto createCat(@RequestBody CatInputDto catInputDto) {
-        Cat newCat = CatMapper.transferFromDto(catInputDto);
-
-        Customer owner = customerRepository.findById(catInputDto.ownerUsername())
+        Cat newCat = CatMapper.transferFromInputDto(catInputDto);
+        Customer owner = customerRepos.findById(catInputDto.ownerUsername())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found"));
-
         newCat.setOwner(owner);
         catRepos.save(newCat);
         return CatMapper.transferToDto(newCat);
@@ -87,7 +85,7 @@ public class CatService {
                 cat.setMedicationDose(catInputDto.medicationDose());
             }
             if (catInputDto.ownerUsername() != null) {
-                Customer owner = customerRepository.findById(catInputDto.ownerUsername())
+                Customer owner = customerRepos.findById(catInputDto.ownerUsername())
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found"));
                 cat.setOwner(owner);
             }

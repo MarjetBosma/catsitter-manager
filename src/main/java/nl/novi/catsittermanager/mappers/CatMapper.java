@@ -23,7 +23,7 @@ public class CatMapper {
         );
     }
 
-    public static Cat transferFromDto(CatInputDto catInputDto) {
+    public static Cat transferFromInputDto(CatInputDto catInputDto) {
         return Cat.builder()
                 .name(catInputDto.name())
                 .dateOfBirth(catInputDto.dateOfBirth())

@@ -7,7 +7,8 @@ import nl.novi.catsittermanager.models.Invoice;
 public class InvoiceMapper {
 
     public static InvoiceDto transferToDto(Invoice invoice) {
-        return new InvoiceDto(invoice.getInvoiceNo(),
+        return new InvoiceDto(
+                invoice.getInvoiceNo(),
                 invoice.getInvoiceDate(),
                 invoice.getAmount(),
                 invoice.getPaid(),

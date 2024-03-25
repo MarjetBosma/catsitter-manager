@@ -5,6 +5,7 @@ import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
+import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
@@ -38,9 +39,10 @@ public class CustomerService {
 
     public CustomerDto createCustomer(final CustomerInputDto customerInputDto) {
         Customer newCustomer = CustomerMapper.transferFromInputDto(customerInputDto);
-        newCustomer.enable();
+        newCustomer.setEnabled(true);
         newCustomer.setRole(Role.USER);
         newCustomer.setOrders(new ArrayList<Order>());
+        newCustomer.setCats(new ArrayList<Cat>());
         customerRepos.save(newCustomer);
         return CustomerMapper.transferToDto(newCustomer);
     }

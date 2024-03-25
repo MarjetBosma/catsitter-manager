@@ -4,13 +4,21 @@ import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
 import nl.novi.catsittermanager.mappers.OrderMapper;
+import nl.novi.catsittermanager.models.Catsitter;
+import nl.novi.catsittermanager.models.Customer;
+import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.models.Order;
+import nl.novi.catsittermanager.models.Task;
+import nl.novi.catsittermanager.repositories.CatsitterRepository;
+import nl.novi.catsittermanager.repositories.CustomerRepository;
 import nl.novi.catsittermanager.repositories.OrderRepository;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,6 +29,8 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepos;
+    private final CustomerRepository customerRepos;
+    private final CatsitterRepository catsitterRepos;
 
     public List<OrderDto> getAllOrders() {
         return orderRepos.findAll().stream()
@@ -36,6 +46,14 @@ public class OrderService {
 
     public OrderDto createOrder(@RequestBody OrderInputDto orderInputDto) {
         Order newOrder = OrderMapper.transferFromInputDto(orderInputDto);
+        newOrder.setTasks(new ArrayList<Task>());
+        Customer customer = customerRepos.findById(orderInputDto.customerUsername())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+        newOrder.setCustomer(customer);
+        Catsitter catsitter = catsitterRepos.findById(orderInputDto.catsitterUsername())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Catsitter not found"));
+        newOrder.setCatsitter(catsitter);
+        newOrder.setInvoice(new Invoice());
         orderRepos.save(newOrder);
         return OrderMapper.transferToDto(newOrder);
     }
@@ -55,6 +73,16 @@ public class OrderService {
             }
             if (orderInputDto.totalNumberOfVisits() != 0) {
                 order.setTotalNumberOfVisits(orderInputDto.totalNumberOfVisits());
+            }
+            if (orderInputDto.customerUsername() != null) {
+                Customer customer = customerRepos.findById(orderInputDto.customerUsername())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+                order.setCustomer(customer);
+            }
+            if (orderInputDto.catsitterUsername() != null) {
+                Catsitter catsitter = catsitterRepos.findById(orderInputDto.catsitterUsername())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Catsitter not found"));
+                order.setCatsitter(catsitter);
             }
             return OrderMapper.transferToDto(order);
         } else {
