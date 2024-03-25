@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.services;
 
+import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceDto;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceInputDto;
 import nl.novi.catsittermanager.mappers.InvoiceMapper;
@@ -8,8 +9,6 @@ import nl.novi.catsittermanager.repositories.InvoiceRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,8 +34,7 @@ public class InvoiceService {
     }
 
     public InvoiceDto createInvoice(InvoiceInputDto invoiceInputDto) {
-        Invoice newInvoice = InvoiceMapper.transferFromDto((invoiceInputDto));
-        newInvoice.setOrder(invoiceInputDto.order());
+        Invoice newInvoice = InvoiceMapper.transferFromInputDto((invoiceInputDto));
         invoiceRepos.save(newInvoice);
         return InvoiceMapper.transferToDto(newInvoice);
     }
@@ -51,9 +49,6 @@ public class InvoiceService {
             }
             if (invoice.getPaid() != null) {
                 invoice.setPaid(invoiceInputDto.paid());
-            }
-            if (invoice.getOrder() != null) {
-                invoice.setOrder(invoiceInputDto.order());
             }
             invoiceRepos.save(invoice);
             return InvoiceMapper.transferToDto(invoice);

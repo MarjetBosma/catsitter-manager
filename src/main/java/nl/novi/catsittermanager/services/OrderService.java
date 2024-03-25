@@ -1,17 +1,15 @@
 package nl.novi.catsittermanager.services;
 
+import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.OrderRepository;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
-
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,47 +33,32 @@ public class OrderService {
                 .map(OrderMapper::transferToDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
     }
+
     public OrderDto createOrder(@RequestBody OrderInputDto orderInputDto) {
-        Order newOrder = OrderMapper.transferFromDto(orderInputDto);
-        newOrder.setTasks(orderInputDto.task());
-        newOrder.setCustomer(orderInputDto.customer());
-        newOrder.setCatsitter(orderInputDto.catsitter());
-        newOrder.setInvoice(orderInputDto.invoice());
+        Order newOrder = OrderMapper.transferFromInputDto(orderInputDto);
         orderRepos.save(newOrder);
         return OrderMapper.transferToDto(newOrder);
     }
 
     public OrderDto editOrder(UUID idToEdit, OrderInputDto orderInputDto) {
         Optional<Order> optionalOrder = orderRepos.findById(idToEdit);
-            if (optionalOrder.isPresent()) {
-                Order order = optionalOrder.get();
-                if (orderInputDto.startDate() != null) {
-                    order.setStartDate(orderInputDto.startDate());
-                }
-                if (orderInputDto.endDate() != null) {
-                    order.setEndDate(orderInputDto.endDate());
-                }
-                if (orderInputDto.dailyNumberOfVisits() != 0) {
-                    order.setDailyNumberOfVisits(orderInputDto.dailyNumberOfVisits());
-                }
-                if (orderInputDto.totalNumberOfVisits() != 0) {
-                    order.setTotalNumberOfVisits(orderInputDto.totalNumberOfVisits());
-                }
-                if (orderInputDto.task() != null) {
-                    order.setTasks(orderInputDto.task());
-                }
-                if (orderInputDto.customer() != null) {
-                    order.setCustomer(orderInputDto.customer());
-                }
-                if (orderInputDto.catsitter() != null) {
-                    order.setCatsitter(orderInputDto.catsitter());
-                }
-                if (orderInputDto.invoice() != null) {
-                    order.setInvoice(orderInputDto.invoice());
-                }
-                return OrderMapper.transferToDto(order);
-            } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order found with this id.");
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            if (orderInputDto.startDate() != null) {
+                order.setStartDate(orderInputDto.startDate());
+            }
+            if (orderInputDto.endDate() != null) {
+                order.setEndDate(orderInputDto.endDate());
+            }
+            if (orderInputDto.dailyNumberOfVisits() != 0) {
+                order.setDailyNumberOfVisits(orderInputDto.dailyNumberOfVisits());
+            }
+            if (orderInputDto.totalNumberOfVisits() != 0) {
+                order.setTotalNumberOfVisits(orderInputDto.totalNumberOfVisits());
+            }
+            return OrderMapper.transferToDto(order);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order found with this id.");
         }
     }
 

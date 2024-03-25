@@ -1,18 +1,16 @@
 package nl.novi.catsittermanager.services;
 
+import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
+import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
-import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +24,8 @@ public class CustomerService {
     private final CustomerRepository customerRepos;
 
     public List<CustomerDto> getAllCustomers() {
-        return customerRepos.findAll().stream()
+        return customerRepos.findAll()
+                .stream()
                 .map(CustomerMapper::transferToDto)
                 .collect(Collectors.toList());
     }
@@ -38,9 +37,9 @@ public class CustomerService {
     }
 
     public CustomerDto createCustomer(final CustomerInputDto customerInputDto) {
-        Customer newCustomer = CustomerMapper.transferFromDto(customerInputDto);
-        newCustomer.setEnabled(true);
-        newCustomer.setCats(new ArrayList<Cat>());
+        Customer newCustomer = CustomerMapper.transferFromInputDto(customerInputDto);
+        newCustomer.enable();
+        newCustomer.setRole(Role.USER);
         newCustomer.setOrders(new ArrayList<Order>());
         customerRepos.save(newCustomer);
         return CustomerMapper.transferToDto(newCustomer);
@@ -66,13 +65,9 @@ public class CustomerService {
             if (customerInputDto.email() != null) {
                 customer.setEmail(customerInputDto.email());
             }
-            if (customerInputDto.orders() != null) {
-                customer.setOrders(customerInputDto.orders());
-            }
             customerRepos.save(customer);
             return CustomerMapper.transferToDto(customer);
-        }
-        else {
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this username.");
         }
     }

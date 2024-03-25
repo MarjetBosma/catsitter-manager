@@ -4,6 +4,8 @@ import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.models.Customer;
 
+import java.util.ArrayList;
+
 public class CustomerMapper {
 
     public static CustomerDto transferToDto(Customer customer) {
@@ -18,14 +20,15 @@ public class CustomerMapper {
         );
     }
 
-    public static Customer transferFromDto(CustomerInputDto customerInputDto) {
+    public static Customer transferFromInputDto(CustomerInputDto customerInputDto) {
         return Customer.CustomerBuilder()
                 .username(customerInputDto.username())
                 .password(customerInputDto.password())
                 .name(customerInputDto.name())
                 .address(customerInputDto.address())
                 .email(customerInputDto.email())
-                .orders(customerInputDto.orders())
+                .orders(new ArrayList<>())
+                .cats(new ArrayList<>())
                 .build();
     }
 }

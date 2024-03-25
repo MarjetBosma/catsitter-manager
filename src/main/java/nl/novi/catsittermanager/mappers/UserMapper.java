@@ -8,18 +8,18 @@ public class UserMapper {
 
     public static UserDto transferToDto(User user) {
         return new UserDto(user.getUsername(),
-                           user.getPassword(),
-                           user.getRole(),
-                           user.getAuthorities(),
-                           user.getEnabled(),
-                           user.getName(),
-                           user.getAddress(),
-                           user.getEmail()
+                user.getPassword(),
+                user.getRole(),
+                user.getAuthorities(),
+                user.getEnabled(),
+                user.getName(),
+                user.getAddress(),
+                user.getEmail()
         );
     }
 
     public static User transferFromDto(UserInputDto userInputDto) {
-    return User.builder()
+        return User.builder()
                 .username(userInputDto.username())
                 .password(userInputDto.password())
                 .role(userInputDto.role())

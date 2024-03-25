@@ -1,23 +1,20 @@
 package nl.novi.catsittermanager.dtos.invoice;
 
 import jakarta.validation.constraints.FutureOrPresent;
-import nl.novi.catsittermanager.models.Order;
-
 import jakarta.validation.constraints.Positive;
-
+import nl.novi.catsittermanager.models.Order;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 
 @Validated
-public record InvoiceInputDto (
+public record InvoiceInputDto(
 
-    @FutureOrPresent
-    LocalDate invoiceDate,
-    @Positive
-    Double amount,
-    Boolean paid,
-    Order order
+        @FutureOrPresent
+        LocalDate invoiceDate,
+        @Positive
+        Double amount,
+        Boolean paid
 
 ) {
 }

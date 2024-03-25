@@ -1,21 +1,18 @@
 package nl.novi.catsittermanager.services;
 
+import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.user.UserDto;
 import nl.novi.catsittermanager.dtos.user.UserInputDto;
 import nl.novi.catsittermanager.mappers.UserMapper;
 import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.repositories.UserRepository;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,40 +51,40 @@ public class UserService {
     public UserDto editUser(String userToEdit, UserInputDto userInputDto) {
         Optional<User> optionalUser = userRepos.findById(userToEdit);
 
-            if (optionalUser.isPresent()) {
-                User user = optionalUser.get();
-                if (userInputDto.username() != null) {
-                    user.setUsername(userInputDto.username());
-                }
-                if (userInputDto.password() != null) {
-                    user.setPassword(userInputDto.password());
-                }
-                if (userInputDto.role() != null) {
-                    user.setRole(userInputDto.role());
-                }
-                if (userInputDto.authorities() != null) {
-                    user.setAuthorities(userInputDto.authorities());
-                }
-                if (userInputDto.enabled() != null) {
-                    user.setEnabled(userInputDto.enabled());
-                }
-                if (userInputDto.name() != null) {
-                    user.setName(userInputDto.name());
-                }
-                if (userInputDto.address() != null) {
-                    user.setAddress(userInputDto.address());
-                }
-                if (userInputDto.email() != null) {
-                    user.setEmail(userInputDto.email());
-                }
-                userRepos.save(user);
-                return UserMapper.transferToDto(user);
-            } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with this id");
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if (userInputDto.username() != null) {
+                user.setUsername(userInputDto.username());
+            }
+            if (userInputDto.password() != null) {
+                user.setPassword(userInputDto.password());
+            }
+            if (userInputDto.role() != null) {
+                user.setRole(userInputDto.role());
+            }
+            if (userInputDto.authorities() != null) {
+                user.setAuthorities(userInputDto.authorities());
+            }
+            if (userInputDto.enabled() != null) {
+                user.setEnabled(userInputDto.enabled());
+            }
+            if (userInputDto.name() != null) {
+                user.setName(userInputDto.name());
+            }
+            if (userInputDto.address() != null) {
+                user.setAddress(userInputDto.address());
+            }
+            if (userInputDto.email() != null) {
+                user.setEmail(userInputDto.email());
+            }
+            userRepos.save(user);
+            return UserMapper.transferToDto(user);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with this id");
         }
     }
 
-    public String deleteUser (String userToDelete) {
+    public String deleteUser(String userToDelete) {
         userRepos.deleteById(userToDelete);
         return userToDelete;
     }

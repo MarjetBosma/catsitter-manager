@@ -1,17 +1,16 @@
 package nl.novi.catsittermanager.services;
 
+import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterDto;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterInputDto;
+import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.mappers.CatsitterMapper;
 import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CatsitterRepository;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +37,9 @@ public class CatsitterService {
     }
 
     public CatsitterDto createCatsitter(final CatsitterInputDto catsitterInputDto) {
-        Catsitter newCatsitter = CatsitterMapper.transferFromDto((catsitterInputDto));
-        newCatsitter.setEnabled(true);
-        newCatsitter.setAbout(catsitterInputDto.about());
+        Catsitter newCatsitter = CatsitterMapper.transferFromInputDto((catsitterInputDto));
+        newCatsitter.enable();
+        newCatsitter.setRole(Role.USER);
         newCatsitter.setOrders(new ArrayList<Order>());
         catsitterRepos.save(newCatsitter);
         return CatsitterMapper.transferToDto(newCatsitter);
@@ -69,18 +68,14 @@ public class CatsitterService {
             if (catsitterInputDto.about() != null) {
                 catsitter.setAbout(catsitterInputDto.about());
             }
-            if (catsitterInputDto.orders() != null) {
-                catsitter.setOrders(catsitterInputDto.orders());
-            }
             catsitterRepos.save(catsitter);
             return CatsitterMapper.transferToDto(catsitter);
-            }
-            else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No catsitter found with this id.");
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No catsitter found with this id.");
         }
     }
 
-    public String deleteCatsitter (String username) {
+    public String deleteCatsitter(String username) {
         catsitterRepos.deleteById(username);
         return username;
     }

@@ -8,18 +8,18 @@ public class CatMapper {
 
     public static CatDto transferToDto(Cat cat) {
         return new CatDto(cat.getId(),
-                          cat.getName(),
-                          cat.getDateOfBirth(),
-                          cat.getGender(),
-                          cat.getBreed(),
-                          cat.getGeneralInfo(),
-                          cat.getSpayedOrNeutered(),
-                          cat.getVaccinated(),
-                          cat.getVeterinarianName(),
-                          cat.getPhoneVet(),
-                          cat.getMedicationName(),
-                          cat.getMedicationDose(),
-                          cat.getOwner().getUsername()
+                cat.getName(),
+                cat.getDateOfBirth(),
+                cat.getGender(),
+                cat.getBreed(),
+                cat.getGeneralInfo(),
+                cat.getSpayedOrNeutered(),
+                cat.getVaccinated(),
+                cat.getVeterinarianName(),
+                cat.getPhoneVet(),
+                cat.getMedicationName(),
+                cat.getMedicationDose(),
+                cat.getOwner().getUsername()
         );
     }
 

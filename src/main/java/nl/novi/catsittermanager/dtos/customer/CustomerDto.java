@@ -2,11 +2,10 @@ package nl.novi.catsittermanager.dtos.customer;
 
 import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.order.OrderDto;
-import nl.novi.catsittermanager.models.Catsitter;
 
 import java.util.List;
 
-public record CustomerDto (
+public record CustomerDto(
 
         String username,
         String password,
