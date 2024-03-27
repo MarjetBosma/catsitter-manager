@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.enumerations.Role;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
@@ -34,13 +35,13 @@ public class CustomerService {
     public CustomerDto getCustomer(String username) {
         return customerRepos.findById(username)
                 .map(CustomerMapper::transferToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this id."));
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username."));
     }
 
     public CustomerDto createCustomer(final CustomerInputDto customerInputDto) {
         Customer newCustomer = CustomerMapper.transferFromInputDto(customerInputDto);
         newCustomer.setEnabled(true);
-        newCustomer.setRole(Role.USER);
+        newCustomer.setRole(Role.CUSTOMER);
         newCustomer.setOrders(new ArrayList<Order>());
         newCustomer.setCats(new ArrayList<Cat>());
         customerRepos.save(newCustomer);
@@ -70,7 +71,7 @@ public class CustomerService {
             customerRepos.save(customer);
             return CustomerMapper.transferToDto(customer);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this username.");
+            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username.");
         }
     }
 

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterDto;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterInputDto;
 import nl.novi.catsittermanager.enumerations.Role;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.CatsitterMapper;
 import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Order;
@@ -33,13 +34,13 @@ public class CatsitterService {
     public CatsitterDto getCatsitter(String username) {
         return catsitterRepos.findById(username)
                 .map(CatsitterMapper::transferToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No catsitter found with this id."));
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No catsitter found with this username."));
     }
 
     public CatsitterDto createCatsitter(final CatsitterInputDto catsitterInputDto) {
         Catsitter newCatsitter = CatsitterMapper.transferFromInputDto((catsitterInputDto));
         newCatsitter.setEnabled(true);
-        newCatsitter.setRole(Role.USER);
+        newCatsitter.setRole(Role.CATSITTER);
         newCatsitter.setOrders(new ArrayList<Order>());
         catsitterRepos.save(newCatsitter);
         return CatsitterMapper.transferToDto(newCatsitter);
@@ -71,7 +72,7 @@ public class CatsitterService {
             catsitterRepos.save(catsitter);
             return CatsitterMapper.transferToDto(catsitter);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No catsitter found with this id.");
+            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No catsitter found with this username.");
         }
     }
 

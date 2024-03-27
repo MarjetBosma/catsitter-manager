@@ -3,6 +3,7 @@ package nl.novi.catsittermanager.services;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.task.TaskDto;
 import nl.novi.catsittermanager.dtos.task.TaskInputDto;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.TaskMapper;
 import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.repositories.TaskRepository;
@@ -31,7 +32,7 @@ public class TaskService {
     public TaskDto getTask(UUID idToFind) {
         return taskRepos.findById(idToFind)
                 .map(TaskMapper::transferToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No task found with this id."));
     }
 
     public TaskDto createTask(@RequestBody TaskInputDto taskInputDto) {
@@ -63,7 +64,7 @@ public class TaskService {
             }
             return TaskMapper.transferToDto(task);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No task found with this id.");
+            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No task found with this id.");
         }
     }
 

@@ -33,7 +33,7 @@ public class OrderMapper {
                 .tasks(new ArrayList<>())
                 .customer(new Customer())
                 .catsitter(new Catsitter())
-                // .invoice(new Invoice())
+                .invoice(new Invoice())
                 .build();
     }
 }

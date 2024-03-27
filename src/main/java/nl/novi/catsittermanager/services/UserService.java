@@ -3,6 +3,7 @@ package nl.novi.catsittermanager.services;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.user.UserDto;
 import nl.novi.catsittermanager.dtos.user.UserInputDto;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.UserMapper;
 import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.repositories.UserRepository;
@@ -30,7 +31,7 @@ public class UserService {
     public UserDto getUser(String usernameToFind) {
         return userRepos.findById(usernameToFind)
                 .map(UserMapper::transferToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No user found with this username."));
     }
 
     public UserDto createUser(@RequestBody UserInputDto userInputDto) {
@@ -80,7 +81,7 @@ public class UserService {
             userRepos.save(user);
             return UserMapper.transferToDto(user);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with this id");
+            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No user found with this username");
         }
     }
 

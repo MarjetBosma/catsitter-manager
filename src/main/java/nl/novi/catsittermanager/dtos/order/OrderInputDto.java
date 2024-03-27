@@ -2,7 +2,6 @@ package nl.novi.catsittermanager.dtos.order;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Positive;
-import nl.novi.catsittermanager.dtos.task.TaskDto;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;

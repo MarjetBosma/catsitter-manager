@@ -1,6 +1,7 @@
 package nl.novi.catsittermanager.enumerations;
 
 public enum Role {
-    USER,
+    CUSTOMER,
+    CATSITTER,
     ADMIN
 }

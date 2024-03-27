@@ -1,4 +1,5 @@
 package nl.novi.catsittermanager.models;
+import nl.novi.catsittermanager.enumerations.Role;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,7 +15,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import nl.novi.catsittermanager.enumerations.Role;
 
 import java.io.Serializable;
 import java.util.HashSet;

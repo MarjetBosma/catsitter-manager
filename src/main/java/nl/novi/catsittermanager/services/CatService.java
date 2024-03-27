@@ -3,6 +3,7 @@ package nl.novi.catsittermanager.services;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
@@ -34,13 +35,13 @@ public class CatService {
     public CatDto getCat(UUID idToFind) {
         return catRepos.findById(idToFind)
                 .map(CatMapper::transferToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id."));
     }
 
     public CatDto createCat(@RequestBody CatInputDto catInputDto) {
         Cat newCat = CatMapper.transferFromInputDto(catInputDto);
         Customer owner = customerRepos.findById(catInputDto.ownerUsername())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found"));
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Owner not found"));
         newCat.setOwner(owner);
         catRepos.save(newCat);
         return CatMapper.transferToDto(newCat);
@@ -86,13 +87,13 @@ public class CatService {
             }
             if (catInputDto.ownerUsername() != null) {
                 Customer owner = customerRepos.findById(catInputDto.ownerUsername())
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found"));
+                        .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Owner not found"));
                 cat.setOwner(owner);
             }
             catRepos.save(cat);
             return CatMapper.transferToDto(cat);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id.");
+            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id.");
         }
     }
 

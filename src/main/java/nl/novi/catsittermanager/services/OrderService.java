@@ -3,6 +3,7 @@ package nl.novi.catsittermanager.services;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.order.OrderDto;
 import nl.novi.catsittermanager.dtos.order.OrderInputDto;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Customer;
@@ -41,17 +42,17 @@ public class OrderService {
     public OrderDto getOrder(UUID idToFind) {
         return orderRepos.findById(idToFind)
                 .map(OrderMapper::transferToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No cat found with this id."));
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id."));
     }
 
     public OrderDto createOrder(@RequestBody OrderInputDto orderInputDto) {
         Order newOrder = OrderMapper.transferFromInputDto(orderInputDto);
         newOrder.setTasks(new ArrayList<Task>());
         Customer customer = customerRepos.findById(orderInputDto.customerUsername())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Customer not found"));
         newOrder.setCustomer(customer);
         Catsitter catsitter = catsitterRepos.findById(orderInputDto.catsitterUsername())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Catsitter not found"));
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Catsitter not found"));
         newOrder.setCatsitter(catsitter);
         newOrder.setInvoice(new Invoice());
         orderRepos.save(newOrder);
@@ -76,23 +77,24 @@ public class OrderService {
             }
             if (orderInputDto.customerUsername() != null) {
                 Customer customer = customerRepos.findById(orderInputDto.customerUsername())
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+                        .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Customer not found"));
                 order.setCustomer(customer);
             }
             if (orderInputDto.catsitterUsername() != null) {
                 Catsitter catsitter = catsitterRepos.findById(orderInputDto.catsitterUsername())
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Catsitter not found"));
+                        .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Catsitter not found"));
                 order.setCatsitter(catsitter);
             }
             return OrderMapper.transferToDto(order);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No order found with this id.");
+            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id.");
         }
     }
 
     public UUID deleteOrder(UUID idToDelete) {
         orderRepos.deleteById(idToDelete);
         return idToDelete;
+
     }
 
 }

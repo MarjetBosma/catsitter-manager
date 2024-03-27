@@ -29,7 +29,7 @@ public class Invoice {
 
     @Id
     @JoinColumn(name = "invoice_no")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID invoiceNo;
 
     private LocalDate invoiceDate;
