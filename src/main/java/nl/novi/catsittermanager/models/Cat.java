@@ -57,6 +57,6 @@ public class Cat {
     @JoinColumn(name = "username")
     private Customer owner;
 
-    private byte[] photo;
+//    private byte[] photo;
 
 }
