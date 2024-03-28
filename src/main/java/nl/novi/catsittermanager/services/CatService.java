@@ -36,7 +36,7 @@ public class CatService {
     public CatDto getCat(UUID idToFind) {
         return catRepos.findById(idToFind)
                 .map(catMapper::transferToDto)
-                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id."));
+                .orElseThrow(() -> new RecordNotFoundException("No cat found with this id."));
     }
 
     public CatDto createCat(CatInputDto catInputDto) {
