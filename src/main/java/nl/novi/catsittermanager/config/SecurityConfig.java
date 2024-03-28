@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,6 +26,7 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
 
+    @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http, NoOpPasswordEncoder noOpPasswordEncoder) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(noOpPasswordEncoder);
@@ -35,7 +37,7 @@ public class SecurityConfig {
 
         http.csrf().disable()
                 .authorizeRequests()
-                .requestMatchers("auth/**").permitAll() // controleren of dit klopt, later meer paden invoeren
+                .requestMatchers("/**").permitAll() // controleren of dit klopt, later meer paden invoeren
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -47,7 +49,6 @@ public class SecurityConfig {
         public NoOpPasswordEncoder passwordEncoder() {
             return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
         }
-
 //
 //    @Bean
 //    protected SecurityFilterChain filter(HttpSecurity http) throws Exception {
@@ -69,7 +70,7 @@ public class SecurityConfig {
 ////                                        .requestMatchers("/authenticate").permitAll()/*alleen dit punt mag toegankelijk zijn voor niet ingelogde gebruikers*/
 ////                                        .requestMatchers("/authenticated").authenticated()
 ////                                        .requestMatchers("/authenticate").permitAll()
-////                                        .anyRequest().denyAll() /*Deze voeg je altijd als laatste toe, om een default beveiliging te hebben voor eventuele vergeten endpoints of endpoints die je later toevoegd. */
+////                                        .anyRequest().denyAll() /*Deze voeg je altijd als laatste toe, om een default beveiliging te hebben voor eventuele vergeten endpoints of endpoints die je later toevoegT. */
 //                )
 //                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 //        //http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

@@ -1,4 +1,4 @@
-package nl.novi.catsittermanager.utils;//package nl.novi.catsittermanager.utils;
+package nl.novi.catsittermanager.utils;
 
 import nl.novi.catsittermanager.models.User;
 import io.jsonwebtoken.*;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class JwtUtil {
 
     private final String secret_key = "mysecretkey";
-    private long accessTokenValidity = 60*60*1000;
+    private final long accessTokenValidity = 60*60*1000;
     private final JwtParser jwtParser;
     private final String TOKEN_HEADER = "Authorization";
     private final String TOKEN_PREFIX = "Bearer ";

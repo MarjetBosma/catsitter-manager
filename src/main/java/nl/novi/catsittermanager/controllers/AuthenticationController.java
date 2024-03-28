@@ -18,15 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@AllArgsConstructor
 @Controller
 @RequestMapping("/auth")
+@AllArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
-    // Geeft foutmelding en wil niet starten: Parameter 0 of constructor in nl.novi.catsittermanager.controllers.AuthenticationController required a bean of type 'org.springframework.security.authentication.AuthenticationManager' that could not be found.
-
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @ResponseBody
     @RequestMapping(value = "/login",method = RequestMethod.POST)
@@ -41,11 +39,11 @@ public class AuthenticationController {
 
             return ResponseEntity.ok(loginResponse);
 
-        }catch (BadCredentialsException e){
+        } catch (BadCredentialsException badCredentialsException){
             ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST,"Invalid username or password");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-        }catch (Exception e){
-            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception exception){
+            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
