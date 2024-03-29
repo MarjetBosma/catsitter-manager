@@ -40,6 +40,9 @@ public class CatController {
     @GetMapping("/{id}")
     public ResponseEntity<CatDto> getCat(@PathVariable("id") final UUID idToFind) {
         CatDto catDto = catService.getCat(idToFind);
+        if (catDto == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(catDto);
     }
 
@@ -47,14 +50,13 @@ public class CatController {
     public ResponseEntity<CatDto> createCat(@RequestBody final CatInputDto catInputDto, final BindingResult br) {
         if (br.hasFieldErrors()) {
             throw new ValidationException(checkForBindingResult(br));
-        } else {
-            CatDto savedCat = catService.createCat(catInputDto);
-            URI uri = URI.create(
-                    ServletUriComponentsBuilder
-                            .fromCurrentRequest()
-                            .path("/" + savedCat).toUriString());
-            return ResponseEntity.created(uri).body(savedCat);
         }
+        CatDto savedCat = catService.createCat(catInputDto);
+        URI uri = URI.create(
+                ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/" + savedCat).toUriString());
+        return ResponseEntity.created(uri).body(savedCat);
     }
 
     @PutMapping("/{id}")
@@ -68,5 +70,4 @@ public class CatController {
         catService.deleteCat(idToDelete);
         return ResponseEntity.ok().body("Cat with id " + idToDelete + " removed from database");
     }
-
 }

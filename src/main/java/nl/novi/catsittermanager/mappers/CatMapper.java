@@ -3,11 +3,14 @@ package nl.novi.catsittermanager.mappers;
 import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.models.Cat;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CatMapper {
 
-    public static CatDto transferToDto(Cat cat) {
-        return new CatDto(cat.getId(),
+    public CatDto transferToDto(Cat cat) {
+        return new CatDto(
+                cat.getId(),
                 cat.getName(),
                 cat.getDateOfBirth(),
                 cat.getGender(),
@@ -23,7 +26,7 @@ public class CatMapper {
         );
     }
 
-    public static Cat transferFromInputDto(CatInputDto catInputDto) {
+    public Cat transferFromInputDto(CatInputDto catInputDto) {
         return Cat.builder()
                 .name(catInputDto.name())
                 .dateOfBirth(catInputDto.dateOfBirth())

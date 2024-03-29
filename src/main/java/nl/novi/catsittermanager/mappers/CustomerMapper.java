@@ -1,21 +1,27 @@
 package nl.novi.catsittermanager.mappers;
 
+import lombok.AllArgsConstructor;
 import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.models.Customer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-
+@AllArgsConstructor
+@Component
 public class CustomerMapper {
 
-    public static CustomerDto transferToDto(Customer customer) {
+    private final CatMapper catMapper;
+
+    public CustomerDto transferToDto(Customer customer) {
         return new CustomerDto(
                 customer.getUsername(),
                 customer.getPassword(),
                 customer.getName(),
                 customer.getAddress(),
                 customer.getEmail(),
-                customer.getCats().stream().map(CatMapper::transferToDto).toList(),
+                customer.getCats().stream().map(catMapper::transferToDto).toList(),
                 customer.getOrders().stream().map(OrderMapper::transferToDto).toList()
         );
     }
