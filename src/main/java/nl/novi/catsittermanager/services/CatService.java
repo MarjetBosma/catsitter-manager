@@ -1,7 +1,7 @@
 package nl.novi.catsittermanager.services;
 
 import lombok.RequiredArgsConstructor;
-import nl.novi.catsittermanager.dtos.cat.CatDto;
+import nl.novi.catsittermanager.dtos.cat.CatResponse;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.CatMapper;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,28 +24,26 @@ public class CatService {
     private final CustomerRepository customerRepos;
     private final CatMapper catMapper;
 
-    public List<CatDto> getAllCats() {
-        return catRepos.findAll().stream()
-                .map(catMapper::transferToDto)
-                .collect(Collectors.toList());
+    public List<Cat> getAllCats() {
+        return catRepos.findAll();
+
     }
 
-    public CatDto getCat(UUID idToFind) {
+    public Cat getCat(UUID idToFind) {
         return catRepos.findById(idToFind)
-                .map(catMapper::transferToDto)
                 .orElseThrow(() -> new RecordNotFoundException("No cat found with this id."));
     }
 
-    public CatDto createCat(CatInputDto catInputDto) {
+    public CatResponse createCat(CatInputDto catInputDto) {
         Cat newCat = catMapper.transferFromInputDto(catInputDto);
         Customer owner = customerRepos.findById(catInputDto.ownerUsername())
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Owner not found"));
         newCat.setOwner(owner);
         catRepos.save(newCat);
-        return catMapper.transferToDto(newCat);
+        return catMapper.CatToCatResponse(newCat);
     }
 
-    public CatDto editCat(UUID idToEdit, CatInputDto catInputDto) {
+    public CatResponse editCat(UUID idToEdit, CatInputDto catInputDto) {
         Optional<Cat> optionalCat = catRepos.findById(idToEdit);
 
         if (optionalCat.isPresent()) {
@@ -90,7 +87,7 @@ public class CatService {
                 cat.setOwner(owner);
             }
             catRepos.save(cat);
-            return catMapper.transferToDto(cat);
+            return catMapper.CatToCatResponse(cat);
         } else {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id.");
         }

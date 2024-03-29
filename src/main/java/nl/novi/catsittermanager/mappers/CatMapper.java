@@ -1,6 +1,6 @@
 package nl.novi.catsittermanager.mappers;
 
-import nl.novi.catsittermanager.dtos.cat.CatDto;
+import nl.novi.catsittermanager.dtos.cat.CatResponse;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.models.Cat;
 import org.springframework.stereotype.Component;
@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CatMapper {
 
-    public CatDto transferToDto(Cat cat) {
-        return new CatDto(
+    public static CatResponse CatToCatResponse(Cat cat) {
+        return new CatResponse(
                 cat.getId(),
                 cat.getName(),
                 cat.getDateOfBirth(),

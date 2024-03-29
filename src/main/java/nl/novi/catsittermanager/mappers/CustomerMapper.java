@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.models.Customer;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class CustomerMapper {
                 customer.getName(),
                 customer.getAddress(),
                 customer.getEmail(),
-                customer.getCats().stream().map(catMapper::transferToDto).toList(),
+                customer.getCats().stream().map(CatMapper::CatToCatResponse).toList(),
                 customer.getOrders().stream().map(OrderMapper::transferToDto).toList()
         );
     }
