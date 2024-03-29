@@ -6,25 +6,24 @@ import nl.novi.catsittermanager.models.Cat;
 
 public class CatMapper {
 
-    public CatDto transferToDto(Cat cat) {
-        return new CatDto(
-                cat.getId(),
-                cat.getName(),
-                cat.getDateOfBirth(),
-                cat.getGender(),
-                cat.getBreed(),
-                cat.getGeneralInfo(),
-                cat.getSpayedOrNeutered(),
-                cat.getVaccinated(),
-                cat.getVeterinarianName(),
-                cat.getPhoneVet(),
-                cat.getMedicationName(),
-                cat.getMedicationDose(),
-                cat.getOwner().getUsername()
+    public static CatDto transferToDto(Cat cat) {
+        return new CatDto(cat.getId(),
+                          cat.getName(),
+                          cat.getDateOfBirth(),
+                          cat.getGender(),
+                          cat.getBreed(),
+                          cat.getGeneralInfo(),
+                          cat.getSpayedOrNeutered(),
+                          cat.getVaccinated(),
+                          cat.getVeterinarianName(),
+                          cat.getPhoneVet(),
+                          cat.getMedicationName(),
+                          cat.getMedicationDose(),
+                          cat.getOwner().getUsername()
         );
     }
 
-    public Cat transferFromInputDto(CatInputDto catInputDto) {
+    public static Cat transferFromDto(CatInputDto catInputDto) {
         return Cat.builder()
                 .name(catInputDto.name())
                 .dateOfBirth(catInputDto.dateOfBirth())

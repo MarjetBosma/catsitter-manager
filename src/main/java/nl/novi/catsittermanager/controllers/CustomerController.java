@@ -4,16 +4,10 @@ import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.CustomerService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -39,8 +33,8 @@ public class CustomerController {
 
     @GetMapping("/{username}")
     public ResponseEntity<CustomerDto> getCustomer(@PathVariable("username") final String username) {
-        CustomerDto customerDto = customerService.getCustomer(username);
-        return ResponseEntity.ok(customerDto);
+            CustomerDto customerDto = customerService.getCustomer(username);
+            return ResponseEntity.ok(customerDto);
     }
 
     @PostMapping
@@ -67,7 +61,7 @@ public class CustomerController {
     @DeleteMapping("/{username}")
     public ResponseEntity<Object> deleteCustomer(@PathVariable("username") final String username) {
         customerService.deleteCustomer(username);
-        return ResponseEntity.ok().body("Customer " + username + " removed from database");
+        return ResponseEntity.ok().body("Customer " + username +  " removed from database");
     }
 
 }

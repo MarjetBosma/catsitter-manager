@@ -4,16 +4,10 @@ import nl.novi.catsittermanager.dtos.task.TaskDto;
 import nl.novi.catsittermanager.dtos.task.TaskInputDto;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.TaskService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -40,8 +34,8 @@ public class TaskController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TaskDto> getTask(@PathVariable("id") final UUID idToFind) {
-        TaskDto taskDto = taskService.getTask(idToFind);
-        return ResponseEntity.ok(taskDto);
+            TaskDto taskDto = taskService.getTask(idToFind);
+            return ResponseEntity.ok(taskDto);
     }
 
     @PostMapping
@@ -67,7 +61,7 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteTask(@PathVariable("id") final UUID idToDelete) {
         taskService.deleteTask(idToDelete);
-        return ResponseEntity.ok().body("Task with id " + idToDelete + " removed from database");
+        return ResponseEntity.ok().body("Task with id " + idToDelete +  " removed from database");
     }
 
 }

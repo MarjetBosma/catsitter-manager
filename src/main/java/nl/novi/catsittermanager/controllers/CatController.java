@@ -4,16 +4,10 @@ import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.CatService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -39,12 +33,8 @@ public class CatController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CatDto> getCat(@PathVariable("id") final UUID idToFind) {
-        CatDto catDto = catService.getCat(idToFind);
-        if (catDto == null) {
-            return ResponseEntity.notFound().build();
-        } else {
+            CatDto catDto = catService.getCat(idToFind);
             return ResponseEntity.ok(catDto);
-        }
     }
 
     @PostMapping
@@ -70,7 +60,7 @@ public class CatController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCat(@PathVariable("id") final UUID idToDelete) {
         catService.deleteCat(idToDelete);
-        return ResponseEntity.ok().body("Cat with id " + idToDelete + " removed from database");
+        return ResponseEntity.ok().body("Cat with id " + idToDelete +  " removed from database");
     }
 
 }

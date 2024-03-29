@@ -4,16 +4,10 @@ import nl.novi.catsittermanager.dtos.invoice.InvoiceDto;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceInputDto;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.services.InvoiceService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -40,8 +34,8 @@ public class InvoiceController {
 
     @GetMapping("/{id}")
     public ResponseEntity<InvoiceDto> getInvoice(@PathVariable("id") final UUID idToFind) {
-        InvoiceDto invoiceDto = invoiceService.getInvoice(idToFind);
-        return ResponseEntity.ok(invoiceDto);
+            InvoiceDto invoiceDto = invoiceService.getInvoice(idToFind);
+            return ResponseEntity.ok(invoiceDto);
     }
 
     @PostMapping
@@ -67,6 +61,6 @@ public class InvoiceController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteInvoice(@PathVariable("id") final UUID idToDelete) {
         invoiceService.deleteInvoice(idToDelete);
-        return ResponseEntity.ok().body("Invoice with id " + idToDelete + " removed from database");
+        return ResponseEntity.ok().body("Invoice with id " + idToDelete +  " removed from database");
     }
 }

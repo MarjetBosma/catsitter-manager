@@ -5,15 +5,15 @@ import nl.novi.catsittermanager.models.Authority;
 
 import java.util.Set;
 
-public record UserDto(
-        String username,
-        String password,
-        Role role,
-        Set<Authority> authorities,
-        Boolean enabled,
-        String name,
-        String address,
-        String email
+public record UserDto (
+    String username,
+    String password,
+    Role role,
+    Set<Authority> authorities,
+    Boolean enabled,
+    String name,
+    String address,
+    String email
 
 ) {
 }

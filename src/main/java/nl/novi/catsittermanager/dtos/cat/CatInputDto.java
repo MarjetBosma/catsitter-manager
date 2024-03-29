@@ -2,14 +2,15 @@ package nl.novi.catsittermanager.dtos.cat;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 
 @Validated
-public record CatInputDto(
+    public record CatInputDto (
 
-        @NotNull(message = "cat name is required")
+        @NotNull (message = "cat name is required")
         String name,
         @Past
         LocalDate dateOfBirth,
@@ -22,9 +23,9 @@ public record CatInputDto(
         String phoneVet,
         String medicationName,
         String medicationDose,
-        @NotNull(message = "owner name is required")
+        @NotNull (message = "owner name is required")
         String ownerUsername
 
-) {
-}
+    ) {
+    }
 
