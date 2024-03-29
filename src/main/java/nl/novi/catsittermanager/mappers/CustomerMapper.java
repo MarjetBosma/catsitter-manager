@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
 import nl.novi.catsittermanager.models.Customer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 @AllArgsConstructor
+@Component
 public class CustomerMapper {
 
     private final CatMapper catMapper;

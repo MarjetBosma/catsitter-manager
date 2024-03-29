@@ -3,7 +3,9 @@ package nl.novi.catsittermanager.mappers;
 import nl.novi.catsittermanager.dtos.cat.CatDto;
 import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.models.Cat;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CatMapper {
 
     public CatDto transferToDto(Cat cat) {

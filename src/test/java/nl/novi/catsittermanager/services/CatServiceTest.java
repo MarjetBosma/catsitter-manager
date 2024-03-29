@@ -91,16 +91,9 @@ public class CatServiceTest {
     @Test
     void testGetCat_shouldFetchCatWithSpecificId_RecordNotFoundException() {
         // Arrange
-        Customer owner1 = new Customer();
-        owner1.setUsername("marjet_bosma");
-
         UUID catId = UUID.randomUUID();
-        Cat cat = new Cat(catId, "Firsa", LocalDate.of(2006, 7, 1), "V", "Europese Korthaar", "Vriendelijke, maar verlegen kat", true, true, "Dierenkliniek Zuilen", "030-2446933", "Thiafeline", "5mg 1dd", owner1);
-
-        CatDto expectedCatDto = new CatDto(catId, "Firsa", LocalDate.of(2006, 7, 1), "V", "Europese Korthaar", "Vriendelijke, maar verlegen kat", true, true, "Dierenkliniek Zuilen", "030-2446933", "Thiafeline", "5mg 1dd", owner1.getUsername());
 
         // Mock behavior of the repository
-//        when(catRepos.findById(catId)).thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id."));
         when(catRepos.findById(catId)).thenReturn(Optional.empty());
 
         // Act
