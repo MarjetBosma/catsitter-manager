@@ -1,13 +1,12 @@
 package nl.novi.catsittermanager.models;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import jakarta.persistence.OneToMany;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;

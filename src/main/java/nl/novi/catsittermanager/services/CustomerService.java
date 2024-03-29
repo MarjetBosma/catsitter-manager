@@ -1,18 +1,18 @@
 package nl.novi.catsittermanager.services;
 
+import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.customer.CustomerDto;
 import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
+import nl.novi.catsittermanager.enumerations.Role;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,26 +24,29 @@ import java.util.stream.Collectors;
 public class CustomerService {
 
     private final CustomerRepository customerRepos;
+    private final CustomerMapper customerMapper;
 
     public List<CustomerDto> getAllCustomers() {
-        return customerRepos.findAll().stream()
-                .map(CustomerMapper::transferToDto)
+        return customerRepos.findAll()
+                .stream()
+                .map(customerMapper::transferToDto)
                 .collect(Collectors.toList());
     }
 
     public CustomerDto getCustomer(String username) {
         return customerRepos.findById(username)
-                .map(CustomerMapper::transferToDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this id."));
+                .map(customerMapper::transferToDto)
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username."));
     }
 
     public CustomerDto createCustomer(final CustomerInputDto customerInputDto) {
-        Customer newCustomer = CustomerMapper.transferFromDto(customerInputDto);
+        Customer newCustomer = CustomerMapper.transferFromInputDto(customerInputDto);
         newCustomer.setEnabled(true);
-        newCustomer.setCats(new ArrayList<Cat>());
+        newCustomer.setRole(Role.CUSTOMER);
         newCustomer.setOrders(new ArrayList<Order>());
+        newCustomer.setCats(new ArrayList<Cat>());
         customerRepos.save(newCustomer);
-        return CustomerMapper.transferToDto(newCustomer);
+        return customerMapper.transferToDto(newCustomer);
     }
 
     public CustomerDto editCustomer(String username, CustomerInputDto customerInputDto) {
@@ -66,14 +69,10 @@ public class CustomerService {
             if (customerInputDto.email() != null) {
                 customer.setEmail(customerInputDto.email());
             }
-            if (customerInputDto.orders() != null) {
-                customer.setOrders(customerInputDto.orders());
-            }
             customerRepos.save(customer);
-            return CustomerMapper.transferToDto(customer);
-        }
-        else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customer found with this username.");
+            return customerMapper.transferToDto(customer);
+        } else {
+            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username.");
         }
     }
 
