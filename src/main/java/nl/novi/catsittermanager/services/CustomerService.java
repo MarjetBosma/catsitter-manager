@@ -24,17 +24,18 @@ import java.util.stream.Collectors;
 public class CustomerService {
 
     private final CustomerRepository customerRepos;
+    private final CustomerMapper customerMapper;
 
     public List<CustomerDto> getAllCustomers() {
         return customerRepos.findAll()
                 .stream()
-                .map(CustomerMapper::transferToDto)
+                .map(customerMapper::transferToDto)
                 .collect(Collectors.toList());
     }
 
     public CustomerDto getCustomer(String username) {
         return customerRepos.findById(username)
-                .map(CustomerMapper::transferToDto)
+                .map(customerMapper::transferToDto)
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username."));
     }
 
@@ -45,7 +46,7 @@ public class CustomerService {
         newCustomer.setOrders(new ArrayList<Order>());
         newCustomer.setCats(new ArrayList<Cat>());
         customerRepos.save(newCustomer);
-        return CustomerMapper.transferToDto(newCustomer);
+        return customerMapper.transferToDto(newCustomer);
     }
 
     public CustomerDto editCustomer(String username, CustomerInputDto customerInputDto) {
@@ -69,7 +70,7 @@ public class CustomerService {
                 customer.setEmail(customerInputDto.email());
             }
             customerRepos.save(customer);
-            return CustomerMapper.transferToDto(customer);
+            return customerMapper.transferToDto(customer);
         } else {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username.");
         }

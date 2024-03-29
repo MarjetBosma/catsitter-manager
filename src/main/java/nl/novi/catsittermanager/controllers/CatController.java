@@ -40,7 +40,11 @@ public class CatController {
     @GetMapping("/{id}")
     public ResponseEntity<CatDto> getCat(@PathVariable("id") final UUID idToFind) {
         CatDto catDto = catService.getCat(idToFind);
-        return ResponseEntity.ok(catDto);
+        if (catDto == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(catDto);
+        }
     }
 
     @PostMapping

@@ -25,26 +25,27 @@ public class CatService {
 
     private final CatRepository catRepos;
     private final CustomerRepository customerRepos;
+    private final CatMapper catMapper;
 
     public List<CatDto> getAllCats() {
         return catRepos.findAll().stream()
-                .map(CatMapper::transferToDto)
+                .map(catMapper::transferToDto)
                 .collect(Collectors.toList());
     }
 
     public CatDto getCat(UUID idToFind) {
         return catRepos.findById(idToFind)
-                .map(CatMapper::transferToDto)
-                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id."));
+                .map(catMapper::transferToDto)
+                .orElseThrow(() -> new RecordNotFoundException("No cat found with this id."));
     }
 
-    public CatDto createCat(@RequestBody CatInputDto catInputDto) {
-        Cat newCat = CatMapper.transferFromInputDto(catInputDto);
+    public CatDto createCat(CatInputDto catInputDto) {
+        Cat newCat = catMapper.transferFromInputDto(catInputDto);
         Customer owner = customerRepos.findById(catInputDto.ownerUsername())
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Owner not found"));
         newCat.setOwner(owner);
         catRepos.save(newCat);
-        return CatMapper.transferToDto(newCat);
+        return catMapper.transferToDto(newCat);
     }
 
     public CatDto editCat(UUID idToEdit, CatInputDto catInputDto) {
@@ -91,7 +92,7 @@ public class CatService {
                 cat.setOwner(owner);
             }
             catRepos.save(cat);
-            return CatMapper.transferToDto(cat);
+            return catMapper.transferToDto(cat);
         } else {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id.");
         }
