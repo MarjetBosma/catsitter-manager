@@ -4,7 +4,6 @@ import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.dtos.cat.CatRequestFactory;
 import nl.novi.catsittermanager.dtos.cat.CatResponse;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
-import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatFactory;
 import nl.novi.catsittermanager.models.Customer;

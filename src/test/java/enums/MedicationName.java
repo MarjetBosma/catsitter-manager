@@ -1,4 +1,4 @@
-package nl.novi.catsittermanager.models;
+package enums;
 
 public enum MedicationName {
     THIAFELINE,

@@ -11,8 +11,9 @@ public class CustomerFactory {
     public static Customer randomCustomer() {
 
         return Customer.CustomerBuilder()
-                .name(faker.name().fullName())
                 .username(faker.name().username())
+                .password(faker.internet().password())
+                .name(faker.name().fullName())
                 .build();
 
         //Todo all all fields

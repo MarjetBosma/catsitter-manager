@@ -2,7 +2,10 @@ package nl.novi.catsittermanager.dtos.cat;
 
 import com.github.javafaker.Faker;
 
-import java.time.LocalDate;
+import static helpers.CatFactoryHelper.randomDateOfBirth;
+import static helpers.CatFactoryHelper.randomGender;
+import static helpers.CatFactoryHelper.randomMedicationDose;
+import static helpers.CatFactoryHelper.randomMedicationName;
 
 public class CatRequestFactory {
 
@@ -11,15 +14,16 @@ public class CatRequestFactory {
     public static CatRequest.CatRequestBuilder randomCatRequest() {
         return new CatRequest.CatRequestBuilder()
                 .name(faker.cat().name())
-                .dateOfBirth(LocalDate.now()) //Todo get date stuff to a helper class
-                .gender("male") ////Todo get gender stuff to a helper class
+                .dateOfBirth(randomDateOfBirth())
+                .gender(randomGender())
                 .breed(faker.cat().breed())
                 .generalInfo(faker.lorem().paragraph())
                 .spayedOrNeutered(faker.bool().bool())
                 .vaccinated(faker.bool().bool())
                 .veterinarianName(faker.name().fullName())
                 .phoneVet(faker.phoneNumber().phoneNumber())
+                .medicationName(randomMedicationName())
+                .medicationDose(randomMedicationDose())
                 .ownerUsername(faker.name().username());
     }
-
 }
