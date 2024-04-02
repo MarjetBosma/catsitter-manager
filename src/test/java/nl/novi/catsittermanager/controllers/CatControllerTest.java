@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.dtos.cat.CatRequestFactory;
+import nl.novi.catsittermanager.dtos.cat.CatResponse;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatFactory;
 import nl.novi.catsittermanager.services.CatService;
@@ -13,22 +15,25 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CatController.class)
 class CatControllerTest {
@@ -66,27 +71,40 @@ class CatControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(expectedCatList.size()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(expectedCat.getId().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].name").value(expectedCat.getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].dateOfBirth").value(expectedCat.getDateOfBirth().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].gender").value(expectedCat.getGender()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].generalInfo").value(expectedCat.getGeneralInfo()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].spayedOrNeutered").value(expectedCat.getSpayedOrNeutered().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].vaccinated").value(expectedCat.getVaccinated().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].veterinarianName").value(expectedCat.getVeterinarianName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].phoneVet").value(expectedCat.getPhoneVet()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].medicationName").value(expectedCat.getMedicationName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].medicationDose").value(expectedCat.getMedicationDose()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].ownerUsername").value(expectedCat.getOwner().getUsername()));
+                .andExpect(jsonPath("$.length()").value(expectedCatList.size()))
+                .andExpect(jsonPath("$.[0].id").value(expectedCat.getId().toString()))
+                .andExpect(jsonPath("$.[0].name").value(expectedCat.getName()))
+                .andExpect(jsonPath("$.[0].dateOfBirth").value(expectedCat.getDateOfBirth().toString()))
+                .andExpect(jsonPath("$.[0].gender").value(expectedCat.getGender()))
+                .andExpect(jsonPath("$.[0].generalInfo").value(expectedCat.getGeneralInfo()))
+                .andExpect(jsonPath("$.[0].spayedOrNeutered").value(expectedCat.getSpayedOrNeutered().toString()))
+                .andExpect(jsonPath("$.[0].vaccinated").value(expectedCat.getVaccinated().toString()))
+                .andExpect(jsonPath("$.[0].veterinarianName").value(expectedCat.getVeterinarianName()))
+                .andExpect(jsonPath("$.[0].phoneVet").value(expectedCat.getPhoneVet()))
+                .andExpect(jsonPath("$.[0].medicationName").value(expectedCat.getMedicationName()))
+                .andExpect(jsonPath("$.[0].medicationDose").value(expectedCat.getMedicationDose()))
+                .andExpect(jsonPath("$.[0].ownerUsername").value(expectedCat.getOwner().getUsername()));
     }
 
-    //todo not happyflow tests for getAllCats
+    @Test
+    @WithMockUser("user")
+    void givenNoCatsAvailable_whenGetAllCats_thenEmptyListShouldBeReturned() throws Exception {
+        // given
+        when(catService.getAllCats()).thenReturn(Collections.emptyList());
+
+        // perform the GET request to fetch all cats
+        mockMvc.perform(get("/cat")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
+    }
 
     @Test
     @WithMockUser("user")
     void givenAValidRequest_whenGetCat_thenCatShouldBeReturned() throws Exception {
-        // given
+
         Cat expectedCat = CatFactory.randomCat().build();
 
         when(catService.getCat(expectedCat.getId())).thenReturn(expectedCat);
@@ -95,50 +113,120 @@ class CatControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(expectedCat.getId().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(expectedCat.getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.dateOfBirth").value(expectedCat.getDateOfBirth().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value(expectedCat.getGender()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.generalInfo").value(expectedCat.getGeneralInfo()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.spayedOrNeutered").value(expectedCat.getSpayedOrNeutered().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.vaccinated").value(expectedCat.getVaccinated().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.veterinarianName").value(expectedCat.getVeterinarianName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.phoneVet").value(expectedCat.getPhoneVet()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.medicationName").value(expectedCat.getMedicationName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.medicationDose").value(expectedCat.getMedicationDose()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.ownerUsername").value(expectedCat.getOwner().getUsername()));
+                .andExpect(jsonPath("$.id").value(expectedCat.getId().toString()))
+                .andExpect(jsonPath("$.name").value(expectedCat.getName()))
+                .andExpect(jsonPath("$.dateOfBirth").value(expectedCat.getDateOfBirth().toString()))
+                .andExpect(jsonPath("$.gender").value(expectedCat.getGender()))
+                .andExpect(jsonPath("$.generalInfo").value(expectedCat.getGeneralInfo()))
+                .andExpect(jsonPath("$.spayedOrNeutered").value(expectedCat.getSpayedOrNeutered().toString()))
+                .andExpect(jsonPath("$.vaccinated").value(expectedCat.getVaccinated().toString()))
+                .andExpect(jsonPath("$.veterinarianName").value(expectedCat.getVeterinarianName()))
+                .andExpect(jsonPath("$.phoneVet").value(expectedCat.getPhoneVet()))
+                .andExpect(jsonPath("$.medicationName").value(expectedCat.getMedicationName()))
+                .andExpect(jsonPath("$.medicationDose").value(expectedCat.getMedicationDose()))
+                .andExpect(jsonPath("$.ownerUsername").value(expectedCat.getOwner().getUsername()));
     }
 
-    //todo not happyflow tests for getAllCats
+
+
+    @Test
+    @WithMockUser("user")
+    void givenInvalidCatId_whenGetCat_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
+
+        UUID invalidCatId = UUID.randomUUID();
+        String errorMessage = "No cat found with this id.";
+
+        when(catService.getCat(invalidCatId)).thenThrow(new RecordNotFoundException(errorMessage));
+
+        mockMvc.perform(get("/cat/" + invalidCatId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("RecordNotFound")) // hier gaat iets mis
+                .andExpect(jsonPath("$.message").value(errorMessage));
+    }
 
     @Test
     @WithMockUser("user")
     void givenAValidRequest_whenCreateCat_thenCatShouldBeReturned() throws Exception {
-        // given
-        CatRequest expetedCatRequest = CatRequestFactory.randomCatRequest().build();
-        Cat expetedCat = CatFactory.randomCat().build();
 
-        when(catService.createCat(any(Cat.class), eq(expetedCatRequest.ownerUsername()))).thenReturn(expetedCat);
+        CatRequest expectedCatRequest = CatRequestFactory.randomCatRequest().build();
+        Cat expectedCat = CatFactory.randomCat().build();
+
+        when(catService.createCat(any(Cat.class), eq(expectedCatRequest.ownerUsername()))).thenReturn(expectedCat);
 
         mockMvc.perform(post("/cat")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(expetedCatRequest))
+                        .content(objectMapper.writeValueAsString(expectedCatRequest))
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(expetedCat.getId().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(expetedCat.getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.dateOfBirth").value(expetedCat.getDateOfBirth().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value(expetedCat.getGender()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.generalInfo").value(expetedCat.getGeneralInfo()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.spayedOrNeutered").value(expetedCat.getSpayedOrNeutered().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.vaccinated").value(expetedCat.getVaccinated().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.veterinarianName").value(expetedCat.getVeterinarianName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.phoneVet").value(expetedCat.getPhoneVet()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.medicationName").value(expetedCat.getMedicationName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.medicationDose").value(expetedCat.getMedicationDose()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.ownerUsername").value(expetedCat.getOwner().getUsername()));
+                .andExpect(jsonPath("$.id").value(expectedCat.getId().toString()))
+                .andExpect(jsonPath("$.name").value(expectedCat.getName()))
+                .andExpect(jsonPath("$.dateOfBirth").value(expectedCat.getDateOfBirth().toString()))
+                .andExpect(jsonPath("$.gender").value(expectedCat.getGender()))
+                .andExpect(jsonPath("$.generalInfo").value(expectedCat.getGeneralInfo()))
+                .andExpect(jsonPath("$.spayedOrNeutered").value(expectedCat.getSpayedOrNeutered().toString()))
+                .andExpect(jsonPath("$.vaccinated").value(expectedCat.getVaccinated().toString()))
+                .andExpect(jsonPath("$.veterinarianName").value(expectedCat.getVeterinarianName()))
+                .andExpect(jsonPath("$.phoneVet").value(expectedCat.getPhoneVet()))
+                .andExpect(jsonPath("$.medicationName").value(expectedCat.getMedicationName()))
+                .andExpect(jsonPath("$.medicationDose").value(expectedCat.getMedicationDose()))
+                .andExpect(jsonPath("$.ownerUsername").value(expectedCat.getOwner().getUsername()));
     }
 
-    //todo not happyflow tests for createCat
+    @Test
+    void givenValidId_whenEditCat_thenCatShouldBeEdited() throws Exception {
+        // Given
+        UUID catId = UUID.randomUUID();
+        CatRequest expectedCatRequest = CatRequestFactory.randomCatRequest().build();
+        Cat expectedCat = CatFactory.randomCat().build();
+
+        when(catService.createCat(any(Cat.class), eq(expectedCatRequest.ownerUsername()))).thenReturn(expectedCat);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/cat/{id}", catId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(expectedCatRequest)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenInvalidId_whenEditCat_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
+
+        UUID catId = UUID.randomUUID();
+        CatRequest expectedCatRequest = CatRequestFactory.randomCatRequest().build();
+
+        when(catService.editCat(catId, expectedCatRequest)).thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id."));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/cat/{id}", catId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(expectedCatRequest)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void givenValidId_whenDeleteCat_thenCatShouldBeDeleted() throws Exception {
+        UUID catId = UUID.randomUUID();
+
+        when(catService.deleteCat(catId)).thenReturn(catId);
+
+        mockMvc.perform(delete("/cat/{id}", catId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Cat with id " + catId + " removed from database"));
+    }
+
+    @Test
+    void givenInvalidId_whenDeleteCat_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
+        UUID invalidCatId = UUID.randomUUID();
+
+        doThrow(RecordNotFoundException.class).when(catService).deleteCat(invalidCatId);
+
+        mockMvc.perform(delete("/cat/{id}", invalidCatId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("RecordNotFound")) // hier gaat iets mis
+                .andExpect(jsonPath("$.message").value("No cat found with id: " + invalidCatId));
+    }
+
 }

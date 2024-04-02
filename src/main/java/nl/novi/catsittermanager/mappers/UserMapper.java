@@ -23,6 +23,7 @@ public class UserMapper {
                 .username(userInputDto.username())
                 .password(userInputDto.password())
                 .role(userInputDto.role())
+                .name(userInputDto.name())
                 .address(userInputDto.address())
                 .email(userInputDto.email())
                 .build();

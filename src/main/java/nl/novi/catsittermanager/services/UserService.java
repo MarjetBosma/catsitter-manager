@@ -35,6 +35,8 @@ public class UserService {
     }
 
     public UserDto createUser(@RequestBody UserInputDto userInputDto) {
+
+        //controleren of gebruiker al bestaat
         User user = User.builder()
                 .username(userInputDto.username())
                 .password(userInputDto.password())
