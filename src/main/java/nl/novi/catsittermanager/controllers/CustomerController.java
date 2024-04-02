@@ -39,7 +39,7 @@ public class CustomerController {
 
     @GetMapping("/{username}")
     public ResponseEntity<CustomerDto> getCustomer(@PathVariable("username") final String username) {
-        CustomerDto customerDto = customerService.getCustomer(username);
+        CustomerDto customerDto = customerService.getCustomerDTO(username);
         return ResponseEntity.ok(customerDto);
     }
 

@@ -2,7 +2,7 @@ package nl.novi.catsittermanager.services;
 
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.cat.CatResponse;
-import nl.novi.catsittermanager.dtos.cat.CatInputDto;
+import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.models.Cat;
@@ -20,73 +20,71 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CatService {
 
-    private final CatRepository catRepos;
-    private final CustomerRepository customerRepos;
+    private final CatRepository catRepository;
+    private final CustomerService customerService;
+    private final CustomerRepository customerRepository;
     private final CatMapper catMapper;
 
     public List<Cat> getAllCats() {
-        return catRepos.findAll();
-
+        return catRepository.findAll();
     }
 
-    public Cat getCat(UUID idToFind) {
-        return catRepos.findById(idToFind)
+    public Cat getCat(final UUID idToFind) {
+        return catRepository.findById(idToFind)
                 .orElseThrow(() -> new RecordNotFoundException("No cat found with this id."));
     }
 
-    public CatResponse createCat(CatInputDto catInputDto) {
-        Cat newCat = catMapper.transferFromInputDto(catInputDto);
-        Customer owner = customerRepos.findById(catInputDto.ownerUsername())
-                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Owner not found"));
-        newCat.setOwner(owner);
-        catRepos.save(newCat);
-        return catMapper.CatToCatResponse(newCat);
+    public Cat createCat(final Cat cat, final String ownerUsername) {
+        Customer owner = customerService.getCustomer(ownerUsername);
+        cat.setOwner(owner);
+
+        return catRepository.save(cat);
     }
 
-    public CatResponse editCat(UUID idToEdit, CatInputDto catInputDto) {
-        Optional<Cat> optionalCat = catRepos.findById(idToEdit);
+    public CatResponse editCat(UUID idToEdit, CatRequest catRequest) {
+        Optional<Cat> optionalCat = catRepository.findById(idToEdit);
 
         if (optionalCat.isPresent()) {
             Cat cat = optionalCat.get();
-            if (catInputDto.name() != null) {
-                cat.setName(catInputDto.name());
+            if (catRequest.name() != null) {
+                cat.setName(catRequest.name());
             }
-            if (catInputDto.dateOfBirth() != null) {
-                cat.setDateOfBirth(catInputDto.dateOfBirth());
+            if (catRequest.dateOfBirth() != null) {
+                cat.setDateOfBirth(catRequest.dateOfBirth());
             }
-            if (catInputDto.gender() != null) {
-                cat.setGender(catInputDto.gender());
+            if (catRequest.gender() != null) {
+                cat.setGender(catRequest.gender());
             }
-            if (catInputDto.breed() != null) {
-                cat.setBreed(catInputDto.breed());
+            if (catRequest.breed() != null) {
+                cat.setBreed(catRequest.breed());
             }
-            if (catInputDto.generalInfo() != null) {
-                cat.setGeneralInfo(catInputDto.generalInfo());
+            if (catRequest.generalInfo() != null) {
+                cat.setGeneralInfo(catRequest.generalInfo());
             }
-            if (catInputDto.spayedOrNeutered() != null) {
-                cat.setSpayedOrNeutered(catInputDto.spayedOrNeutered());
+            if (catRequest.spayedOrNeutered() != null) {
+                cat.setSpayedOrNeutered(catRequest.spayedOrNeutered());
             }
-            if (catInputDto.vaccinated() != null) {
-                cat.setVaccinated(catInputDto.vaccinated());
+            if (catRequest.vaccinated() != null) {
+                cat.setVaccinated(catRequest.vaccinated());
             }
-            if (catInputDto.veterinarianName() != null) {
-                cat.setVeterinarianName(catInputDto.veterinarianName());
+            if (catRequest.veterinarianName() != null) {
+                cat.setVeterinarianName(catRequest.veterinarianName());
             }
-            if (catInputDto.phoneVet() != null) {
-                cat.setPhoneVet(catInputDto.phoneVet());
+            if (catRequest.phoneVet() != null) {
+                cat.setPhoneVet(catRequest.phoneVet());
             }
-            if (catInputDto.medicationName() != null) {
-                cat.setMedicationName(catInputDto.medicationName());
+            if (catRequest.medicationName() != null) {
+                cat.setMedicationName(catRequest.medicationName());
             }
-            if (catInputDto.medicationDose() != null) {
-                cat.setMedicationDose(catInputDto.medicationDose());
+            if (catRequest.medicationDose() != null) {
+                cat.setMedicationDose(catRequest.medicationDose());
             }
-            if (catInputDto.ownerUsername() != null) {
-                Customer owner = customerRepos.findById(catInputDto.ownerUsername())
+            if (catRequest.ownerUsername() != null) {
+                Customer owner = customerRepository.findById(catRequest.ownerUsername())
                         .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Owner not found"));
                 cat.setOwner(owner);
             }
-            catRepos.save(cat);
+            catRepository.save(cat);
             return catMapper.CatToCatResponse(cat);
         } else {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id.");
@@ -94,7 +92,10 @@ public class CatService {
     }
 
     public UUID deleteCat(UUID idToDelete) {
-        catRepos.deleteById(idToDelete);
+        if (!catRepository.existsById(idToDelete)) {
+            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id.");
+        }
+        catRepository.deleteById(idToDelete);
         return idToDelete;
     }
 }

@@ -12,7 +12,6 @@ import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +32,16 @@ public class CustomerService {
                 .collect(Collectors.toList());
     }
 
-    public CustomerDto getCustomer(String username) {
+    //Todo remove and use non dto
+    @Deprecated
+    public CustomerDto getCustomerDTO(String username) {
         return customerRepos.findById(username)
                 .map(customerMapper::transferToDto)
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username."));
+    }
+
+    public Customer getCustomer(final String username) {
+        return customerRepos.findById(username)
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username."));
     }
 

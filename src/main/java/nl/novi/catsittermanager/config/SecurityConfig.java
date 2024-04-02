@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.services.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -47,6 +48,7 @@ public class SecurityConfig {
                                 auth
                                         // Wanneer je deze uncomment, staat je hele security open. Je hebt dan alleen nog een jwt nodig.
                                         .requestMatchers("/**").permitAll()
+                                        .requestMatchers(HttpMethod.POST, "/**").permitAll()
 //                                        .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
 //                                        .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
 //                                        .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")

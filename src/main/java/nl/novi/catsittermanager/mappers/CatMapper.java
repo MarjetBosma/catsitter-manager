@@ -1,7 +1,7 @@
 package nl.novi.catsittermanager.mappers;
 
 import nl.novi.catsittermanager.dtos.cat.CatResponse;
-import nl.novi.catsittermanager.dtos.cat.CatInputDto;
+import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.models.Cat;
 import org.springframework.stereotype.Component;
 
@@ -26,19 +26,36 @@ public class CatMapper {
         );
     }
 
-    public Cat transferFromInputDto(CatInputDto catInputDto) {
+    public static Cat CatRequestToCat(CatRequest catRequest) {
         return Cat.builder()
-                .name(catInputDto.name())
-                .dateOfBirth(catInputDto.dateOfBirth())
-                .gender(catInputDto.gender())
-                .breed(catInputDto.breed())
-                .generalInfo(catInputDto.generalInfo())
-                .spayedOrNeutered(catInputDto.spayedOrNeutered())
-                .vaccinated(catInputDto.vaccinated())
-                .veterinarianName(catInputDto.veterinarianName())
-                .phoneVet(catInputDto.phoneVet())
-                .medicationName(catInputDto.medicationName())
-                .medicationDose(catInputDto.medicationDose())
+                .name(catRequest.name())
+                .dateOfBirth(catRequest.dateOfBirth())
+                .gender(catRequest.gender())
+                .breed(catRequest.breed())
+                .generalInfo(catRequest.generalInfo())
+                .spayedOrNeutered(catRequest.spayedOrNeutered())
+                .vaccinated(catRequest.vaccinated())
+                .veterinarianName(catRequest.veterinarianName())
+                .phoneVet(catRequest.phoneVet())
+                .medicationName(catRequest.medicationName())
+                .medicationDose(catRequest.medicationDose())
+                .build();
+    }
+
+    @Deprecated
+    public Cat transferFromInputDto(CatRequest catRequest) {
+        return Cat.builder()
+                .name(catRequest.name())
+                .dateOfBirth(catRequest.dateOfBirth())
+                .gender(catRequest.gender())
+                .breed(catRequest.breed())
+                .generalInfo(catRequest.generalInfo())
+                .spayedOrNeutered(catRequest.spayedOrNeutered())
+                .vaccinated(catRequest.vaccinated())
+                .veterinarianName(catRequest.veterinarianName())
+                .phoneVet(catRequest.phoneVet())
+                .medicationName(catRequest.medicationName())
+                .medicationDose(catRequest.medicationDose())
                 .build();
     }
 }

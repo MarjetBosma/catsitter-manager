@@ -2,12 +2,14 @@ package nl.novi.catsittermanager.dtos.cat;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import lombok.Builder;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 
 @Validated
-public record CatInputDto(
+@Builder
+public record CatRequest(
 
         @NotNull(message = "cat name is required")
         String name,

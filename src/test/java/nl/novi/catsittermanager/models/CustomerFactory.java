@@ -4,11 +4,11 @@ import com.github.javafaker.Faker;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CustomerFactory {
+public class CustomerFactory {
 
     private static final Faker faker = new Faker();
 
-    public static Customer anCustomer() {
+    public static Customer randomCustomer() {
 
         return Customer.CustomerBuilder()
                 .name(faker.name().fullName())

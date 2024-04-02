@@ -32,7 +32,7 @@ public class CatFactory {
                 .vaccinated(faker.bool().bool())
                 .veterinarianName(faker.name().fullName())
                 .phoneVet(faker.phoneNumber().phoneNumber())
-                .owner(CustomerFactory.anCustomer());
+                .owner(CustomerFactory.randomCustomer());
                 //.medicationName(randomMedicationName());
         //todo add medicine and owner
     }

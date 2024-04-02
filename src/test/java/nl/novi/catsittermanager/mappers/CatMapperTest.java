@@ -10,4 +10,9 @@ class CatMapperTest {
     void catToCatResponse() {
         //Todo create test
     }
+
+    @Test
+    void CatRequestToCat() {
+        //Todo create test
+    }
 }
