@@ -31,9 +31,9 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, NoOpPasswordEncoder noOpPasswordEncoder) throws Exception {
+    public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder passwordEncoder) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(noOpPasswordEncoder);
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
         return authenticationManagerBuilder.build();
     }
 
@@ -50,7 +50,7 @@ public class SecurityConfig {
                                 auth
                                         // Wanneer je deze uncomment, staat je hele security open. Je hebt dan alleen nog een jwt nodig.
                                         .requestMatchers("/**").permitAll()
-                                        .requestMatchers(HttpMethod.POST, "/**").permitAll()
+//                                        .requestMatchers(HttpMethod.POST, "/**").permitAll()
 //                                        .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
 //                                        .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
 //                                        .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
@@ -78,14 +78,15 @@ public class SecurityConfig {
 //        }
 
       // Deze moet later weer weg, want uiteindelijk wil ik wel een password encoder gebruiken.
-        @Bean
-        public NoOpPasswordEncoder passwordEncoder() {
-            return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
-        }
 //        @Bean
-//        public PasswordEncoder passwordEncoder() {
-//            return new BCryptPasswordEncoder();
+//        public NoOpPasswordEncoder passwordEncoder() {
+//            return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
 //        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
 
 //
 //    @Bean

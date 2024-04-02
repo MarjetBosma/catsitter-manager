@@ -9,7 +9,6 @@ import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-@RequiredArgsConstructor
 @Component
 public class CatMapper {
 
@@ -44,10 +43,7 @@ public class CatMapper {
                 .phoneVet(catRequest.phoneVet())
                 .medicationName(catRequest.medicationName())
                 .medicationDose(catRequest.medicationDose())
-               // .owner(catRequest.ownerUsername()) // deze stond er eerder niet en gaf dan null, maar zo krijg je een error omdat ownerUsername een string is en owner van het datatype Customer
                 .build();
-
     }
-
 }
 

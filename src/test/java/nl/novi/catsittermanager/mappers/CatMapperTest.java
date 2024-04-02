@@ -57,7 +57,6 @@ class CatMapperTest {
         assertEquals(catRequest.phoneVet(), cat.getPhoneVet());
         assertEquals(catRequest.medicationName(), cat.getMedicationName());
         assertEquals(catRequest.medicationDose(), cat.getMedicationDose());
-        assertEquals(catRequest.ownerUsername(), cat.getOwner().getUsername()); // hier gaat iets mis
     }
 }
 

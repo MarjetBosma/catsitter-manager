@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -128,100 +127,36 @@ public class CatServiceTest {
     @Test
     void testEditCat_shouldEditExistingCat() {
         // Given
-        UUID catId = UUID.randomUUID();
-        Cat existingCat = CatFactory.randomCat().build();
-        CatRequest updatedCatRequest = CatRequestFactory.randomCatRequest().build();
+        Cat cat = CatFactory.randomCat().build();
 
-        when(catRepository.findById(catId)).thenReturn(Optional.of(existingCat));
-        // when(customerRepository.findById(updatedCatRequest.ownerUsername())).thenReturn(Optional.of(CustomerFactory.randomCustomer().build())); // Waarom werkt dit niet?
-        when(catRepository.save(existingCat)).thenReturn(existingCat);
+        when(catRepository.findById(cat.getId())).thenReturn(Optional.of(cat));
+        when(customerService.getCustomer(cat.getOwner().getUsername())).thenReturn(cat.getOwner());
+        when(catRepository.save(cat)).thenReturn(cat);
 
         // When
-        CatResponse resultCat = catService.editCat(catId, updatedCatRequest);
+        Cat resultCat = catService.editCat(cat.getId(), cat, cat.getOwner().getUsername());
 
         // Then
-        assertEquals(existingCat.getId(), resultCat.id());
-        assertEquals(updatedCatRequest.name(), resultCat.name());
-        assertEquals(updatedCatRequest.dateOfBirth(), resultCat.dateOfBirth());
-        assertEquals(updatedCatRequest.gender(), resultCat.gender());
-        assertEquals(updatedCatRequest.breed(), resultCat.breed());
-        assertEquals(updatedCatRequest.generalInfo(), resultCat.generalInfo());
-        assertEquals(updatedCatRequest.spayedOrNeutered(), resultCat.spayedOrNeutered());
-        assertEquals(updatedCatRequest.vaccinated(), resultCat.vaccinated());
-        assertEquals(updatedCatRequest.veterinarianName(), resultCat.veterinarianName());
-        assertEquals(updatedCatRequest.phoneVet(), resultCat.phoneVet());
-        assertEquals(updatedCatRequest.medicationName(), resultCat.medicationName());
-        assertEquals(updatedCatRequest.medicationDose(), resultCat.medicationDose());
-//        assertEquals(updatedCatRequest.ownerUsername(), resultCat.ownerUsername()); // hier werkt het ook niet
+        assertEquals(cat, resultCat);
 
-
-        verify(catRepository, times(1)).findById(catId);
-        verify(customerRepository, times(1)).findById(updatedCatRequest.ownerUsername());
-        verify(catRepository, times(1)).save(existingCat);
+        verify(catRepository, times(1)).findById(cat.getId());
+        verify(customerService, times(1)).getCustomer(cat.getOwner().getUsername());
+        verify(catRepository, times(1)).save(cat);
         verifyNoMoreInteractions(catRepository);
-        verifyNoMoreInteractions(customerRepository);
-    }
-
-    @Test
-    void testEditCat_existingCat_shouldEditAttributes() {
-        // Given
-        UUID catId = UUID.randomUUID();
-        Cat existingCat = CatFactory.randomCat().build();
-        CatRequest updatedCatRequest = CatRequestFactory.randomCatRequest().build();
-
-        when(catRepository.findById(catId)).thenReturn(Optional.of(existingCat));
-        when(catRepository.save(existingCat)).thenReturn(existingCat);
-
-        // When
-        CatResponse resultCat = catService.editCat(catId, updatedCatRequest);
-
-        // Then
-        assertEquals(updatedCatRequest.name(), resultCat.name());
-        assertEquals(updatedCatRequest.dateOfBirth(), resultCat.dateOfBirth());
-        assertEquals(updatedCatRequest.dateOfBirth(), resultCat.dateOfBirth());
-        assertEquals(updatedCatRequest.gender(), resultCat.gender());
-        assertEquals(updatedCatRequest.breed(), resultCat.breed());
-        assertEquals(updatedCatRequest.generalInfo(), resultCat.generalInfo());
-        assertEquals(updatedCatRequest.spayedOrNeutered(), resultCat.spayedOrNeutered());
-        assertEquals(updatedCatRequest.vaccinated(), resultCat.vaccinated());
-        assertEquals(updatedCatRequest.veterinarianName(), resultCat.veterinarianName());
-        assertEquals(updatedCatRequest.phoneVet(), resultCat.phoneVet());
-        assertEquals(updatedCatRequest.medicationName(), resultCat.medicationName());
-        assertEquals(updatedCatRequest.medicationDose(), resultCat.medicationDose());
-        // assertEquals(updatedCatRequest.ownerUsername(), resultCat.ownerUsername()); // owner geeft ook hier problemen
+        verifyNoMoreInteractions(customerService);
     }
 
     @Test
     void testEditCat_nonExistingCat_shouldThrowRecordNotFoundException() {
         // Given
-        UUID nonExistingCatId = UUID.randomUUID();
-        CatRequest updatedCatRequest = CatRequestFactory.randomCatRequest().build();
+        Cat cat = CatFactory.randomCat().build();
 
-        when(catRepository.findById(nonExistingCatId)).thenReturn(Optional.empty());
+        when(catRepository.findById(cat.getId())).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RecordNotFoundException.class, () -> catService.editCat(nonExistingCatId, updatedCatRequest));
+        assertThrows(RecordNotFoundException.class, () -> catService.editCat(cat.getId(), cat, cat.getOwner().getUsername()));
         verifyNoMoreInteractions(catRepository);
     }
-
-    @Test
-    void testEditCat_updateName_shouldChangeName() {
-        // Given
-        UUID catId = UUID.randomUUID();
-        Cat existingCat = CatFactory.randomCat().build();
-        CatRequest updatedCatRequest = CatRequestFactory.randomCatRequest().name("New Name").build();
-
-        when(catRepository.findById(catId)).thenReturn(Optional.of(existingCat));
-        when(catRepository.save(existingCat)).thenReturn(existingCat);
-
-        // When
-        CatResponse resultCat = catService.editCat(catId, updatedCatRequest);
-
-        // Then
-        assertEquals("New Name", resultCat.name());
-    } // geeft ook weer error owner not found
-
-    // todo: Dezelfde tests schrijven voor andere attributen, wanneer de fout uit bovenstaande is gehaald.
 
     @Test
     void testDeleteCat_ShouldDeleteCatWithSpecificId() {

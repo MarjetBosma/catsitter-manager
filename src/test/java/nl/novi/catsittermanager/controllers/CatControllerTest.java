@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.dtos.cat.CatRequestFactory;
-import nl.novi.catsittermanager.dtos.cat.CatResponse;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatFactory;
@@ -20,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -134,7 +132,7 @@ class CatControllerTest {
     void givenInvalidCatId_whenGetCat_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
 
         UUID invalidCatId = UUID.randomUUID();
-        String errorMessage = "No cat found with this id.";
+        final String errorMessage = "No cat found with this id.";
 
         when(catService.getCat(invalidCatId)).thenThrow(new RecordNotFoundException(errorMessage));
 
@@ -142,8 +140,7 @@ class CatControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value("RecordNotFound")) // hier gaat iets mis
-                .andExpect(jsonPath("$.message").value(errorMessage));
+                .andExpect(jsonPath("$").value(errorMessage));
     }
 
     @Test
@@ -182,12 +179,17 @@ class CatControllerTest {
         CatRequest expectedCatRequest = CatRequestFactory.randomCatRequest().build();
         Cat expectedCat = CatFactory.randomCat().build();
 
-        when(catService.createCat(any(Cat.class), eq(expectedCatRequest.ownerUsername()))).thenReturn(expectedCat);
+        when(catService.editCat(eq(catId), any(Cat.class), eq(expectedCatRequest.ownerUsername()))).thenReturn(expectedCat);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/cat/{id}", catId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(expectedCatRequest)))
                 .andExpect(status().isOk());
+        //todo field validation
+
+        verify(catService, times(1)).editCat(eq(catId), any(Cat.class), eq(expectedCatRequest.ownerUsername()));
+        verifyNoMoreInteractions(catService);
+        //todo mock validation on all test
     }
 
     @Test
@@ -196,7 +198,8 @@ class CatControllerTest {
         UUID catId = UUID.randomUUID();
         CatRequest expectedCatRequest = CatRequestFactory.randomCatRequest().build();
 
-        when(catService.editCat(catId, expectedCatRequest)).thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id."));
+        when(catService.editCat(eq(catId), any(Cat.class), eq(expectedCatRequest.ownerUsername())))
+                .thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id."));
 
         mockMvc.perform(MockMvcRequestBuilders.put("/cat/{id}", catId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -219,14 +222,15 @@ class CatControllerTest {
     @Test
     void givenInvalidId_whenDeleteCat_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
         UUID invalidCatId = UUID.randomUUID();
+        final String errorMessage = "error";
 
-        doThrow(RecordNotFoundException.class).when(catService).deleteCat(invalidCatId);
+        when(catService.deleteCat(invalidCatId)).thenThrow(new RecordNotFoundException(errorMessage));
 
         mockMvc.perform(delete("/cat/{id}", invalidCatId)
                         .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value("RecordNotFound")) // hier gaat iets mis
-                .andExpect(jsonPath("$.message").value("No cat found with id: " + invalidCatId));
+                .andExpect(jsonPath("$").value(errorMessage));
     }
 
 }

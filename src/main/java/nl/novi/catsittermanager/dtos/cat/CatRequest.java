@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Builder
 public record CatRequest(
 
+        //Todo add null validation for needed fields
         @NotNull(message = "cat name is required")
         String name,
         @Past

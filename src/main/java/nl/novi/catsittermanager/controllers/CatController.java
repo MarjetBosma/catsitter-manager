@@ -50,9 +50,9 @@ public class CatController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CatResponse> editCat(@PathVariable("id") final UUID idToEdit, @RequestBody final CatRequest cat) {
-        CatResponse editedCat = catService.editCat(idToEdit, cat);
-        return ResponseEntity.ok().body(editedCat);
+    public ResponseEntity<CatResponse> editCat(@PathVariable("id") final UUID idToEdit, @RequestBody final CatRequest catRequest) {
+        Cat cat = catService.editCat(idToEdit, CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
+        return ResponseEntity.ok().body(CatMapper.CatToCatResponse(cat));
     }
 
     @DeleteMapping("/{id}")
