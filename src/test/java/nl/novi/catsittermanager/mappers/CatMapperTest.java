@@ -32,7 +32,7 @@ class CatMapperTest {
         assertEquals(cat.getPhoneVet(), catResponse.phoneVet());
         assertEquals(cat.getMedicationName(), catResponse.medicationName());
         assertEquals(cat.getMedicationDose(), catResponse.medicationDose());
-        assertEquals(cat.getOwner().getUsername(), catResponse.ownerUsername()); // hier gaat iets mis
+        assertEquals(cat.getOwner().getUsername(), catResponse.ownerUsername());
     }
 
     @Test

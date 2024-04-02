@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.controllers;
 
+import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.dtos.cat.CatResponse;
 import nl.novi.catsittermanager.mappers.CatMapper;
@@ -19,15 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/cat")
 public class CatController {
 
     private final CatService catService;
-
-    public CatController(CatService catService) {
-        this.catService = catService;
-    }
 
     @GetMapping
     public ResponseEntity<List<CatResponse>> getAllCats() {
