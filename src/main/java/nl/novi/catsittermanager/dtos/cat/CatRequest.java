@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.dtos.cat;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Builder;
@@ -31,7 +32,7 @@ public record CatRequest(
         String phoneVet,
         String medicationName,
         String medicationDose,
-        @NotNull(message = "owner name is required")
+        @NotBlank(message = "owner name is required")
         String ownerUsername
 
 ) {

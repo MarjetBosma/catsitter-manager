@@ -32,4 +32,6 @@ public class ExceptionController {
     public ResponseEntity<Object> usernameNotFound(UsernameNotFoundException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+//    @ExceptionHandler(value = ArgumentsNotValidException)
 }
