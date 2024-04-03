@@ -1,8 +1,8 @@
 package nl.novi.catsittermanager.mappers;
 
+import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterDto;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterInputDto;
-import nl.novi.catsittermanager.models.Catsitter;
 
 import java.util.ArrayList;
 
