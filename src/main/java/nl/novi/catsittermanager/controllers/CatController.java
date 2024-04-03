@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.dtos.cat.CatResponse;
@@ -43,14 +44,14 @@ public class CatController {
     }
 
     @PostMapping
-    public ResponseEntity<CatResponse> createCat(@RequestBody final CatRequest catRequest) {
+    public ResponseEntity<CatResponse> createCat(@Valid @RequestBody final CatRequest catRequest) {
         Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(CatMapper.CatToCatResponse(cat));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CatResponse> editCat(@PathVariable("id") final UUID idToEdit, @RequestBody final CatRequest catRequest) {
+    public ResponseEntity<CatResponse> editCat(@Valid @PathVariable("id") final UUID idToEdit, @RequestBody final CatRequest catRequest) {
         Cat cat = catService.editCat(idToEdit, CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
         return ResponseEntity.ok().body(CatMapper.CatToCatResponse(cat));
     }

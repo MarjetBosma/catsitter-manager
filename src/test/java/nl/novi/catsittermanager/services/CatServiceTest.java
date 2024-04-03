@@ -1,8 +1,5 @@
 package nl.novi.catsittermanager.services;
 
-import nl.novi.catsittermanager.dtos.cat.CatRequest;
-import nl.novi.catsittermanager.dtos.cat.CatRequestFactory;
-import nl.novi.catsittermanager.dtos.cat.CatResponse;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatFactory;
@@ -29,17 +26,12 @@ public class CatServiceTest {
 
     @Mock
     private CatRepository catRepository;
-
-    @Mock
-    CustomerRepository customerRepository;
-
     @Mock
     private CustomerService customerService;
 
     @InjectMocks
     private CatService catService;
 
-    //TODO fix test
     @Test
     void testGetAllCats_shouldFetchAllCatsOnTheList() {
         // Given
@@ -161,14 +153,15 @@ public class CatServiceTest {
     @Test
     void testDeleteCat_ShouldDeleteCatWithSpecificId() {
         // Given
-        UUID catId = UUID.randomUUID();
+        Cat cat = CatFactory.randomCat().build();
+        when(catRepository.existsById(cat.getId())).thenReturn(true);
 
         // When
-        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> catService.deleteCat(catId));
+        UUID catId = catService.deleteCat(cat.getId());
 
         // Then
-        assertEquals("No cat found with this id.", exception.getMessage());
         verify(catRepository, times(1)).existsById(catId);
+        verify(catRepository, times(1)).deleteById(catId);
         verifyNoMoreInteractions(catRepository);
     }
 

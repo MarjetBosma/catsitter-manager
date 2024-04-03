@@ -41,7 +41,7 @@ public class CatService {
 
     public Cat editCat(UUID id, Cat cat, String ownerUsername) {
         if (catRepository.findById(id).isEmpty()) {
-            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No catToUpdate found with this id.");
+            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id.");
         }
 
         Customer owner = customerService.getCustomer(ownerUsername);

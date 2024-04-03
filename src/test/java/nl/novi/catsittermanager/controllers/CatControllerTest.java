@@ -6,11 +6,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.dtos.cat.CatRequestFactory;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
+import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatFactory;
 import nl.novi.catsittermanager.services.CatService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,9 +28,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -125,8 +129,6 @@ class CatControllerTest {
                 .andExpect(jsonPath("$.ownerUsername").value(expectedCat.getOwner().getUsername()));
     }
 
-
-
     @Test
     @WithMockUser("user")
     void givenInvalidCatId_whenGetCat_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
@@ -172,9 +174,43 @@ class CatControllerTest {
                 .andExpect(jsonPath("$.ownerUsername").value(expectedCat.getOwner().getUsername()));
     }
 
+    @Test // todo deze werkend maken
+    void givenInvalidData_whenCreateCat_thenBadRequest() throws Exception {
+
+        String expectedOwnerUsername = "testUser";
+        CatRequest invalidCatRequest = CatRequestFactory.randomCatRequest()
+                .name(null)
+                .dateOfBirth(null)
+                .gender(null)
+                .breed(null)
+                .generalInfo(null)
+                .spayedOrNeutered(null)
+                .vaccinated(null)
+                .veterinarianName(null)
+                .phoneVet(null)
+                .medicationName(null)
+                .medicationDose(null)
+                .ownerUsername(expectedOwnerUsername)
+                .build();
+
+        Cat expectedCat = CatMapper.CatRequestToCat(invalidCatRequest);
+        when(catService.createCat(any(Cat.class), eq(expectedOwnerUsername))).thenReturn(expectedCat);
+
+        mockMvc.perform(post("/cat")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidCatRequest))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        verify(catService, times(1)).createCat(any(Cat.class), eq(invalidCatRequest.ownerUsername()));
+        verify(catService, times(1)).createCat(expectedCat, expectedOwnerUsername);
+        verify(catService, times(1));verifyNoMoreInteractions(catService);
+}
+
+
     @Test
     void givenValidId_whenEditCat_thenCatShouldBeEdited() throws Exception {
-        // Given
+
         UUID catId = UUID.randomUUID();
         CatRequest expectedCatRequest = CatRequestFactory.randomCatRequest().build();
         Cat expectedCat = CatFactory.randomCat().build();
@@ -185,11 +221,9 @@ class CatControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(expectedCatRequest)))
                 .andExpect(status().isOk());
-        //todo field validation
 
         verify(catService, times(1)).editCat(eq(catId), any(Cat.class), eq(expectedCatRequest.ownerUsername()));
         verifyNoMoreInteractions(catService);
-        //todo mock validation on all test
     }
 
     @Test
@@ -205,6 +239,34 @@ class CatControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(expectedCatRequest)))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test //todo: deze werkend maken
+    void givenInvalidData_whenEditCat_thenBadRequest() throws Exception {
+
+        UUID catId = UUID.randomUUID();
+        CatRequest invalidCatRequest = CatRequestFactory.randomCatRequest()
+                .name(null)
+                .dateOfBirth(null)
+                .gender(null)
+                .breed(null)
+                .generalInfo(null)
+                .spayedOrNeutered(null)
+                .vaccinated(null)
+                .veterinarianName(null)
+                .phoneVet(null)
+                .medicationName(null)
+                .medicationDose(null)
+                .ownerUsername(null)
+                .build();
+
+        Cat mockedCat = CatFactory.randomCat().build(); // Deze wordt onafhankelijk van invalidCatRequest opgebouwd
+        when(catService.editCat(eq(catId), any(Cat.class), anyString())).thenReturn(mockedCat);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/cat/{id}", catId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidCatRequest)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

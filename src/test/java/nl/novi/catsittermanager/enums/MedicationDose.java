@@ -1,4 +1,4 @@
-package enums;
+package nl.novi.catsittermanager.enums;
 
 public enum MedicationDose {
 

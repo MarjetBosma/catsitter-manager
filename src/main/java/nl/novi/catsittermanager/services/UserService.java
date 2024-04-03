@@ -3,6 +3,7 @@ package nl.novi.catsittermanager.services;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.user.UserDto;
 import nl.novi.catsittermanager.dtos.user.UserInputDto;
+import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.UserMapper;
 import nl.novi.catsittermanager.models.User;
@@ -47,6 +48,7 @@ public class UserService {
                 .address(userInputDto.address())
                 .email(userInputDto.email())
                 .build();
+        user.setRole(Role.CUSTOMER);
         userRepos.save(user);
         return UserMapper.transferToDto(user);
     }

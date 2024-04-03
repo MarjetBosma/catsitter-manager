@@ -4,10 +4,10 @@ import com.github.javafaker.Faker;
 import java.util.Random;
 import java.util.UUID;
 
-import static helpers.CatFactoryHelper.randomDateOfBirth;
-import static helpers.CatFactoryHelper.randomGender;
-import static helpers.CatFactoryHelper.randomMedicationDose;
-import static helpers.CatFactoryHelper.randomMedicationName;
+import static nl.novi.catsittermanager.helpers.CatFactoryHelper.randomDateOfBirth;
+import static nl.novi.catsittermanager.helpers.CatFactoryHelper.randomGender;
+import static nl.novi.catsittermanager.helpers.CatFactoryHelper.randomMedicationDose;
+import static nl.novi.catsittermanager.helpers.CatFactoryHelper.randomMedicationName;
 
 public class CatFactory {
 
