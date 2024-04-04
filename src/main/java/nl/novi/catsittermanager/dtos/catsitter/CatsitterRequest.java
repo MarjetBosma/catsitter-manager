@@ -4,7 +4,7 @@ import org.springframework.validation.annotation.Validated;
 
 
 @Validated
-public record CatsitterInputDto(
+public record CatsitterRequest(
         String username,
         String password,
         String name,

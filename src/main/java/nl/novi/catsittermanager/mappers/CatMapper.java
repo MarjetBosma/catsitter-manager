@@ -1,14 +1,10 @@
 package nl.novi.catsittermanager.mappers;
 
-import lombok.RequiredArgsConstructor;
+import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.dtos.cat.CatResponse;
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
-import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
-import nl.novi.catsittermanager.models.Cat;
-import nl.novi.catsittermanager.models.Customer;
-import nl.novi.catsittermanager.repositories.CustomerRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+
 @Component
 public class CatMapper {
 

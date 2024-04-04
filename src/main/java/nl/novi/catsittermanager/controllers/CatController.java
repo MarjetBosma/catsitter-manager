@@ -17,12 +17,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/cat")
 public class CatController {
 
@@ -46,7 +45,6 @@ public class CatController {
     @PostMapping // todo messages exception (ook in exception handler)
      public ResponseEntity<CatResponse> createCat(@Valid @RequestBody final CatRequest catRequest) {
         Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
-
         return ResponseEntity.status(HttpStatus.CREATED).body(CatMapper.CatToCatResponse(cat));
     }
 
@@ -59,6 +57,6 @@ public class CatController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCat(@PathVariable("id") final UUID idToDelete) {
         catService.deleteCat(idToDelete);
-        return ResponseEntity.ok().body("Cat with id " + idToDelete + " removed from database");
+        return ResponseEntity.ok().body("Cat with id " + idToDelete + " removed from database.");
     }
 }

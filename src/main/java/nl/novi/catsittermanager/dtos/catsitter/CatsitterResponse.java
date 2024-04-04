@@ -5,7 +5,7 @@ import nl.novi.catsittermanager.dtos.order.OrderDto;
 
 import java.util.List;
 
-public record CatsitterDto(
+public record CatsitterResponse(
 
         String username,
         String password,
