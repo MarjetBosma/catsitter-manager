@@ -1,7 +1,7 @@
 package nl.novi.catsittermanager.dtos.catsitter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import nl.novi.catsittermanager.dtos.order.OrderDto;
+import nl.novi.catsittermanager.dtos.order.OrderResponse;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public record CatsitterResponse(
         String email,
         String about,
         @JsonIgnore
-        List<OrderDto> orders
+        List<OrderResponse> orders
 
 ) {
 }

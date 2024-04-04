@@ -21,7 +21,7 @@ public class CustomerMapper {
                 customer.getAddress(),
                 customer.getEmail(),
                 customer.getCats().stream().map(CatMapper::CatToCatResponse).toList(),
-                customer.getOrders().stream().map(OrderMapper::transferToDto).toList()
+                customer.getOrders().stream().map(OrderMapper::OrderToOrderResponse).toList()
         );
     }
 

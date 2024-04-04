@@ -17,7 +17,7 @@ public class CatsitterMapper {
                 catsitter.getAddress(),
                 catsitter.getEmail(),
                 catsitter.getAbout(),
-                catsitter.getOrders().stream().map(OrderMapper::transferToDto).toList()
+                catsitter.getOrders().stream().map(OrderMapper::OrderToOrderResponse).toList()
         );
     }
 

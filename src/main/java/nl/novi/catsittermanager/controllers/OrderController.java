@@ -1,9 +1,17 @@
 package nl.novi.catsittermanager.controllers;
 
-import nl.novi.catsittermanager.dtos.order.OrderDto;
-import nl.novi.catsittermanager.dtos.order.OrderInputDto;
+import jakarta.validation.Valid;
+import nl.novi.catsittermanager.dtos.catsitter.CatsitterRequest;
+import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
+import nl.novi.catsittermanager.mappers.CatsitterMapper;
+import nl.novi.catsittermanager.mappers.OrderMapper;
+import nl.novi.catsittermanager.dtos.order.OrderResponse;
+import nl.novi.catsittermanager.dtos.order.OrderRequest;
 import nl.novi.catsittermanager.exceptions.ValidationException;
+import nl.novi.catsittermanager.models.Catsitter;
+import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.services.OrderService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,35 +42,45 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderDto>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+    public ResponseEntity<List<OrderResponse>> getAllOrders() {
+        List<OrderResponse> orderResponseList = orderService.getAllOrders().stream()
+                .map(OrderMapper::OrderToOrderResponse)
+                .toList();
+        return ResponseEntity.ok(orderResponseList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDto> getOrder(@PathVariable("id") final UUID idToFind) {
-        OrderDto orderDto = orderService.getOrder(idToFind);
-        return ResponseEntity.ok(orderDto);
+    public ResponseEntity<OrderResponse> getOrder(@PathVariable("id") final UUID idToFind) {
+        Order order = orderService.getOrder(idToFind);
+        return ResponseEntity.ok(OrderMapper.OrderToOrderResponse(order));
     }
 
     @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@RequestBody final OrderInputDto orderInputDto, final BindingResult br) {
-        if (br.hasFieldErrors()) {
-            throw new ValidationException(checkForBindingResult(br));
-        } else {
-            OrderDto savedOrder;
-            savedOrder = orderService.createOrder(orderInputDto);
-            URI uri = URI.create(
-                    ServletUriComponentsBuilder
-                            .fromCurrentRequest()
-                            .path("/" + savedOrder).toUriString());
-            return ResponseEntity.created(uri).body(savedOrder);
-        }
+    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody final OrderRequest orderRequest) {
+        Order order = orderService.createOrder(OrderMapper.OrderRequestToOrder(orderRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(OrderMapper.OrderToOrderResponse(order));
     }
 
+// todo: Beslissen of ik onderstaande Versie met optie voor validation exception wil implementeren
+
+//    @PostMapping
+//    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody final OrderRequest orderRequest, final BindingResult br) {
+//        if (br.hasFieldErrors()) {
+//            throw new ValidationException(checkForBindingResult(br));
+//        } else {
+//            Order order = orderService.createOrder(OrderMapper.OrderRequestToOrder(orderRequest));
+//            URI uri = URI.create(
+//                    ServletUriComponentsBuilder
+//                            .fromCurrentRequest()
+//                            .path("/" + order).toUriString());
+//            return ResponseEntity.status(HttpStatus.CREATED).body(OrderMapper.OrderToOrderResponse(order));
+//        }
+//    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<OrderDto> editOrder(@PathVariable("id") final UUID idToEdit, @RequestBody final OrderInputDto order) {
-        OrderDto changeOrderId = orderService.editOrder(idToEdit, order);
-        return ResponseEntity.ok().body(changeOrderId);
+    public ResponseEntity<OrderResponse> editOrder(@PathVariable("id") final UUID idToEdit, @RequestBody final OrderRequest orderRequest) {
+        Order order = orderService.editOrder(idToEdit, OrderMapper.OrderRequestToOrder(orderRequest));
+        return ResponseEntity.ok().body(OrderMapper.OrderToOrderResponse(order));
     }
 
     @DeleteMapping("/{id}")
@@ -70,5 +88,4 @@ public class OrderController {
         orderService.deleteOrder(idToDelete);
         return ResponseEntity.ok().body("Order with id " + idToDelete + " removed from database");
     }
-
 }

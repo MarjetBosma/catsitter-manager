@@ -7,7 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDate;
 
 @Validated
-public record OrderInputDto(
+public record OrderRequest(
 
         @Future
         LocalDate startDate,

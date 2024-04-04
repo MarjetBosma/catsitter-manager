@@ -1,8 +1,8 @@
 package nl.novi.catsittermanager.services;
 
 import lombok.RequiredArgsConstructor;
-import nl.novi.catsittermanager.dtos.order.OrderDto;
-import nl.novi.catsittermanager.dtos.order.OrderInputDto;
+import nl.novi.catsittermanager.dtos.order.OrderResponse;
+import nl.novi.catsittermanager.dtos.order.OrderRequest;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.models.Catsitter;
@@ -13,11 +13,10 @@ import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.repositories.CatsitterRepository;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
 import nl.novi.catsittermanager.repositories.OrderRepository;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,72 +28,59 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final OrderRepository orderRepos;
-    private final CustomerRepository customerRepos;
-    private final CatsitterRepository catsitterRepos;
+    private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
+    private final CatsitterRepository catsitterRepository;
 
-    public List<OrderDto> getAllOrders() {
-        return orderRepos.findAll().stream()
-                .map(OrderMapper::transferToDto)
-                .collect(Collectors.toList());
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
     }
 
-    public OrderDto getOrder(UUID idToFind) {
-        return orderRepos.findById(idToFind)
-                .map(OrderMapper::transferToDto)
+    public Order getOrder(UUID idToFind) {
+        return orderRepository.findById(idToFind)
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id."));
     }
 
-    public OrderDto createOrder(@RequestBody OrderInputDto orderInputDto) {
-        Order newOrder = OrderMapper.transferFromInputDto(orderInputDto);
-        newOrder.setTasks(new ArrayList<Task>());
-        Customer customer = customerRepos.findById(orderInputDto.customerUsername())
-                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Customer not found"));
-        newOrder.setCustomer(customer);
-        Catsitter catsitter = catsitterRepos.findById(orderInputDto.catsitterUsername())
-                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Catsitter not found"));
-        newOrder.setCatsitter(catsitter);
-        newOrder.setInvoice(new Invoice());
-        orderRepos.save(newOrder);
-        return OrderMapper.transferToDto(newOrder);
+    public Order createOrder(final Order order) {
+        order.setTasks(new ArrayList<Task>());
+        order.setInvoice(new Invoice());
+        // customers en catsitters hier toevoegen of juist niet?
+        return orderRepository.save(order);
     }
 
-    public OrderDto editOrder(UUID idToEdit, OrderInputDto orderInputDto) {
-        Optional<Order> optionalOrder = orderRepos.findById(idToEdit);
-        if (optionalOrder.isPresent()) {
-            Order order = optionalOrder.get();
-            if (orderInputDto.startDate() != null) {
-                order.setStartDate(orderInputDto.startDate());
+// todo: uitzoeken hoe ik het beste customers en catsitters kan toevoegen zonder een loop te creeren. Hieronder oude versie via orderRequest.
+
+//    public OrderResponse createOrder(@RequestBody OrderRequest orderRequest) {
+//        Order order = OrderMapper.OrderRequestToOrder(orderRequest);
+//        order.setTasks(new ArrayList<Task>());
+//        Customer customer = customerRepository.findById(orderRequest.customerUsername())
+//                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Customer not found"));
+//        order.setCustomer(customer);
+//        Catsitter catsitter = catsitterRepository.findById(orderRequest.catsitterUsername())
+//                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Catsitter not found"));
+//        order.setCatsitter(catsitter);
+//        order.setInvoice(new Invoice());
+//        orderRepository.save(order);
+//        return OrderMapper.OrderToOrderResponse(order);
+//    }
+
+// todo: eventueel versie met Validation Exception schrijven
+
+
+// todo: uitzoeken waarom deze een 500 error geeft, mogelijk iets met de gerelateerde klassen?
+    public Order editOrder(UUID idToEdit, Order order) {
+            if (orderRepository.findById(idToEdit).isEmpty()) {
+                throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id.");
             }
-            if (orderInputDto.endDate() != null) {
-                order.setEndDate(orderInputDto.endDate());
-            }
-            if (orderInputDto.dailyNumberOfVisits() != 0) {
-                order.setDailyNumberOfVisits(orderInputDto.dailyNumberOfVisits());
-            }
-            if (orderInputDto.totalNumberOfVisits() != 0) {
-                order.setTotalNumberOfVisits(orderInputDto.totalNumberOfVisits());
-            }
-            if (orderInputDto.customerUsername() != null) {
-                Customer customer = customerRepos.findById(orderInputDto.customerUsername())
-                        .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Customer not found"));
-                order.setCustomer(customer);
-            }
-            if (orderInputDto.catsitterUsername() != null) {
-                Catsitter catsitter = catsitterRepos.findById(orderInputDto.catsitterUsername())
-                        .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "Catsitter not found"));
-                order.setCatsitter(catsitter);
-            }
-            return OrderMapper.transferToDto(order);
-        } else {
-            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id.");
+            return orderRepository.save(order);
         }
-    }
 
     public UUID deleteOrder(UUID idToDelete) {
-        orderRepos.deleteById(idToDelete);
+        if (!orderRepository.existsById(idToDelete)) {
+            throw new RecordNotFoundException("No order found with this id.");
+        }
+        orderRepository.deleteById(idToDelete);
         return idToDelete;
-
     }
 
 }

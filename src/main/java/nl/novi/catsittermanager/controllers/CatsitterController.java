@@ -1,16 +1,12 @@
 package nl.novi.catsittermanager.controllers;
 
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterRequest;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
-import nl.novi.catsittermanager.dtos.customer.CustomerRequest;
-import nl.novi.catsittermanager.dtos.customer.CustomerResponse;
-import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.mappers.CatsitterMapper;
-import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.models.Catsitter;
-import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.services.CatsitterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +71,7 @@ public class CatsitterController {
 
     // todo: uitzoeken waarom deze een 500 error geeft, mogelijk iets met de orders?
     @PutMapping("/{id}")
-    public ResponseEntity<CatsitterResponse> editCatsitter(@PathVariable("id") final String username, @Valid @RequestBody final CatsitterRequest catsitterRequest) {
+    public ResponseEntity<CatsitterResponse> editCatsitter(@PathVariable("id") final String username, @RequestBody final CatsitterRequest catsitterRequest) {
         Catsitter catsitter = catsitterService.editCatsitter(username, CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest));
         return ResponseEntity.ok().body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
     }

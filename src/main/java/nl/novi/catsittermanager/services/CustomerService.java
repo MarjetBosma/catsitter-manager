@@ -51,7 +51,7 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    // todo: uitzoeken waarom deze een 500 error geeft, mogelijk iets met de orders?
+    // todo: uitzoeken waarom deze een 500 error geeft, mogelijk iets met de orders of cats?
     public Customer editCustomer(String username, Customer customer) {
         if (customerRepository.findById(username).isEmpty()) {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username.");

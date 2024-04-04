@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-public record OrderDto(
+public record OrderResponse(
 
         UUID orderNo,
         LocalDate startDate,
