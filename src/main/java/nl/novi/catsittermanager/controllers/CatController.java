@@ -32,7 +32,6 @@ public class CatController {
         List<CatResponse> catResponseList = catService.getAllCats().stream()
                 .map(CatMapper::CatToCatResponse)
                 .toList();
-
         return ResponseEntity.ok(catResponseList);
     }
 

@@ -1,19 +1,13 @@
 package nl.novi.catsittermanager.controllers;
 
 import jakarta.validation.Valid;
-import nl.novi.catsittermanager.dtos.catsitter.CatsitterRequest;
-import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
-import nl.novi.catsittermanager.mappers.CatsitterMapper;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.dtos.order.OrderRequest;
-import nl.novi.catsittermanager.exceptions.ValidationException;
-import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.services.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,9 +16,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 

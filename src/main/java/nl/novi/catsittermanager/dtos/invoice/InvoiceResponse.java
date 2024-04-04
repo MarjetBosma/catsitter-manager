@@ -5,7 +5,7 @@ import nl.novi.catsittermanager.models.Order;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record InvoiceDto(
+public record InvoiceResponse(
         UUID invoiceNo,
         LocalDate invoiceDate,
         Double amount,

@@ -33,8 +33,8 @@ public class CatService {
         return catRepository.save(cat);
     }
 
-    public Cat editCat(UUID id, Cat cat, String ownerUsername) {
-        if (catRepository.findById(id).isEmpty()) {
+    public Cat editCat(final UUID idToEdit, final Cat cat, String ownerUsername) {
+        if (catRepository.findById(idToEdit).isEmpty()) {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id.");
         }
         Customer owner = customerService.getCustomer(ownerUsername);
