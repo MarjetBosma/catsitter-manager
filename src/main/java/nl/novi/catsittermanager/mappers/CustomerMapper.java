@@ -1,8 +1,8 @@
 package nl.novi.catsittermanager.mappers;
 
 import lombok.AllArgsConstructor;
-import nl.novi.catsittermanager.dtos.customer.CustomerDto;
-import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
+import nl.novi.catsittermanager.dtos.customer.CustomerResponse;
+import nl.novi.catsittermanager.dtos.customer.CustomerRequest;
 import nl.novi.catsittermanager.models.Customer;
 import org.springframework.stereotype.Component;
 
@@ -13,8 +13,8 @@ public class CustomerMapper {
 
     private final CatMapper catMapper;
 
-    public CustomerDto transferToDto(Customer customer) {
-        return new CustomerDto(
+    public static CustomerResponse CustomerToCustomerResponse(Customer customer) {
+        return new CustomerResponse(
                 customer.getUsername(),
                 customer.getPassword(),
                 customer.getName(),
@@ -25,13 +25,13 @@ public class CustomerMapper {
         );
     }
 
-    public static Customer transferFromInputDto(CustomerInputDto customerInputDto) {
+    public static Customer CustomerRequestToCustomer (CustomerRequest customerRequest) {
         return Customer.CustomerBuilder()
-                .username(customerInputDto.username())
-                .password(customerInputDto.password())
-                .name(customerInputDto.name())
-                .address(customerInputDto.address())
-                .email(customerInputDto.email())
+                .username(customerRequest.username())
+                .password(customerRequest.password())
+                .name(customerRequest.name())
+                .address(customerRequest.address())
+                .email(customerRequest.email())
                 .orders(new ArrayList<>())
                 .cats(new ArrayList<>())
                 .build();

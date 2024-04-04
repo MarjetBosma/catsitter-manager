@@ -6,7 +6,7 @@ import nl.novi.catsittermanager.dtos.order.OrderDto;
 
 import java.util.List;
 
-public record CustomerDto(
+public record CustomerResponse(
 
         String username,
         String password,

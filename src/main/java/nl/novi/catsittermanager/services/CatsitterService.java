@@ -23,7 +23,7 @@ public class CatsitterService {
 
     public Catsitter getCatsitter(final String username) {
         return catsitterRepository.findById(username)
-                .orElseThrow(() -> new RecordNotFoundException("No catsitter found with this id."));
+                .orElseThrow(() -> new RecordNotFoundException("No catsitter found with this username."));
     }
 
     public Catsitter createCatsitter(final Catsitter catsitter) {
@@ -33,7 +33,7 @@ public class CatsitterService {
         return catsitterRepository.save(catsitter);
     }
 
-    // todo: uitzoeken waarom deze een 500 error geeft
+    // todo: uitzoeken waarom deze een 500 error geeft, mogelijk iets met de orders?
     public Catsitter editCatsitter(String username, Catsitter catsitter) {
         if (catsitterRepository.findById(username).isEmpty()) {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No catsitter found with this username.");

@@ -1,9 +1,17 @@
 package nl.novi.catsittermanager.controllers;
 
-import nl.novi.catsittermanager.dtos.customer.CustomerDto;
-import nl.novi.catsittermanager.dtos.customer.CustomerInputDto;
+import jakarta.validation.Valid;
+import nl.novi.catsittermanager.dtos.catsitter.CatsitterRequest;
+import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
+import nl.novi.catsittermanager.dtos.customer.CustomerResponse;
+import nl.novi.catsittermanager.dtos.customer.CustomerRequest;
 import nl.novi.catsittermanager.exceptions.ValidationException;
+import nl.novi.catsittermanager.mappers.CatsitterMapper;
+import nl.novi.catsittermanager.mappers.CustomerMapper;
+import nl.novi.catsittermanager.models.Catsitter;
+import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.services.CustomerService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 import java.util.List;
 
@@ -33,39 +40,49 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerDto>> getAllCustomers() {
-        return ResponseEntity.ok(customerService.getAllCustomers());
+    public ResponseEntity<List<CustomerResponse>> getAllCustomers() {
+        List<CustomerResponse> customerResponseList = customerService.getAllCustomers().stream()
+                .map(CustomerMapper::CustomerToCustomerResponse)
+                .toList();
+        return ResponseEntity.ok(customerResponseList);
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<CustomerDto> getCustomer(@PathVariable("username") final String username) {
-        CustomerDto customerDto = customerService.getCustomerDTO(username);
-        return ResponseEntity.ok(customerDto);
+    public ResponseEntity<CustomerResponse> getCustomer(@PathVariable("username") final String username) {
+        Customer customer = customerService.getCustomer(username);
+        return ResponseEntity.ok(CustomerMapper.CustomerToCustomerResponse(customer));
     }
 
     @PostMapping
-    public ResponseEntity<CustomerDto> createCustomer(@RequestBody final CustomerInputDto customerInputDto, final BindingResult br) {
-        if (br.hasFieldErrors()) {
-            throw new ValidationException(checkForBindingResult(br));
-        } else {
-            CustomerDto savedCustomer;
-            savedCustomer = customerService.createCustomer(customerInputDto);
-            URI uri = URI.create(
-                    ServletUriComponentsBuilder
-                            .fromCurrentRequest()
-                            .path("/" + savedCustomer).toUriString());
-            return ResponseEntity.created(uri).body(savedCustomer);
-        }
+    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest) {
+        Customer customer = customerService.createCustomer((CustomerMapper.CustomerRequestToCustomer(customerRequest)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
     }
 
-    @PutMapping("/{username}")
-    public ResponseEntity<CustomerDto> editCustomer(@PathVariable("username") final String username, @RequestBody final CustomerInputDto customer) {
-        CustomerDto editedCustomer = customerService.editCustomer(username, customer);
-        return ResponseEntity.ok().body(editedCustomer);
+// todo: Beslissen of ik onderstaande Versie met optie voor validation exception wil implementeren
+
+//    @PostMapping
+//    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest, final BindingResult br) {
+//        if (br.hasFieldErrors()) {
+//            throw new ValidationException(checkForBindingResult(br));
+//        } else {
+//            Customer customer = customerService.createCustomer(CustomerMapper.CustomerRequestToCustomer(customerRequest));
+//            URI uri = URI.create(
+//                    ServletUriComponentsBuilder
+//                            .fromCurrentRequest()
+//                            .path("/" + customer).toUriString());
+//            return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
+//        }
+//    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CustomerResponse> editCustomer(@PathVariable("username") final String username, @RequestBody final CustomerRequest customerRequest) {
+        Customer customer = customerService.editCustomer(username, CustomerMapper.CustomerRequestToCustomer(customerRequest));
+        return ResponseEntity.ok().body(CustomerMapper.CustomerToCustomerResponse(customer));
     }
 
-    @DeleteMapping("/{username}")
-    public ResponseEntity<Object> deleteCustomer(@PathVariable("username") final String username) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteCustomer(@PathVariable("id") final String username) {
         customerService.deleteCustomer(username);
         return ResponseEntity.ok().body("Customer " + username + " removed from database");
     }
