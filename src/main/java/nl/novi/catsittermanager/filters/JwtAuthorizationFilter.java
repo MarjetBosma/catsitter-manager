@@ -1,4 +1,4 @@
-package nl.novi.catsittermanager.filter;
+package nl.novi.catsittermanager.filters;
 
 //We need to add a jwt authorization filter for each request.
 // This filter will block all requests that don’t have jwt token in the request header.

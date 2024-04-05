@@ -1,9 +1,9 @@
 package nl.novi.catsittermanager.controllers;
 
 import lombok.AllArgsConstructor;
-import nl.novi.catsittermanager.models.request.LoginRequest;
-import nl.novi.catsittermanager.models.response.LoginResponse;
-import nl.novi.catsittermanager.models.response.ErrorResponse;
+import nl.novi.catsittermanager.dtos.login.LoginRequest;
+import nl.novi.catsittermanager.dtos.login.LoginResponse;
+import nl.novi.catsittermanager.dtos.login.ErrorResponse;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

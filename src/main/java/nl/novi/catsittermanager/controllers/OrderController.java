@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
-import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
-
 @RestController
 @RequestMapping("/order")
 

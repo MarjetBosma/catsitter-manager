@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
-import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
-
 @RestController
 @RequestMapping("/customer")
 
@@ -39,14 +37,15 @@ public class CustomerController {
         return ResponseEntity.ok(customerResponseList);
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/{id}")
     public ResponseEntity<CustomerResponse> getCustomer(@PathVariable("username") final String username) {
         Customer customer = customerService.getCustomer(username);
         return ResponseEntity.ok(CustomerMapper.CustomerToCustomerResponse(customer));
     }
 
+    // todo: uitzoeken waarom de extra parameter username in de service hier een probleem geeft
     @PostMapping
-    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest) {
+    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest, final String username) {
         Customer customer = customerService.createCustomer((CustomerMapper.CustomerRequestToCustomer(customerRequest)));
         return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
     }
@@ -68,7 +67,7 @@ public class CustomerController {
 //    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerResponse> editCustomer(@PathVariable("username") final String username, @RequestBody final CustomerRequest customerRequest) {
+    public ResponseEntity<CustomerResponse> editCustomer(@PathVariable("id") final String username, @RequestBody final CustomerRequest customerRequest) {
         Customer customer = customerService.editCustomer(username, CustomerMapper.CustomerRequestToCustomer(customerRequest));
         return ResponseEntity.ok().body(CustomerMapper.CustomerToCustomerResponse(customer));
     }

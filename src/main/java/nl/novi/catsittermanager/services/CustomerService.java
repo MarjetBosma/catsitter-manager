@@ -8,6 +8,7 @@ import nl.novi.catsittermanager.dtos.customer.CustomerResponse;
 import nl.novi.catsittermanager.dtos.customer.CustomerRequest;
 import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
+import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
 import nl.novi.catsittermanager.mappers.CatsitterMapper;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.models.Cat;
@@ -32,7 +33,6 @@ import java.util.stream.Collectors;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
-    private final CustomerMapper customerMapper;
 
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
@@ -43,7 +43,11 @@ public class CustomerService {
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username."));
     }
 
-    public Customer createCustomer(final Customer customer) {
+    // todo: uitzoeken waarom de extra parameter username een probleem geeft in de controller
+    public Customer createCustomer(final Customer customer, final String username) {
+        if (customerRepository.existsById(username)) {
+            throw new UsernameAlreadyExistsException("Username " + username + " already exists. Please log in or choose another username to create a new account.");
+        }
         customer.setEnabled(true);
         customer.setRole(Role.CUSTOMER);
         customer.setOrders(new ArrayList<Order>());
@@ -52,14 +56,14 @@ public class CustomerService {
     }
 
     // todo: uitzoeken waarom deze een 500 error geeft, mogelijk iets met de orders of cats?
-    public Customer editCustomer(String username, Customer customer) {
+    public Customer editCustomer(final String username, final Customer customer) {
         if (customerRepository.findById(username).isEmpty()) {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username.");
         }
         return customerRepository.save(customer);
     }
 
-    public String deleteCustomer(String username) {
+    public String deleteCustomer(final String username) {
         if (!customerRepository.existsById(username)) {
             throw new RecordNotFoundException("No customer found with this username.");
         }

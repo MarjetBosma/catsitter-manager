@@ -1,7 +1,7 @@
 package nl.novi.catsittermanager.config;
 
 import lombok.RequiredArgsConstructor;
-import nl.novi.catsittermanager.filter.JwtAuthorizationFilter;
+import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.services.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package nl.novi.catsittermanager.models.request;
+package nl.novi.catsittermanager.dtos.login;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

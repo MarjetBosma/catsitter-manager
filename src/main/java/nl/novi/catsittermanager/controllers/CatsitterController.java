@@ -1,7 +1,6 @@
 package nl.novi.catsittermanager.controllers;
 
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterRequest;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
@@ -20,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
-import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/catsitter")
@@ -37,14 +34,15 @@ public class CatsitterController {
         return ResponseEntity.ok(catsitterResponseList);
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<CatsitterResponse> getCatSitter(@PathVariable("username") final String username) {
+    @GetMapping("/{id}")
+    public ResponseEntity<CatsitterResponse> getCatSitter(@PathVariable("id") final String username) {
         Catsitter catsitter = catsitterService.getCatsitter(username);
         return ResponseEntity.ok(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
     }
 
+    // todo: uitzoeken waarom de extra parameter username in de service hier een probleem geeft
     @PostMapping
-    public ResponseEntity<CatsitterResponse> createCatsitter(@Valid @RequestBody final CatsitterRequest catsitterRequest) {
+    public ResponseEntity<CatsitterResponse> createCatsitter(@Valid @RequestBody final CatsitterRequest catsitterRequest, final String userneme) {
         Catsitter catsitter = catsitterService.createCatsitter(CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest));
         return ResponseEntity.status(HttpStatus.CREATED).body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
     }
