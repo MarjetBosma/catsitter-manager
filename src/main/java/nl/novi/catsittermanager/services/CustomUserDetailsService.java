@@ -23,13 +23,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         //todo member.getRoles en daar de hieronder roles aan toe te voegen.
 
 //        //todo hij maakt dus een userDetails aan met oa roles en voegt 'ie een member toe, ik wil dat al bijhouden in lijst authorities, moet ik het dan nog een keer doen?
-//        //todo wat wordt er met deze roles gedaaN?
+//        //todo wat wordt er met deze roles gedaan?
 
         UserDetails userDetails =
                 org.springframework.security.core.userdetails.User.builder()
                         .username(user.getUsername())
                         .password(user.getPassword())
-                        //hier zoude we ze uit de database moeten halen. wordt member
+                        //hier zouden we ze uit de database moeten halen.
                         //onderstaande zorgt ervoor hoe het in de database komt te staan, en dat is dus iets anders dan hoe het in de authentication te vinden is.
                         //.roles(user.getRoles())
                         .roles(new String[]{"USER"})

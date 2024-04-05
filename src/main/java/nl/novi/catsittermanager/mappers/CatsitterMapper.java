@@ -1,10 +1,13 @@
 package nl.novi.catsittermanager.mappers;
 
+import nl.novi.catsittermanager.models.Authority;
 import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterRequest;
 import org.springframework.stereotype.Component;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class CatsitterMapper {
@@ -30,6 +33,8 @@ public class CatsitterMapper {
                 .email(catsitterRequest.email())
                 .about(catsitterRequest.about())
                 .orders(new ArrayList<>())
+                .authorities(new HashSet<>())
+                .enabled(true)
                 .build();
     }
 }

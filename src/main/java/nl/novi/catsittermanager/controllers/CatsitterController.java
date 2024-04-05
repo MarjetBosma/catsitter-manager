@@ -68,7 +68,6 @@ public class CatsitterController {
         Catsitter catsitter = catsitterService.editCatsitter(username, CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest));
         return ResponseEntity.ok().body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
     }
-    // todo: deze geeft een authentication error, waarom?
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCatsitter(@PathVariable("id") final String username) {

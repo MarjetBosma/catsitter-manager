@@ -42,14 +42,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/**").permitAll()
                                         .requestMatchers(HttpMethod.POST, "/**").permitAll()
-                                        .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
-                                        .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
-                                        .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
-                                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
-                                        .requestMatchers("/authenticated").authenticated()
-                                        .requestMatchers("/authenticate").permitAll()/*alleen dit punt mag toegankelijk zijn voor niet ingelogde gebruikers*/
-                                        .requestMatchers("/authenticated").authenticated()
-                                        .requestMatchers("/authenticate").permitAll()
+//                                        .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
+//                                        .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
+//                                        .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
+//                                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
+//                                        .requestMatchers("/authenticated").authenticated()
+//                                        .requestMatchers("/authenticate").permitAll()/*alleen dit punt mag toegankelijk zijn voor niet ingelogde gebruikers*/
+//                                        .requestMatchers("/authenticated").authenticated()
+//                                        .requestMatchers("/authenticate").permitAll()
                                         .anyRequest().denyAll() /*Deze voeg je altijd als laatste toe, om een default beveiliging te hebben voor eventuele vergeten endpoints of endpoints die je later toevoegT. */
 
 //Here we have added our jwt filter before the UsernamePasswordAuthenticationFilter.

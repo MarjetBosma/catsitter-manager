@@ -71,7 +71,6 @@ public class CustomerController {
         Customer customer = customerService.editCustomer(username, CustomerMapper.CustomerRequestToCustomer(customerRequest));
         return ResponseEntity.ok().body(CustomerMapper.CustomerToCustomerResponse(customer));
     }
-    // todo: deze geeft een authentication error, waarom?
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCustomer(@PathVariable("id") final String username) {
