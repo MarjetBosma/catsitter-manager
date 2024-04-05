@@ -43,25 +43,27 @@ public class CustomerService {
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username."));
     }
 
-    // todo: uitzoeken waarom de extra parameter username een probleem geeft in de controller
-    public Customer createCustomer(final Customer customer, final String username) {
-        if (customerRepository.existsById(username)) {
-            throw new UsernameAlreadyExistsException("Username " + username + " already exists. Please log in or choose another username to create a new account.");
-        }
+    public Customer createCustomer(final Customer customer
+//            , final String username
+    ) {
+//        if (customerRepository.existsById(username)) {
+//            throw new UsernameAlreadyExistsException("Username " + username + " already exists. Please log in or choose another username to create a new account.");
+//        }
         customer.setEnabled(true);
         customer.setRole(Role.CUSTOMER);
         customer.setOrders(new ArrayList<Order>());
         customer.setCats(new ArrayList<Cat>());
         return customerRepository.save(customer);
     }
+    // todo: uitzoeken waarom de extra parameter username een probleem geeft in de controller
 
-    // todo: uitzoeken waarom deze een 500 error geeft, mogelijk iets met de orders of cats?
     public Customer editCustomer(final String username, final Customer customer) {
         if (customerRepository.findById(username).isEmpty()) {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username.");
         }
         return customerRepository.save(customer);
     }
+    // todo: deze geeft een authentication error, waarom?
 
     public String deleteCustomer(final String username) {
         if (!customerRepository.existsById(username)) {

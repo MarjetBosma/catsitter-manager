@@ -35,22 +35,22 @@ public class InvoiceController {
                 .toList();
         return ResponseEntity.ok(invoiceResponseList);
     }
+    // todo: deze geeft een authentication error / null pointer exception, waarom?
 
     @GetMapping("/{id}")
     public ResponseEntity<InvoiceResponse> getInvoice(@PathVariable("id") final UUID idToFind) {
         Invoice invoice = invoiceService.getInvoice(idToFind);
         return ResponseEntity.ok(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
     }
+    // todo: deze geeft een authentication error / null pointer exception, waarom?
 
-    // todo: uitzoeken waarom deze een 400 bad request error geeft
-    // todo: beslissen of ik een versie met validation exception wil gebruiken
     @PostMapping
     public ResponseEntity<InvoiceResponse> createInvoice(@Valid @RequestBody final InvoiceRequest invoiceRequest) {
         Invoice invoice = invoiceService.createInvoice(InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest), invoiceRequest.orderNo());
         return ResponseEntity.status(HttpStatus.CREATED).body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
     }
+    // todo: beslissen of ik een versie met validation exception wil gebruiken
 
-    // todo: uitzoeken waarom deze een 400 bad request error geeft
     @PutMapping("/{id}")
     public ResponseEntity<InvoiceResponse> editInvoice(@PathVariable("id") final UUID idToEdit, @RequestBody final InvoiceRequest invoiceRequest) {
         Invoice invoice = invoiceService.editInvoice(idToEdit, InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest), invoiceRequest.orderNo());

@@ -9,13 +9,13 @@ package nl.novi.catsittermanager.filters;
 // Any login request will not have jwt token in their header, therefore they will be passed to next filter chain.
 // If any acessToken is present, then it will validate the token and then authenticate the request in SecurityContext.
 
+import nl.novi.catsittermanager.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nl.novi.catsittermanager.utils.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +24,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -45,9 +45,8 @@ public class TaskController {
         Task task = taskService.createTask(TaskMapper.TaskRequestToTask(taskRequest), taskRequest.orderNo());
         return ResponseEntity.ok().body(TaskMapper.TaskToTaskResponse(task));
     }
-
-    // todo: Uitzoeken waarom deze een authentication error geeft (getest na gedeeltelijke implementatie security)
     // todo: beslissen of ik een versie met validation exception wil gebruiken
+
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponse> editTask(@PathVariable("id") final UUID idToEdit, @RequestBody final TaskRequest taskRequest) {
         Task task = taskService.editTask(idToEdit, TaskMapper.TaskRequestToTask(taskRequest), taskRequest.orderNo());

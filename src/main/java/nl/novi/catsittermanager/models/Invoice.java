@@ -28,8 +28,8 @@ import java.util.UUID;
 public class Invoice {
 
     @Id
-    @JoinColumn(name = "invoice_no")
     @GeneratedValue(strategy = GenerationType.UUID)
+    @JoinColumn(name = "invoice_no")
     private UUID invoiceNo;
 
     private LocalDate invoiceDate;

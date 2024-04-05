@@ -32,13 +32,16 @@ public class UserService {
     }
 
     // todo: Uitzoeken waarom de extra parameter username een probleem geeft in de controller
-    public User createUser(final User user, final String username) {
-        if (userRepository.existsById(username)) {
-            throw new UsernameAlreadyExistsException("Username " + username + " already exists. Please log in or choose another username to create a new account.");
-        }
+    public User createUser(final User user
+//            , final String username
+            ) {
+//        if (userRepository.existsById(username)) {
+//            throw new UsernameAlreadyExistsException("Username " + username + " already exists. Please log in or choose another username to create a new account.");
+//        }
         user.setEnabled(true);
-        // user.setRole(Role.CUSTOMER);
-        // todo: Bepalen waar bovenstaande moet. Er kan ook een customer of catsitter aangemaakt worden waar de rol (CUSTOMER of CATSITTER wordt gezet. Er moet echter ook een ADMIN aangemaakt kunnen worden.
+         user.setRole(Role.CUSTOMER);
+        // todo: Bepalen waar en hoe bovenstaande moet. Er kan ook een customer of catsitter aangemaakt worden waar de rol (CUSTOMER of CATSITTER) wordt gezet. Er moet echter ook een ADMIN aangemaakt kunnen worden. Weglaten geeft een error.
+
         return userRepository.save(user);
     }
 

@@ -38,20 +38,20 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerResponse> getCustomer(@PathVariable("username") final String username) {
+    public ResponseEntity<CustomerResponse> getCustomer(@PathVariable("id") final String username) {
         Customer customer = customerService.getCustomer(username);
         return ResponseEntity.ok(CustomerMapper.CustomerToCustomerResponse(customer));
     }
+    // todo: is het mogelijk/wenselijk om een aparte URI, GET request en methode aan te maken voor de orders van een bepaalde catsitter? Bijv. /customer/order of /customer/cat
 
-    // todo: uitzoeken waarom de extra parameter username in de service hier een probleem geeft
     @PostMapping
-    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest, final String username) {
-        Customer customer = customerService.createCustomer((CustomerMapper.CustomerRequestToCustomer(customerRequest)));
+    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest) {
+        Customer customer = customerService.createCustomer(CustomerMapper.CustomerRequestToCustomer(customerRequest));
         return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
     }
+    // todo: uitzoeken waarom de extra parameter username in de service hier een probleem geeft, en of ik die username validatie wellicht ergens anders moet doen
 
-// todo: Beslissen of ik onderstaande Versie met optie voor validation exception wil implementeren
-//
+    // todo: beslissen of ik onderstaande versie met optie voor validation exception wil implementeren
 //    @PostMapping
 //    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest, final BindingResult br) {
 //        if (br.hasFieldErrors()) {
@@ -71,6 +71,7 @@ public class CustomerController {
         Customer customer = customerService.editCustomer(username, CustomerMapper.CustomerRequestToCustomer(customerRequest));
         return ResponseEntity.ok().body(CustomerMapper.CustomerToCustomerResponse(customer));
     }
+    // todo: deze geeft een authentication error, waarom?
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCustomer(@PathVariable("id") final String username) {

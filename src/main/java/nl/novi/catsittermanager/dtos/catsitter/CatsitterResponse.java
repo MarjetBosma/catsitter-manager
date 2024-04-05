@@ -13,7 +13,6 @@ public record CatsitterResponse(
         String address,
         String email,
         String about,
-        @JsonIgnore
         List<OrderResponse> orders
 
 ) {

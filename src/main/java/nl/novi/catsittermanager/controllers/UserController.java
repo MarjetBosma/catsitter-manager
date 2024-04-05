@@ -52,14 +52,14 @@ public class UserController {
         return ResponseEntity.ok(UserMapper.UserToUserResponse(user));
     }
 
-    // todo: uitzoeken waarom de extra parameter username in de service hier een probleem geeft
+    // todo: uitzoeken waarom de extra parameter username in de service hier een probleem geeft, en of ik die username validatie wellicht ergens anders moet doen
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody final UserRequest userRequest, final String username) {
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody final UserRequest userRequest) {
         User user = userService.createUser(UserMapper.UserRequestToUser(userRequest));
         return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.UserToUserResponse(user));
     }
 
-// todo: Beslissen of ik onderstaande Versie met optie voor validation exception wil implementeren
+    // todo: Beslissen of ik onderstaande versie met optie voor validation exception wil implementeren
 
 //    @PostMapping
 //    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody final UserRequest userRequest, final BindingResult br) {
@@ -75,6 +75,7 @@ public class UserController {
 //        }
 //    }
 
+    // todo: uitzoeken waarom deze een authentication error geeft, getest nadat ik deels de implementatie van security heb gedaan
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> editUser(@PathVariable("id") final String username, @RequestBody final UserRequest userRequest) {
         User user = userService.editUser(username, UserMapper.UserRequestToUser(userRequest));

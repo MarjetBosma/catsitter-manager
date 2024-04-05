@@ -39,16 +39,16 @@ public class CatsitterController {
         Catsitter catsitter = catsitterService.getCatsitter(username);
         return ResponseEntity.ok(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
     }
+    // todo: is het mogelijk/wenselijk om een aparte URI, GET request en methode aan te maken voor de orders van een bepaalde catsitter? Bijv. /catsitter/order.
 
-    // todo: uitzoeken waarom de extra parameter username in de service hier een probleem geeft
     @PostMapping
-    public ResponseEntity<CatsitterResponse> createCatsitter(@Valid @RequestBody final CatsitterRequest catsitterRequest, final String userneme) {
+    public ResponseEntity<CatsitterResponse> createCatsitter(@Valid @RequestBody final CatsitterRequest catsitterRequest) {
         Catsitter catsitter = catsitterService.createCatsitter(CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest));
         return ResponseEntity.status(HttpStatus.CREATED).body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
     }
-    
-// todo: Beslissen of ik onderstaande Versie met optie voor validation exception wil implementeren
+    // todo: uitzoeken waarom de extra parameter username in de service hier een probleem geeft, en of ik die username validatie wellicht ergens anders moet doen
 
+    // todo: Beslissen of ik onderstaande versie met optie voor validation exception wil implementeren
 //    @PostMapping
 //    public ResponseEntity<CatsitterResponse> createCatsitter(@Valid @RequestBody final CatsitterRequest catsitterRequest, final BindingResult br) {
 //        if (br.hasFieldErrors()) {
@@ -63,12 +63,12 @@ public class CatsitterController {
 //        }
 //    }
 
-// todo: uitzoeken waarom deze een 500 error geeft, mogelijk iets met de orders?
     @PutMapping("/{id}")
     public ResponseEntity<CatsitterResponse> editCatsitter(@PathVariable("id") final String username, @RequestBody final CatsitterRequest catsitterRequest) {
         Catsitter catsitter = catsitterService.editCatsitter(username, CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest));
         return ResponseEntity.ok().body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
     }
+    // todo: deze geeft een authentication error, waarom?
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCatsitter(@PathVariable("id") final String username) {

@@ -41,7 +41,7 @@ public class CatController {
         return ResponseEntity.ok(CatMapper.CatToCatResponse(cat));
     }
 
-    @PostMapping // todo messages exception (ook in exception handler)
+    @PostMapping
      public ResponseEntity<CatResponse> createCat(@Valid @RequestBody final CatRequest catRequest) {
         Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(CatMapper.CatToCatResponse(cat));
