@@ -23,10 +23,11 @@ public class JwtUtil {
         this.jwtParser = Jwts.parser().setSigningKey(secret_key);
     }
 
-    public String createToken(User user) {
-        Claims claims = Jwts.claims().setSubject(user.getUsername());
-        claims.put("name",user.getName());
-        claims.put("email",user.getEmail());
+    //The createToken() method takes an Member object , creates a Claims object from user data and builds a jwt token with Jwts.builder().
+    // The Claims object is used as the jwt body.
+    public String createToken(String email) {
+        Claims claims = Jwts.claims().setSubject(email);
+        // andere claims toevoegen indien nodig...
         Date tokenCreateTime = new Date();
         Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(accessTokenValidity));
         return Jwts.builder()
@@ -36,9 +37,26 @@ public class JwtUtil {
                 .compact();
     }
 
+//    public String createToken(User user) {
+//        Claims claims = Jwts.claims().setSubject(user.getUsername());
+//        claims.put("name",user.getName());
+//        claims.put("email",user.getEmail());
+//        Date tokenCreateTime = new Date();
+//        Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(accessTokenValidity));
+//        return Jwts.builder()
+//                .setClaims(claims)
+//                .setExpiration(tokenValidity)
+//                .signWith(SignatureAlgorithm.HS256, secret_key)
+//                .compact();
+//    }
+
     private Claims parseJwtClaims(String token) {
         return jwtParser.parseClaimsJws(token).getBody();
     }
+
+    //The resolveClaims() method takes an HttpServletRequest object as parameter
+    // and resolve Claims object from Bearer token in the request header.
+    // It will throw an exception if no such token is present in request header or the token is expired or invalid.
 
     public Claims resolveClaims(HttpServletRequest req) {
         try {

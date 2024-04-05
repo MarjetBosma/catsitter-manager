@@ -53,6 +53,8 @@ public class User implements Serializable {
             fetch = FetchType.EAGER)
     private Set<Authority> authorities = new HashSet<>();
 
+    //private List<Roles> roles;
+
     @Column(nullable = false)
     private Boolean enabled;
 

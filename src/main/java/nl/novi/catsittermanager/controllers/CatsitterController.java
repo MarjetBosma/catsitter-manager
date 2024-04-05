@@ -48,7 +48,7 @@ public class CatsitterController {
         Catsitter catsitter = catsitterService.createCatsitter(CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest));
         return ResponseEntity.status(HttpStatus.CREATED).body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
     }
-
+    
 // todo: Beslissen of ik onderstaande Versie met optie voor validation exception wil implementeren
 
 //    @PostMapping

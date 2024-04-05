@@ -14,7 +14,7 @@ public class InvoiceMapper {
                 invoice.getInvoiceDate(),
                 invoice.getAmount(),
                 invoice.getPaid(),
-                invoice.getOrder()
+                invoice.getOrder().getOrderNo()
         );
     }
 

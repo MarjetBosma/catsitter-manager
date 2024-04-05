@@ -10,7 +10,7 @@ public record InvoiceResponse(
         LocalDate invoiceDate,
         Double amount,
         Boolean paid,
-        Order order
+        UUID orderNo
 
 ) {
 }

@@ -5,14 +5,14 @@ import nl.novi.catsittermanager.models.Order;
 
 import java.util.UUID;
 
-public record TaskDto(
+public record TaskResponse(
 
         UUID taskNo,
         TaskType taskType,
         String taskInstruction,
         String extraInstructions,
         Double priceOfTask,
-        Order order
+        UUID orderNo
 
 ) {
 }

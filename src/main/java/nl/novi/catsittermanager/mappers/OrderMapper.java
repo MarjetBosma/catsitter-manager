@@ -19,10 +19,10 @@ public class OrderMapper {
                 order.getEndDate(),
                 order.getDailyNumberOfVisits(),
                 order.getTotalNumberOfVisits(),
-                order.getTasks().stream().map(TaskMapper::transferToDto).toList(),
+                order.getTasks().stream().map(TaskMapper::TaskToTaskResponse).toList(),
                 order.getCustomer(),
                 order.getCatsitter(),
-                order.getInvoice()
+                order.getInvoice().getInvoiceNo()
         );
     }
 

@@ -1,6 +1,6 @@
 package nl.novi.catsittermanager.dtos.order;
 
-import nl.novi.catsittermanager.dtos.task.TaskDto;
+import nl.novi.catsittermanager.dtos.task.TaskResponse;
 import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Invoice;
@@ -16,10 +16,10 @@ public record OrderResponse(
         LocalDate endDate,
         int dailyNumberOVisits,
         int totalNumberOfVisits,
-        List<TaskDto> tasks,
+        List<TaskResponse> tasks,
         Customer customer,
         Catsitter catsitter,
-        Invoice invoice
+        UUID invoiceNo
 
 ) {
 }

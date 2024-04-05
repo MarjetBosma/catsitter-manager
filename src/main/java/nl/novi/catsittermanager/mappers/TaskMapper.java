@@ -1,27 +1,28 @@
 package nl.novi.catsittermanager.mappers;
 
-import nl.novi.catsittermanager.dtos.task.TaskDto;
-import nl.novi.catsittermanager.dtos.task.TaskInputDto;
+import nl.novi.catsittermanager.dtos.task.TaskResponse;
+import nl.novi.catsittermanager.dtos.task.TaskRequest;
 import nl.novi.catsittermanager.models.Task;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TaskMapper {
-    public static TaskDto transferToDto(Task task) {
-        return new TaskDto(task.getTaskNo(),
+    public static TaskResponse TaskToTaskResponse(Task task) {
+        return new TaskResponse(task.getTaskNo(),
                 task.getTaskType(),
                 task.getTaskInstruction(),
                 task.getExtraInstructions(),
                 task.getPriceOfTask(),
-                task.getOrder()
+                task.getOrder().getOrderNo()
         );
     }
 
-    public static Task transferFromDto(TaskInputDto taskInputDto) {
+    public static Task TaskRequestToTask(TaskRequest taskRequest) {
         return Task.builder()
-                .taskType(taskInputDto.taskType())
-                .taskInstruction(taskInputDto.taskInstruction())
-                .extraInstructions(taskInputDto.extraInstructions())
-                .priceOfTask(taskInputDto.priceOfTask())
-                .order(taskInputDto.order())
+                .taskType(taskRequest.taskType())
+                .taskInstruction(taskRequest.taskInstruction())
+                .extraInstructions(taskRequest.extraInstructions())
+                .priceOfTask(taskRequest.priceOfTask())
                 .build();
     }
 }

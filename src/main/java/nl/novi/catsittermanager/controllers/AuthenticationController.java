@@ -1,7 +1,6 @@
 package nl.novi.catsittermanager.controllers;
 
 import lombok.AllArgsConstructor;
-import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.models.request.LoginRequest;
 import nl.novi.catsittermanager.models.response.LoginResponse;
 import nl.novi.catsittermanager.models.response.ErrorResponse;
@@ -12,13 +11,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
 public class AuthenticationController {
@@ -26,16 +25,16 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
-    @ResponseBody
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public ResponseEntity login(@RequestBody LoginRequest loginRequest)  {
 
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-            String username = authentication.getName();
-            User user = new User(username, ""); // Later anders doen, met gebruik van password encoder
-            String token = jwtUtil.createToken(user);
-            LoginResponse loginResponse = new LoginResponse(username,token);
+//            String username = authentication.getName();
+//            User user = new User(username, ""); // Later anders doen, met gebruik van password encoder
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String token = jwtUtil.createToken(userDetails.getUsername());
+            LoginResponse loginResponse = new LoginResponse(userDetails.getUsername(),token);
 
             return ResponseEntity.ok(loginResponse);
 
