@@ -49,7 +49,6 @@ public class CustomerController {
         Customer customer = customerService.createCustomer(CustomerMapper.CustomerRequestToCustomer(customerRequest));
         return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
     }
-    // todo: uitzoeken waarom de extra parameter username in de service hier een probleem geeft, en of ik die username validatie wellicht ergens anders moet doen
 
     // todo: beslissen of ik onderstaande versie met optie voor validation exception wil implementeren
 //    @PostMapping

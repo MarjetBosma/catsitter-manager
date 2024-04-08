@@ -7,7 +7,7 @@ package nl.novi.catsittermanager.filters;
 // This method reads Bearer token from request headers and resolves claims. First, it checks if any access token is present in the request header.
 // If the accessToken is null. It will pass the request to next filter chain.
 // Any login request will not have jwt token in their header, therefore they will be passed to next filter chain.
-// If any acessToken is present, then it will validate the token and then authenticate the request in SecurityContext.
+// If any accessToken is present, then it will validate the token and then authenticate the request in SecurityContext.
 
 import nl.novi.catsittermanager.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,7 +59,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 System.out.println("username : "+ username);
                 //This line will authenticate the request to the SecurityContext.
                 // So, any request having a jwt token in their header will be authenticated & permited by spring security.
-                //todo onderstaande nog aanpassen.
+                //todo onderstaande nog aanpassen, ik heb andere rolnamen.
                 Authentication authentication =
                         new UsernamePasswordAuthenticationToken(username,"",new ArrayList<>(Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"))));
                 SecurityContextHolder.getContext().setAuthentication(authentication);

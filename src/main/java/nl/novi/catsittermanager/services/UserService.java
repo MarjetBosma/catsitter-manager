@@ -10,6 +10,7 @@ import nl.novi.catsittermanager.mappers.UserMapper;
 import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoderService passwordEncoderService;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -31,17 +33,16 @@ public class UserService {
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No user found with this username."));
     }
 
-    // todo: Uitzoeken waarom de extra parameter username een probleem geeft in de controller
-    public User createUser(final User user
-//            , final String username
-            ) {
-//        if (userRepository.existsById(username)) {
-//            throw new UsernameAlreadyExistsException("Username " + username + " already exists. Please log in or choose another username to create a new account.");
-//        }
+    // todo: ik heb hier nu alleen een methode voor admin aanmaken, customer en catsitter aanmaken staat in hun eigen services. Is dit de beste optie?
+    public User createAdminAccount(final User user) { // todo: apart admin entity of request maken?
+        if (userRepository.findById(user.getUsername()).isPresent()) {
+            throw new UsernameAlreadyExistsException();
+        }
+        String hashedPassword = passwordEncoderService.hashPassword(user.getPassword());
+        //user.getAuthorities().add(Role.ADMIN); // Wat zijn nu precies de authorities t.o.v. de role?
         user.setEnabled(true);
-         user.setRole(Role.CUSTOMER);
-        // todo: Bepalen waar en hoe bovenstaande moet. Er kan ook een customer of catsitter aangemaakt worden waar de rol (CUSTOMER of CATSITTER) wordt gezet. Er moet echter ook een ADMIN aangemaakt kunnen worden. Weglaten geeft een error.
-
+        user.setRole(Role.ADMIN);
+        userRepository.save(user);
         return userRepository.save(user);
     }
 

@@ -46,7 +46,6 @@ public class CatsitterController {
         Catsitter catsitter = catsitterService.createCatsitter(CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest));
         return ResponseEntity.status(HttpStatus.CREATED).body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
     }
-    // todo: uitzoeken waarom de extra parameter username in de service hier een probleem geeft, en of ik die username validatie wellicht ergens anders moet doen
 
     // todo: Beslissen of ik onderstaande versie met optie voor validation exception wil implementeren
 //    @PostMapping

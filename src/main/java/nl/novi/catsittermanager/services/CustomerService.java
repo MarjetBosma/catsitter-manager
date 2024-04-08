@@ -43,19 +43,16 @@ public class CustomerService {
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username."));
     }
 
-    public Customer createCustomer(final Customer customer
-//            , final String username
-    ) {
-//        if (customerRepository.existsById(username)) {
-//            throw new UsernameAlreadyExistsException("Username " + username + " already exists. Please log in or choose another username to create a new account.");
-//        }
+    public Customer createCustomer(final Customer customer) {
+        if (customerRepository.findById(customer.getUsername()).isPresent()) {
+            throw new UsernameAlreadyExistsException();
+        }
         customer.setEnabled(true);
         customer.setRole(Role.CUSTOMER);
         customer.setOrders(new ArrayList<Order>());
         customer.setCats(new ArrayList<Cat>());
         return customerRepository.save(customer);
     }
-    // todo: uitzoeken waarom de extra parameter username een probleem geeft in de controller
 
     public Customer editCustomer(final String username, final Customer customer) {
         if (customerRepository.findById(username).isEmpty()) {

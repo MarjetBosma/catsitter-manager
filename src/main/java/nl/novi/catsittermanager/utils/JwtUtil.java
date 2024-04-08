@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+// This class will be used for creating & resolving jwt tokens
 @Component
 public class JwtUtil {
 
@@ -23,10 +24,10 @@ public class JwtUtil {
         this.jwtParser = Jwts.parser().setSigningKey(secret_key);
     }
 
-    //The createToken() method takes an Member object , creates a Claims object from user data and builds a jwt token with Jwts.builder().
+    //The createToken() method takes a User object (?) , creates a Claims object from user data and builds a jwt token with Jwts.builder().
     // The Claims object is used as the jwt body.
-    public String createToken(String email) {
-        Claims claims = Jwts.claims().setSubject(email);
+    public String createToken(String username) {
+        Claims claims = Jwts.claims().setSubject(username);
         // andere claims toevoegen indien nodig...
         Date tokenCreateTime = new Date();
         Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(accessTokenValidity));
@@ -36,19 +37,6 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS256, secret_key)
                 .compact();
     }
-
-//    public String createToken(User user) {
-//        Claims claims = Jwts.claims().setSubject(user.getUsername());
-//        claims.put("name",user.getName());
-//        claims.put("email",user.getEmail());
-//        Date tokenCreateTime = new Date();
-//        Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(accessTokenValidity));
-//        return Jwts.builder()
-//                .setClaims(claims)
-//                .setExpiration(tokenValidity)
-//                .signWith(SignatureAlgorithm.HS256, secret_key)
-//                .compact();
-//    }
 
     private Claims parseJwtClaims(String token) {
         return jwtParser.parseClaimsJws(token).getBody();
@@ -65,12 +53,12 @@ public class JwtUtil {
                 return parseJwtClaims(token);
             }
             return null;
-        } catch (ExpiredJwtException ex) {
-            req.setAttribute("expired", ex.getMessage());
-            throw ex;
-        } catch (Exception ex) {
-            req.setAttribute("invalid", ex.getMessage());
-            throw ex;
+        } catch (ExpiredJwtException exception) {
+            req.setAttribute("expired", exception.getMessage());
+            throw exception;
+        } catch (Exception exception) {
+            req.setAttribute("invalid", exception.getMessage());
+            throw exception;
         }
     }
 
@@ -91,7 +79,7 @@ public class JwtUtil {
         }
     }
 
-    public String getEmail(Claims claims) {
+    public String getUsername(Claims claims) {
         return claims.getSubject();
     }
 
@@ -160,7 +148,7 @@ public class JwtUtil {
 //                .setClaims(claims)
 //                .setSubject(subject)
 //                .setIssuedAt(new Date(System.currentTimeMillis()))
-//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) //TODO: de JWT vervalt nu na 24 uur. Zorg dat de JWT 10 dagen geldig is.
+//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
 //                .signWith(getSigningKey() , SignatureAlgorithm.HS256)
 //                .compact();
 //    }

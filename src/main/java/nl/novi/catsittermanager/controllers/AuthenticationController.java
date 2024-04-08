@@ -30,9 +30,7 @@ public class AuthenticationController {
 
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-//            String username = authentication.getName();
-//            User user = new User(username, ""); // Later anders doen, met gebruik van password encoder
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal(); // ophalen van geauthenticeerde gebruiker
             String token = jwtUtil.createToken(userDetails.getUsername());
             LoginResponse loginResponse = new LoginResponse(userDetails.getUsername(),token);
 
