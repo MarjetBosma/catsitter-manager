@@ -1,6 +1,7 @@
 package nl.novi.catsittermanager.models;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +34,7 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column
     private UUID orderNo;
 
     private LocalDate startDate;
@@ -43,7 +45,7 @@ public class Order {
 
     private int totalNumberOfVisits;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<Task> tasks;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,7 +54,7 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private Catsitter catsitter;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
     private Invoice invoice;
 

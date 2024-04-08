@@ -19,7 +19,6 @@ public record OrderRequest(
         @NotNull
         @Positive
         int dailyNumberOfVisits,
-
         @NotNull
         @Positive
         int totalNumberOfVisits,

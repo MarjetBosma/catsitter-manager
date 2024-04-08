@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.models;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -54,7 +55,7 @@ public class Cat {
     private String medicationDose;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
+    @JoinColumn
     private Customer owner;
 
 //    private byte[] photo;

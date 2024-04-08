@@ -53,6 +53,7 @@ public class TaskController {
         return ResponseEntity.ok().body(TaskMapper.TaskToTaskResponse(task));
     }
 
+    //    todo: uitzoeken waarom deze een error geeft (400 Bad Request)
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteTask(@PathVariable("id") final UUID idToDelete) {
         taskService.deleteTask(idToDelete);

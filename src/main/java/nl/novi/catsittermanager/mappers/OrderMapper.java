@@ -14,15 +14,13 @@ import java.util.ArrayList;
 public class OrderMapper {
 
     public static OrderResponse OrderToOrderResponse(Order order) {
-        return new OrderResponse(order.getOrderNo(),
+        return new OrderResponse(
+                order.getOrderNo(),
                 order.getStartDate(),
                 order.getEndDate(),
                 order.getDailyNumberOfVisits(),
                 order.getTotalNumberOfVisits(),
-                order.getTasks().stream().map(TaskMapper::TaskToTaskResponse).toList(),
-                order.getCustomer(),
-                order.getCatsitter(),
-                order.getInvoice().getInvoiceNo()
+                order.getTasks().stream().map(TaskMapper::TaskToTaskResponse).toList()
         );
     }
 
@@ -35,7 +33,6 @@ public class OrderMapper {
                 .tasks(new ArrayList<>())
                 .customer(new Customer())
                 .catsitter(new Catsitter())
-                .invoice(new Invoice())
                 .build();
     }
 }

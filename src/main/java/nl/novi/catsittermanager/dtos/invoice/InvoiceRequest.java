@@ -20,7 +20,6 @@ public record InvoiceRequest(
         Double amount,
         @NotNull
         Boolean paid,
-
         UUID orderNo
 
 ) {

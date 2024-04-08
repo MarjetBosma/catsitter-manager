@@ -14,6 +14,7 @@ public record CustomerResponse(
         String address,
         String email,
         List<CatResponse> cats,
+        @JsonIgnore
         List<OrderResponse> orders
 
 ) {

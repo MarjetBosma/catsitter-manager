@@ -1,5 +1,7 @@
 package nl.novi.catsittermanager.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -20,10 +22,11 @@ import java.util.List;
 @Table(name = "customers")
 public class Customer extends User {
 
-    @OneToMany(mappedBy = "customer")
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Cat> cats;
 
 }

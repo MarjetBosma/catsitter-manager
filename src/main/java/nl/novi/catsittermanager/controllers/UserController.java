@@ -45,7 +45,7 @@ public class UserController {
         return ResponseEntity.ok(UserMapper.UserToUserResponse(user));
     }
 
-    // todo: ik heb hier nu alleen een methode voor admin aanmaken, customer en catsitter aanmaken staat in hun eigen services. Is dit de beste optie?
+    // todo: ik heb hier nu alleen een methode voor admin aanmaken, customer en catsitter (subclasses van User) aanmaken staat in hun eigen services. Is dit de beste optie?
     @PostMapping
     public ResponseEntity<UserResponse> createAdminAccount(@Valid @RequestBody final UserRequest userRequest) {
         User user = userService.createAdminAccount(UserMapper.UserRequestToUser(userRequest));

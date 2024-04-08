@@ -42,7 +42,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-
+//    todo: uitzoeken waarom deze een error geeft (400 Bad Request)
     public UUID deleteTask(UUID idToDelete) {
         if (!taskRepository.existsById(idToDelete)) {
             throw new RecordNotFoundException("No task found with this id.");
