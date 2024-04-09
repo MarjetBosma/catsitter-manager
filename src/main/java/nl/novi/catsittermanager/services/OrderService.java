@@ -31,6 +31,11 @@ public class OrderService {
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id."));
     }
 
+    public List<Task> getAllTasksByOrder(UUID idToFind) {
+        Order order = getOrder(idToFind);
+        return order.getTasks();
+    }
+
     public Order createOrder(final Order order, final String customerUsername, final String catsitterUsername) {
         order.setTasks(new ArrayList<Task>());
         Customer customer = customerService.getCustomer(customerUsername);

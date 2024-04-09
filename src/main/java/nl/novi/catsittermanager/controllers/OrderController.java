@@ -1,10 +1,13 @@
 package nl.novi.catsittermanager.controllers;
 
 import jakarta.validation.Valid;
+import nl.novi.catsittermanager.dtos.task.TaskResponse;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.dtos.order.OrderRequest;
+import nl.novi.catsittermanager.mappers.TaskMapper;
 import nl.novi.catsittermanager.models.Order;
+import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.services.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +46,15 @@ public class OrderController {
     public ResponseEntity<OrderResponse> getOrder(@PathVariable("id") final UUID idToFind) {
         Order order = orderService.getOrder(idToFind);
         return ResponseEntity.ok(OrderMapper.OrderToOrderResponse(order));
+    }
+
+    @GetMapping("/{id}/tasks")
+    public ResponseEntity<List<TaskResponse>> getAllTasksByOrder(@PathVariable("id") final UUID idToFind) {
+        List<Task> tasks = orderService.getAllTasksByOrder(idToFind);
+        List<TaskResponse> taskResponseList = tasks.stream()
+                .map(TaskMapper::TaskToTaskResponse)
+                .toList();
+        return ResponseEntity.ok(taskResponseList);
     }
 
     @PostMapping
