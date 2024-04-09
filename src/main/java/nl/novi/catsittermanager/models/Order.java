@@ -55,7 +55,6 @@ public class Order {
     private Catsitter catsitter;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn
     private Invoice invoice;
 
 }

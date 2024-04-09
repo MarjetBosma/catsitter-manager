@@ -32,7 +32,9 @@ public class TaskService {
        task.setOrder(order);
        return taskRepository.save(task);
     }
+    // beslissen of ik een versie met field validation wil gebruiken
 
+    // todo: Uitzoeken waarom deze een exception geeft ("No task found with this id"), terwijl bijv. het GET-request met hetzelfde id wel werkt.
     public Task editTask(final UUID idToEdit, final Task task, UUID orderNo) {
         if (taskRepository.findById(idToEdit).isEmpty()) {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No task found with this id.");
@@ -42,7 +44,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-//    todo: uitzoeken waarom deze een error geeft (400 Bad Request)
+//    todo: uitzoeken waarom deze een error geeft (400 Bad Request, zie verder controller voor details)
     public UUID deleteTask(UUID idToDelete) {
         if (!taskRepository.existsById(idToDelete)) {
             throw new RecordNotFoundException("No task found with this id.");

@@ -41,8 +41,6 @@ public class Invoice {
 
     private Boolean paid;
 
-    @OneToOne(mappedBy = "invoice", fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_no")
+    @OneToOne(mappedBy = "invoice", fetch = FetchType.EAGER)
     private Order order;
-
 }

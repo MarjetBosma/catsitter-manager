@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 public class InvoiceMapper {
 
     public static InvoiceResponse InvoiceToInvoiceResponse(Invoice invoice) {
+
         return new InvoiceResponse(
                 invoice.getInvoiceNo(),
                 invoice.getInvoiceDate(),

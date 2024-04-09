@@ -30,12 +30,16 @@ public class InvoiceService {
         return invoiceRepository.findById(idToFind)
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No invoice found with this id."));
     }
+    // todo: deze geeft een authentication error / null pointer exception, waarom?
 
     public Invoice createInvoice(final Invoice invoice, final UUID orderNo) {
             Order order = orderService.getOrder(orderNo);
             invoice.setOrder(order);
             return invoiceRepository.save(invoice);
         }
+    // todo: deze geeft een authentication error / null pointer exception, waarom?
+    // beslissen of ik field validation wil gebruiken
+
 
     public Invoice editInvoice(final UUID idToEdit, final Invoice invoice, UUID orderNo) {
         if (invoiceRepository.findById(idToEdit).isEmpty()) {

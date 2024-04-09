@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
@@ -68,9 +69,15 @@ public class OrderController {
 
     @PutMapping("/{id}")
     public ResponseEntity<OrderResponse> editOrder(@PathVariable("id") final UUID idToEdit, @RequestBody final OrderRequest orderRequest) {
-        Order order = orderService.editOrder(idToEdit, OrderMapper.OrderRequestToOrder(orderRequest));
+        Order order = orderService.editOrder(idToEdit, OrderMapper.OrderRequestToOrder(orderRequest), orderRequest.customerUsername(), orderRequest.catsitterUsername());
         return ResponseEntity.ok().body(OrderMapper.OrderToOrderResponse(order));
     }
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<OrderResponse> editOrder(@PathVariable("id") final UUID idToEdit, @RequestBody final OrderRequest orderRequest)  {
+//        Order order = orderService.editOrder(idToEdit, OrderMapper.OrderRequestToOrder(orderRequest);
+//        return ResponseEntity.ok().body(OrderMapper.OrderToOrderResponse(order));
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteOrder(@PathVariable("id") final UUID idToDelete) {
