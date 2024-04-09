@@ -26,7 +26,7 @@ public class AuthenticationController {
     private final JwtUtil jwtUtil;
 
     @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public ResponseEntity login(@RequestBody LoginRequest loginRequest)  {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest)  { // geeft nu 400 Bad Request error
 
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));

@@ -11,10 +11,8 @@ import java.time.LocalDate;
 public record OrderRequest(
 
         @NotNull
-        @Future
         LocalDate startDate,
         @NotNull
-        @Future
         LocalDate endDate,
         @NotNull
         @Positive

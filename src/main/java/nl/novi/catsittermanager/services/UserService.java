@@ -52,6 +52,7 @@ public class UserService {
         }
         return userRepository.save(user);
     }
+//     todo: deze geeft een authentication error, waarom?
 
     public String deleteUser(final String username) {
         if (!userRepository.existsById(username)) {
