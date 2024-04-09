@@ -4,8 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterRequest;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
+import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.mappers.CatsitterMapper;
+import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.models.Catsitter;
+import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.services.CatsitterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +42,15 @@ public class CatsitterController {
         Catsitter catsitter = catsitterService.getCatsitter(username);
         return ResponseEntity.ok(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
     }
-    // todo: is het mogelijk/wenselijk om een aparte URI, GET request en methode aan te maken voor de orders van een bepaalde catsitter? Bijv. /catsitter/order.
+
+    @GetMapping("/{id}/orders")
+    public ResponseEntity<List<OrderResponse>> getAllOrdersByCatsitter(@PathVariable("id") final String username) {
+        List<Order> orders = catsitterService.getAllOrdersByCatsitter(username);
+        List<OrderResponse> orderResponseList = orders.stream()
+                .map(OrderMapper::OrderToOrderResponse)
+                .toList();
+        return ResponseEntity.ok(orderResponseList);
+    }
 
     @PostMapping
     public ResponseEntity<CatsitterResponse> createCatsitter(@Valid @RequestBody final CatsitterRequest catsitterRequest) {

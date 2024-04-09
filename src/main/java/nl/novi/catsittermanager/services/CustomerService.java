@@ -43,6 +43,16 @@ public class CustomerService {
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username."));
     }
 
+    public List<Cat> getAllCatsByCustomer(String username) {
+        Customer customer = getCustomer(username);
+        return customer.getCats();
+    }
+
+    public List<Order> getAllOrdersByCustomer(String username) {
+        Customer customer = getCustomer(username);
+        return customer.getOrders();
+    }
+
     public Customer createCustomer(final Customer customer) {
         if (customerRepository.findById(customer.getUsername()).isPresent()) {
             throw new UsernameAlreadyExistsException();

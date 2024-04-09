@@ -5,6 +5,7 @@ import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
 import nl.novi.catsittermanager.models.Catsitter;
+import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CatsitterRepository;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,11 @@ public class CatsitterService {
     public Catsitter getCatsitter(final String username) {
         return catsitterRepository.findById(username)
                 .orElseThrow(() -> new RecordNotFoundException("No catsitter found with this username."));
+    }
+
+    public List<Order> getAllOrdersByCatsitter(String username) {
+        Catsitter catsitter = getCatsitter(username);
+        return catsitter.getOrders();
     }
 
     public Catsitter createCatsitter(final Catsitter catsitter) {
