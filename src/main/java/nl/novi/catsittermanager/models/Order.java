@@ -54,7 +54,7 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private Catsitter catsitter;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Invoice invoice;
 
 }

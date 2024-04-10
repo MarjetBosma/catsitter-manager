@@ -41,6 +41,6 @@ public class Invoice {
 
     private Boolean paid;
 
-    @OneToOne(mappedBy = "invoice", fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     private Order order;
 }
