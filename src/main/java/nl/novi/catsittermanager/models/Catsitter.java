@@ -1,5 +1,7 @@
 package nl.novi.catsittermanager.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -22,7 +24,8 @@ public class Catsitter extends User {
 
     private String about;
 
-    @OneToMany(mappedBy = "catsitter")
+    @JsonIgnore
+    @OneToMany(mappedBy = "catsitter", cascade = CascadeType.ALL)
     private List<Order> orders;
 
 }

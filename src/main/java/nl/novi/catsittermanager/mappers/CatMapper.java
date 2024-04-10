@@ -1,13 +1,15 @@
 package nl.novi.catsittermanager.mappers;
 
-import nl.novi.catsittermanager.dtos.cat.CatDto;
-import nl.novi.catsittermanager.dtos.cat.CatInputDto;
 import nl.novi.catsittermanager.models.Cat;
+import nl.novi.catsittermanager.dtos.cat.CatResponse;
+import nl.novi.catsittermanager.dtos.cat.CatRequest;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CatMapper {
 
-    public CatDto transferToDto(Cat cat) {
-        return new CatDto(
+    public static CatResponse CatToCatResponse(Cat cat) {
+        return new CatResponse(
                 cat.getId(),
                 cat.getName(),
                 cat.getDateOfBirth(),
@@ -24,19 +26,19 @@ public class CatMapper {
         );
     }
 
-    public Cat transferFromInputDto(CatInputDto catInputDto) {
+    public static Cat CatRequestToCat(CatRequest catRequest) {
         return Cat.builder()
-                .name(catInputDto.name())
-                .dateOfBirth(catInputDto.dateOfBirth())
-                .gender(catInputDto.gender())
-                .breed(catInputDto.breed())
-                .generalInfo(catInputDto.generalInfo())
-                .spayedOrNeutered(catInputDto.spayedOrNeutered())
-                .vaccinated(catInputDto.vaccinated())
-                .veterinarianName(catInputDto.veterinarianName())
-                .phoneVet(catInputDto.phoneVet())
-                .medicationName(catInputDto.medicationName())
-                .medicationDose(catInputDto.medicationDose())
+                .name(catRequest.name())
+                .dateOfBirth(catRequest.dateOfBirth())
+                .gender(catRequest.gender())
+                .breed(catRequest.breed())
+                .generalInfo(catRequest.generalInfo())
+                .spayedOrNeutered(catRequest.spayedOrNeutered())
+                .vaccinated(catRequest.vaccinated())
+                .veterinarianName(catRequest.veterinarianName())
+                .phoneVet(catRequest.phoneVet())
+                .medicationName(catRequest.medicationName())
+                .medicationDose(catRequest.medicationDose())
                 .build();
     }
 }

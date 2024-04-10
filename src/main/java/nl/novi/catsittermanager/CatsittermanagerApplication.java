@@ -3,7 +3,7 @@ package nl.novi.catsittermanager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"nl.novi.catsittermanager"})
 public class CatsittermanagerApplication {
 
     public static void main(String[] args) {

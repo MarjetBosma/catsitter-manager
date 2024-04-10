@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 @ControllerAdvice
 public class ExceptionController {
@@ -19,6 +22,9 @@ public class ExceptionController {
 
     @ExceptionHandler(value = RecordNotFoundException.class)
     public ResponseEntity<Object> recordNotFound(RecordNotFoundException exception) {
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("error", "RecordNotFound");
+        responseBody.put("message", exception.getMessage());
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
@@ -26,4 +32,6 @@ public class ExceptionController {
     public ResponseEntity<Object> usernameNotFound(UsernameNotFoundException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+//    @ExceptionHandler(value = ArgumentsNotValidException)
 }

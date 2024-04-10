@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.models;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -29,9 +30,13 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID taskNo;
+
     private TaskType taskType;
+
     private String taskInstruction;
+
     private String extraInstructions;
+
     private double priceOfTask;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,6 +1,9 @@
 package nl.novi.catsittermanager.models;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,8 +31,8 @@ import java.util.UUID;
 public class Invoice {
 
     @Id
-    @JoinColumn(name = "invoice_no")
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column
     private UUID invoiceNo;
 
     private LocalDate invoiceDate;
@@ -38,8 +41,6 @@ public class Invoice {
 
     private Boolean paid;
 
-    @OneToOne(mappedBy = "invoice")
-    @PrimaryKeyJoinColumn
+    @OneToOne(fetch = FetchType.LAZY)
     private Order order;
-
 }

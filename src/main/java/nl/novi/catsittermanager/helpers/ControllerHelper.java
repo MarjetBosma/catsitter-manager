@@ -1,4 +1,4 @@
-package nl.novi.catsittermanager.controllers;
+package nl.novi.catsittermanager.helpers;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;

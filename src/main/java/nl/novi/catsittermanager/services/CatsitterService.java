@@ -1,86 +1,63 @@
 package nl.novi.catsittermanager.services;
 
 import lombok.RequiredArgsConstructor;
-import nl.novi.catsittermanager.dtos.catsitter.CatsitterDto;
-import nl.novi.catsittermanager.dtos.catsitter.CatsitterInputDto;
 import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
-import nl.novi.catsittermanager.mappers.CatsitterMapper;
+import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
 import nl.novi.catsittermanager.models.Catsitter;
+import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CatsitterRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CatsitterService {
 
-    private final CatsitterRepository catsitterRepos;
+    private final CatsitterRepository catsitterRepository;
 
-    public List<CatsitterDto> getAllCatsitters() {
-        return catsitterRepos.findAll()
-                .stream()
-                .map(CatsitterMapper::transferToDto)
-                .collect(Collectors.toList());
+    public List<Catsitter> getAllCatsitters() {
+        return catsitterRepository.findAll();
     }
 
-    public CatsitterDto getCatsitter(String username) {
-        return catsitterRepos.findById(username)
-                .map(CatsitterMapper::transferToDto)
-                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No catsitter found with this username."));
+    public Catsitter getCatsitter(final String username) {
+        return catsitterRepository.findById(username)
+                .orElseThrow(() -> new RecordNotFoundException("No catsitter found with this username."));
     }
 
-    public CatsitterDto createCatsitter(final CatsitterInputDto catsitterInputDto) {
-        Catsitter newCatsitter = CatsitterMapper.transferFromInputDto((catsitterInputDto));
-        newCatsitter.setEnabled(true);
-        newCatsitter.setRole(Role.CATSITTER);
-        newCatsitter.setOrders(new ArrayList<Order>());
-        catsitterRepos.save(newCatsitter);
-        return CatsitterMapper.transferToDto(newCatsitter);
+    public List<Order> getAllOrdersByCatsitter(String username) {
+        Catsitter catsitter = getCatsitter(username);
+        return catsitter.getOrders();
     }
 
-    public CatsitterDto editCatsitter(String username, CatsitterInputDto catsitterInputDto) {
-        Optional<Catsitter> optionalCatsitter = catsitterRepos.findById(username);
+    public Catsitter createCatsitter(final Catsitter catsitter) {
+        if (catsitterRepository.findById(catsitter.getUsername()).isPresent()) {
+            throw new UsernameAlreadyExistsException();
+        }
+        catsitter.setEnabled(true);
+        catsitter.setRole(Role.CATSITTER);
+        catsitter.setOrders(new ArrayList<Order>());
+        return catsitterRepository.save(catsitter);
+    }
 
-        if (optionalCatsitter.isPresent()) {
-            Catsitter catsitter = optionalCatsitter.get();
-            if (catsitterInputDto.username() != null) {
-                catsitter.setUsername(catsitterInputDto.username());
-            }
-            if (catsitterInputDto.password() != null) {
-                catsitter.setPassword(catsitterInputDto.password());
-            }
-            if (catsitterInputDto.name() != null) {
-                catsitter.setName(catsitterInputDto.name());
-            }
-            if (catsitterInputDto.address() != null) {
-                catsitter.setAddress(catsitterInputDto.address());
-            }
-            if (catsitterInputDto.email() != null) {
-                catsitter.setEmail(catsitterInputDto.email());
-            }
-            if (catsitterInputDto.about() != null) {
-                catsitter.setAbout(catsitterInputDto.about());
-            }
-            catsitterRepos.save(catsitter);
-            return CatsitterMapper.transferToDto(catsitter);
-        } else {
+    public Catsitter editCatsitter(final String username, final Catsitter catsitter) {
+        if (catsitterRepository.findById(username).isEmpty()) {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No catsitter found with this username.");
         }
+        return catsitterRepository.save(catsitter);
     }
+    // todo: deze geeft een authentication error, waarom?
 
-    public String deleteCatsitter(String username) {
-        catsitterRepos.deleteById(username);
+    public String deleteCatsitter(final String username) {
+        if (!catsitterRepository.existsById(username)) {
+            throw new RecordNotFoundException("No catsitter found with this username.");
+        }
+        catsitterRepository.deleteById(username);
         return username;
     }
-
 }
 
 

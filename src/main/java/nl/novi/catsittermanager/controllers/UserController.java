@@ -1,11 +1,13 @@
 package nl.novi.catsittermanager.controllers;
 
-import nl.novi.catsittermanager.dtos.user.UserDto;
-import nl.novi.catsittermanager.dtos.user.UserInputDto;
-import nl.novi.catsittermanager.exceptions.ValidationException;
+import jakarta.validation.Valid;
+import nl.novi.catsittermanager.dtos.user.UserResponse;
+import nl.novi.catsittermanager.dtos.user.UserRequest;
+import nl.novi.catsittermanager.mappers.UserMapper;
+import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,12 +16,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
-
-import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
 
 //@CrossOrigin
 @RestController
@@ -34,34 +32,46 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        List<UserResponse> userResponseList = userService.getAllUsers().stream()
+                .map(UserMapper::UserToUserResponse)
+                .toList();
+        return ResponseEntity.ok(userResponseList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("id") final String userToFind) {
-        UserDto userDto = userService.getUser(userToFind);
-        return ResponseEntity.ok(userDto);
+    public ResponseEntity<UserResponse> getUser(@PathVariable("id") final String username) {
+        User user = userService.getUser(username);
+        return ResponseEntity.ok(UserMapper.UserToUserResponse(user));
     }
 
+    // todo: ik heb hier nu alleen een methode voor admin aanmaken, customer en catsitter (subclasses van User) aanmaken staat in hun eigen services. Is dit de beste optie?
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody final UserInputDto userInputDto, final BindingResult br) {
-        if (br.hasFieldErrors()) {
-            throw new ValidationException(checkForBindingResult(br));
-        } else {
-            UserDto savedUser = userService.createUser(userInputDto);
-            URI uri = URI.create(
-                    ServletUriComponentsBuilder
-                            .fromCurrentRequest()
-                            .path("/" + savedUser).toUriString());
-            return ResponseEntity.created(uri).body(savedUser);
-        }
+    public ResponseEntity<UserResponse> createAdminAccount(@Valid @RequestBody final UserRequest userRequest) {
+        User user = userService.createAdminAccount(UserMapper.UserRequestToUser(userRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.UserToUserResponse(user));
     }
+
+    // todo: Beslissen of ik onderstaande versie met optie voor validation exception wil implementeren
+
+//    @PostMapping
+//    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody final UserRequest userRequest, final BindingResult br) {
+//        if (br.hasFieldErrors()) {
+//            throw new ValidationException(checkForBindingResult(br));
+//        } else {
+//            User user = userService.createUser(UserMapper.UserRequestToUser(userRequest));
+//            URI uri = URI.create(
+//                    ServletUriComponentsBuilder
+//                            .fromCurrentRequest()
+//                            .path("/" + user).toUriString());
+//            return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.UserToUserResponse(user));
+//        }
+//    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> editUser(@PathVariable("id") final String userToEdit, @RequestBody final UserInputDto user) {
-        UserDto editedUser = userService.editUser(userToEdit, user);
-        return ResponseEntity.ok().body(editedUser);
+    public ResponseEntity<UserResponse> editUser(@PathVariable("id") final String username, @RequestBody final UserRequest userRequest) {
+        User user = userService.editUser(username, UserMapper.UserRequestToUser(userRequest));
+        return ResponseEntity.ok().body(UserMapper.UserToUserResponse(user));
     }
 
     @DeleteMapping("/{id}")

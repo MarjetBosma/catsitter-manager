@@ -10,7 +10,7 @@ import java.util.Set;
 
 
 @Validated
-public record UserInputDto(
+public record UserRequest(
 
         @NotNull(message = "username is required")
         String username,

@@ -1,4 +1,5 @@
 package nl.novi.catsittermanager.models;
+import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.enumerations.Role;
 
 import jakarta.persistence.CascadeType;
@@ -30,6 +31,11 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User implements Serializable {
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     @Id
     @Column(nullable = false, unique = true)
     private String username;
@@ -46,6 +52,8 @@ public class User implements Serializable {
             orphanRemoval = true,
             fetch = FetchType.EAGER)
     private Set<Authority> authorities = new HashSet<>();
+
+    //private List<Roles> roles;
 
     @Column(nullable = false)
     private Boolean enabled;
