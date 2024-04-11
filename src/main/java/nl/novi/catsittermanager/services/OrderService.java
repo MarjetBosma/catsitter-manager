@@ -44,7 +44,6 @@ public class OrderService {
         order.setCatsitter(catsitter);
         return orderRepository.save(order);
     }
-// eventueel versie met Validation Exception schrijven
 
     public Order editOrder(final UUID idToEdit, final Order updatedOrder, final String customerUsername, final String catsitterUsername) {
         Order existingOrder = orderRepository.findById(idToEdit)
@@ -67,7 +66,6 @@ public class OrderService {
         }
         return orderRepository.save(existingOrder);
     }
-
 
     public UUID deleteOrder(UUID idToDelete) {
         if (!orderRepository.existsById(idToDelete)) {

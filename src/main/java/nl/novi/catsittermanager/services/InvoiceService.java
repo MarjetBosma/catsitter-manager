@@ -33,15 +33,16 @@ public class InvoiceService {
         return invoiceRepository.save(invoice);
     }
 
-    // beslissen of ik field validation wil gebruiken
+    public Invoice editInvoice(final UUID idToEdit, final Invoice updatedInvoice, final UUID orderNo) {
+        Invoice existingInvoice = invoiceRepository.findById(idToEdit)
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No invoice found with this id."));
 
-    public Invoice editInvoice(final UUID idToEdit, final Invoice invoice, final UUID orderNo) {
-        if (invoiceRepository.findById(idToEdit).isEmpty()) {
-            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No invoice found with this id.");
-        }
-        Order order = orderService.getOrder(orderNo);
-        invoice.setOrder(order);
-        return invoiceRepository.save(invoice);
+        updatedInvoice.setOrder(existingInvoice.getOrder());
+        existingInvoice.setInvoiceDate(updatedInvoice.getInvoiceDate());
+        existingInvoice.setAmount(updatedInvoice.getAmount());
+        existingInvoice.setPaid(updatedInvoice.getPaid());
+
+        return invoiceRepository.save(existingInvoice);
     }
 
     public UUID deleteInvoice(UUID idToDelete) {

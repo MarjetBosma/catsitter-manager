@@ -53,7 +53,6 @@ public class CatsitterService {
         }
         return catsitterRepository.save(catsitter);
     }
-    // todo: deze geeft een authentication error, waarom?
 
     public String deleteCatsitter(final String username) {
         if (!catsitterRepository.existsById(username)) {
