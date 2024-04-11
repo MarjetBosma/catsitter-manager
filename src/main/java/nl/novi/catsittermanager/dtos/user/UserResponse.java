@@ -8,7 +8,7 @@ import java.util.Set;
 
 public record UserResponse(
         String username,
-        String password,
+        // String password,
         Role role,
         @JsonSerialize
         Set<Authority> authorities,

@@ -9,7 +9,7 @@ import java.util.List;
 public record CustomerResponse(
 
         String username,
-        String password,
+        // String password,
         String name,
         String address,
         String email,

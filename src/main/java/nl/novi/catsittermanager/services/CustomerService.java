@@ -9,6 +9,7 @@ import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -43,10 +44,13 @@ public class CustomerService {
         if (customerRepository.findById(customer.getUsername()).isPresent()) {
             throw new UsernameAlreadyExistsException();
         }
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(customer.getPassword());
+        customer.setPassword(encodedPassword);
         customer.setEnabled(true);
         customer.setRole(Role.CUSTOMER);
-        customer.setOrders(new ArrayList<Order>());
-        customer.setCats(new ArrayList<Cat>());
+        customer.setOrders(new ArrayList<>());
+        customer.setCats(new ArrayList<>());
         return customerRepository.save(customer);
     }
 
@@ -56,7 +60,6 @@ public class CustomerService {
         }
         return customerRepository.save(customer);
     }
-    // todo: deze geeft een authentication error, waarom?
 
     public String deleteCustomer(final String username) {
         if (!customerRepository.existsById(username)) {
