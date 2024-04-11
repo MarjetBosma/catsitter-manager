@@ -56,7 +56,6 @@ public class CustomerService {
         }
         return customerRepository.save(customer);
     }
-    // todo: deze geeft een authentication error, waarom?
 
     public String deleteCustomer(final String username) {
         if (!customerRepository.existsById(username)) {
