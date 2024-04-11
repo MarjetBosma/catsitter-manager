@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +43,7 @@ public class CatController {
     }
 
     @PostMapping
-     public ResponseEntity<CatResponse> createCat(@Valid @RequestBody final CatRequest catRequest) {
+    public ResponseEntity<CatResponse> createCat(@Valid @RequestBody final CatRequest catRequest) {
         Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(CatMapper.CatToCatResponse(cat));
     }

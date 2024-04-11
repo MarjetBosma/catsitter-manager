@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Customer;
-import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.repositories.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

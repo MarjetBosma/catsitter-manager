@@ -2,11 +2,11 @@ package nl.novi.catsittermanager.controllers;
 
 import jakarta.validation.Valid;
 import nl.novi.catsittermanager.dtos.cat.CatResponse;
-import nl.novi.catsittermanager.dtos.customer.CustomerResponse;
 import nl.novi.catsittermanager.dtos.customer.CustomerRequest;
+import nl.novi.catsittermanager.dtos.customer.CustomerResponse;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
-import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.mappers.CatMapper;
+import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/customer")

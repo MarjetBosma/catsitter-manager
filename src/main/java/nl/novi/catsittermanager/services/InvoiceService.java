@@ -1,10 +1,7 @@
 package nl.novi.catsittermanager.services;
 
 import lombok.RequiredArgsConstructor;
-import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
-import nl.novi.catsittermanager.dtos.invoice.InvoiceRequest;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
-import nl.novi.catsittermanager.mappers.InvoiceMapper;
 import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.InvoiceRepository;
@@ -12,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,10 +29,10 @@ public class InvoiceService {
 
 
     public Invoice createInvoice(final Invoice invoice, final UUID orderNo) {
-            Order order = orderService.getOrder(orderNo);
-            invoice.setOrder(order);
-            return invoiceRepository.save(invoice);
-        }
+        Order order = orderService.getOrder(orderNo);
+        invoice.setOrder(order);
+        return invoiceRepository.save(invoice);
+    }
 
     // beslissen of ik field validation wil gebruiken
 

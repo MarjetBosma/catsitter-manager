@@ -1,10 +1,10 @@
 package nl.novi.catsittermanager.controllers;
 
 import jakarta.validation.Valid;
+import nl.novi.catsittermanager.dtos.order.OrderRequest;
+import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.dtos.task.TaskResponse;
 import nl.novi.catsittermanager.mappers.OrderMapper;
-import nl.novi.catsittermanager.dtos.order.OrderResponse;
-import nl.novi.catsittermanager.dtos.order.OrderRequest;
 import nl.novi.catsittermanager.mappers.TaskMapper;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.models.Task;
@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -59,7 +59,7 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody final OrderRequest orderRequest) {
-        Order order = orderService.createOrder(OrderMapper.OrderRequestToOrder(orderRequest),orderRequest.customerUsername(), orderRequest.catsitterUsername());
+        Order order = orderService.createOrder(OrderMapper.OrderRequestToOrder(orderRequest), orderRequest.customerUsername(), orderRequest.catsitterUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(OrderMapper.OrderToOrderResponse(order));
     }
 

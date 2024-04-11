@@ -6,13 +6,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.dtos.cat.CatRequestFactory;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
-import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatFactory;
 import nl.novi.catsittermanager.services.CatService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -30,11 +27,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,14 +39,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CatControllerTest {
 
     MockMvc mockMvc;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
     @MockBean
     CatService catService;
-
     ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private WebApplicationContext webApplicationContext;
 
     @BeforeEach
     void init() {
@@ -176,6 +168,7 @@ class CatControllerTest {
                 .andExpect(jsonPath("$.medicationDose").value(expectedCat.getMedicationDose()))
                 .andExpect(jsonPath("$.ownerUsername").value(expectedCat.getOwner().getUsername()));
     }
+
     @Test
     void givenInvalidData_whenCreateCat_thenBadRequest() throws Exception {
         CatRequest invalidCatRequest = CatRequestFactory.randomCatRequest()
@@ -258,8 +251,8 @@ class CatControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCatRequest))
                         .accept(MediaType.APPLICATION_JSON))
-                    .andDo(print())
-                    .andExpect(status().isBadRequest());
+                .andDo(print())
+                .andExpect(status().isBadRequest());
 
         verifyNoInteractions(catService);
     }

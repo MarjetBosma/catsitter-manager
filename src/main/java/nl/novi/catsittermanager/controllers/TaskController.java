@@ -1,8 +1,8 @@
 package nl.novi.catsittermanager.controllers;
 
 import lombok.RequiredArgsConstructor;
-import nl.novi.catsittermanager.dtos.task.TaskResponse;
 import nl.novi.catsittermanager.dtos.task.TaskRequest;
+import nl.novi.catsittermanager.dtos.task.TaskResponse;
 import nl.novi.catsittermanager.mappers.TaskMapper;
 import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.services.TaskService;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 import java.util.UUID;
 

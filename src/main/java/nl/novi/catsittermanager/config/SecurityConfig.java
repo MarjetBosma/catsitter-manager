@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/**").permitAll()
-                                        .requestMatchers(HttpMethod.POST, "/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/**").permitAll()
 //                                        .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
 //                                        .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
 //                                        .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
@@ -54,7 +54,7 @@ public class SecurityConfig {
 //                                        .requestMatchers("/authenticate").permitAll()/*alleen dit punt mag toegankelijk zijn voor niet ingelogde gebruikers*/
 //                                        .requestMatchers("/authenticated").authenticated()
 //                                        .requestMatchers("/authenticate").permitAll()
-                                        .anyRequest().denyAll() /*Deze voeg je altijd als laatste toe, om een default beveiliging te hebben voor eventuele vergeten endpoints of endpoints die je later toevoegT. */
+                                .anyRequest().denyAll() /*Deze voeg je altijd als laatste toe, om een default beveiliging te hebben voor eventuele vergeten endpoints of endpoints die je later toevoegT. */
 
 //Here we have added our jwt filter before the UsernamePasswordAuthenticationFilter.
 //Because we want every request to be authenticated before going through spring security filter.
@@ -98,7 +98,7 @@ public class SecurityConfig {
 //            return http.build();
 //        }
 
-      // Deze moet later weer weg, want uiteindelijk wil ik wel een password encoder gebruiken.
+    // Deze moet later weer weg, want uiteindelijk wil ik wel een password encoder gebruiken.
 //        @Bean
 //        public NoOpPasswordEncoder passwordEncoder() {
 //            return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();

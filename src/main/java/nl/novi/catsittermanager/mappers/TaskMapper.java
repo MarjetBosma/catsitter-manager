@@ -1,7 +1,7 @@
 package nl.novi.catsittermanager.mappers;
 
-import nl.novi.catsittermanager.dtos.task.TaskResponse;
 import nl.novi.catsittermanager.dtos.task.TaskRequest;
+import nl.novi.catsittermanager.dtos.task.TaskResponse;
 import nl.novi.catsittermanager.models.Task;
 import org.springframework.stereotype.Component;
 

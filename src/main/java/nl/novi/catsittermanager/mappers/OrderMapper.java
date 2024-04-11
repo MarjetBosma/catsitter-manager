@@ -1,15 +1,15 @@
 package nl.novi.catsittermanager.mappers;
 
 
-import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.dtos.order.OrderRequest;
+import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Customer;
-import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.models.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+
 @Component
 public class OrderMapper {
 

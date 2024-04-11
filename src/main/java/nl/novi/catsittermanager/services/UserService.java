@@ -1,21 +1,15 @@
 package nl.novi.catsittermanager.services;
 
 import lombok.RequiredArgsConstructor;
-import nl.novi.catsittermanager.dtos.user.UserResponse;
-import nl.novi.catsittermanager.dtos.user.UserRequest;
 import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
-import nl.novi.catsittermanager.mappers.UserMapper;
 import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

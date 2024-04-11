@@ -1,8 +1,8 @@
 package nl.novi.catsittermanager.controllers;
 
 import jakarta.validation.Valid;
-import nl.novi.catsittermanager.dtos.user.UserResponse;
 import nl.novi.catsittermanager.dtos.user.UserRequest;
+import nl.novi.catsittermanager.dtos.user.UserResponse;
 import nl.novi.catsittermanager.mappers.UserMapper;
 import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.services.UserService;

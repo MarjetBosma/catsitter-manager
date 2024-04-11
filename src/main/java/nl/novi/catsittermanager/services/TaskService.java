@@ -8,6 +8,7 @@ import nl.novi.catsittermanager.repositories.TaskRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -28,9 +29,9 @@ public class TaskService {
     }
 
     public Task createTask(@RequestBody final Task task, UUID orderNo) {
-       Order order = orderService.getOrder(orderNo);
-       task.setOrder(order);
-       return taskRepository.save(task);
+        Order order = orderService.getOrder(orderNo);
+        task.setOrder(order);
+        return taskRepository.save(task);
     }
     // beslissen of ik een versie met field validation wil gebruiken
 

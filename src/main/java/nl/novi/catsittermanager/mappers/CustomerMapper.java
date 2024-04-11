@@ -1,8 +1,8 @@
 package nl.novi.catsittermanager.mappers;
 
 import lombok.AllArgsConstructor;
-import nl.novi.catsittermanager.dtos.customer.CustomerResponse;
 import nl.novi.catsittermanager.dtos.customer.CustomerRequest;
+import nl.novi.catsittermanager.dtos.customer.CustomerResponse;
 import nl.novi.catsittermanager.models.Customer;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ public class CustomerMapper {
         );
     }
 
-    public static Customer CustomerRequestToCustomer (CustomerRequest customerRequest) {
+    public static Customer CustomerRequestToCustomer(CustomerRequest customerRequest) {
         return Customer.CustomerBuilder()
                 .username(customerRequest.username())
                 .password(customerRequest.password())

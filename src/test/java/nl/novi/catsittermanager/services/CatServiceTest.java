@@ -6,7 +6,6 @@ import nl.novi.catsittermanager.models.CatFactory;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.CustomerFactory;
 import nl.novi.catsittermanager.repositories.CatRepository;
-import nl.novi.catsittermanager.repositories.CustomerRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

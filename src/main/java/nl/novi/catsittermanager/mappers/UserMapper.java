@@ -1,7 +1,7 @@
 package nl.novi.catsittermanager.mappers;
 
-import nl.novi.catsittermanager.dtos.user.UserResponse;
 import nl.novi.catsittermanager.dtos.user.UserRequest;
+import nl.novi.catsittermanager.dtos.user.UserResponse;
 import nl.novi.catsittermanager.models.User;
 
 public class UserMapper {

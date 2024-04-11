@@ -1,13 +1,12 @@
 package nl.novi.catsittermanager.mappers;
 
-import nl.novi.catsittermanager.models.Authority;
-import nl.novi.catsittermanager.models.Catsitter;
-import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterRequest;
+import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
+import nl.novi.catsittermanager.models.Catsitter;
 import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 @Component
 public class CatsitterMapper {
