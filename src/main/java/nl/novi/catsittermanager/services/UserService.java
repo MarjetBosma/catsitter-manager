@@ -33,7 +33,7 @@ public class UserService {
             throw new UsernameAlreadyExistsException();
         }
         String hashedPassword = passwordEncoderService.hashPassword(user.getPassword());
-        //user.getAuthorities().add(Role.ADMIN); // Wat zijn nu precies de authorities t.o.v. de role?
+        // user.getAuthorities().add(); // Wat zijn nu precies de authorities t.o.v. de role?
         user.setEnabled(true);
         user.setRole(Role.ADMIN);
         userRepository.save(user);
