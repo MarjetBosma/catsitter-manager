@@ -1,6 +1,6 @@
 package nl.novi.catsittermanager.models;
 
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 
 public class CustomerFactory {
 

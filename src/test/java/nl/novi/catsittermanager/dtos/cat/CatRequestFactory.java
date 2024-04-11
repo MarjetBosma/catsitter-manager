@@ -1,6 +1,6 @@
 package nl.novi.catsittermanager.dtos.cat;
 
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 
 import static nl.novi.catsittermanager.helpers.CatFactoryHelper.*;
 
