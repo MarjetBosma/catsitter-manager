@@ -33,8 +33,6 @@ public class InvoiceService {
         return invoiceRepository.save(invoice);
     }
 
-    // beslissen of ik field validation wil gebruiken
-
     public Invoice editInvoice(final UUID idToEdit, final Invoice updatedInvoice, final UUID orderNo) {
         Invoice existingInvoice = invoiceRepository.findById(idToEdit)
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No invoice found with this id."));

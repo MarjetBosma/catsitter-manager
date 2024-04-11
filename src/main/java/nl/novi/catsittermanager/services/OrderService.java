@@ -45,7 +45,7 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public Order editOrder(UUID idToEdit, Order updatedOrder, final String customerUsername, final String catsitterUsername) {
+    public Order editOrder(final UUID idToEdit, final Order updatedOrder, final String customerUsername, final String catsitterUsername) {
         Order existingOrder = orderRepository.findById(idToEdit)
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id."));
 
@@ -66,7 +66,6 @@ public class OrderService {
         }
         return orderRepository.save(existingOrder);
     }
-
 
     public UUID deleteOrder(UUID idToDelete) {
         if (!orderRepository.existsById(idToDelete)) {

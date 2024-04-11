@@ -18,7 +18,6 @@ public class CustomerMapper {
     public static CustomerResponse CustomerToCustomerResponse(Customer customer) {
         return new CustomerResponse(
                 customer.getUsername(),
-                customer.getPassword(),
                 customer.getName(),
                 customer.getAddress(),
                 customer.getEmail(),

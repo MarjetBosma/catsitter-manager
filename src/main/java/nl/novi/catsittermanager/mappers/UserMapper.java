@@ -9,7 +9,6 @@ public class UserMapper {
     public static UserResponse UserToUserResponse(User user) {
         return new UserResponse(
                 user.getUsername(),
-                user.getPassword(),
                 user.getRole(),
                 user.getAuthorities(),
                 user.getEnabled(),
