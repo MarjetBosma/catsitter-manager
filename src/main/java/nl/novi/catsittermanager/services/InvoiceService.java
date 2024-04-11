@@ -27,7 +27,6 @@ public class InvoiceService {
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No invoice found with this id."));
     }
 
-
     public Invoice createInvoice(final Invoice invoice, final UUID orderNo) {
         Order order = orderService.getOrder(orderNo);
         invoice.setOrder(order);
@@ -36,8 +35,7 @@ public class InvoiceService {
 
     // beslissen of ik field validation wil gebruiken
 
-
-    public Invoice editInvoice(final UUID idToEdit, final Invoice invoice, UUID orderNo) {
+    public Invoice editInvoice(final UUID idToEdit, final Invoice invoice, final UUID orderNo) {
         if (invoiceRepository.findById(idToEdit).isEmpty()) {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No invoice found with this id.");
         }

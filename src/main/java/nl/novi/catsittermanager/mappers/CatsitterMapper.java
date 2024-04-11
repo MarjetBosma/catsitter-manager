@@ -14,7 +14,6 @@ public class CatsitterMapper {
     public static CatsitterResponse CatsitterToCatsitterResponse(Catsitter catsitter) {
         return new CatsitterResponse(
                 catsitter.getUsername(),
-                catsitter.getPassword(),
                 catsitter.getName(),
                 catsitter.getAddress(),
                 catsitter.getEmail(),

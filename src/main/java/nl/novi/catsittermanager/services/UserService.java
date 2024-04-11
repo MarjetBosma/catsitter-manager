@@ -7,6 +7,7 @@ import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
 import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,12 +29,13 @@ public class UserService {
     }
 
     // todo: ik heb hier nu alleen een methode voor admin aanmaken, customer en catsitter aanmaken staat in hun eigen services. Is dit de beste optie?
-    public User createAdminAccount(final User user) { // todo: apart admin entity of request maken?
+    public User createAdminAccount(final User user) {
         if (userRepository.findById(user.getUsername()).isPresent()) {
             throw new UsernameAlreadyExistsException();
         }
-        String hashedPassword = passwordEncoderService.hashPassword(user.getPassword());
-        //user.getAuthorities().add(Role.ADMIN); // Wat zijn nu precies de authorities t.o.v. de role?
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
         user.setEnabled(true);
         user.setRole(Role.ADMIN);
         userRepository.save(user);

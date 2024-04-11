@@ -46,17 +46,7 @@ public class OrderService {
     }
 // eventueel versie met Validation Exception schrijven
 
-
-// todo: uitzoeken waarom deze een authentication error geeft. Andere versie hieronder werkt wel, maar is zo lang, waarom is dit hier allemaal nodig en werkt de korte versie bij andere entities wel?
-
-//    public Order editOrder(UUID idToEdit, Order order) {
-//            if (orderRepository.findById(idToEdit).isEmpty()) {
-//                throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id.");
-//            }
-//            return orderRepository.save(order);
-//        }
-
-    public Order editOrder(UUID idToEdit, Order updatedOrder, final String customerUsername, final String catsitterUsername) {
+    public Order editOrder(final UUID idToEdit, final Order updatedOrder, final String customerUsername, final String catsitterUsername) {
         Order existingOrder = orderRepository.findById(idToEdit)
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id."));
 
