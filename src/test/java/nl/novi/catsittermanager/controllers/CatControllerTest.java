@@ -16,6 +16,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -39,6 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CatController.class)
+@ComponentScan({"nl.novi.catsittermanager.utils"})
 class CatControllerTest {
 
     MockMvc mockMvc;
@@ -271,7 +273,7 @@ class CatControllerTest {
         mockMvc.perform(delete("/cat/{id}", catId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Cat with id " + catId + " removed from database"));
+                .andExpect(content().string("Cat with id " + catId + " removed from database."));
     }
 
     @Test
