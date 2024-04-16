@@ -15,19 +15,18 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import nl.novi.catsittermanager.models.User;
+import nl.novi.catsittermanager.services.UserService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,9 +36,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final ObjectMapper mapper;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, ObjectMapper mapper) {
+    private final UserService userService;
+
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, ObjectMapper mapper, UserService userService) {
         this.jwtUtil = jwtUtil;
         this.mapper = mapper;
+        this.userService = userService;
     }
 
     @Override
@@ -60,9 +62,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 System.out.println("username : " + username);
                 //This line will authenticate the request to the SecurityContext.
                 // So, any request having a jwt token in their header will be authenticated & permited by spring security.
+
+                User user = userService.getUser(username);
+
+
                 //todo onderstaande nog aanpassen, ik heb andere rolnamen.
                 Authentication authentication =
-                        new UsernamePasswordAuthenticationToken(username, "", new ArrayList<>(Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"))));
+                        new UsernamePasswordAuthenticationToken(username, "", user.getAuthorities());
+
+
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
