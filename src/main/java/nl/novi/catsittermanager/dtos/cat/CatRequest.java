@@ -3,6 +3,7 @@ package nl.novi.catsittermanager.dtos.cat;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Builder;
+import nl.novi.catsittermanager.models.FileUploadResponse;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
@@ -32,8 +33,8 @@ public record CatRequest(
         String medicationName,
         String medicationDose,
         @NotNull(message = "owner name is required")
-        String ownerUsername
-
+        String ownerUsername,
+        FileUploadResponse image
 ) {
 }
 
