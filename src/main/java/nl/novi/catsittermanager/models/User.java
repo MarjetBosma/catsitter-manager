@@ -38,11 +38,8 @@ public class User implements Serializable {
     @Column(nullable = false, length = 255)
     private String password;
     private Role role;
-
     @Column(nullable = false)
     private Boolean enabled;
-
-    //private List<Roles> roles;
     @Column
     private String name;
     @Column
@@ -68,5 +65,4 @@ public class User implements Serializable {
 
         return authorities;
     }
-
 }

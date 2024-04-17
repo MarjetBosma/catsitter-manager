@@ -19,9 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-//@CrossOrigin
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/api")
 
 public class UserController {
 
@@ -31,7 +30,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/users")
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         List<UserResponse> userResponseList = userService.getAllUsers().stream()
                 .map(UserMapper::UserToUserResponse)
@@ -39,14 +38,13 @@ public class UserController {
         return ResponseEntity.ok(userResponseList);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<UserResponse> getUser(@PathVariable("id") final String username) {
         User user = userService.getUser(username);
         return ResponseEntity.ok(UserMapper.UserToUserResponse(user));
     }
 
-    // todo: ik heb hier nu alleen een methode voor admin aanmaken, customer en catsitter (subclasses van User) aanmaken staat in hun eigen services. Is dit de beste optie?
-    @PostMapping
+    @PostMapping("/user")
     public ResponseEntity<UserResponse> createAdminAccount(@Valid @RequestBody final UserRequest userRequest) {
         User user = userService.createAdminAccount(UserMapper.UserRequestToUser(userRequest));
         return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.UserToUserResponse(user));
@@ -68,16 +66,15 @@ public class UserController {
 //        }
 //    }
 
-    @PutMapping("/{id}")
+    @PutMapping("/user/{id}")
     public ResponseEntity<UserResponse> editUser(@PathVariable("id") final String username, @RequestBody final UserRequest userRequest) {
         User user = userService.editUser(username, UserMapper.UserRequestToUser(userRequest));
         return ResponseEntity.ok().body(UserMapper.UserToUserResponse(user));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/user/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable("id") final String userToDelete) {
         userService.deleteUser(userToDelete);
         return ResponseEntity.ok().body("User with id " + userToDelete + " removed from database");
     }
-
 }

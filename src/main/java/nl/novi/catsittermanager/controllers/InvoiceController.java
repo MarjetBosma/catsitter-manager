@@ -23,42 +23,41 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/invoice")
+@RequestMapping("/api")
 
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
 
-    @GetMapping
+    @GetMapping("/invoices")
     public ResponseEntity<List<InvoiceResponse>> getAllInvoices() {
         List<InvoiceResponse> invoiceResponseList = invoiceService.getAllInvoices().stream()
                 .map(InvoiceMapper::InvoiceToInvoiceResponse)
                 .toList();
         return ResponseEntity.ok(invoiceResponseList);
     }
-    // todo: deze geeft een authentication error / null pointer exception, waarom?
 
-    @GetMapping("/{id}")
+    @GetMapping("/invoice/{id}")
     public ResponseEntity<InvoiceResponse> getInvoice(@PathVariable("id") final UUID idToFind) {
         Invoice invoice = invoiceService.getInvoice(idToFind);
         return ResponseEntity.ok(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
     }
-    // todo: deze geeft een authentication error / null pointer exception, waarom?
 
-    @PostMapping
+    @PostMapping("/invoice")
     public ResponseEntity<InvoiceResponse> createInvoice(@Valid @RequestBody final InvoiceRequest invoiceRequest) {
         Invoice invoice = invoiceService.createInvoice(InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest), invoiceRequest.orderNo());
         return ResponseEntity.status(HttpStatus.CREATED).body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
     }
     // todo: beslissen of ik een versie met validation exception wil gebruiken
+    // todo: afhandelen foutmelding als het ingegeven ordernummer al een invoice heeft
 
-    @PutMapping("/{id}")
+    @PutMapping("/invoice/{id}")
     public ResponseEntity<InvoiceResponse> editInvoice(@PathVariable("id") final UUID idToEdit, @RequestBody final InvoiceRequest invoiceRequest) {
         Invoice invoice = invoiceService.editInvoice(idToEdit, InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest), invoiceRequest.orderNo());
         return ResponseEntity.ok().body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/invoice/{id}")
     public ResponseEntity<Object> deleteInvoice(@PathVariable("id") final UUID idToDelete) {
         invoiceService.deleteInvoice(idToDelete);
         return ResponseEntity.ok().body("Invoice with id " + idToDelete + " removed from database");

@@ -8,7 +8,6 @@ import java.util.List;
 public record CatsitterResponse(
 
         String username,
-        // String password,
         String name,
         String address,
         String email,

@@ -28,7 +28,6 @@ public class UserService {
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No user found with this username."));
     }
 
-    // todo: ik heb hier nu alleen een methode voor admin aanmaken, customer en catsitter aanmaken staat in hun eigen services. Is dit de beste optie?
     public User createAdminAccount(final User user) {
         if (userRepository.findById(user.getUsername()).isPresent()) {
             throw new UsernameAlreadyExistsException();
@@ -48,7 +47,6 @@ public class UserService {
         }
         return userRepository.save(user);
     }
-//     todo: deze geeft een authentication error, waarom?
 
     public String deleteUser(final String username) {
         if (!userRepository.existsById(username)) {

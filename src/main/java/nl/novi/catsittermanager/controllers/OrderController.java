@@ -1,6 +1,7 @@
 package nl.novi.catsittermanager.controllers;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.order.OrderRequest;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.dtos.task.TaskResponse;
@@ -24,17 +25,14 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/order")
+@RequiredArgsConstructor
+@RequestMapping("/api")
 
 public class OrderController {
 
     private final OrderService orderService;
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
-
-    @GetMapping
+    @GetMapping("/orders")
     public ResponseEntity<List<OrderResponse>> getAllOrders() {
         List<OrderResponse> orderResponseList = orderService.getAllOrders().stream()
                 .map(OrderMapper::OrderToOrderResponse)
@@ -42,13 +40,13 @@ public class OrderController {
         return ResponseEntity.ok(orderResponseList);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/order/{id}")
     public ResponseEntity<OrderResponse> getOrder(@PathVariable("id") final UUID idToFind) {
         Order order = orderService.getOrder(idToFind);
         return ResponseEntity.ok(OrderMapper.OrderToOrderResponse(order));
     }
 
-    @GetMapping("/{id}/tasks")
+    @GetMapping("/order/{id}/tasks")
     public ResponseEntity<List<TaskResponse>> getAllTasksByOrder(@PathVariable("id") final UUID idToFind) {
         List<Task> tasks = orderService.getAllTasksByOrder(idToFind);
         List<TaskResponse> taskResponseList = tasks.stream()
@@ -57,7 +55,7 @@ public class OrderController {
         return ResponseEntity.ok(taskResponseList);
     }
 
-    @PostMapping
+    @PostMapping("/order")
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody final OrderRequest orderRequest) {
         Order order = orderService.createOrder(OrderMapper.OrderRequestToOrder(orderRequest), orderRequest.customerUsername(), orderRequest.catsitterUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(OrderMapper.OrderToOrderResponse(order));
@@ -79,19 +77,13 @@ public class OrderController {
 //        }
 //    }
 
-    @PutMapping("/{id}")
+    @PutMapping("/order/{id}")
     public ResponseEntity<OrderResponse> editOrder(@PathVariable("id") final UUID idToEdit, @RequestBody final OrderRequest orderRequest) {
         Order order = orderService.editOrder(idToEdit, OrderMapper.OrderRequestToOrder(orderRequest), orderRequest.customerUsername(), orderRequest.catsitterUsername());
         return ResponseEntity.ok().body(OrderMapper.OrderToOrderResponse(order));
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<OrderResponse> editOrder(@PathVariable("id") final UUID idToEdit, @RequestBody final OrderRequest orderRequest)  {
-//        Order order = orderService.editOrder(idToEdit, OrderMapper.OrderRequestToOrder(orderRequest);
-//        return ResponseEntity.ok().body(OrderMapper.OrderToOrderResponse(order));
-//    }
-
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/order/{id}")
     public ResponseEntity<Object> deleteOrder(@PathVariable("id") final UUID idToDelete) {
         orderService.deleteOrder(idToDelete);
         return ResponseEntity.ok().body("Order with id " + idToDelete + " removed from database");
