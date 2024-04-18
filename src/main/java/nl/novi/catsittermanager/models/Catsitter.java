@@ -3,7 +3,6 @@ package nl.novi.catsittermanager.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -31,6 +30,6 @@ public class Catsitter extends User {
     private List<Order> orders;
 
     @OneToOne(mappedBy = "catsitter", cascade = CascadeType.ALL)
-    FileUploadResponse image;
+    ImageUpload image;
 
 }

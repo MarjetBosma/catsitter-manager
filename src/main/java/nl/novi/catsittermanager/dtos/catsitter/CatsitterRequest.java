@@ -1,7 +1,7 @@
 package nl.novi.catsittermanager.dtos.catsitter;
 
 import jakarta.validation.constraints.NotNull;
-import nl.novi.catsittermanager.models.FileUploadResponse;
+import nl.novi.catsittermanager.models.ImageUpload;
 import org.springframework.validation.annotation.Validated;
 
 
@@ -18,7 +18,7 @@ public record CatsitterRequest(
         @NotNull
         String email,
         String about,
-        FileUploadResponse image
+        ImageUpload image
 
 ) {
 }

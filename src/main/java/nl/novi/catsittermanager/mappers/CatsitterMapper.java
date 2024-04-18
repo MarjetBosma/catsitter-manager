@@ -32,7 +32,6 @@ public class CatsitterMapper {
                 .about(catsitterRequest.about())
                 .orders(new ArrayList<>())
                 .image(catsitterRequest.image())
-                .authorities(new HashSet<>())
                 .enabled(true)
                 .build();
     }

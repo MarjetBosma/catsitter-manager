@@ -2,7 +2,7 @@ package nl.novi.catsittermanager.dtos.catsitter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
-import nl.novi.catsittermanager.models.FileUploadResponse;
+import nl.novi.catsittermanager.models.ImageUpload;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public record CatsitterResponse(
         String about,
         @JsonIgnore
         List<OrderResponse> orders,
-        FileUploadResponse image
+        ImageUpload image
 
 ) {
 }

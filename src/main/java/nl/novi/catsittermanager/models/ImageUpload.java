@@ -1,6 +1,5 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -16,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name="images")
-public class FileUploadResponse {
+public class ImageUpload {
 
     @Id
     String fileName;
@@ -31,11 +30,11 @@ public class FileUploadResponse {
     @JoinColumn(name="catsitter_id")
     Catsitter catsitter;
 
-    public FileUploadResponse(String fileName, String contentType, String url) {
+    public ImageUpload(String fileName, String contentType, String url) {
         this.fileName = fileName;
         this.contentType = contentType;
         this.url = url;
     }
 
-    public FileUploadResponse() {}
+    public ImageUpload() {}
 }

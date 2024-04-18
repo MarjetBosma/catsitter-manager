@@ -93,6 +93,8 @@ public class SecurityConfig {
 //                                .requestMatchers(HttpMethod.PUT, "/api/invoice/{id}").hasAnyRole("ADMIN")
 //                                .requestMatchers(HttpMethod.DELETE, "/api/invoice/{id}").hasAnyRole("ADMIN")
 
+                                  // images
+
 //                                .anyRequest().denyAll()
 
                 )

@@ -60,6 +60,6 @@ public class Cat {
     private Customer owner;
 
     @OneToOne(mappedBy = "cat", cascade = CascadeType.ALL)
-    FileUploadResponse image;
+    ImageUpload image;
 
 }
