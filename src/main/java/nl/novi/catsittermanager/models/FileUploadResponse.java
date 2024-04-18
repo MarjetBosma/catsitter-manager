@@ -22,9 +22,13 @@ public class FileUploadResponse {
     String fileName;
     String contentType;
     String url;
-    @OneToOne(fetch= FetchType.LAZY)
-    Cat cat;
+
     @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="cat_id")
+    Cat cat;
+
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="catsitter_id")
     Catsitter catsitter;
 
     public FileUploadResponse(String fileName, String contentType, String url) {

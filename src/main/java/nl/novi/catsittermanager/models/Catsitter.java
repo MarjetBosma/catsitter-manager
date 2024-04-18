@@ -31,7 +31,6 @@ public class Catsitter extends User {
     private List<Order> orders;
 
     @OneToOne(mappedBy = "catsitter", cascade = CascadeType.ALL)
-    @JoinColumn(name = "image_id")
     FileUploadResponse image;
 
 }

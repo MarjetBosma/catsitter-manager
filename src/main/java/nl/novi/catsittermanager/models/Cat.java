@@ -60,7 +60,6 @@ public class Cat {
     private Customer owner;
 
     @OneToOne(mappedBy = "cat", cascade = CascadeType.ALL)
-    @JoinColumn(name = "image_id")
     FileUploadResponse image;
 
 }
