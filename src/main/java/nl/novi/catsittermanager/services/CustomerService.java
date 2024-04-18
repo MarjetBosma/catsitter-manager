@@ -5,6 +5,7 @@ import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
 import nl.novi.catsittermanager.models.Cat;
+import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
@@ -40,6 +41,16 @@ public class CustomerService {
         return customer.getOrders();
     }
 
+    public List<Catsitter> getAllCatsittersByCustomer(String username) {
+        Customer customer = getCustomer(username);
+        List<Order> orders = customer.getOrders();
+        List<Catsitter> catsitters = orders.stream()
+                .map(Order::getCatsitter)
+                .distinct()
+                .toList();
+        return catsitters;
+    }
+
     public Customer createCustomer(final Customer customer) {
         if (customerRepository.findById(customer.getUsername()).isPresent()) {
             throw new UsernameAlreadyExistsException();
@@ -68,5 +79,4 @@ public class CustomerService {
         customerRepository.deleteById(username);
         return username;
     }
-
 }

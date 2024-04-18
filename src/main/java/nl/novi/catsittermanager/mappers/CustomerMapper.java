@@ -7,7 +7,6 @@ import nl.novi.catsittermanager.models.Customer;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 @AllArgsConstructor
 @Component
@@ -33,7 +32,6 @@ public class CustomerMapper {
                 .name(customerRequest.name())
                 .address(customerRequest.address())
                 .email(customerRequest.email())
-                .authorities(new HashSet<>())
                 .enabled(true)
                 .orders(new ArrayList<>())
                 .cats(new ArrayList<>())

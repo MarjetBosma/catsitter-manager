@@ -6,7 +6,6 @@ import nl.novi.catsittermanager.models.Catsitter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 @Component
 public class CatsitterMapper {

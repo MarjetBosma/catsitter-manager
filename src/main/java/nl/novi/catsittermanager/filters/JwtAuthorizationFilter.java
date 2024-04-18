@@ -1,20 +1,14 @@
 package nl.novi.catsittermanager.filters;
 
-//We need to add a jwt authorization filter for each request.
-// This filter will block all requests that don’t have jwt token in the request header.
-
-//We override the doFilterInternal() method. This method will be called for every request to out application.
-// This method reads Bearer token from request headers and resolves claims. First, it checks if any access token is present in the request header.
-// If the accessToken is null. It will pass the request to next filter chain.
-// Any login request will not have jwt token in their header, therefore they will be passed to next filter chain.
-// If any accessToken is present, then it will validate the token and then authenticate the request in SecurityContext.
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import nl.novi.catsittermanager.models.User;
+import nl.novi.catsittermanager.services.UserService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,15 +26,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final ObjectMapper mapper;
-
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, ObjectMapper mapper) {
-        this.jwtUtil = jwtUtil;
-        this.mapper = mapper;
-    }
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -58,11 +49,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (claims != null && jwtUtil.validateClaims(claims)) {
                 String username = claims.getSubject();
                 System.out.println("username : " + username);
-                //This line will authenticate the request to the SecurityContext.
-                // So, any request having a jwt token in their header will be authenticated & permited by spring security.
-                //todo onderstaande nog aanpassen, ik heb andere rolnamen.
+                User user = userService.getUser(username);
+
                 Authentication authentication =
-                        new UsernamePasswordAuthenticationToken(username, "", new ArrayList<>(Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"))));
+                        new UsernamePasswordAuthenticationToken(username, "",  user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 

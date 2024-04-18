@@ -27,14 +27,14 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/cat")
+@RequestMapping("/api")
 public class CatController {
 
     private final CatService catService;
     private final ImageController imageController;
     private final ImageService imageService;
 
-    @GetMapping
+    @GetMapping("/cats")
     public ResponseEntity<List<CatResponse>> getAllCats() {
         List<CatResponse> catResponseList = catService.getAllCats().stream()
                 .map(CatMapper::CatToCatResponse)
@@ -42,25 +42,25 @@ public class CatController {
         return ResponseEntity.ok(catResponseList);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/cat/{id}")
     public ResponseEntity<CatResponse> getCat(@PathVariable("id") final UUID idToFind) {
         Cat cat = catService.getCat(idToFind);
         return ResponseEntity.ok(CatMapper.CatToCatResponse(cat));
     }
 
-    @PostMapping
+    @PostMapping("/cat")
     public ResponseEntity<CatResponse> createCat(@Valid @RequestBody final CatRequest catRequest) {
         Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(CatMapper.CatToCatResponse(cat));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/cat/{id}")
     public ResponseEntity<CatResponse> editCat(@PathVariable("id") final UUID idToEdit, @Valid @RequestBody final CatRequest catRequest) {
         Cat cat = catService.editCat(idToEdit, CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
         return ResponseEntity.ok().body(CatMapper.CatToCatResponse(cat));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/cat/{id}")
     public ResponseEntity<Object> deleteCat(@PathVariable("id") final UUID idToDelete) {
         catService.deleteCat(idToDelete);
         return ResponseEntity.ok().body("Cat with id " + idToDelete + " removed from database.");

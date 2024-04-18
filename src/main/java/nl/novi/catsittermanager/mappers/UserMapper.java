@@ -10,7 +10,6 @@ public class UserMapper {
         return new UserResponse(
                 user.getUsername(),
                 user.getRole(),
-                user.getAuthorities(),
                 user.getEnabled(),
                 user.getName(),
                 user.getAddress(),

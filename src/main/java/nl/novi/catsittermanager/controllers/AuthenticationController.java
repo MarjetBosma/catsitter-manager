@@ -26,11 +26,11 @@ public class AuthenticationController {
     private final JwtUtil jwtUtil;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) { // geeft nu 400 Bad Request error
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal(); // ophalen van geauthenticeerde gebruiker
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String token = jwtUtil.createToken(userDetails.getUsername());
             LoginResponse loginResponse = new LoginResponse(userDetails.getUsername(), token);
 
@@ -44,56 +44,4 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
-
-
-//@CrossOrigin
-//@RestController
-//public class AuthenticationController {
-//
-//    private final AuthenticationManager authenticationManager;
-//
-//    private final CustomUserDetailsService userDetailsService;
-//
-//    private final JwtUtil jwtUtil;
-//
-//    public AuthenticationController(AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService, JwtUtil jwtUtil) {
-//        this.authenticationManager = authenticationManager;
-//        this.userDetailsService = userDetailsService;
-//        this.jwtUtil = jwtUtil;
-//    }
-//
-//    /*
-//         Deze methode geeft de principal (basis user gegevens) terug van de ingelogde gebruiker
-//     */
-//    @GetMapping(value = "/authenticated")
-//    public ResponseEntity<Object> authenticated(Authentication authentication, Principal principal) {
-//        return ResponseEntity.ok().body(principal);
-//    }
-//
-//    /*
-//    Deze methode geeft het JWT token terug wanneer de gebruiker de juiste inloggegevens op geeft.
-//     */
-//    @PostMapping(value = "/authenticate")
-//    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
-//
-//        String username = authenticationRequest.getUsername();
-//        String password = authenticationRequest.getPassword();
-//
-//        try {
-//            authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(username, password)
-//            );
-//        }
-//        catch (BadCredentialsException ex) {
-//            throw new Exception("Incorrect username or password", ex);
-//        }
-//
-//        final UserDetails userDetails = userDetailsService
-//                .loadUserByUsername(username);
-//
-//        final String jwt = jwtUtil.generateToken(userDetails);
-//
-//        return ResponseEntity.ok(new AuthenticationResponse(jwt));
-//    }
-//
 }
