@@ -92,9 +92,10 @@ public class SecurityConfig {
 //                                .requestMatchers(HttpMethod.POST, "/api/invoice").hasAnyRole("ADMIN")
 //                                .requestMatchers(HttpMethod.PUT, "/api/invoice/{id}").hasAnyRole("ADMIN")
 //                                .requestMatchers(HttpMethod.DELETE, "/api/invoice/{id}").hasAnyRole("ADMIN")
-
-                                  // images
-
+//
+//                                .requestMatchers(HttpMethod.POST, "/image/cat/{id}/upload").hasAnyRole("ADMIN, CUSTOMER, CATSITTER")
+//                                .requestMatchers(HttpMethod.POST, "/image/cat/{id}/upload").hasAnyRole("ADMIN. CUSTOMER, CATSITTER")
+//
 //                                .anyRequest().denyAll()
 
                 )
