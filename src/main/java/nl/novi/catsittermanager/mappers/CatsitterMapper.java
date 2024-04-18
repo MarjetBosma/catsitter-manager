@@ -18,7 +18,8 @@ public class CatsitterMapper {
                 catsitter.getAddress(),
                 catsitter.getEmail(),
                 catsitter.getAbout(),
-                catsitter.getOrders().stream().map(OrderMapper::OrderToOrderResponse).toList()
+                catsitter.getOrders().stream().map(OrderMapper::OrderToOrderResponse).toList(),
+                catsitter.getImage()
         );
     }
 
@@ -31,6 +32,7 @@ public class CatsitterMapper {
                 .email(catsitterRequest.email())
                 .about(catsitterRequest.about())
                 .orders(new ArrayList<>())
+                .image(catsitterRequest.image())
                 .authorities(new HashSet<>())
                 .enabled(true)
                 .build();

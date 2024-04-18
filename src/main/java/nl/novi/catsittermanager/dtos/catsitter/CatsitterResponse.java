@@ -2,19 +2,20 @@ package nl.novi.catsittermanager.dtos.catsitter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
+import nl.novi.catsittermanager.models.FileUploadResponse;
 
 import java.util.List;
 
 public record CatsitterResponse(
 
         String username,
-        // String password,
         String name,
         String address,
         String email,
         String about,
         @JsonIgnore
-        List<OrderResponse> orders
+        List<OrderResponse> orders,
+        FileUploadResponse image
 
 ) {
 }
