@@ -1,6 +1,8 @@
 package nl.novi.catsittermanager.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import nl.novi.catsittermanager.dtos.cat.CatResponse;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
 import nl.novi.catsittermanager.dtos.customer.CustomerRequest;
@@ -30,7 +32,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-
+@Slf4j
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -40,7 +42,12 @@ public class CustomerController {
     }
 
     @GetMapping("/customers")
-    public ResponseEntity<List<CustomerResponse>> getAllCustomers() {
+    public ResponseEntity<List<CustomerResponse>> getAllCustomers(HttpServletRequest request) {
+
+        if (request.isUserInRole("ROLE_ADMIN")) {
+            log.error("ADMINNNNN!!!!!");
+        }
+
         List<CustomerResponse> customerResponseList = customerService.getAllCustomers().stream()
                 .map(CustomerMapper::CustomerToCustomerResponse)
                 .toList();

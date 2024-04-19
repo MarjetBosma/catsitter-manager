@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface FileUploadRepository extends JpaRepository<ImageUpload, String > {
-    Optional<ImageUpload> findByFileName(String fileName);
+    Optional<ImageUpload> findByFilename(String filename);
 }

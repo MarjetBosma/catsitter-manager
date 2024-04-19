@@ -120,8 +120,8 @@ public class ImageService {
         }
     }
 
-    public Resource downloadImage(String fileName) {
-        Path path = Paths.get(fileStorageLocation).toAbsolutePath().resolve(fileName);
+    public Resource downloadImage(String filename) {
+        Path path = Paths.get(fileStorageLocation).toAbsolutePath().resolve(filename);
         Resource resource;
         try {
             resource = new UrlResource(path.toUri());
