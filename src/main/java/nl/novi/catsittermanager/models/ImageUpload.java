@@ -18,7 +18,7 @@ import lombok.Setter;
 public class ImageUpload {
 
     @Id
-    String fileName;
+    String filename;
     String contentType;
     String url;
 
@@ -30,8 +30,8 @@ public class ImageUpload {
     @JoinColumn(name="catsitter_id")
     Catsitter catsitter;
 
-    public ImageUpload(String fileName, String contentType, String url) {
-        this.fileName = fileName;
+    public ImageUpload(String filename, String contentType, String url) {
+        this.filename = filename;
         this.contentType = contentType;
         this.url = url;
     }

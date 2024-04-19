@@ -45,9 +45,9 @@ public class ImageController {
         return ResponseEntity.ok().body("Image uploaded");
     }
 
-    @GetMapping("/download/{fileName}")
-    public ResponseEntity<Resource> downloadImage(@PathVariable String fileName, HttpServletRequest request) {
-        Resource resource = imageService.downloadImage(fileName);
+    @GetMapping("/download/{filename}")
+    public ResponseEntity<Resource> downloadImage(@PathVariable String filename, HttpServletRequest request) {
+        Resource resource = imageService.downloadImage(filename);
         String mimeType;
         try {
             mimeType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
@@ -55,7 +55,7 @@ public class ImageController {
             mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
         }
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + resource.getFilename()).body(resource);
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + resource.getFilename()).body(resource);
     }
 
     @PostMapping(value = "/cat/{id}/image")
