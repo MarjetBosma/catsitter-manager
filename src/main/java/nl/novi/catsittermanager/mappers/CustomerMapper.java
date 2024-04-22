@@ -33,7 +33,6 @@ public class CustomerMapper {
                 .name(customerRequest.name())
                 .address(customerRequest.address())
                 .email(customerRequest.email())
-                .authorities(new HashSet<>())
                 .enabled(true)
                 .orders(new ArrayList<>())
                 .cats(new ArrayList<>())

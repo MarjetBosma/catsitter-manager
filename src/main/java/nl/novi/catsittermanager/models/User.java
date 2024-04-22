@@ -46,7 +46,6 @@ public class User implements Serializable {
     @Column(nullable = false)
     private Boolean enabled;
 
-    //private List<Roles> roles;
     @Column
     private String name;
     @Column

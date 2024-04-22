@@ -3,6 +3,8 @@ package nl.novi.catsittermanager.models;
 import net.datafaker.Faker;
 import nl.novi.catsittermanager.helpers.CatFactoryHelper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class CatFactory {
@@ -25,5 +27,13 @@ public class CatFactory {
                 .medicationName(CatFactoryHelper.randomMedicationName())
                 .medicationDose(CatFactoryHelper.randomMedicationDose())
                 .owner(CustomerFactory.randomCustomer());
+    }
+
+    public static List<Cat> randomCats(int count) {
+        List<Cat> cats = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            cats.add(randomCat().build());
+        }
+        return cats;
     }
 }
