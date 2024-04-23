@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.dtos.cat.CatRequestFactory;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
+import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatFactory;
 import nl.novi.catsittermanager.services.CatService;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -46,7 +48,6 @@ class CatControllerTest {
     @BeforeEach
     void init() {
 
-        //Init MockMvc Object and build
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         objectMapper.registerModule(new JavaTimeModule());
@@ -189,7 +190,8 @@ class CatControllerTest {
                         .content(objectMapper.writeValueAsString(invalidCatRequest))
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(ValidationException.class, result.getResolvedException()));
 
         verifyNoInteractions(catService);
     }
