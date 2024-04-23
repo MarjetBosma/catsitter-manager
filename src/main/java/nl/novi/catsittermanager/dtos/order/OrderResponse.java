@@ -15,8 +15,5 @@ public record OrderResponse(
         int totalNumberOfVisits,
         List<TaskResponse> tasks
 
-        // invoice
-
-        // customer Id, cat id, catsitter id
 ) {
 }

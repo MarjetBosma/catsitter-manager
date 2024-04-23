@@ -55,7 +55,6 @@ public class CatController {
     public ResponseEntity<CatResponse> createCustomer(@Valid @RequestBody final CatRequest catRequest) {
         Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(CatMapper.CatToCatResponse(cat));
-
     }
 
     @PutMapping("/cat/{id}")

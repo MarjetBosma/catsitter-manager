@@ -63,7 +63,11 @@ public class OrderController {
 
     @PostMapping("/order")
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody final OrderRequest orderRequest) {
-        Order order = orderService.createOrder(OrdererMapper.OrderRequestToOrder(orderRequest));
+        Order order = orderService.createOrder(
+                OrderMapper.OrderRequestToOrder(orderRequest),
+                orderRequest.customerUsername(),
+                orderRequest.catsitterUsername()
+        );
         return ResponseEntity.status(HttpStatus.CREATED).body(OrderMapper.OrderToOrderResponse(order));
     }
 

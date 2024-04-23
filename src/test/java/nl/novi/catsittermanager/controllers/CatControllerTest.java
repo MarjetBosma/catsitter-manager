@@ -170,7 +170,7 @@ class CatControllerTest {
     }
 
     @Test
-    void givenInvalidData_whenCreateCat_thenValidationException() throws Exception {
+    void givenInvalidData_whenCreateCat_thenBadRequest() throws Exception {
         CatRequest invalidCatRequest = CatRequestFactory.randomCatRequest()
                 .name(null)
                 .dateOfBirth(null)

@@ -28,7 +28,7 @@ public class TaskService {
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No task found with this id."));
     }
 
-    public Task createTask(@RequestBody final Task task, UUID orderNo) {
+    public Task createTask(final Task task, UUID orderNo) {
         Order order = orderService.getOrder(orderNo);
         task.setOrder(order);
         return taskRepository.save(task);
