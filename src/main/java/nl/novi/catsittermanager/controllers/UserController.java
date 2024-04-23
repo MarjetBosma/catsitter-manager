@@ -51,20 +51,11 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public ResponseEntity<UserResponse> createAdminAccount(@Valid @RequestBody final UserRequest userRequest, final BindingResult br) {
-        if (br.hasFieldErrors()) {
-            throw new ValidationException(checkForBindingResult(br));
-        } else {
-            User user = userService.createAdminAccount(UserMapper.UserRequestToUser(userRequest));
-            URI uri = URI.create(
-                    ServletUriComponentsBuilder
-                            .fromCurrentContextPath()
-                            .path("/user")
-                            .toUriString());
-            return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.UserToUserResponse(user));
-        }
+    public ResponseEntity<UserResponse> createAdminAccount(@Valid @RequestBody final UserRequest userRequest) {
+        User user = userService.createAdminAccount(UserMapper.UserRequestToUser(userRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.UserToUserResponse(user));
     }
-
+    
     @PutMapping("/user/{id}")
     public ResponseEntity<UserResponse> editUser(@PathVariable("id") final String username, @RequestBody final UserRequest userRequest) {
         User user = userService.editUser(username, UserMapper.UserRequestToUser(userRequest));

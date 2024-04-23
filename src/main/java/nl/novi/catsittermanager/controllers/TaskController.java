@@ -50,27 +50,16 @@ public class TaskController {
     }
 
     @PostMapping("/task")
-    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody final TaskRequest taskRequest, final BindingResult br) {
-        if (br.hasFieldErrors()) {
-            throw new ValidationException("Validation failed: " + checkForBindingResult(br));
-        } else {
-            Task task = taskService.createTask(TaskMapper.TaskRequestToTask(taskRequest), taskRequest.orderNo());
-            URI uri = URI.create(
-                    ServletUriComponentsBuilder
-                            .fromCurrentContextPath()
-                            .path("/api/task")
-                            .toUriString());
-            return ResponseEntity.status(HttpStatus.CREATED).body(TaskMapper.TaskToTaskResponse(task));
-        }
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody final TaskRequest taskRequest) {
+        Task task = taskService.createTask(TaskMapper.TaskRequestToTask(taskRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(TaskMapper.TaskToTaskResponse(task));
     }
-
 
     @PutMapping("/task/{id}")
     public ResponseEntity<TaskResponse> editTask(@PathVariable("id") final UUID idToEdit, @RequestBody final TaskRequest taskRequest) {
         Task task = taskService.editTask(idToEdit, TaskMapper.TaskRequestToTask(taskRequest), taskRequest.orderNo());
         return ResponseEntity.ok().body(TaskMapper.TaskToTaskResponse(task));
     }
-
 
     @DeleteMapping("/task/{id}")
     public ResponseEntity<Object> deleteTask(@PathVariable("id") final UUID idToDelete) {

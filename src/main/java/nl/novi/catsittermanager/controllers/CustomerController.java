@@ -38,7 +38,6 @@ import static nl.novi.catsittermanager.helpers.ControllerHelper.checkForBindingR
 
 @RestController
 @RequestMapping("/api")
-@Slf4j
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -49,11 +48,6 @@ public class CustomerController {
 
     @GetMapping("/customers")
     public ResponseEntity<List<CustomerResponse>> getAllCustomers(HttpServletRequest request) {
-
-        if (request.isUserInRole("ROLE_ADMIN")) {
-            log.error("ADMINNNNN!!!!!");
-        }
-
         List<CustomerResponse> customerResponseList = customerService.getAllCustomers().stream()
                 .map(CustomerMapper::CustomerToCustomerResponse)
                 .toList();
@@ -93,20 +87,11 @@ public class CustomerController {
         return ResponseEntity.ok(customerResponseList);
     }
 
-    @PostMapping("/customer")
-    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest, final BindingResult br) {
-        if (br.hasFieldErrors()) {
-            throw new ValidationException("Validation failed: " + checkForBindingResult(br));
-        } else {
-            Customer customer = customerService.createCustomer(CustomerMapper.CustomerRequestToCustomer(customerRequest));
-            URI uri = URI.create(
-                    ServletUriComponentsBuilder
-                            .fromCurrentContextPath()
-                            .path("/api/customer")
-                            .toUriString());
-            return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
-        }
-    }
+   @PostMapping("/customer")
+   public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest) {
+       Customer customer = customerService.createCustomer(CustomerMapper.CustomerRequestToCustomer(customerRequest));
+       return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
+   }
 
     @PutMapping("/customer/{id}")
     public ResponseEntity<CustomerResponse> editCustomer(@PathVariable("id") final String username, @RequestBody final CustomerRequest customerRequest) {

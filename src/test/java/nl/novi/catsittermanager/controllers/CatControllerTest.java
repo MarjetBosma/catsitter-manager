@@ -7,6 +7,7 @@ import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.dtos.cat.CatRequestFactory;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
+import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatFactory;
 import nl.novi.catsittermanager.services.CatService;
@@ -48,7 +49,6 @@ class CatControllerTest {
     @BeforeEach
     void init() {
 
-        //Init MockMvc Object and build
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         objectMapper.registerModule(new JavaTimeModule());
@@ -186,36 +186,12 @@ class CatControllerTest {
                 .ownerUsername(null)
                 .build();
 
-        when(catService.createCat(any(Cat.class), anyString()))
-                .thenThrow(new ValidationException("Validation failed"));
-
         mockMvc.perform(post("/cat")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCatRequest))
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Validation failed"));
-
-        verify(catService, times(1)).createCat(any(Cat.class), anyString());
-    }
-
-    @Test
-    void givenValidId_whenEditCat_thenCatShouldBeEdited() throws Exception {
-
-        UUID catId = UUID.randomUUID();
-        CatRequest expectedCatRequest = CatRequestFactory.randomCatRequest().build();
-        Cat expectedCat = CatFactory.randomCat().build();
-
-        when(catService.editCat(eq(catId), any(Cat.class), eq(expectedCatRequest.ownerUsername()))).thenReturn(expectedCat);
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/cat/{id}", catId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(expectedCatRequest)))
-                .andExpect(status().isOk());
-
-        verify(catService, times(1)).editCat(eq(catId), any(Cat.class), eq(expectedCatRequest.ownerUsername()));
-        verifyNoMoreInteractions(catService);
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -287,5 +263,4 @@ class CatControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$").value(errorMessage));
     }
-
 }

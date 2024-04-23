@@ -62,18 +62,9 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody final OrderRequest orderRequest, final BindingResult br) {
-        if (br.hasFieldErrors()) {
-            throw new ValidationException(checkForBindingResult(br));
-        } else {
-            Order order = orderService.createOrder(OrderMapper.OrderRequestToOrder(orderRequest), orderRequest.customerUsername(), orderRequest.catsitterUsername());
-            URI uri = URI.create(
-                    ServletUriComponentsBuilder
-                            .fromCurrentContextPath()
-                            .path("/api/order")
-                            .toUriString());
-            return ResponseEntity.status(HttpStatus.CREATED).body(OrderMapper.OrderToOrderResponse(order));
-        }
+    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody final OrderRequest orderRequest) {
+        Order order = orderService.createOrder(OrdererMapper.OrderRequestToOrder(orderRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(OrderMapper.OrderToOrderResponse(order));
     }
 
     @PutMapping("/order/{id}")

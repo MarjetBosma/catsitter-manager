@@ -50,20 +50,12 @@ public class CatController {
         Cat cat = catService.getCat(idToFind);
         return ResponseEntity.ok(CatMapper.CatToCatResponse(cat));
     }
+  
+    @PostMapping()
+    public ResponseEntity<CatResponse> createCustomer(@Valid @RequestBody final CatRequest catRequest) {
+        Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
+        return ResponseEntity.status(HttpStatus.CREATED).body(CatMapper.CatToCatResponse(cat));
 
-    @PostMapping("/cat")
-    public ResponseEntity<CatResponse> createCat(@Valid @RequestBody final CatRequest catRequest, final BindingResult br) {
-        if (br.hasFieldErrors()) {
-            throw new ValidationException("Validation failed: " + checkForBindingResult(br));
-        } else {
-            Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
-            URI uri = URI.create(
-                    ServletUriComponentsBuilder
-                            .fromCurrentContextPath()
-                            .path("/api/cat")
-                            .toUriString());
-            return ResponseEntity.status(HttpStatus.CREATED).body(CatMapper.CatToCatResponse(cat));
-        }
     }
 
     @PutMapping("/cat/{id}")
