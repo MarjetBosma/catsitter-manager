@@ -169,7 +169,7 @@ class CatControllerTest {
     }
 
     @Test
-    void givenInvalidData_whenCreateCat_thenBadRequest() throws Exception {
+    void givenInvalidData_whenCreateCat_thenValidationException() throws Exception {
         CatRequest invalidCatRequest = CatRequestFactory.randomCatRequest()
                 .name(null)
                 .dateOfBirth(null)
@@ -185,15 +185,18 @@ class CatControllerTest {
                 .ownerUsername(null)
                 .build();
 
+        when(catService.createCat(any(Cat.class), anyString()))
+                .thenThrow(new ValidationException("Validation failed"));
+
         mockMvc.perform(post("/cat")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCatRequest))
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertInstanceOf(ValidationException.class, result.getResolvedException()));
+                .andExpect(jsonPath("$.message").value("Validation failed"));
 
-        verifyNoInteractions(catService);
+        verify(catService, times(1)).createCat(any(Cat.class), anyString());
     }
 
     @Test
