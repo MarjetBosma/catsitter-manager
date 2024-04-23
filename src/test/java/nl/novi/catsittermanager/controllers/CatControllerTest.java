@@ -227,6 +227,7 @@ class CatControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
     void givenInvalidData_whenEditCat_thenBadRequest() throws Exception {
         UUID invalidCatId = UUID.randomUUID();
 
@@ -280,5 +281,4 @@ class CatControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$").value(errorMessage));
     }
-
 }
