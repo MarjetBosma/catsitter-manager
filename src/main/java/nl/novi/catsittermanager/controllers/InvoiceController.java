@@ -49,12 +49,6 @@ public class InvoiceController {
         return ResponseEntity.ok(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
     }
 
-//    @PostMapping("/invoice")
-//    public ResponseEntity<InvoiceResponse> createInvoice(@Valid @RequestBody final InvoiceRequest invoiceRequest) {
-//        Invoice invoice = invoiceService.createInvoice(InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest), invoiceRequest.orderNo());
-//        return ResponseEntity.status(HttpStatus.CREATED).body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
-//    }
-
     @PostMapping("/invoice")
     public ResponseEntity<?> createInvoice(@Valid @RequestBody final InvoiceRequest invoiceRequest, final BindingResult br) {
         if (br.hasFieldErrors()) {

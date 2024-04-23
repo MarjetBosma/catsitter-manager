@@ -49,12 +49,6 @@ public class TaskController {
         return ResponseEntity.ok(TaskMapper.TaskToTaskResponse(task));
     }
 
-//    @PostMapping("/task")
-//    public ResponseEntity<TaskResponse> createTask(@RequestBody final TaskRequest taskRequest) {
-//        Task task = taskService.createTask(TaskMapper.TaskRequestToTask(taskRequest), taskRequest.orderNo());
-//        return ResponseEntity.ok().body(TaskMapper.TaskToTaskResponse(task));
-//    }
-
     @PostMapping("/task")
     public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody final TaskRequest taskRequest, final BindingResult br) {
         if (br.hasFieldErrors()) {

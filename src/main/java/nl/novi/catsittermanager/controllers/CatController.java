@@ -51,12 +51,6 @@ public class CatController {
         return ResponseEntity.ok(CatMapper.CatToCatResponse(cat));
     }
 
-//    @PostMapping("/cat")
-//    public ResponseEntity<CatResponse> createCat(@Valid @RequestBody final CatRequest catRequest) {
-//        Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
-//        return ResponseEntity.status(HttpStatus.CREATED).body(CatMapper.CatToCatResponse(cat));
-//    }
-
     @PostMapping("/cat")
     public ResponseEntity<CatResponse> createCat(@Valid @RequestBody final CatRequest catRequest, final BindingResult br) {
         if (br.hasFieldErrors()) {

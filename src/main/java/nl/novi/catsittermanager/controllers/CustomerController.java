@@ -93,12 +93,6 @@ public class CustomerController {
         return ResponseEntity.ok(customerResponseList);
     }
 
-//    @PostMapping("/customer")
-//    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest) {
-//        Customer customer = customerService.createCustomer(CustomerMapper.CustomerRequestToCustomer(customerRequest));
-//        return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
-//    }
-
     @PostMapping("/customer")
     public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest, final BindingResult br) {
         if (br.hasFieldErrors()) {

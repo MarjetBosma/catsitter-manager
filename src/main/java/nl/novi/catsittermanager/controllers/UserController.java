@@ -50,12 +50,6 @@ public class UserController {
         return ResponseEntity.ok(UserMapper.UserToUserResponse(user));
     }
 
-//    @PostMapping("/user")
-//    public ResponseEntity<UserResponse> createAdminAccount(@Valid @RequestBody final UserRequest userRequest) {
-//        User user = userService.createAdminAccount(UserMapper.UserRequestToUser(userRequest));
-//        return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.UserToUserResponse(user));
-//
-
     @PostMapping("/user")
     public ResponseEntity<UserResponse> createAdminAccount(@Valid @RequestBody final UserRequest userRequest, final BindingResult br) {
         if (br.hasFieldErrors()) {
