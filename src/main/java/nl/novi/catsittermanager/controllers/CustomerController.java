@@ -8,6 +8,7 @@ import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
 import nl.novi.catsittermanager.dtos.customer.CustomerRequest;
 import nl.novi.catsittermanager.dtos.customer.CustomerResponse;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
+import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.mappers.CatsitterMapper;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
@@ -19,6 +20,7 @@ import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.services.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,8 +29,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
+
+import static nl.novi.catsittermanager.helpers.ControllerHelper.checkForBindingResult;
 
 @RestController
 @RequestMapping("/api")
@@ -87,26 +93,25 @@ public class CustomerController {
         return ResponseEntity.ok(customerResponseList);
     }
 
-    @PostMapping("/customer")
-    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest) {
-        Customer customer = customerService.createCustomer(CustomerMapper.CustomerRequestToCustomer(customerRequest));
-        return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
-    }
-
-    // todo: beslissen of ik onderstaande versie met optie voor validation exception wil implementeren
-//    @PostMapping
-//    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest, final BindingResult br) {
-//        if (br.hasFieldErrors()) {
-//            throw new ValidationException(checkForBindingResult(br));
-//        } else {
-//            Customer customer = customerService.createCustomer(CustomerMapper.CustomerRequestToCustomer(customerRequest));
-//            URI uri = URI.create(
-//                    ServletUriComponentsBuilder
-//                            .fromCurrentRequest()
-//                            .path("/" + customer).toUriString());
-//            return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
-//        }
+//    @PostMapping("/customer")
+//    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest) {
+//        Customer customer = customerService.createCustomer(CustomerMapper.CustomerRequestToCustomer(customerRequest));
+//        return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
 //    }
+
+    @PostMapping
+    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest, final BindingResult br) {
+        if (br.hasFieldErrors()) {
+            throw new ValidationException("Validation failed: " + checkForBindingResult(br));
+        } else {
+            Customer customer = customerService.createCustomer(CustomerMapper.CustomerRequestToCustomer(customerRequest));
+            URI uri = URI.create(
+                    ServletUriComponentsBuilder
+                            .fromCurrentRequest()
+                            .path("/" + customer).toUriString());
+            return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
+        }
+    }
 
     @PutMapping("/customer/{id}")
     public ResponseEntity<CustomerResponse> editCustomer(@PathVariable("id") final String username, @RequestBody final CustomerRequest customerRequest) {
