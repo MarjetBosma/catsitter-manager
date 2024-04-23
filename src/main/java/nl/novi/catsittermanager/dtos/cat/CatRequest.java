@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import lombok.Builder;
+import nl.novi.catsittermanager.models.ImageUpload;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
@@ -33,8 +34,8 @@ public record CatRequest(
         String medicationName,
         String medicationDose,
         @NotNull(message = "owner name is required")
-        String ownerUsername
-
+        String ownerUsername,
+        ImageUpload image
 ) {
 }
 

@@ -1,19 +1,18 @@
 -- NB: dit werkt nog niet
 
-INSERT INTO users (username, password, role, authorities, enabled, name, address, email) VALUES
-('bendegroot', 'thebestpassword', 'ADMIN', null, true, 'Ben de Groot', 'Dahliastraat 5, Katwijk', 'bendegroot@yourcatsitter.nl'),
-('marjetbosma', 'wachtwoord', 'CUSTOMER', null, true, 'Marjet Bosma', 'Schoolstraat 3, Moddergat', 'marjet_bosma@hotmail.com'),
-('willemhustinx', '1234abc', 'CUSTOMER', null, true, 'Willem Hustinx', 'Beukenlaan 30, Lutjebroek', 'willemhustinx@sogeti.com'),
-('pietjepuk', 'qwerty', 'CUSTOMER', null, true, 'Pietje Puk', 'Straatweg 231, Bakkeveen', 'pietje.puk@gmail.com'),
-('karelappel', 'Cats4Ever', 'CATSITTER', null, true, 'Karel Appel', 'Kerkstraat 44, Lopik', 'k.appel@gmail.com'),
-('liesjepeer', 'GimmeAllTheCats', 'CATSITTER', null, true, 'Liesje Peer', 'Julianastraat 11, Boerenhol', 'l.peer@gmail.com'),
-('hannahdaalder', 'ILoveFirsa', 'CATSITTER', null, true, 'Hannah Daalder', 'Lindelaan 3b, Nergenshuizen', 'hannahdaalder@kpn.com')
+INSERT INTO users (username, password, role, enabled, name, address, email) VALUES
+('bendegroot', 'thebestpassword', 'ADMIN', true, 'Ben de Groot', 'Dahliastraat 5, Katwijk', 'bendegroot@yourcatsitter.nl'),
+('marjetbosma', 'wachtwoord', 'CUSTOMER', true, 'Marjet Bosma', 'Schoolstraat 3, Moddergat', 'marjet_bosma@hotmail.com'),
+('willemhustinx', '1234abc', 'CUSTOMER', true, 'Willem Hustinx', 'Beukenlaan 30, Lutjebroek', 'willem.hustinx@sogeti.com'),
+('pietjepuk', 'qwerty', 'CUSTOMER', true, 'Pietje Puk', 'Straatweg 231, Bakkeveen', 'pietjepuk@gmail.com'),
+('karelappel', 'Cats4Ever', 'CATSITTER', true, 'Karel Appel', 'Kerkstraat 44, Lopik', 'k.appel@gmail.com'),
+('liesjepeer', 'GimmeAllTheCats', 'CATSITTER', true, 'Liesje Peer', 'Julianastraat 11, Boerenhol', 'l.peer@gmail.com'),
+('hannahdaalder', 'ILoveFirsa', 'CATSITTER', true, 'Hannah Daalder', 'Lindelaan 3b, Nergenshuizen', 'hannahdaalder@kpn.com')
 
 INSERT INTO customers (username, password, name, address, email) VALUES
 ('marjetbosma', 'wachtwoord', 'Marjet Bosma', 'Schoolstraat 3, Moddergat', 'marjet_bosma@hotmail.com'),
-('willemhustinx', '1234abc', 'Willem Hustinx', 'Beukenlaan 30, Lutjebroek', 'willemhustinx@sogeti.com'),
-('pietjepuk', 'qwerty', 'Pietje Puk', 'Straatweg 231, Bakkeveen', 'pietje.puk@gmail.com')
--- password encryption?
+('willemhustinx', '1234abc', 'Willem Hustinx', 'Beukenlaan 30, Lutjebroek', 'willem.hustinx@sogeti.com'),
+('pietjepuk', 'qwerty', 'Pietje Puk', 'Straatweg 231, Bakkeveen', 'pietjepuk@gmail.com')
 
 INSERT INTO catsitters (username, password, name, address, email, about) VALUES
 ('karelappel', 'Cats4Ever', 'Karel Appel', 'Kerkstraat 44, Lopik', 'k.appel@gmail.com', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'),
@@ -22,11 +21,11 @@ INSERT INTO catsitters (username, password, name, address, email, about) VALUES
 
 INSERT INTO cats (id, name, dateOfBirth, gender, breed, generalInfo, spayedOrNeutered, vaccinated, veterinarianName, phoneVet, medicationName, medicationDose, ownerUsername) VALUES
 ('1bdc5c0f-b821-4d98-a5f6-4296218244f5', 'Firsa', '2006-07-01', 'V', 'Europese Korthaar', 'Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?', true, true, 'Dierenkliniek Moddergat', '0123-456789', 'Semintra', '2ml 1dd', 'marjetbosma'),
-('86be1447-dd98-4753-ba73-f8279e9c69c6', 'Poekie', '2020-30-04', 'V', 'Siamees', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', true, true, 'Dierenkliniek Lutjebroek',  'geen', 'geen', 'willemhustinx'),
-('3af96ce7-783e-4127-b576-5d50ac555457', 'Pluis', '2014-14-10', 'M', 'Maine Coon', 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.', true, true, 'Dierenkliniek Lutjebroek', '0345-678901', 'Thiafeline', '3mg 2dd', 'willemhustinx'),
+('86be1447-dd98-4753-ba73-f8279e9c69c6', 'Poekie', '2020-04-30', 'V', 'Siamees', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', true, true, 'Dierenkliniek Lutjebroek', '0345-678901' 'geen', 'geen', 'willemhustinx'),
+('3af96ce7-783e-4127-b576-5d50ac555457', 'Pluis', '2014-10-14', 'M', 'Maine Coon', 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.', true, true, 'Dierenkliniek Lutjebroek', '0345-678901', 'Thiafeline', '3mg 2dd', 'willemhustinx'),
 ('2faa27be-464d-415c-ba25-6ae531df136d', 'Pinkie', '2024-01-23', 'M', 'Europese Korthaar', 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.', false, false, 'Dierenkliniek Lutjebroek', '0345-678901', 'geen', 'geen', 'willemhustinx'),
 ('40622485-28fe-4716-bfdb-d9d950ec67ba', 'Duchess', '2021-03-25', 'V', 'Pers', 'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', false, true, 'Dierenkliniek Bakkeveen', '0891-234567', 'geen', 'geen', 'pietjepuk'),
-('888156d8-6d70-48f2-b50d-95bc3edc1cfc', 'Duke', '2022-01-03', 'M', 'Pers', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' false, true, 'Dierenkliniek Bakkeveen', '0891-234567', 'geen', 'geen', 'pietjepuk')
+('888156d8-6d70-48f2-b50d-95bc3edc1cfc', 'Duke', '2022-02-11', 'M', 'Pers', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' false, true, 'Dierenkliniek Bakkeveen', '0891-234567', 'geen', 'geen', 'pietjepuk')
 
 INSERT INTO orders (orderNo, startDate, endDate, dailyNumberOfVisits, totalNumberOfVisits, customerUsername, catsitterUsername) VALUES
 ('7639b001-810e-446f-bd24-1bed57cacf7f', '2024-04-30', '2024-05-02', 1, 3, 'marjetbosma', 'hannahdaalder'),

@@ -6,7 +6,6 @@ import nl.novi.catsittermanager.models.Catsitter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 @Component
 public class CatsitterMapper {
@@ -18,7 +17,8 @@ public class CatsitterMapper {
                 catsitter.getAddress(),
                 catsitter.getEmail(),
                 catsitter.getAbout(),
-                catsitter.getOrders().stream().map(OrderMapper::OrderToOrderResponse).toList()
+                catsitter.getOrders().stream().map(OrderMapper::OrderToOrderResponse).toList(),
+                catsitter.getImage()
         );
     }
 
@@ -31,7 +31,7 @@ public class CatsitterMapper {
                 .email(catsitterRequest.email())
                 .about(catsitterRequest.about())
                 .orders(new ArrayList<>())
-                .authorities(new HashSet<>())
+                .image(catsitterRequest.image())
                 .enabled(true)
                 .build();
     }

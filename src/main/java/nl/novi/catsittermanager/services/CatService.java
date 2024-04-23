@@ -5,6 +5,7 @@ import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.repositories.CatRepository;
+import nl.novi.catsittermanager.repositories.FileUploadRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ public class CatService {
 
     private final CatRepository catRepository;
     private final CustomerService customerService;
+    private final FileUploadRepository uploadRepository;
 
     public List<Cat> getAllCats() {
         return catRepository.findAll();

@@ -7,7 +7,6 @@ import nl.novi.catsittermanager.models.Customer;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 @AllArgsConstructor
 @Component

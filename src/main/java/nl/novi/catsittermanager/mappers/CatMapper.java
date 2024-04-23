@@ -22,7 +22,8 @@ public class CatMapper {
                 cat.getPhoneVet(),
                 cat.getMedicationName(),
                 cat.getMedicationDose(),
-                cat.getOwner().getUsername()
+                cat.getOwner().getUsername(),
+                cat.getImage()
         );
     }
 
@@ -39,6 +40,7 @@ public class CatMapper {
                 .phoneVet(catRequest.phoneVet())
                 .medicationName(catRequest.medicationName())
                 .medicationDose(catRequest.medicationDose())
+                .image(catRequest.image())
                 .build();
     }
 }

@@ -10,7 +10,6 @@ public class UserMapper {
         return new UserResponse(
                 user.getUsername(),
                 user.getRole(),
-                user.getAuthorities(),
                 user.getEnabled(),
                 user.getName(),
                 user.getAddress(),
@@ -23,6 +22,7 @@ public class UserMapper {
                 .username(userRequest.username())
                 .password(userRequest.password())
                 .role(userRequest.role())
+                .enabled(userRequest.enabled())
                 .name(userRequest.name())
                 .address(userRequest.address())
                 .email(userRequest.email())

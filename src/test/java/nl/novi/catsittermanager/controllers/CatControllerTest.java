@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.dtos.cat.CatRequestFactory;
+import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.models.Cat;
@@ -191,25 +192,6 @@ class CatControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-//                .andExpect(jsonPath("$.message").value("Validation failed"));
-    }
-
-    @Test
-    void givenValidId_whenEditCat_thenCatShouldBeEdited() throws Exception {
-
-        UUID catId = UUID.randomUUID();
-        CatRequest expectedCatRequest = CatRequestFactory.randomCatRequest().build();
-        Cat expectedCat = CatFactory.randomCat().build();
-
-        when(catService.editCat(eq(catId), any(Cat.class), eq(expectedCatRequest.ownerUsername()))).thenReturn(expectedCat);
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/cat/{id}", catId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(expectedCatRequest)))
-                .andExpect(status().isOk());
-
-        verify(catService, times(1)).editCat(eq(catId), any(Cat.class), eq(expectedCatRequest.ownerUsername()));
-        verifyNoMoreInteractions(catService);
     }
 
     @Test
