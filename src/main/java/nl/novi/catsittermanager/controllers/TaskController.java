@@ -1,12 +1,16 @@
 package nl.novi.catsittermanager.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.task.TaskRequest;
 import nl.novi.catsittermanager.dtos.task.TaskResponse;
+import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.mappers.TaskMapper;
 import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.services.TaskService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,9 +19,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+
+import static nl.novi.catsittermanager.helpers.ControllerHelper.checkForBindingResult;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,12 +49,26 @@ public class TaskController {
         return ResponseEntity.ok(TaskMapper.TaskToTaskResponse(task));
     }
 
+//    @PostMapping("/task")
+//    public ResponseEntity<TaskResponse> createTask(@RequestBody final TaskRequest taskRequest) {
+//        Task task = taskService.createTask(TaskMapper.TaskRequestToTask(taskRequest), taskRequest.orderNo());
+//        return ResponseEntity.ok().body(TaskMapper.TaskToTaskResponse(task));
+//    }
+
     @PostMapping("/task")
-    public ResponseEntity<TaskResponse> createTask(@RequestBody final TaskRequest taskRequest) {
-        Task task = taskService.createTask(TaskMapper.TaskRequestToTask(taskRequest), taskRequest.orderNo());
-        return ResponseEntity.ok().body(TaskMapper.TaskToTaskResponse(task));
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody final TaskRequest taskRequest, final BindingResult br) {
+        if (br.hasFieldErrors()) {
+            throw new ValidationException("Validation failed: " + checkForBindingResult(br));
+        } else {
+            Task task = taskService.createTask(TaskMapper.TaskRequestToTask(taskRequest), taskRequest.orderNo());
+            URI uri = URI.create(
+                    ServletUriComponentsBuilder
+                            .fromCurrentContextPath()
+                            .path("/api/task")
+                            .toUriString());
+            return ResponseEntity.status(HttpStatus.CREATED).body(TaskMapper.TaskToTaskResponse(task));
+        }
     }
-    // beslissen of ik een versie met validation exception wil gebruiken
 
 
     @PutMapping("/task/{id}")

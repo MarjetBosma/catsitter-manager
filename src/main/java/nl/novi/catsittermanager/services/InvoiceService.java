@@ -32,7 +32,9 @@ public class InvoiceService {
         invoice.setOrder(order);
         return invoiceRepository.save(invoice);
     }
-    // todo: afhandelen foutmelding als het ingegeven ordernummer al een invoice heeft
+    public boolean existsByOrderNo(UUID orderNo) {
+        return invoiceRepository.existsByOrder_OrderNo(orderNo);
+    }
 
     public Invoice editInvoice(final UUID idToEdit, final Invoice updatedInvoice, final UUID orderNo) {
         Invoice existingInvoice = invoiceRepository.findById(idToEdit)

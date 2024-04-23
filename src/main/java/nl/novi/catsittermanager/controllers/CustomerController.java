@@ -99,7 +99,7 @@ public class CustomerController {
 //        return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
 //    }
 
-    @PostMapping
+    @PostMapping("/customer")
     public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest, final BindingResult br) {
         if (br.hasFieldErrors()) {
             throw new ValidationException("Validation failed: " + checkForBindingResult(br));
@@ -107,8 +107,9 @@ public class CustomerController {
             Customer customer = customerService.createCustomer(CustomerMapper.CustomerRequestToCustomer(customerRequest));
             URI uri = URI.create(
                     ServletUriComponentsBuilder
-                            .fromCurrentRequest()
-                            .path("/" + customer).toUriString());
+                            .fromCurrentContextPath()
+                            .path("/api/customer")
+                            .toUriString());
             return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.CustomerToCustomerResponse(customer));
         }
     }
