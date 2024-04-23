@@ -46,17 +46,13 @@ public class TaskController {
         Task task = taskService.createTask(TaskMapper.TaskRequestToTask(taskRequest), taskRequest.orderNo());
         return ResponseEntity.ok().body(TaskMapper.TaskToTaskResponse(task));
     }
-    // beslissen of ik een versie met validation exception wil gebruiken
 
-
-    // todo: Uitzoeken waarom deze een exception geeft ("No task found with this id"), terwijl bijv. het GET-request met hetzelfde id wel werkt.
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponse> editTask(@PathVariable("id") final UUID idToEdit, @RequestBody final TaskRequest taskRequest) {
         Task task = taskService.editTask(idToEdit, TaskMapper.TaskRequestToTask(taskRequest), taskRequest.orderNo());
         return ResponseEntity.ok().body(TaskMapper.TaskToTaskResponse(task));
     }
 
-    //    todo: uitzoeken waarom deze een error geeft (400 Bad Request, "2024-04-09T09:48:12.206+02:00 DEBUG 19748 --- [nio-8080-exec-1] s.s.w.f.HttpStatusRequestRejectedHandler : Rejecting request due to: The request was rejected because the URL contained a potentially malicious String "%0A"". Ergens wordt dat "%OA" toegevoegd aan de URI (staat erachter in de Postman response body), maar ik snap niet goed hoe en waarom.
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteTask(@PathVariable("id") final UUID idToDelete) {
         taskService.deleteTask(idToDelete);

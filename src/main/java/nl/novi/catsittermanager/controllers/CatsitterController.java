@@ -59,21 +59,6 @@ public class CatsitterController {
         return ResponseEntity.status(HttpStatus.CREATED).body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
     }
 
-    // todo: Beslissen of ik onderstaande versie met optie voor validation exception wil implementeren
-//    @PostMapping
-//    public ResponseEntity<CatsitterResponse> createCatsitter(@Valid @RequestBody final CatsitterRequest catsitterRequest, final BindingResult br) {
-//        if (br.hasFieldErrors()) {
-//            throw new ValidationException(checkForBindingResult(br));
-//        } else {
-//            Catsitter catsitter = catsitterService.createCatsitter(CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest));
-//            URI uri = URI.create(
-//                    ServletUriComponentsBuilder
-//                            .fromCurrentRequest()
-//                            .path("/" + catsitter).toUriString());
-//            return ResponseEntity.status(HttpStatus.CREATED).body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
-//        }
-//    }
-
     @PutMapping("/{id}")
     public ResponseEntity<CatsitterResponse> editCatsitter(@PathVariable("id") final String username, @RequestBody final CatsitterRequest catsitterRequest) {
         Catsitter catsitter = catsitterService.editCatsitter(username, CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest));

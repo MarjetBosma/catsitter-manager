@@ -45,28 +45,11 @@ public class UserController {
         return ResponseEntity.ok(UserMapper.UserToUserResponse(user));
     }
 
-    // todo: ik heb hier nu alleen een methode voor admin aanmaken, customer en catsitter (subclasses van User) aanmaken staat in hun eigen services. Is dit de beste optie?
     @PostMapping
     public ResponseEntity<UserResponse> createAdminAccount(@Valid @RequestBody final UserRequest userRequest) {
         User user = userService.createAdminAccount(UserMapper.UserRequestToUser(userRequest));
         return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.UserToUserResponse(user));
     }
-
-    // todo: Beslissen of ik onderstaande versie met optie voor validation exception wil implementeren
-
-//    @PostMapping
-//    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody final UserRequest userRequest, final BindingResult br) {
-//        if (br.hasFieldErrors()) {
-//            throw new ValidationException(checkForBindingResult(br));
-//        } else {
-//            User user = userService.createUser(UserMapper.UserRequestToUser(userRequest));
-//            URI uri = URI.create(
-//                    ServletUriComponentsBuilder
-//                            .fromCurrentRequest()
-//                            .path("/" + user).toUriString());
-//            return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.UserToUserResponse(user));
-//        }
-//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> editUser(@PathVariable("id") final String username, @RequestBody final UserRequest userRequest) {

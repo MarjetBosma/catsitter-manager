@@ -44,6 +44,7 @@ public class CatServiceTest {
 
         // Then
         assertEquals(expectedCatList, catResponseList);
+
         verify(catRepository, times(1)).findAll();
         verifyNoMoreInteractions(catRepository);
     }
@@ -97,7 +98,7 @@ public class CatServiceTest {
     void testCreateCat_shouldCreateANewCat() {
         // Given
         Cat expectedCat = CatFactory.randomCat().build();
-        Customer customer = CustomerFactory.randomCustomer();
+        Customer customer = CustomerFactory.randomCustomer().build();
 
         when(customerService.getCustomer(customer.getUsername())).thenReturn(customer);
         when(catRepository.save(expectedCat)).thenReturn(expectedCat);

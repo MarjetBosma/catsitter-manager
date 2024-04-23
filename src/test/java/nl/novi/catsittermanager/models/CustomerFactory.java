@@ -10,9 +10,9 @@ public class CustomerFactory {
 
     private static final Faker faker = new Faker();
 
-    public static Customer randomCustomer() {
+    public static Customer.CustomerBuilder randomCustomer() {
 
-        return Customer.builder()
+        return Customer.CustomerBuilder()
                 .username(faker.name().username())
                 .password(faker.internet().password())
                 .name(faker.name().fullName())
@@ -20,7 +20,6 @@ public class CustomerFactory {
                 .email(faker.internet().emailAddress())
                 .enabled(true)
                 .orders(Collections.emptyList())
-                .cats(Collections.emptyList())
-                .build();
+                .cats(Collections.emptyList());
     }
 }

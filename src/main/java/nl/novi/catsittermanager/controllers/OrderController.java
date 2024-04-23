@@ -63,33 +63,11 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(OrderMapper.OrderToOrderResponse(order));
     }
 
-// todo: Beslissen of ik onderstaande Versie met optie voor validation exception wil implementeren
-
-//    @PostMapping
-//    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody final OrderRequest orderRequest, final BindingResult br) {
-//        if (br.hasFieldErrors()) {
-//            throw new ValidationException(checkForBindingResult(br));
-//        } else {
-//            Order order = orderService.createOrder(OrderMapper.OrderRequestToOrder(orderRequest));
-//            URI uri = URI.create(
-//                    ServletUriComponentsBuilder
-//                            .fromCurrentRequest()
-//                            .path("/" + order).toUriString());
-//            return ResponseEntity.status(HttpStatus.CREATED).body(OrderMapper.OrderToOrderResponse(order));
-//        }
-//    }
-
     @PutMapping("/{id}")
     public ResponseEntity<OrderResponse> editOrder(@PathVariable("id") final UUID idToEdit, @RequestBody final OrderRequest orderRequest) {
         Order order = orderService.editOrder(idToEdit, OrderMapper.OrderRequestToOrder(orderRequest), orderRequest.customerUsername(), orderRequest.catsitterUsername());
         return ResponseEntity.ok().body(OrderMapper.OrderToOrderResponse(order));
     }
-
-//    @PutMapping("/{id}")
-//    public ResponseEntity<OrderResponse> editOrder(@PathVariable("id") final UUID idToEdit, @RequestBody final OrderRequest orderRequest)  {
-//        Order order = orderService.editOrder(idToEdit, OrderMapper.OrderRequestToOrder(orderRequest);
-//        return ResponseEntity.ok().body(OrderMapper.OrderToOrderResponse(order));
-//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteOrder(@PathVariable("id") final UUID idToDelete) {

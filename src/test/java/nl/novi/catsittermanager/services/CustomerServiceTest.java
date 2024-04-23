@@ -9,9 +9,12 @@ import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.models.OrderFactory;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class CustomerServiceTest {
 
     @Mock
@@ -41,7 +45,7 @@ class CustomerServiceTest {
         // Then
         assertEquals(expectedCustomerList, customerResponseList);
 
-        verify(customerRepository, times(1)).save(expectedCustomer);
+        verify(customerRepository, times(1)).findAll();
         verifyNoMoreInteractions(customerRepository);
     }
 
@@ -75,7 +79,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    void testGetCat_shouldFetchCatWithSpecificId_RecordNotFoundException() {
+    void testGetCustomer_shouldFetchCustomerWithSpecificUsername_RecordNotFoundException() {
         // Given
         Customer expectedCustomer = CustomerFactory.randomCustomer().build();
 
@@ -85,82 +89,86 @@ class CustomerServiceTest {
         RecordNotFoundException exception=assertThrows(RecordNotFoundException.class, () -> customerService.getCustomer(expectedCustomer.getUsername()));
 
         // Then
-        assertEquals("No customer found with this id.", exception.getMessage());
+        assertEquals("No customer found with this username.", exception.getMessage());
     }
 
     @Test
     void testGetAllCatsByCustomer_shouldFetchAllCatsForThisCustomer() {
         // Given
-        String username = "testUser";
-        Customer customer = CustomerFactory.randomCustomer().build();
+        Customer randomCustomer = CustomerFactory.randomCustomer().build();
         List<Cat> expectedCats = CatFactory.randomCats(3);
-        customer.setCats(expectedCats);
+        randomCustomer.setCats(expectedCats);
 
-        when(customerService.getCustomer(username)).thenReturn(customer);
+        when(customerRepository.findById(randomCustomer.getUsername())).thenReturn(Optional.of(randomCustomer));
 
         // When
-        List<Cat> resultCats = customerService.getAllCatsByCustomer(username);
+        List<Cat> resultCats = customerService.getAllCatsByCustomer(randomCustomer.getUsername());
 
         // Then
         assertEquals(expectedCats.size(), resultCats.size());
         assertTrue(resultCats.containsAll(expectedCats));
 
-        verify(customerRepository, times(1)).findById(username);
+        verify(customerRepository, times(1)).findById(randomCustomer.getUsername());
         verifyNoMoreInteractions(customerRepository);
     }
 
     @Test
     void testGetAllCatsByCustomer_noCatsOnTheList_shouldReturnEmptyList() {
         // Given
-        String username = "testUser";
-        when(customerService.getCustomer(username)).thenReturn(CustomerFactory.randomCustomer());
+        Customer randomCustomer = CustomerFactory.randomCustomer()
+                .cats(new ArrayList<Order>())
+                .build();
+
+        when(customerRepository.findById(randomCustomer.getUsername())).thenReturn(Optional.of(randomCustomer));
 
         // When
-        List<Cat> resultCats = customerService.getAllCatsByCustomer(username);
+        List<Cat> resultCats = customerService.getAllCatsByCustomer(randomCustomer.getUsername());
 
         // Then
         assertNotNull(resultCats);
         assertTrue(resultCats.isEmpty());
 
-        verify(customerService, times(1)).getCustomer(username);
-        verifyNoMoreInteractions(customerService);
+        verify(customerRepository, times(1)).findById(randomCustomer.getUsername());
+        verifyNoMoreInteractions(customerRepository);
     }
 
     @Test
     void testGetAllOrdersByCustomer_shouldFetchAllOrdersForThisCustomer() {
         // Given
-        String username = "testUser";
-        Customer customer = CustomerFactory.randomCustomer().build();
+        Customer randomCustomer = CustomerFactory.randomCustomer().build();
         List<Order> expectedOrders = OrderFactory.randomOrders(3);
-        customer.setOrders(expectedOrders);
+        randomCustomer.setOrders(expectedOrders);
 
-        when(customerService.getCustomer(username)).thenReturn(customer);
+        when(customerRepository.findById(randomCustomer.getUsername())).thenReturn(Optional.of(randomCustomer));
 
         // When
-        List<Order> resultOrders = customerService.getAllOrdersByCustomer(username);
+        List<Order> resultOrders = customerService.getAllOrdersByCustomer(randomCustomer.getUsername());
 
         // Then
         assertEquals(expectedOrders.size(), resultOrders.size());
         assertTrue(resultOrders.containsAll(expectedOrders));
 
-        verify(customerRepository, times(1)).findById(username);
+        verify(customerRepository, times(1)).findById(randomCustomer.getUsername());
         verifyNoMoreInteractions(customerRepository);
     }
 
     @Test
     void testGetAllOrdersByCustomer_noOrdersOnTheList_shouldReturnEmptyList() {
         // Given
-        String username = "testUser";
-        when(customerService.getCustomer(username)).thenReturn(CustomerFactory.randomCustomer());
+        Customer randomCustomer = CustomerFactory.randomCustomer()
+                .orders(new ArrayList<Order>())
+                .build();
+
+        when(customerRepository.findById(randomCustomer.getUsername())).thenReturn(Optional.of(randomCustomer));
 
         // When
-        List<Order> resultOrders = customerService.getAllOrdersByCustomer(username);
+        List<Order> resultOrders = customerService.getAllOrdersByCustomer(randomCustomer.getUsername());
 
         assertNotNull(resultOrders);
         assertTrue(resultOrders.isEmpty());
 
-        verify(customerService, times(1)).getCustomer(username);
-        verifyNoMoreInteractions(customerService);
+        verify(customerRepository, times(1)).findById(randomCustomer.getUsername());
+        verifyNoMoreInteractions(customerRepository);
 
     }
 
@@ -179,7 +187,7 @@ class CustomerServiceTest {
 
         verify(customerRepository, times(1)).save(expectedCustomer);
     }
-
+     // todo invalid input testen
     @Test
     void testEditCustomer_shouldEditExistingCustomer() {
         // Given
@@ -218,10 +226,13 @@ class CustomerServiceTest {
         when(customerRepository.existsById(customer.getUsername())).thenReturn(true);
 
         // When
-        String username = customerService.deleteCustomer(customer.getUsername());
+        String resultUsername = customerService.deleteCustomer(customer.getUsername());
 
         // Then
-        verify(customerRepository, times(1)).existsById(username);
+        verify(customerRepository, times(1)).existsById(customer.getUsername());
+        verify(customerRepository, times(1)).deleteById(customer.getUsername());
         verifyNoMoreInteractions(customerRepository);
+
+        assertEquals(customer.getUsername(), resultUsername);
     }
 }

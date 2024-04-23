@@ -22,7 +22,11 @@ public class OrderFactory {
                 .totalNumberOfVisits(faker.number().numberBetween(5, 20))
                 .tasks(new ArrayList<>())
                 .customer(CustomerFactory.randomCustomer().build())
-                .catsitter(Catsitter.builder().name(faker.name().username()).build())
+                .catsitter(
+                        Catsitter.CatsitterBuilder()
+                        .name(faker.name().username())
+                        .build()
+                )
                 .invoice(null);
     }
 

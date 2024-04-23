@@ -4,10 +4,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.dtos.cat.CatResponse;
-import nl.novi.catsittermanager.exceptions.ValidationException;
 import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.models.Cat;
-import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.services.CatService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +18,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
-
-import static nl.novi.catsittermanager.helpers.ControllerHelper.checkForBindingResult;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,24 +43,10 @@ public class CatController {
         return ResponseEntity.ok(CatMapper.CatToCatResponse(cat));
     }
 
-//    @PostMapping
-//    public ResponseEntity<CatResponse> createCat(@Valid @RequestBody final CatRequest catRequest) {
-//        Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
-//        return ResponseEntity.status(HttpStatus.CREATED).body(CatMapper.CatToCatResponse(cat));
-//    }
-
-    @PostMapping
-    public ResponseEntity<CatResponse> createCustomer(@Valid @RequestBody final CatRequest catRequest, final BindingResult br) {
-        if (br.hasFieldErrors()) {
-            throw new ValidationException("Validation failed: " + checkForBindingResult(br));
-        } else {
-            Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
-            URI uri = URI.create(
-                    ServletUriComponentsBuilder
-                            .fromCurrentRequest()
-                            .path("/" + cat).toUriString());
-            return ResponseEntity.status(HttpStatus.CREATED).body(CatMapper.CatToCatResponse(cat));
-        }
+    @PostMapping()
+    public ResponseEntity<CatResponse> createCustomer(@Valid @RequestBody final CatRequest catRequest) {
+        Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
+        return ResponseEntity.status(HttpStatus.CREATED).body(CatMapper.CatToCatResponse(cat));
     }
 
     @PutMapping("/{id}")

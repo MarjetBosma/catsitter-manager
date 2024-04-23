@@ -26,7 +26,7 @@ public class CatFactory {
                 .phoneVet(faker.phoneNumber().phoneNumber())
                 .medicationName(CatFactoryHelper.randomMedicationName())
                 .medicationDose(CatFactoryHelper.randomMedicationDose())
-                .owner(CustomerFactory.randomCustomer());
+                .owner(CustomerFactory.randomCustomer().build());
     }
 
     public static List<Cat> randomCats(int count) {
