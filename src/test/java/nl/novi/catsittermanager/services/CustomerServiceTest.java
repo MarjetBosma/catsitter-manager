@@ -1,6 +1,7 @@
 package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
+import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatFactory;
 import nl.novi.catsittermanager.models.Customer;
@@ -187,7 +188,22 @@ class CustomerServiceTest {
 
         verify(customerRepository, times(1)).save(expectedCustomer);
     }
-     // todo invalid input testen
+
+    @Test
+    void testCreateCustomer_WhenUsernameExists_shouldThrowUsernameAlreadyExistsException() {
+        // Given
+        Customer existingCustomer = CustomerFactory.randomCustomer().build();
+        String existingUsername = "existingUsername";
+        existingCustomer.setUsername(existingUsername);
+
+        when(customerRepository.findById(existingUsername)).thenReturn(Optional.of(existingCustomer));
+
+        // When & Then
+        assertThrows(UsernameAlreadyExistsException.class, () -> {
+            customerService.createCustomer(existingCustomer);
+        });
+    }
+
     @Test
     void testEditCustomer_shouldEditExistingCustomer() {
         // Given

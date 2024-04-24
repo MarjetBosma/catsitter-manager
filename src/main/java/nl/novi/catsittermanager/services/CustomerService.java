@@ -53,7 +53,7 @@ public class CustomerService {
 
     public Customer createCustomer(final Customer customer) {
         if (customerRepository.findById(customer.getUsername()).isPresent()) {
-            throw new UsernameAlreadyExistsException();
+            throw new UsernameAlreadyExistsException("Username already exists");
         }
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(customer.getPassword());

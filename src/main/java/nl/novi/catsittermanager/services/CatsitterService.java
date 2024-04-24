@@ -47,7 +47,7 @@ public class CatsitterService {
 
     public Catsitter createCatsitter(final Catsitter catsitter) {
         if (catsitterRepository.findById(catsitter.getUsername()).isPresent()) {
-            throw new UsernameAlreadyExistsException();
+            throw new UsernameAlreadyExistsException("Username already exists.");
         }
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(catsitter.getPassword());

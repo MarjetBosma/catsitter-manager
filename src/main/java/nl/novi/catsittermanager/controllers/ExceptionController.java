@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.controllers;
 
 import nl.novi.catsittermanager.exceptions.BadRequestException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
+import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
 import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,14 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @ControllerAdvice
 public class ExceptionController {
-
-    @ExceptionHandler(value = BadRequestException.class)
-    public ResponseEntity<Object> badRequest(BadRequestException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
-    }
 
     @ExceptionHandler(value = RecordNotFoundException.class)
     public ResponseEntity<Object> recordNotFound(RecordNotFoundException exception) {
@@ -33,5 +28,8 @@ public class ExceptionController {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-//    @ExceptionHandler(value = ArgumentsNotValidException)
+    @ExceptionHandler(value = UsernameAlreadyExistsException.class)
+    public ResponseEntity<Object> usernameAlreadyExists(UsernameAlreadyExistsException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT); // You can use HttpStatus.CONFLICT for username conflict
+    }
 }

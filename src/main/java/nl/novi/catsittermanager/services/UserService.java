@@ -30,7 +30,7 @@ public class UserService {
 
     public User createAdminAccount(final User user) {
         if (userRepository.findById(user.getUsername()).isPresent()) {
-            throw new UsernameAlreadyExistsException();
+            throw new UsernameAlreadyExistsException("Username already exists.");
         }
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(user.getPassword());
