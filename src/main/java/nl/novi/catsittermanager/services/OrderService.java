@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.services;
 
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
+import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
@@ -39,8 +40,14 @@ public class OrderService {
     public Order createOrder(final Order order, final String customerUsername, final String catsitterUsername) {
         order.setTasks(new ArrayList<Task>());
         Customer customer = customerService.getCustomer(customerUsername);
+        if (customer == null) {
+            throw new UsernameNotFoundException("Customer not found.");
+        }
         order.setCustomer(customer);
         Catsitter catsitter = catsitterService.getCatsitter(catsitterUsername);
+        if (catsitter == null) {
+            throw new UsernameNotFoundException("Catsitter not found.");
+        }
         order.setCatsitter(catsitter);
         return orderRepository.save(order);
     }

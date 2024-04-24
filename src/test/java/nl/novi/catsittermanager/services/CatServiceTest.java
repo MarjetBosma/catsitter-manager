@@ -1,6 +1,7 @@
 package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
+import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatFactory;
 import nl.novi.catsittermanager.models.Customer;
@@ -114,6 +115,18 @@ public class CatServiceTest {
 
         verify(catRepository, times(1)).save(expectedCat);
         verifyNoMoreInteractions(catRepository);
+    }
+
+    @Test
+    void testCreateCat_ownerUnknown_shouldThrowUsernameNotFoundException() {
+        // Given
+        Cat expectedCat = CatFactory.randomCat().build();
+        String unknownOwnername = "unknownOwnername";
+        when(customerService.getCustomer(anyString())).thenReturn(null);
+
+        // When & Then
+        assertThrows(UsernameNotFoundException.class, () -> catService.createCat(expectedCat, unknownOwnername));
+
     }
 
     @Test

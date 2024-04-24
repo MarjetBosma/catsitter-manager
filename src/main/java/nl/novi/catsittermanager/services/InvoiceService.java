@@ -29,6 +29,9 @@ public class InvoiceService {
 
     public Invoice createInvoice(final Invoice invoice, final UUID orderNo) {
         Order order = orderService.getOrder(orderNo);
+        if (order == null) {
+            throw new RecordNotFoundException("Order not found.");
+        }
         invoice.setOrder(order);
         return invoiceRepository.save(invoice);
     }
