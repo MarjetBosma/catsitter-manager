@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,7 +31,7 @@ import static org.mockito.Mockito.*;
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 @Transactional
-class CatIntegrationTest {
+class CreateCatIntegrationTest {
     @Autowired
     MockMvc mockMvc;
     @Autowired
@@ -58,7 +59,7 @@ class CatIntegrationTest {
                 "dateOfBirth": "2006-07-01",
                 "gender": "V",
                 "breed": "Europese Korthaar",
-                "generalInfo": "Vriendelijke , maar verlegen kat. Verstopt zich vaak voor vreemden.",
+                "generalInfo": "Vriendelijke, maar verlegen kat. Verstopt zich vaak voor vreemden.",
                 "spayedOrNeutered": true,
                 "vaccinated": true,
                 "veterinarianName": "Dierenkliniek Zuilen",
@@ -69,14 +70,12 @@ class CatIntegrationTest {
                  }
                   """;
 
-        // Define argument captors for verifying service method calls
         ArgumentCaptor<Cat> catArgumentCaptor = ArgumentCaptor.forClass(Cat.class);
         ArgumentCaptor<String> ownerUsernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
-        // Mock behavior of catRepository
-        when(catRepository.save(any(Cat.class))).thenReturn(new Cat()); // Simulating successful save
+        when(catRepository.save(any(Cat.class))).thenReturn(new Cat());
+        when(catRepository.save(any(Cat.class))).thenThrow(new DataIntegrityViolationException("Invalid cat data"));
 
-        // Perform the HTTP POST request
         MvcResult result = mockMvc
                 .perform(MockMvcRequestBuilders.post("/api/cat")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,11 +88,9 @@ class CatIntegrationTest {
         JsonNode jsonNode = objectMapper.readTree(jsonResponse);
         String createdId = jsonNode.get("id").asText();
 
-        // Verify that the save method of the catRepository is called with the correct arguments
         verify(catRepository, times(1)).save(catArgumentCaptor.capture());
         verifyNoMoreInteractions(catRepository);
 
-        // Assert that the service method is called with the correct arguments
         verify(catService, times(1)).createCat(catArgumentCaptor.getValue(), ownerUsernameArgumentCaptor.capture());
         assertEquals("marjetbosma", ownerUsernameArgumentCaptor.getValue());
 
