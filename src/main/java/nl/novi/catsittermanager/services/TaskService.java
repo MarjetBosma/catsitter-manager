@@ -29,9 +29,6 @@ public class TaskService {
 
     public Task createTask(final Task task, UUID orderNo) {
         Order order = orderService.getOrder(orderNo);
-        if (order == null) {
-            throw new RecordNotFoundException("Order not found.");
-        }
         task.setOrder(order);
         return taskRepository.save(task);
     }

@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -43,17 +44,11 @@ class CreateCatIntegrationTest {
     @MockBean
     CatRepository catRepository;
 
+    private String jsonInput;
+
     @BeforeEach
     void setUp() {
-    }
-
-    @AfterEach
-    void tearDown() {
-    }
-
-    @Test
-    void createCat() throws Exception {
-        String jsonInput = """
+        jsonInput = """
                 {
                 "name": "Firsa",
                 "dateOfBirth": "2006-07-01",
@@ -69,19 +64,27 @@ class CreateCatIntegrationTest {
                 "ownerUsername": "marjetbosma"
                  }
                   """;
+    }
+
+    @AfterEach
+    void tearDown() {
+        jsonInput = null;
+    }
+
+    @Test
+    void createCat() throws Exception {
 
         ArgumentCaptor<Cat> catArgumentCaptor = ArgumentCaptor.forClass(Cat.class);
         ArgumentCaptor<String> ownerUsernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
         when(catRepository.save(any(Cat.class))).thenReturn(new Cat());
-        when(catRepository.save(any(Cat.class))).thenThrow(new DataIntegrityViolationException("Invalid cat data"));
 
         MvcResult result = mockMvc
                 .perform(MockMvcRequestBuilders.post("/api/cat")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonInput))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(status().isCreated())
                 .andReturn();
 
         String jsonResponse = result.getResponse().getContentAsString();
@@ -95,5 +98,18 @@ class CreateCatIntegrationTest {
         assertEquals("marjetbosma", ownerUsernameArgumentCaptor.getValue());
 
         MatcherAssert.assertThat(result.getResponse().getHeader("Location"), matchesPattern("^.*/cat" + createdId));
+    }
+
+    @Test
+    void createCat_WithInvalidInput_ShouldReturnBadRequest() throws Exception {
+        // Given
+        String invalidJsonInput = "{}";
+
+        // When
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/cat")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidJsonInput))
+                // Then
+                .andExpect(status().isBadRequest());
     }
 }
