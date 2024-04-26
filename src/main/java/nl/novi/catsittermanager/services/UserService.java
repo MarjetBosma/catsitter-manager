@@ -1,5 +1,7 @@
 package nl.novi.catsittermanager.services;
 
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class UserService {
 
     private final UserRepository userRepository;
