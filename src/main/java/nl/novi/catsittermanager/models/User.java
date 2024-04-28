@@ -27,7 +27,7 @@ import java.util.List;
 @SuperBuilder
 @Entity
 @Table(name = "users")
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Slf4j
 public class User implements Serializable {
 
@@ -37,7 +37,7 @@ public class User implements Serializable {
     @Column(nullable = false, length = 255)
     private String password;
     private Role role;
-    @Column(nullable = false)
+    @Column
     private Boolean enabled;
     @Column
     private String name;

@@ -19,7 +19,6 @@ public class CatService {
 
     private final CatRepository catRepository;
     private final CustomerService customerService;
-    private final FileUploadRepository uploadRepository;
 
     public List<Cat> getAllCats() {
         return catRepository.findAll();

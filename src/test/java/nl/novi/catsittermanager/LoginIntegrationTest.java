@@ -5,6 +5,7 @@ import nl.novi.catsittermanager.controllers.AuthenticationController;
 import nl.novi.catsittermanager.dtos.login.LoginRequest;
 import nl.novi.catsittermanager.dtos.login.LoginResponse;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
+import nl.novi.catsittermanager.repositories.UserRepository;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(AuthenticationController.class)
 @AutoConfigureMockMvc(addFilters = false)
+@ActiveProfiles("test")
 public class LoginIntegrationTest {
 
     @Autowired
@@ -41,6 +44,9 @@ public class LoginIntegrationTest {
 
     @MockBean
     private JwtAuthorizationFilter jwtAuthorizationFilter;
+
+    @MockBean
+    private UserRepository userRepository;
 
     @Test
     void login_WithValidCredentials_ShouldReturnToken() throws Exception {
