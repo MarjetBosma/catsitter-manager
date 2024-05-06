@@ -6,7 +6,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,15 +30,19 @@ public class Invoice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column
+    @Column(name = "invoice_no")
     private UUID invoiceNo;
 
+    @Column(name = "invoice_date")
     private LocalDate invoiceDate;
 
+    @Column(name = "amount")
     private Double amount;
 
+    @Column(name = "paid")
     private Boolean paid;
 
+    @JoinColumn(name = "order_no")
     @OneToOne(fetch = FetchType.LAZY)
     private Order order;
 }
