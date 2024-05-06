@@ -1,23 +1,23 @@
 -- NB: Ik heb dit helaas niet werkend gekregen, en ik kon de oorzaak niet achterhalen.
 
---INSERT INTO users (username, password, role, enabled, name, address, email) VALUES
---('bendegroot', 'thebestpassword', 2, true, 'Ben de Groot', 'Dahliastraat 5, Katwijk', 'bendegroot@yourcatsitter.nl'),
---('marjetbosma', 'wachtwoord', 0, true, 'Marjet Bosma', 'Schoolstraat 3, Moddergat', 'marjet_bosma@hotmail.com'),
---('willemhustinx', '1234abc', 0, true, 'Willem Hustinx', 'Beukenlaan 30, Lutjebroek', 'willem.hustinx@sogeti.com'),
---('pietjepuk', 'qwerty', 0, true, 'Pietje Puk', 'Straatweg 231, Bakkeveen', 'pietjepuk@gmail.com'),
---('karelappel', 'Cats4Ever', 1, true, 'Karel Appel', 'Kerkstraat 44, Lopik', 'k.appel@gmail.com'),
---('liesjepeer', 'GimmeAllTheCats', 1, true, 'Liesje Peer', 'Julianastraat 11, Boerenhol', 'l.peer@gmail.com'),
---('hannahdaalder', 'ILoveFirsa', 1, true, 'Hannah Daalder', 'Lindelaan 3b, Nergenshuizen', 'hannahdaalder@kpn.com');
---
---INSERT INTO customers (username, password, name, address, email) VALUES
---('marjetbosma', 'wachtwoord', 'Marjet Bosma', 'Schoolstraat 3, Moddergat', 'marjet_bosma@hotmail.com'),
---('willemhustinx', '1234abc', 'Willem Hustinx', 'Beukenlaan 30, Lutjebroek', 'willem.hustinx@sogeti.com'),
---('pietjepuk', 'qwerty', 'Pietje Puk', 'Straatweg 231, Bakkeveen', 'pietjepuk@gmail.com');
---
---INSERT INTO catsitters (username, password, name, address, email, about) VALUES
---('karelappel', 'Cats4Ever', 'Karel Appel', 'Kerkstraat 44, Lopik', 'k.appel@gmail.com', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'),
---('liesjepeer', 'GimmeAllTheCats', 'Liesje Peer', 'Julianastraat 11, Boerenhol', 'l.peer@gmail.com', 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'),
---('hannahdaalder', 'ILoveFirsa', 'Hannah Daalder', 'Lindelaan 3b, Nergenshuizen', 'hannahdaalder@kpn.com', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.');
+INSERT INTO users (username, password, role, enabled, name, address, email) VALUES
+('bendegroot', 'thebestpassword', 2, true, 'Ben de Groot', 'Dahliastraat 5, Katwijk', 'bendegroot@yourcatsitter.nl'),
+('marjetbosma', 'wachtwoord', 0, true, 'Marjet Bosma', 'Schoolstraat 3, Moddergat', 'marjet_bosma@hotmail.com'),
+('willemhustinx', '1234abc', 0, true, 'Willem Hustinx', 'Beukenlaan 30, Lutjebroek', 'willem.hustinx@sogeti.com'),
+('pietjepuk', 'qwerty', 0, true, 'Pietje Puk', 'Straatweg 231, Bakkeveen', 'pietjepuk@gmail.com'),
+('karelappel', 'Cats4Ever', 1, true, 'Karel Appel', 'Kerkstraat 44, Lopik', 'k.appel@gmail.com'),
+('liesjepeer', 'GimmeAllTheCats', 1, true, 'Liesje Peer', 'Julianastraat 11, Boerenhol', 'l.peer@gmail.com'),
+('hannahdaalder', 'ILoveFirsa', 1, true, 'Hannah Daalder', 'Lindelaan 3b, Nergenshuizen', 'hannahdaalder@kpn.com');
+
+INSERT INTO customers (username, password, name, address, email) VALUES
+('marjetbosma', 'wachtwoord', 'Marjet Bosma', 'Schoolstraat 3, Moddergat', 'marjet_bosma@hotmail.com'),
+('willemhustinx', '1234abc', 'Willem Hustinx', 'Beukenlaan 30, Lutjebroek', 'willem.hustinx@sogeti.com'),
+('pietjepuk', 'qwerty', 'Pietje Puk', 'Straatweg 231, Bakkeveen', 'pietjepuk@gmail.com');
+
+INSERT INTO catsitters (username, password, name, address, email, about) VALUES
+('karelappel', 'Cats4Ever', 'Karel Appel', 'Kerkstraat 44, Lopik', 'k.appel@gmail.com', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'),
+('liesjepeer', 'GimmeAllTheCats', 'Liesje Peer', 'Julianastraat 11, Boerenhol', 'l.peer@gmail.com', 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'),
+('hannahdaalder', 'ILoveFirsa', 'Hannah Daalder', 'Lindelaan 3b, Nergenshuizen', 'hannahdaalder@kpn.com', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.');
 
 INSERT INTO orders (order_no, start_date, end_date, daily_number_of_visits, total_number_of_visits, customer_username, catsitter_username) VALUES
 ('7639b001-810e-446f-bd24-1bed57cacf7f', '2024-04-30', '2024-05-02', 1, 3, 'marjetbosma', 'hannahdaalder'),
@@ -27,15 +27,6 @@ INSERT INTO orders (order_no, start_date, end_date, daily_number_of_visits, tota
 ('510acb89-c1da-487b-b03a-52afdae7e0c6', '2023-03-20', '2024-03-25', 1, 5,  'pietjepuk', 'karelappel'),
 ('be7e95b4-bb87-40dd-a4a7-c47d6c7673d9', '2024-07-01', '2024-07-21', 1, 21, 'pietjepuk', 'hannahdaalder');
 
-
---INSERT INTO orders (orderNo, startDate, endDate, dailyNumberOfVisits, totalNumberOfVisits, customerUsername, catsitterUsername) VALUES
---('7639b001-810e-446f-bd24-1bed57cacf7f', '2024-04-30', '2024-05-02', 1, 3, 'marjetbosma', 'hannahdaalder'),
---('6891e59c-8c9e-4784-a043-23dd4898be6a', '2023-07-23', '2023-08-06', 1, 14, 'marjetbosma', 'liesjepeer'),
---('6e337a29-f104-4320-b6e5-7d061e1772d3', '2023-10-09', '2023-10-13', 2, 10, 'willemhustinx', 'liesjepeer'),
---('36639513-0a84-4ce5-a139-b356f03bfd2e', '2024-06-03', '2024-06-10', 2, 7, 'willemhustinx', 'karelappel'),
---('510acb89-c1da-487b-b03a-52afdae7e0c6', '2023-03-20', '2024-03-25', 1, 5,  'pietjepuk', 'karelappel'),
---('be7e95b4-bb87-40dd-a4a7-c47d6c7673d9', '2024-07-01', '2024-07-21', 1, 21, 'pietjepuk', 'hannahdaalder');
---
 --INSERT INTO cats (id, name, dateOfBirth, gender, breed, generalInfo, spayedOrNeutered, vaccinated, veterinarianName, phoneVet, medicationName, medicationDose, ownerUsername) VALUES
 --('1bdc5c0f-b821-4d98-a5f6-4296218244f5', 'Firsa', '2006-07-01', 'V', 'Europese Korthaar', 'Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?', true, true, 'Dierenkliniek Moddergat', '0123-456789', 'Semintra', '2ml 1dd', 'marjetbosma'),
 --('86be1447-dd98-4753-ba73-f8279e9c69c6', 'Poekie', '2020-04-30', 'V', 'Siamees', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', true, true, 'Dierenkliniek Lutjebroek', '0345-678901', 'geen', 'geen', 'willemhustinx'),
@@ -43,8 +34,8 @@ INSERT INTO orders (order_no, start_date, end_date, daily_number_of_visits, tota
 --('2faa27be-464d-415c-ba25-6ae531df136d', 'Pinkie', '2024-01-23', 'M', 'Europese Korthaar', 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.', false, false, 'Dierenkliniek Lutjebroek', '0345-678901', 'geen', 'geen', 'willemhustinx'),
 --('40622485-28fe-4716-bfdb-d9d950ec67ba', 'Duchess', '2021-03-25', 'V', 'Pers', 'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', false, true, 'Dierenkliniek Bakkeveen', '0891-234567', 'geen', 'geen', 'pietjepuk'),
 --('888156d8-6d70-48f2-b50d-95bc3edc1cfc', 'Duke', '2022-02-11', 'M', 'Pers', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' false, true, 'Dierenkliniek Bakkeveen', '0891-234567', 'geen', 'geen', 'pietjepuk');
---
---
+
+
 --INSERT INTO tasks (taskNo, taskType, taskInstruction, extraInstructions, priceOfTask, orderNo) VALUES
 --('3a250773-09fe-474f-aa09-e5e1ed8220a5', 'FOOD', 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ', 3.0, '7639b001-810e-446f-bd24-1bed57cacf7f'),
 --('7639b001-810e-446f-bd24-1bed57cacf7f', 'WATER', 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.', 2.0, '7639b001-810e-446f-bd24-1bed57cacf7f'),
@@ -85,4 +76,4 @@ INSERT INTO orders (order_no, start_date, end_date, daily_number_of_visits, tota
 --('1980d99d-1554-45e1-bdc2-8eb17364dae1', '2024-06-10', 294.0, false, '36639513-0a84-4ce5-a139-b356f03bfd2e'),
 --('da8afdb4-1dfa-49d0-b5d3-8f667b50f76c', '2024-03-27', 75.0, true, '510acb89-c1da-487b-b03a-52afdae7e0c6'),
 --('c8afe87f-1aa9-4f8b-a74d-f9b6f6ab463b', '2024-07-22', 315.0, false, 'be7e95b4-bb87-40dd-a4a7-c47d6c7673d9');
---
+
