@@ -25,7 +25,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.runners.model.MultipleFailureException.assertEmpty;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -36,13 +38,8 @@ class CreateCustomerIntegrationTest {
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
-
-    @Autowired
-    CustomerService customerService;
-
     @MockBean
     CustomerRepository customerRepository;
-
     Customer expectedCustomer;
     CustomerRequest request;
     @BeforeEach
@@ -57,7 +54,10 @@ class CreateCustomerIntegrationTest {
                 .cats(null)
                 .orders(null)
                 .build();
+
+        when(customerRepository.save(any(Customer.class))).thenReturn(expectedCustomer);
     }
+
     @AfterEach
     void tearDown() {
         expectedCustomer = null;
@@ -68,9 +68,6 @@ class CreateCustomerIntegrationTest {
     void createCustomer() throws Exception {
         // Given
         String jsonInput = objectMapper.writeValueAsString(request);
-
-        when(customerRepository.save(any(Customer.class))).thenReturn(expectedCustomer);
-        when(customerRepository.save(any(Customer.class))).thenThrow(new DataIntegrityViolationException("Invalid customer data"));
 
         // When
         MvcResult result = (MvcResult) mockMvc.perform(MockMvcRequestBuilders.post("/api/customer")
@@ -118,4 +115,17 @@ class CreateCustomerIntegrationTest {
         // Then
         verifyNoInteractions(customerRepository);
     }
+
+//    @Test
+//    void createCustomer_WithInvalidInput_ShouldReturnBadRequest() throws Exception {
+//        // Given
+//        String invalidJsonInput = "{}";
+//
+//        // When
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/customer")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(invalidJsonInput))
+//                // Then
+//                .andExpect(status().isBadRequest());
+//    }
 }

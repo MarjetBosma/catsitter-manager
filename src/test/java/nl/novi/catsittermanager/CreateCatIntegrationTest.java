@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import nl.novi.catsittermanager.models.Cat;
+import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.repositories.CatRepository;
+import nl.novi.catsittermanager.repositories.CustomerRepository;
 import nl.novi.catsittermanager.services.CatService;
+import nl.novi.catsittermanager.services.CustomerService;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +47,12 @@ class CreateCatIntegrationTest {
     @MockBean
     CatRepository catRepository;
 
+    @MockBean
+    CustomerService customerService;
+
+    @MockBean
+    Customer customer;
+
     private String jsonInput;
 
     @BeforeEach
@@ -64,6 +73,24 @@ class CreateCatIntegrationTest {
                 "ownerUsername": "marjetbosma"
                  }
                   """;
+
+        when(customerService.getCustomer(anyString()))
+                .thenAnswer(invocation -> {
+                    String username = invocation.getArgument(0);
+                    Customer customer = new Customer();
+                    customer.setUsername(username);
+                    return customer;
+                });
+
+
+        when(catRepository.save(any(Cat.class)))
+                .thenAnswer(invocation -> {
+                    Cat cat = invocation.getArgument(0);
+                    String ownerUsername = objectMapper.readTree(jsonInput).get("ownerUsername").asText();
+                    Customer owner = customerService.getCustomer(ownerUsername);
+                    cat.setOwner(owner);
+                    return cat;
+                });
     }
 
     @AfterEach
@@ -76,6 +103,11 @@ class CreateCatIntegrationTest {
 
         ArgumentCaptor<Cat> catArgumentCaptor = ArgumentCaptor.forClass(Cat.class);
         ArgumentCaptor<String> ownerUsernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
+
+//       when(customer.getUsername()).thenReturn("marjetbosma");
+
+//        when(customerService.getCustomer(anyString()))
+//                .thenReturn(Customer.CustomerBuilder().username("marjetbosma").build());
 
         when(catRepository.save(any(Cat.class))).thenReturn(new Cat());
 
@@ -94,8 +126,12 @@ class CreateCatIntegrationTest {
         verify(catRepository, times(1)).save(catArgumentCaptor.capture());
         verifyNoMoreInteractions(catRepository);
 
-        verify(catService, times(1)).createCat(catArgumentCaptor.getValue(), ownerUsernameArgumentCaptor.capture());
-        assertEquals("marjetbosma", ownerUsernameArgumentCaptor.getValue());
+        verify(catService, times(1)).createCat(catArgumentCaptor.getValue(), "marjetbosma");
+
+//        String anyOwnerUsername = "marjetbosma";
+//        verify(catService, times(1)).createCat(catArgumentCaptor.getValue(), anyOwnerUsername);
+//        assertEquals(anyOwnerUsername, ownerUsernameArgumentCaptor.getValue());
+//        assertEquals("marjetbosma", ownerUsernameArgumentCaptor.getValue());
 
         MatcherAssert.assertThat(result.getResponse().getHeader("Location"), matchesPattern("^.*/cat" + createdId));
     }

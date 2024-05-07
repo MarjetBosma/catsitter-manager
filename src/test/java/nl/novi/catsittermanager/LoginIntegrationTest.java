@@ -5,7 +5,15 @@ import nl.novi.catsittermanager.controllers.AuthenticationController;
 import nl.novi.catsittermanager.dtos.login.LoginRequest;
 import nl.novi.catsittermanager.dtos.login.LoginResponse;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
+import nl.novi.catsittermanager.repositories.CatRepository;
+import nl.novi.catsittermanager.repositories.CatsitterRepository;
+import nl.novi.catsittermanager.repositories.CustomerRepository;
+import nl.novi.catsittermanager.repositories.FileUploadRepository;
+import nl.novi.catsittermanager.repositories.InvoiceRepository;
+import nl.novi.catsittermanager.repositories.OrderRepository;
+import nl.novi.catsittermanager.repositories.TaskRepository;
 import nl.novi.catsittermanager.repositories.UserRepository;
+import nl.novi.catsittermanager.services.CatService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,15 +56,41 @@ public class LoginIntegrationTest {
     @MockBean
     private UserRepository userRepository;
 
+    @MockBean
+    private CatRepository catRepository;
+
+    @MockBean
+    private CatsitterRepository catsitterRepository;
+
+    @MockBean
+    CustomerRepository customerRepository;
+
+    @MockBean
+    FileUploadRepository fileUploadRepository;
+
+    @MockBean
+    InvoiceRepository invoiceRepository;
+
+    @MockBean
+    OrderRepository orderRepository;
+
+    @MockBean
+    TaskRepository taskRepository;
+
+    @MockBean
+    private CatService catService;
+
     @Test
     void login_WithValidCredentials_ShouldReturnToken() throws Exception {
         // Given
         LoginRequest loginRequest = new LoginRequest("username", "password");
 
         // When
+        String jsonInput = objectMapper.writeValueAsString(loginRequest);
+
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
+                        .content(jsonInput))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
@@ -71,12 +105,15 @@ public class LoginIntegrationTest {
     @Test
     void login_WithInvalidCredentials_ShouldReturnBadRequest() throws Exception {
         // Given
-        LoginRequest loginRequest = new LoginRequest("invalidUsername", "invalidPassword");
+        LoginRequest loginRequest = new LoginRequest("", "");
 
-        // When & Then
+        // When
+        String jsonInput = objectMapper.writeValueAsString(loginRequest);
+
+        // & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
+                        .content(jsonInput))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").value("Invalid username or password"));
