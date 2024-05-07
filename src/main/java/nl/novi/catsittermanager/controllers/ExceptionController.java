@@ -6,6 +6,7 @@ import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
 import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -32,4 +33,13 @@ public class ExceptionController {
     public ResponseEntity<Object> usernameAlreadyExists(UsernameAlreadyExistsException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT); // You can use HttpStatus.CONFLICT for username conflict
     }
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> methodArgumentNotValid(MethodArgumentNotValidException exception) {
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("error", "Field is required");
+        responseBody.put("message", exception.getMessage());
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
 }

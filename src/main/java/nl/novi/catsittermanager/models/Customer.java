@@ -22,7 +22,7 @@ import java.util.List;
 @Table(name = "customers")
 public class Customer extends User {
 
-    @JsonIgnore
+    // @JsonIgnore
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders;
 

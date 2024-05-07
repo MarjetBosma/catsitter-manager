@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Import;
 
 @ComponentScan(basePackages = {"nl.novi.catsittermanager"})
 @SpringBootApplication
-@Import(JacksonConfiguration.class)
 public class CatsittermanagerApplication {
     public static void main(String[] args) {
         SpringApplication.run(CatsittermanagerApplication.class, args);
