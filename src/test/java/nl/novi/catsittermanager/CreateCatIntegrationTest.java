@@ -3,6 +3,7 @@ package nl.novi.catsittermanager;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.repositories.CatRepository;
@@ -26,6 +27,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.time.LocalDate;
+
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -55,6 +59,10 @@ class CreateCatIntegrationTest {
 
     private String jsonInput;
 
+    Cat expectedCat;
+
+    CatRequest request;
+
     @BeforeEach
     void setUp() {
         jsonInput = """
@@ -67,7 +75,7 @@ class CreateCatIntegrationTest {
                 "spayedOrNeutered": true,
                 "vaccinated": true,
                 "veterinarianName": "Dierenkliniek Zuilen",
-                "phoneVet": "030-123456",
+                "phoneVet": "030-1234567",
                 "medicationName": "Semintra",
                 "medicationDose": "2ml 1dd",
                 "ownerUsername": "marjetbosma"
@@ -91,49 +99,71 @@ class CreateCatIntegrationTest {
                     cat.setOwner(owner);
                     return cat;
                 });
+
+//        LocalDate dateOfBirth = LocalDate.of(2006, 7, 1);
+//        request = new CatRequest("Firsa", dateOfBirth, "V", "Europese Korthaar", "Vriendelijke, maar verlegen kat. Verstopt zich vaak voor vreemden.", true, true, "Dierenkliniek Zuilen", "030-1234567", "Semintra", "2ml 1dd", "marjetbosma", null);
+//        expectedCat = Cat.builder()
+//                .name("Firsa")
+//                .dateOfBirth(dateOfBirth)
+//                .gender("V")
+//                .breed("Europese Korthaar")
+//                .generalInfo("Vriendelijke, maar verlegen kat. Verstopt zich vaak voor vreemden.")
+//                .spayedOrNeutered(true)
+//                .vaccinated(true)
+//                .veterinarianName("Dierenkliniek Zuilen")
+//                .phoneVet("030-1234567")
+//                .medicationName("Semintra")
+//                .medicationDose("2ml 1dd")
+//                .image(null)
+//                .build();
+
+//        when(catRepository.save(any(Cat.class))).thenReturn(expectedCat);
+
     }
 
     @AfterEach
     void tearDown() {
         jsonInput = null;
     }
+//@AfterEach
+//void tearDown() {
+//    expectedCat = null;
+//    request = null;
+//}
 
     @Test
     void createCat() throws Exception {
-
         ArgumentCaptor<Cat> catArgumentCaptor = ArgumentCaptor.forClass(Cat.class);
         ArgumentCaptor<String> ownerUsernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
-//       when(customer.getUsername()).thenReturn("marjetbosma");
-
-//        when(customerService.getCustomer(anyString()))
-//                .thenReturn(Customer.CustomerBuilder().username("marjetbosma").build());
-
-        when(catRepository.save(any(Cat.class))).thenReturn(new Cat());
-
-        MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post("/api/cat")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/cat")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonInput))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isCreated())
                 .andReturn();
 
+        // Assert that the Location header matches the expected pattern
         String jsonResponse = result.getResponse().getContentAsString();
         JsonNode jsonNode = objectMapper.readTree(jsonResponse);
         String createdId = jsonNode.get("id").asText();
+        MatcherAssert.assertThat(result.getResponse().getHeader("Location"), matchesPattern("^.*/cat/" + createdId));
 
+        // Verify that catRepository.save() is called with the expected Cat object
         verify(catRepository, times(1)).save(catArgumentCaptor.capture());
-        verifyNoMoreInteractions(catRepository);
+        Cat capturedCat = catArgumentCaptor.getValue();
 
-        verify(catService, times(1)).createCat(catArgumentCaptor.getValue(), "marjetbosma");
+        // Verify that catService.createCat() is called with the captured Cat object and ownerUsername
+        verify(catService, times(1)).createCat(capturedCat, "marjetbosma");
 
-//        String anyOwnerUsername = "marjetbosma";
-//        verify(catService, times(1)).createCat(catArgumentCaptor.getValue(), anyOwnerUsername);
-//        assertEquals(anyOwnerUsername, ownerUsernameArgumentCaptor.getValue());
-//        assertEquals("marjetbosma", ownerUsernameArgumentCaptor.getValue());
+        // Optionally, assert specific properties of the captured Cat object if needed
+        assertEquals("Firsa", capturedCat.getName());
+        assertEquals(LocalDate.of(2006, 7, 1), capturedCat.getDateOfBirth());
+        // Add more assertions as needed
 
-        MatcherAssert.assertThat(result.getResponse().getHeader("Location"), matchesPattern("^.*/cat" + createdId));
+        // Assert that the ownerUsername passed to catService.createCat() matches the expected value
+        verify(catService, times(1)).createCat(any(), ownerUsernameArgumentCaptor.capture());
+        assertEquals("marjetbosma", ownerUsernameArgumentCaptor.getValue());
     }
 
     @Test

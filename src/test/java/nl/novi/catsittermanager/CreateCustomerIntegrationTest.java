@@ -8,6 +8,7 @@ import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
+import nl.novi.catsittermanager.services.CustomerService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,10 +36,13 @@ class CreateCustomerIntegrationTest {
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
+    @Autowired
+    CustomerService customerService;
     @MockBean
     CustomerRepository customerRepository;
     Customer expectedCustomer;
     CustomerRequest request;
+
     @BeforeEach
     void setUp() {
         request = new CustomerRequest("pietjepuk", "qwerty", "Pietje Puk", "Straatweg 231, Ergenshuizen", "pietjepuk@gmail.com");
@@ -68,23 +72,23 @@ class CreateCustomerIntegrationTest {
 
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/api/customer")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonInput))
-        .andDo(MockMvcResultHandlers.print())
-        .andExpect(MockMvcResultMatchers.status().isCreated())
-        .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(request.username()))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name()))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.address").value(request.address()))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(request.email()))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.cats").doesNotExist())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.orders").doesNotExist());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonInput))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(request.username()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.address").value(request.address()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(request.email()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.cats").doesNotExist())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.orders").doesNotExist());
 
         verify(customerRepository, times(1)).save(any(Customer.class));
     }
 
     @Test
-    void createCustomer_WithInvalidInput_ShouldReturnBadRequest() throws Exception {
+    void createCustomer_WithInvalidInput_ShouldReturnMethodArgumentsNotValid() throws Exception {
         // Given
         CustomerRequest invalidRequest = new CustomerRequest("", "", "", "", "");
 
@@ -92,14 +96,13 @@ class CreateCustomerIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/customer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-//                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Validation error: username is required"));
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Validation error: username is required"));
 
         // Then
         verifyNoInteractions(customerRepository);
-    }
-
+//    }
 //    @Test
 //    void createCustomer_WithInvalidInput_ShouldReturnBadRequest() throws Exception {
 //        // Given
@@ -112,4 +115,5 @@ class CreateCustomerIntegrationTest {
 //                // Then
 //                .andExpect(status().isBadRequest());
 //    }
+    }
 }

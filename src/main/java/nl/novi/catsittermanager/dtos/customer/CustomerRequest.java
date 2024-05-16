@@ -8,7 +8,7 @@ import org.springframework.validation.annotation.Validated;
 public record CustomerRequest(
         @NotBlank(message = "username is required")
         String username,
-        @NotNull
+        @NotBlank(message = "password is required")
         String password,
         @NotNull
         String name,
