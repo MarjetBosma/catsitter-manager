@@ -8,7 +8,6 @@ import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
-import nl.novi.catsittermanager.services.CustomerService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,15 +31,18 @@ import static org.mockito.Mockito.*;
 @Transactional
 @Import(ExceptionController.class)
 class CreateCustomerIntegrationTest {
+
     @Autowired
     MockMvc mockMvc;
+
     @Autowired
     ObjectMapper objectMapper;
-    @Autowired
-    CustomerService customerService;
+
     @MockBean
     CustomerRepository customerRepository;
+
     Customer expectedCustomer;
+
     CustomerRequest request;
 
     @BeforeEach
@@ -84,13 +86,14 @@ class CreateCustomerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.cats").doesNotExist())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.orders").doesNotExist());
 
+        // Then
         verify(customerRepository, times(1)).save(any(Customer.class));
     }
 
     @Test
     void createCustomer_WithInvalidInput_ShouldReturnMethodArgumentsNotValid() throws Exception {
         // Given
-        CustomerRequest invalidRequest = new CustomerRequest("", "", "", "", "");
+        CustomerRequest invalidRequest = new CustomerRequest(null, null, null, null, null);
 
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/api/customer")
@@ -102,7 +105,7 @@ class CreateCustomerIntegrationTest {
 
         // Then
         verifyNoInteractions(customerRepository);
-//    }
+    }
 //    @Test
 //    void createCustomer_WithInvalidInput_ShouldReturnBadRequest() throws Exception {
 //        // Given
@@ -115,5 +118,5 @@ class CreateCustomerIntegrationTest {
 //                // Then
 //                .andExpect(status().isBadRequest());
 //    }
-    }
+//    }
 }
