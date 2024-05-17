@@ -31,20 +31,14 @@ import static org.mockito.Mockito.*;
 @Transactional
 @Import(ExceptionController.class)
 class CreateCustomerIntegrationTest {
-
     @Autowired
     MockMvc mockMvc;
-
     @Autowired
     ObjectMapper objectMapper;
-
     @MockBean
     CustomerRepository customerRepository;
-
     Customer expectedCustomer;
-
     CustomerRequest request;
-
     @BeforeEach
     void setUp() {
         request = new CustomerRequest("pietjepuk", "qwerty", "Pietje Puk", "Straatweg 231, Ergenshuizen", "pietjepuk@gmail.com");
@@ -74,24 +68,23 @@ class CreateCustomerIntegrationTest {
 
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/api/customer")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonInput))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(request.username()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.address").value(request.address()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(request.email()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.cats").doesNotExist())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.orders").doesNotExist());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonInput))
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(MockMvcResultMatchers.status().isCreated())
+        .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(request.username()))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name()))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.address").value(request.address()))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(request.email()))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.cats").doesNotExist())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.orders").doesNotExist());
 
-        // Then
         verify(customerRepository, times(1)).save(any(Customer.class));
     }
 
     @Test
-    void createCustomer_WithInvalidInput_ShouldReturnMethodArgumentsNotValid() throws Exception {
+    void createCustomer_WithInvalidInput_ShouldReturnBadRequest() throws Exception {
         // Given
         CustomerRequest invalidRequest = new CustomerRequest(null, null, null, null, null);
 
@@ -101,22 +94,13 @@ class CreateCustomerIntegrationTest {
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Validation error: username is required"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("username is required"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.password").value("password is required"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("name is required"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.address").value("address is required"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("email is required"));
 
         // Then
         verifyNoInteractions(customerRepository);
     }
-//    @Test
-//    void createCustomer_WithInvalidInput_ShouldReturnBadRequest() throws Exception {
-//        // Given
-//        String invalidJsonInput = "{}";
-//
-//        // When
-//        mockMvc.perform(MockMvcRequestBuilders.post("/api/customer")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(invalidJsonInput))
-//                // Then
-//                .andExpect(status().isBadRequest());
-//    }
-//    }
 }

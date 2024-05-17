@@ -1,21 +1,20 @@
 package nl.novi.catsittermanager.dtos.catsitter;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import nl.novi.catsittermanager.models.ImageUpload;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
 public record CatsitterRequest(
-        @NotBlank(message = "username is required")
+        @NotNull(message = "username is required")
         String username,
-        @NotNull
+        @NotNull(message = "password is required")
         String password,
-        @NotNull
+        @NotNull(message = "name is required")
         String name,
-        @NotNull
+        @NotNull(message = "address is required")
         String address,
-        @NotNull
+        @NotNull(message = "email is required")
         String email,
         String about,
         ImageUpload image

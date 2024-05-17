@@ -99,8 +99,10 @@ class CreateCatIntegrationTest {
 
     @Test
     void createCat() throws Exception {
+        // Given
         ArgumentCaptor<Cat> catArgumentCaptor = ArgumentCaptor.forClass(Cat.class);
 
+        // When & Then
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/cat")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonInput))
@@ -143,7 +145,7 @@ class CreateCatIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/cat")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidJsonInput))
-                // Then
+        // Then
         .andExpect(status().isBadRequest());
     }
 }
