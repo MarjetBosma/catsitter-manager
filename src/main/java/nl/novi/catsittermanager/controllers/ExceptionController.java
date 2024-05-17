@@ -5,7 +5,6 @@ import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
 import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,12 +44,4 @@ public class ExceptionController {
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
-
-//    public ResponseEntity<Object> methodArgumentNotValid(MethodArgumentNotValidException exception) {
-//        Map<String, Object> responseBody = new HashMap<>();
-//        responseBody.put("error", "Field is required");
-//        responseBody.put("message", exception.getMessage());
-//        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
-//    }
-
 }
