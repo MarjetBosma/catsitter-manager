@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,10 +44,10 @@ public class CatController {
         return ResponseEntity.ok(CatMapper.CatToCatResponse(cat));
     }
   
-    @PostMapping()
-    public ResponseEntity<CatResponse> createCustomer(@Valid @RequestBody final CatRequest catRequest) {
+    @PostMapping("/cat")
+    public ResponseEntity<CatResponse> createCat(@Valid @RequestBody final CatRequest catRequest) throws URISyntaxException {
         Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
-        return ResponseEntity.status(HttpStatus.CREATED).body(CatMapper.CatToCatResponse(cat));
+        return ResponseEntity.created(new URI("/cat/" + cat.getId())).body((CatMapper.CatToCatResponse(cat)));
     }
 
     @PutMapping("/cat/{id}")

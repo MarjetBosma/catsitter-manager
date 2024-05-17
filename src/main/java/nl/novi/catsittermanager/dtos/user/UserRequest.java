@@ -14,8 +14,11 @@ public record UserRequest(
         String password,
         Role role,
         Boolean enabled,
+        @NotNull(message = "name is required")
         String name,
+        @NotNull(message = "address is required")
         String address,
+        @NotNull(message = "email is required")
         String email
 
 ) {

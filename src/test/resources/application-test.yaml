@@ -4,13 +4,22 @@ spring:
     username: test
     password:
     driver-class-name: org.h2.Driver
+    initialization-mode: always
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
 logging:
   level:
     org:
