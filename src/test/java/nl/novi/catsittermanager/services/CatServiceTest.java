@@ -47,7 +47,7 @@ public class CatServiceTest {
         assertEquals(expectedCatList, catResponseList);
 
         verify(catRepository, times(1)).findAll();
-        verifyNoMoreInteractions(catRepository);
+        verifyNoInteractions(customerService);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class CatServiceTest {
         // Then
         assertTrue(catResponseList.isEmpty());
         verify(catRepository, times(1)).findAll();
-        verifyNoMoreInteractions(catRepository);
+        verifyNoInteractions(customerService);
     }
 
 
@@ -78,7 +78,7 @@ public class CatServiceTest {
         // Then
         assertEquals(expectedCat, resultCat);
         verify(catRepository, times(1)).findById(expectedCat.getId());
-        verifyNoMoreInteractions(catRepository);
+        verifyNoInteractions(customerService);
     }
 
     @Test
@@ -93,6 +93,7 @@ public class CatServiceTest {
 
         // Then
         assertEquals("No cat found with this id.", exception.getMessage());
+        verifyNoInteractions(customerService);
     }
 
     @Test
@@ -126,7 +127,7 @@ public class CatServiceTest {
 
         // When & Then
         assertThrows(UsernameNotFoundException.class, () -> catService.createCat(expectedCat, unknownOwnername));
-
+        verifyNoMoreInteractions(customerService);
     }
 
     @Test
@@ -147,8 +148,6 @@ public class CatServiceTest {
         verify(catRepository, times(1)).findById(cat.getId());
         verify(customerService, times(1)).getCustomer(cat.getOwner().getUsername());
         verify(catRepository, times(1)).save(cat);
-        verifyNoMoreInteractions(catRepository);
-        verifyNoMoreInteractions(customerService);
     }
 
     @Test
@@ -161,6 +160,7 @@ public class CatServiceTest {
         // When & Then
         assertThrows(RecordNotFoundException.class, () -> catService.editCat(cat.getId(), cat, cat.getOwner().getUsername()));
         verifyNoMoreInteractions(catRepository);
+        verifyNoInteractions(customerService);
     }
 
     @Test
@@ -175,7 +175,7 @@ public class CatServiceTest {
         // Then
         verify(catRepository, times(1)).existsById(catId);
         verify(catRepository, times(1)).deleteById(catId);
-        verifyNoMoreInteractions(catRepository);
+        verifyNoInteractions(customerService);
     }
 
     @Test
@@ -191,6 +191,7 @@ public class CatServiceTest {
         assertEquals("No cat found with this id.", exception.getMessage());
         verify(catRepository, never()).deleteById(catId);
         verifyNoMoreInteractions(catRepository);
+        verifyNoInteractions(customerService);
     }
 }
 

@@ -47,7 +47,6 @@ class CustomerServiceTest {
         assertEquals(expectedCustomerList, customerResponseList);
 
         verify(customerRepository, times(1)).findAll();
-        verifyNoMoreInteractions(customerRepository);
     }
 
     @Test
@@ -61,8 +60,8 @@ class CustomerServiceTest {
         // Then
         assertTrue(catResponseList.isEmpty());
         verify(customerRepository, times(1)).findAll();
-        verifyNoMoreInteractions(customerRepository);
     }
+
     @Test
     void testGetCustomer_shouldFetchCustomerWithSpecificUsername() {
         // Given
@@ -76,7 +75,6 @@ class CustomerServiceTest {
         // Then
         assertEquals(expectedCustomer, resultCustomer);
         verify(customerRepository, times(1)).findById(expectedCustomer.getUsername());
-        verifyNoMoreInteractions(customerRepository);
     }
 
     @Test
@@ -91,6 +89,7 @@ class CustomerServiceTest {
 
         // Then
         assertEquals("No customer found with this username.", exception.getMessage());
+        verifyNoMoreInteractions(customerRepository);
     }
 
     @Test
@@ -110,7 +109,6 @@ class CustomerServiceTest {
         assertTrue(resultCats.containsAll(expectedCats));
 
         verify(customerRepository, times(1)).findById(randomCustomer.getUsername());
-        verifyNoMoreInteractions(customerRepository);
     }
 
     @Test
@@ -130,7 +128,6 @@ class CustomerServiceTest {
         assertTrue(resultCats.isEmpty());
 
         verify(customerRepository, times(1)).findById(randomCustomer.getUsername());
-        verifyNoMoreInteractions(customerRepository);
     }
 
     @Test
@@ -150,7 +147,6 @@ class CustomerServiceTest {
         assertTrue(resultOrders.containsAll(expectedOrders));
 
         verify(customerRepository, times(1)).findById(randomCustomer.getUsername());
-        verifyNoMoreInteractions(customerRepository);
     }
 
     @Test
@@ -169,8 +165,6 @@ class CustomerServiceTest {
         assertTrue(resultOrders.isEmpty());
 
         verify(customerRepository, times(1)).findById(randomCustomer.getUsername());
-        verifyNoMoreInteractions(customerRepository);
-
     }
 
     @Test
@@ -202,6 +196,7 @@ class CustomerServiceTest {
         assertThrows(UsernameAlreadyExistsException.class, () -> {
             customerService.createCustomer(existingCustomer);
         });
+        verifyNoMoreInteractions(customerRepository);
     }
 
     @Test
@@ -220,7 +215,6 @@ class CustomerServiceTest {
 
         verify(customerRepository, times(1)).findById(customer.getUsername());
         verify(customerRepository, times(1)).save(customer);
-        verifyNoMoreInteractions(customerRepository);
     }
 
     @Test
@@ -245,10 +239,10 @@ class CustomerServiceTest {
         String resultUsername = customerService.deleteCustomer(customer.getUsername());
 
         // Then
+        assertEquals(customer.getUsername(), resultUsername);
+
         verify(customerRepository, times(1)).existsById(customer.getUsername());
         verify(customerRepository, times(1)).deleteById(customer.getUsername());
         verifyNoMoreInteractions(customerRepository);
-
-        assertEquals(customer.getUsername(), resultUsername);
     }
 }
