@@ -27,7 +27,7 @@ public class CatsitterService {
 
     public Catsitter getCatsitter(final String username) {
         return catsitterRepository.findById(username)
-                .orElseThrow(() -> new RecordNotFoundException("No catsitter found with this username."));
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No catsitter found with this username."));
     }
 
     public List<Order> getAllOrdersByCatsitter(String username) {

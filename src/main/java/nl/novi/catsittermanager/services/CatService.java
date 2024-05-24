@@ -26,7 +26,7 @@ public class CatService {
 
     public Cat getCat(final UUID idToFind) {
         return catRepository.findById(idToFind)
-                .orElseThrow(() -> new RecordNotFoundException("No cat found with this id."));
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id."));
     }
 
     public Cat createCat(final Cat cat, final String ownerUsername) {

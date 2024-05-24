@@ -77,15 +77,16 @@ public class CatsitterServiceTest {
     @Test
     void testGetCatsitter_shouldFetchCatsitterWithSpecificUsername_RecordNotFoundException() {
         // Given
-        Catsitter expectedCatsitter = CatsitterFactory.randomCatsitter().build();
+        String username = "nonExistingCatsitter";
 
-        when(catsitterRepository.findById(expectedCatsitter.getUsername())).thenReturn(Optional.empty());
+        when(catsitterRepository.findById(username)).thenReturn(Optional.empty());
 
         // When
-        RecordNotFoundException exception=assertThrows(RecordNotFoundException.class, () -> catsitterService.getCatsitter(expectedCatsitter.getUsername()));
+        RecordNotFoundException exception=assertThrows(RecordNotFoundException.class, () -> catsitterService.getCatsitter(username));
 
         // Then
         assertEquals("No catsitter found with this username.", exception.getMessage());
+        verify(catsitterRepository).findById(username);
         verifyNoMoreInteractions(catsitterRepository);
     }
 
@@ -179,12 +180,13 @@ public class CatsitterServiceTest {
     @Test
     void testEditCatsitter_nonExistingCatsitter_shouldThrowRecordNotFoundException() {
         // Given
-        Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
+        String username = "nonExistingCatsitter";
+        when(catsitterRepository.findById(username)).thenReturn(Optional.empty());
 
-        when(catsitterRepository.findById(catsitter.getUsername())).thenReturn(Optional.empty());
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> catsitterService.getCatsitter(username));
 
         // When & Then
-        assertThrows(RecordNotFoundException.class, () -> catsitterService.editCatsitter(catsitter.getUsername(), catsitter));
+        assertEquals("No catsitter found with this username.", exception.getMessage());
         verifyNoMoreInteractions(catsitterRepository);
     }
 

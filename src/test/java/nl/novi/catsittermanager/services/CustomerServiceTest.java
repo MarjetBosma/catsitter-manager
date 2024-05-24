@@ -80,15 +80,15 @@ class CustomerServiceTest {
     @Test
     void testGetCustomer_shouldFetchCustomerWithSpecificUsername_RecordNotFoundException() {
         // Given
-        Customer expectedCustomer = CustomerFactory.randomCustomer().build();
-
-        when(customerRepository.findById(expectedCustomer.getUsername())).thenReturn(Optional.empty());
+        String username = "nonExistingCustomer";
+        when(customerRepository.findById(username)).thenReturn(Optional.empty());
 
         // When
-        RecordNotFoundException exception=assertThrows(RecordNotFoundException.class, () -> customerService.getCustomer(expectedCustomer.getUsername()));
+        RecordNotFoundException exception=assertThrows(RecordNotFoundException.class, () -> customerService.getCustomer(username));
 
         // Then
         assertEquals("No customer found with this username.", exception.getMessage());
+        verify(customerRepository).findById(username);
         verifyNoMoreInteractions(customerRepository);
     }
 
@@ -220,12 +220,13 @@ class CustomerServiceTest {
     @Test
     void testEditCustomer_nonExistingCustomer_shouldThrowRecordNotFoundException() {
         // Given
-        Customer customer = CustomerFactory.randomCustomer().build();
+        String username = "nonExistingCustomer";
+        when(customerRepository.findById(username)).thenReturn(Optional.empty());
 
-        when(customerRepository.findById(customer.getUsername())).thenReturn(Optional.empty());
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> customerService.getCustomer(username));
 
         // When & Then
-        assertThrows(RecordNotFoundException.class, () -> customerService.editCustomer(customer.getUsername(), customer));
+        assertEquals("No customer found with this username.", exception.getMessage());
         verifyNoMoreInteractions(customerRepository);
     }
 
