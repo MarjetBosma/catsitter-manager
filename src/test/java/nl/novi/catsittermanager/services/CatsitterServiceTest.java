@@ -112,9 +112,8 @@ public class CatsitterServiceTest {
     @Test
     void testGetAllOrdersByCatsitter_noOrdersOnTheList_shouldReturnEmptyList() {
         // Given
-        Catsitter randomCatsitter = CatsitterFactory.randomCatsitter()
-                .orders(new ArrayList<Order>())
-                .build();
+        Catsitter randomCatsitter = CatsitterFactory.randomCatsitter().build();
+        randomCatsitter.setOrders(Collections.emptyList());
 
         when(catsitterRepository.findById(randomCatsitter.getUsername())).thenReturn(Optional.of(randomCatsitter));
 

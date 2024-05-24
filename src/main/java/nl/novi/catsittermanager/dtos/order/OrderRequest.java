@@ -10,9 +10,9 @@ import java.time.LocalDate;
 public record OrderRequest(
 
         @NotNull
-        LocalDate startDate,
+        String startDate,
         @NotNull
-        LocalDate endDate,
+        String endDate,
         @NotNull
         @Positive
         int dailyNumberOfVisits,

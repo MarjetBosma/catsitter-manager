@@ -51,6 +51,9 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public <T> User(String username, String password, List<T> ts) {
+    }
+
     public void enable() {
         this.enabled = true;
     }

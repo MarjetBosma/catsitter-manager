@@ -67,7 +67,7 @@ class CatControllerTest {
     @Test
     @WithMockUser(username="admin",roles={"ADMIN"})
     void givenAValidRequest_whenGetAllCats_thenAllCatsShouldBeReturned() throws Exception {
-        // given
+
         Cat expectedCat = CatFactory.randomCat().build();
         List<Cat> expectedCatList = List.of(expectedCat);
 
@@ -95,7 +95,7 @@ class CatControllerTest {
     @Test
     @WithMockUser(username="admin",roles={"ADMIN"})
     void givenNoCatsAvailable_whenGetAllCats_thenEmptyListShouldBeReturned() throws Exception {
-        // given
+
         when(catService.getAllCats()).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/api/cats")

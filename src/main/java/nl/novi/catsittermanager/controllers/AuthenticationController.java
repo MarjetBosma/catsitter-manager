@@ -8,6 +8,7 @@ import nl.novi.catsittermanager.utils.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,11 +31,17 @@ public class AuthenticationController {
 
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String token = jwtUtil.createToken(userDetails.getUsername());
-            LoginResponse loginResponse = new LoginResponse(userDetails.getUsername(), token);
+            Object principal = authentication.getPrincipal();
 
-            return ResponseEntity.ok(loginResponse);
+            if (principal instanceof UserDetails) {
+                UserDetails userDetails = (UserDetails) principal;
+                String token = jwtUtil.createToken(userDetails.getUsername());
+                LoginResponse loginResponse = new LoginResponse(userDetails.getUsername(), token);
+
+                return ResponseEntity.ok(loginResponse);
+            } else {
+                throw new AuthenticationServiceException("Unexpected authentication principal: " + principal);
+            }
 
         } catch (BadCredentialsException badCredentialsException) {
             ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, "Invalid username or password");

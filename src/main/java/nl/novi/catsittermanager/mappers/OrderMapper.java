@@ -7,6 +7,7 @@ import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Component
@@ -15,8 +16,8 @@ public class OrderMapper {
     public static OrderResponse OrderToOrderResponse(Order order) {
         return new OrderResponse(
                 order.getOrderNo(),
-                order.getStartDate(),
-                order.getEndDate(),
+                order.getStartDate().toString(),
+                order.getEndDate().toString(),
                 order.getDailyNumberOfVisits(),
                 order.getTotalNumberOfVisits(),
                 order.getTasks().stream().map(TaskMapper::TaskToTaskResponse).toList()
@@ -25,8 +26,8 @@ public class OrderMapper {
 
     public static Order OrderRequestToOrder(OrderRequest orderRequest) {
         return Order.builder()
-                .startDate(orderRequest.startDate())
-                .endDate(orderRequest.endDate())
+                .startDate(LocalDate.parse(orderRequest.startDate()))
+                .endDate(LocalDate.parse(orderRequest.endDate()))
                 .dailyNumberOfVisits(orderRequest.dailyNumberOfVisits())
                 .totalNumberOfVisits(orderRequest.totalNumberOfVisits())
                 .tasks(new ArrayList<>())

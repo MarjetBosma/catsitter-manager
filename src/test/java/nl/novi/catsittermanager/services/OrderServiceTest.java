@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.services;
 
+import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import nl.novi.catsittermanager.models.*;
@@ -10,10 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -92,6 +90,58 @@ public class OrderServiceTest {
         verify(orderRepository).findById(orderNo);
         verifyNoMoreInteractions(orderRepository);
     }
+
+    @Test
+    void testGetAllTasksByOrder_shouldFetchAllTasksForThisOrder() {
+        // Given
+        UUID orderId = UUID.randomUUID();
+        Order order = OrderFactory.randomOrder().orderNo(orderId).build();
+
+        Task task1 = new Task();
+        task1.setTaskNo(UUID.randomUUID());
+        task1.setTaskType(TaskType.valueOf("FOOD"));
+
+        Task task2 = new Task();
+        task2.setTaskNo(UUID.randomUUID());
+        task2.setTaskType(TaskType.valueOf("WATER"));
+
+        Task task3 = new Task();
+        task2.setTaskNo(UUID.randomUUID());
+        task2.setTaskType(TaskType.valueOf("LITTERBOX"));
+
+        List<Task> expectedTasks = List.of(task1, task2, task3);
+        order.setTasks(expectedTasks);
+
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+
+        // When
+        List<Task> resultTasks = orderService.getAllTasksByOrder(orderId);
+
+        // Then
+        assertEquals(expectedTasks.size(), resultTasks.size());
+        assertTrue(resultTasks.containsAll(expectedTasks));
+
+        verify(orderRepository, times(1)).findById(orderId);
+    }
+
+    @Test
+    void testGetAllTasksByOrder_noTasksOnTheList_shouldReturnEmptyList() {
+        // Given
+        Order randomOrder = OrderFactory.randomOrder().build();
+        randomOrder.setTasks(Collections.emptyList());
+
+        when(orderRepository.findById(randomOrder.getOrderNo())).thenReturn(Optional.of(randomOrder));
+
+        // When
+        List<Task> resultTasks = orderService.getAllTasksByOrder(randomOrder.getOrderNo());
+
+        // Then
+        assertNotNull(resultTasks);
+        assertTrue(resultTasks.isEmpty());
+
+        verify(orderRepository, times(1)).findById(randomOrder.getOrderNo());
+    }
+
 
     @Test
     void testCreateOrder_shouldCreateANewOrder() {

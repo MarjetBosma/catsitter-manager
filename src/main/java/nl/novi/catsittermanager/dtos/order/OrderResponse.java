@@ -2,16 +2,15 @@ package nl.novi.catsittermanager.dtos.order;
 
 import nl.novi.catsittermanager.dtos.task.TaskResponse;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 public record OrderResponse(
 
         UUID orderNo,
-        LocalDate startDate,
-        LocalDate endDate,
-        int dailyNumberOVisits,
+        String startDate,
+        String endDate,
+        int dailyNumberOfVisits,
         int totalNumberOfVisits,
         List<TaskResponse> tasks
 

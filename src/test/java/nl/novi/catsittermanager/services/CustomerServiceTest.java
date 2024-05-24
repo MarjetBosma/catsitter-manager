@@ -114,9 +114,8 @@ class CustomerServiceTest {
     @Test
     void testGetAllCatsByCustomer_noCatsOnTheList_shouldReturnEmptyList() {
         // Given
-        Customer randomCustomer = CustomerFactory.randomCustomer()
-                .cats(new ArrayList<Order>())
-                .build();
+        Customer randomCustomer = CustomerFactory.randomCustomer().build();
+        randomCustomer.setCats(Collections.emptyList());
 
         when(customerRepository.findById(randomCustomer.getUsername())).thenReturn(Optional.of(randomCustomer));
 
