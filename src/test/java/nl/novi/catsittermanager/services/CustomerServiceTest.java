@@ -55,10 +55,10 @@ class CustomerServiceTest {
         when(customerRepository.findAll()).thenReturn(Collections.emptyList());
 
         // When
-        List<Customer> catResponseList = customerService.getAllCustomers();
+        List<Customer> customerResponseList = customerService.getAllCustomers();
 
         // Then
-        assertTrue(catResponseList.isEmpty());
+        assertTrue(customerResponseList.isEmpty());
         verify(customerRepository, times(1)).findAll();
     }
 
@@ -243,6 +243,18 @@ class CustomerServiceTest {
 
         verify(customerRepository, times(1)).existsById(customer.getUsername());
         verify(customerRepository, times(1)).deleteById(customer.getUsername());
+        verifyNoMoreInteractions(customerRepository);
+    }
+
+    @Test
+    void testDeleteCustomer_nonExistingCustomer_shouldThrowRecordNotFoundException() {
+        // Given
+        String username = "nonExistingCustomer";
+        when(customerRepository.existsById(username)).thenReturn(false);
+
+        // When & Then
+        assertThrows(RecordNotFoundException.class, () -> customerService.deleteCustomer(username));
+        verify(customerRepository).existsById(username);
         verifyNoMoreInteractions(customerRepository);
     }
 }

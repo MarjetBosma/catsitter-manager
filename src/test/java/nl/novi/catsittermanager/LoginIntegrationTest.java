@@ -1,6 +1,7 @@
 package nl.novi.catsittermanager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nl.novi.catsittermanager.config.TestConfig;
 import nl.novi.catsittermanager.controllers.AuthenticationController;
 import nl.novi.catsittermanager.dtos.login.LoginRequest;
 import nl.novi.catsittermanager.dtos.login.LoginResponse;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.ActiveProfiles;
@@ -33,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
+@Import(TestConfig.class)
 @WebMvcTest(AuthenticationController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
@@ -52,33 +55,6 @@ public class LoginIntegrationTest {
 
     @MockBean
     private JwtAuthorizationFilter jwtAuthorizationFilter;
-
-    @MockBean
-    private UserRepository userRepository;
-
-    @MockBean
-    private CatRepository catRepository;
-
-    @MockBean
-    private CatsitterRepository catsitterRepository;
-
-    @MockBean
-    CustomerRepository customerRepository;
-
-    @MockBean
-    FileUploadRepository fileUploadRepository;
-
-    @MockBean
-    InvoiceRepository invoiceRepository;
-
-    @MockBean
-    OrderRepository orderRepository;
-
-    @MockBean
-    TaskRepository taskRepository;
-
-    @MockBean
-    private CatService catService;
 
     @Test
     void login_WithValidCredentials_ShouldReturnToken() throws Exception {

@@ -2,6 +2,7 @@ package nl.novi.catsittermanager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import nl.novi.catsittermanager.config.TestConfig;
 import nl.novi.catsittermanager.controllers.ExceptionController;
 import nl.novi.catsittermanager.dtos.customer.CustomerRequest;
 import nl.novi.catsittermanager.enumerations.Role;
@@ -29,13 +30,13 @@ import static org.mockito.Mockito.*;
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 @Transactional
-@Import(ExceptionController.class)
+@Import({ExceptionController.class, TestConfig.class})
 class CreateCustomerIntegrationTest {
     @Autowired
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
-    @MockBean
+    @Autowired
     CustomerRepository customerRepository;
     Customer expectedCustomer;
     CustomerRequest request;

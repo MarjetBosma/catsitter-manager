@@ -3,6 +3,7 @@ package nl.novi.catsittermanager.config;
 import nl.novi.catsittermanager.repositories.*;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,53 +11,29 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @TestConfiguration
 public class TestConfig {
 
-    @Bean
-    @Primary
-    public CatRepository catRepository() {
-        return Mockito.mock(CatRepository.class);
-    }
+    @MockBean
+    private CatRepository catRepository;
 
-    @Bean
-    @Primary
-    public CatsitterRepository catsitterRepository() {
-        return Mockito.mock(CatsitterRepository.class);
-    }
+    @MockBean
+    private CatsitterRepository catsitterRepository;
 
-    @Bean
-    @Primary
-    public CustomerRepository customerRepository() {
-        return Mockito.mock(CustomerRepository.class);
-    }
+    @MockBean
+    private CustomerRepository customerRepository;
 
-    @Bean
-    @Primary
-    public FileUploadRepository fileUploadRepository() {
-        return Mockito.mock(FileUploadRepository.class);
-    }
+    @MockBean
+    private FileUploadRepository fileUploadRepository;
 
-    @Bean
-    @Primary
-    public InvoiceRepository invoiceRepository() {
-        return Mockito.mock(InvoiceRepository.class);
-    }
+    @MockBean
+    private InvoiceRepository invoiceRepository;
 
-    @Bean
-    @Primary
-    public OrderRepository orderRepository() {
-        return Mockito.mock(OrderRepository.class);
-    }
+    @MockBean
+    private OrderRepository orderRepository;
 
-    @Bean
-    @Primary
-    public TaskRepository taskRepository() {
-        return Mockito.mock(TaskRepository.class);
-    }
+    @MockBean
+    private TaskRepository taskRepository;
 
-    @Bean
-    @Primary
-    public UserRepository userRepository() {
-        return Mockito.mock(UserRepository.class);
-    }
+    @MockBean
+    private UserRepository userRepository;
 
     @Bean
     public BCryptPasswordEncoder BCryptPasswordEncoder() {

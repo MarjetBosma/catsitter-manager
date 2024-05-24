@@ -5,6 +5,8 @@ import nl.novi.catsittermanager.dtos.cat.CatResponse;
 import nl.novi.catsittermanager.models.Cat;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 public class CatMapper {
 
@@ -12,7 +14,7 @@ public class CatMapper {
         return new CatResponse(
                 cat.getId(),
                 cat.getName(),
-                cat.getDateOfBirth(),
+                cat.getDateOfBirth().toString(),
                 cat.getGender(),
                 cat.getBreed(),
                 cat.getGeneralInfo(),
@@ -30,7 +32,7 @@ public class CatMapper {
     public static Cat CatRequestToCat(CatRequest catRequest) {
         return Cat.builder()
                 .name(catRequest.name())
-                .dateOfBirth(catRequest.dateOfBirth())
+                .dateOfBirth(LocalDate.parse(catRequest.dateOfBirth()))
                 .gender(catRequest.gender())
                 .breed(catRequest.breed())
                 .generalInfo(catRequest.generalInfo())

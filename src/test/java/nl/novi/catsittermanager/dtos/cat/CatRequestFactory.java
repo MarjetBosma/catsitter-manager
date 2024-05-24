@@ -11,7 +11,7 @@ public class CatRequestFactory {
     public static CatRequest.CatRequestBuilder randomCatRequest() {
         return new CatRequest.CatRequestBuilder()
                 .name(faker.cat().name())
-                .dateOfBirth(randomDateOfBirth())
+                .dateOfBirth(randomDateOfBirth().toString())
                 .gender(randomGender())
                 .breed(faker.cat().breed())
                 .generalInfo(faker.lorem().paragraph())

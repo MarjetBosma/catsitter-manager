@@ -8,7 +8,7 @@ import java.util.UUID;
 public record CatResponse(
         UUID id,
         String name,
-        LocalDate dateOfBirth,
+        String dateOfBirth,
         String gender,
         String breed,
         String generalInfo,

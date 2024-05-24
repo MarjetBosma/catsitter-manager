@@ -7,6 +7,8 @@ import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatFactory;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CatMapperTest {
@@ -22,7 +24,7 @@ class CatMapperTest {
         // Then
         assertEquals(cat.getId(), catResponse.id());
         assertEquals(cat.getName(), catResponse.name());
-        assertEquals(cat.getDateOfBirth(), catResponse.dateOfBirth());
+        assertEquals(cat.getDateOfBirth().toString(), catResponse.dateOfBirth());
         assertEquals(cat.getGender(), catResponse.gender());
         assertEquals(cat.getBreed(), catResponse.breed());
         assertEquals(cat.getGeneralInfo(), catResponse.generalInfo());
@@ -45,9 +47,7 @@ class CatMapperTest {
 
         // Then
         assertEquals(catRequest.name(), cat.getName());
-        assertEquals(catRequest.dateOfBirth(), cat.getDateOfBirth());
-        assertEquals(catRequest.gender(), cat.getGender());
-        assertEquals(catRequest.dateOfBirth(), cat.getDateOfBirth());
+        assertEquals(LocalDate.parse(catRequest.dateOfBirth()), cat.getDateOfBirth());
         assertEquals(catRequest.gender(), cat.getGender());
         assertEquals(catRequest.breed(), cat.getBreed());
         assertEquals(catRequest.generalInfo(), cat.getGeneralInfo());

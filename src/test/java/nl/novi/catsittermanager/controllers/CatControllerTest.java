@@ -3,23 +3,28 @@ package nl.novi.catsittermanager.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import nl.novi.catsittermanager.config.SecurityConfig;
 import nl.novi.catsittermanager.config.TestConfig;
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.dtos.cat.CatRequestFactory;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
+import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatFactory;
 import nl.novi.catsittermanager.services.CatService;
+import nl.novi.catsittermanager.utils.JwtUtil;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -35,15 +40,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CatController.class)
-@ComponentScan({"nl.novi.catsittermanager.utils"})
-@Import(TestConfig.class)
+@Import({JwtUtil.class, JwtAuthorizationFilter.class, SecurityConfig.class,  TestConfig.class})
+@ActiveProfiles("test")
 class CatControllerTest {
 
+    @Autowired
     MockMvc mockMvc;
+
     @MockBean
     CatService catService;
-    @MockBean
+
     ObjectMapper objectMapper = new ObjectMapper();
+
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -57,7 +65,7 @@ class CatControllerTest {
     }
 
     @Test
-    @WithMockUser("user")
+    @WithMockUser(username="admin",roles={"ADMIN"})
     void givenAValidRequest_whenGetAllCats_thenAllCatsShouldBeReturned() throws Exception {
         // given
         Cat expectedCat = CatFactory.randomCat().build();
@@ -65,7 +73,7 @@ class CatControllerTest {
 
         when(catService.getAllCats()).thenReturn(expectedCatList);
 
-        mockMvc.perform(get("/cat")
+        mockMvc.perform(get("/api/cats")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -85,12 +93,12 @@ class CatControllerTest {
     }
 
     @Test
-    @WithMockUser("user")
+    @WithMockUser(username="admin",roles={"ADMIN"})
     void givenNoCatsAvailable_whenGetAllCats_thenEmptyListShouldBeReturned() throws Exception {
         // given
         when(catService.getAllCats()).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/cat")
+        mockMvc.perform(get("/api/cats")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -99,14 +107,14 @@ class CatControllerTest {
     }
 
     @Test
-    @WithMockUser("user")
+    @WithMockUser(username="admin",roles={"ADMIN"})
     void givenAValidRequest_whenGetCat_thenCatShouldBeReturned() throws Exception {
 
         Cat expectedCat = CatFactory.randomCat().build();
 
         when(catService.getCat(expectedCat.getId())).thenReturn(expectedCat);
 
-        mockMvc.perform(get("/cat/" + expectedCat.getId().toString())
+        mockMvc.perform(get("/api/cat/" + expectedCat.getId().toString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -125,7 +133,7 @@ class CatControllerTest {
     }
 
     @Test
-    @WithMockUser("user")
+    @WithMockUser(username="admin",roles={"ADMIN"})
     void givenInvalidCatId_whenGetCat_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
 
         UUID invalidCatId = UUID.randomUUID();
@@ -133,7 +141,7 @@ class CatControllerTest {
 
         when(catService.getCat(invalidCatId)).thenThrow(new RecordNotFoundException(errorMessage));
 
-        mockMvc.perform(get("/cat/" + invalidCatId)
+        mockMvc.perform(get("/api/cat/" + invalidCatId)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
@@ -141,7 +149,7 @@ class CatControllerTest {
     }
 
     @Test
-    @WithMockUser("user")
+    @WithMockUser(username="admin",roles={"ADMIN"})
     void givenAValidRequest_whenCreateCat_thenCatShouldBeReturned() throws Exception {
 
         CatRequest expectedCatRequest = CatRequestFactory.randomCatRequest().build();
@@ -149,9 +157,11 @@ class CatControllerTest {
 
         when(catService.createCat(any(Cat.class), eq(expectedCatRequest.ownerUsername()))).thenReturn(expectedCat);
 
-        mockMvc.perform(post("/cat")
+        String content = objectMapper.writeValueAsString(expectedCatRequest);
+        System.out.println(content);
+        mockMvc.perform(post("/api/cat")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(expectedCatRequest))
+                        .content(content)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -170,6 +180,7 @@ class CatControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin",roles={"ADMIN"})
     void givenInvalidData_whenCreateCat_thenBadRequest() throws Exception {
         CatRequest invalidCatRequest = CatRequestFactory.randomCatRequest()
                 .name(null)
@@ -186,7 +197,7 @@ class CatControllerTest {
                 .ownerUsername(null)
                 .build();
 
-        mockMvc.perform(post("/cat")
+        mockMvc.perform(post("/api/cat")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCatRequest))
                         .accept(MediaType.APPLICATION_JSON))
@@ -195,6 +206,7 @@ class CatControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin",roles={"ADMIN"})
     void givenInvalidId_whenEditCat_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
 
         UUID catId = UUID.randomUUID();
@@ -203,13 +215,14 @@ class CatControllerTest {
         when(catService.editCat(eq(catId), any(Cat.class), eq(expectedCatRequest.ownerUsername())))
                 .thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id."));
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/cat/{id}", catId)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/cat/{id}", catId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(expectedCatRequest)))
                 .andExpect(status().isNotFound());
     }
 
     @Test
+    @WithMockUser(username="admin",roles={"ADMIN"})
     void givenInvalidData_whenEditCat_thenBadRequest() throws Exception {
         UUID invalidCatId = UUID.randomUUID();
 
@@ -228,7 +241,7 @@ class CatControllerTest {
                 .ownerUsername(null)
                 .build();
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/cat/{id}", invalidCatId)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/cat/{id}", invalidCatId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCatRequest))
                         .accept(MediaType.APPLICATION_JSON))
@@ -239,25 +252,27 @@ class CatControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin",roles={"ADMIN"})
     void givenValidId_whenDeleteCat_thenCatShouldBeDeleted() throws Exception {
         UUID catId = UUID.randomUUID();
 
         when(catService.deleteCat(catId)).thenReturn(catId);
 
-        mockMvc.perform(delete("/cat/{id}", catId)
+        mockMvc.perform(delete("/api/cat/{id}", catId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Cat with id " + catId + " removed from database."));
     }
 
     @Test
+    @WithMockUser(username="admin",roles={"ADMIN"})
     void givenInvalidId_whenDeleteCat_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
         UUID invalidCatId = UUID.randomUUID();
         final String errorMessage = "error";
 
         when(catService.deleteCat(invalidCatId)).thenThrow(new RecordNotFoundException(errorMessage));
 
-        mockMvc.perform(delete("/cat/{id}", invalidCatId)
+        mockMvc.perform(delete("/api/cat/{id}", invalidCatId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())

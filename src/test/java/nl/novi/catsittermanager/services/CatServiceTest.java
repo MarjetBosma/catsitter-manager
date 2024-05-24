@@ -193,5 +193,17 @@ public class CatServiceTest {
         verifyNoMoreInteractions(catRepository);
         verifyNoInteractions(customerService);
     }
+
+    @Test
+    void testDeleteCatsitter_nonExistingCatsitter_shouldThrowRecordNotFoundException() {
+        // Given
+        UUID nonExistingCatUUID = UUID.randomUUID();
+        when(catRepository.existsById(nonExistingCatUUID)).thenReturn(false);
+
+        // When & Then
+        assertThrows(RecordNotFoundException.class, () -> catService.deleteCat(nonExistingCatUUID));
+        verify(catRepository).existsById(nonExistingCatUUID);
+        verifyNoMoreInteractions(catRepository);
+    }
 }
 

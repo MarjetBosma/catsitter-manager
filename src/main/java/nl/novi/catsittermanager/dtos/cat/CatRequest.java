@@ -2,34 +2,30 @@ package nl.novi.catsittermanager.dtos.cat;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Past;
 import lombok.Builder;
 import nl.novi.catsittermanager.models.ImageUpload;
 import org.springframework.validation.annotation.Validated;
-
-import java.time.LocalDate;
 
 @Validated
 @Builder
 public record CatRequest(
 
-        @NotBlank(message = "cat name is required")
+        @NotNull(message = "cat name is required")
         String name,
-        @NotNull
-        @Past
-        LocalDate dateOfBirth,
-        @NotNull
+        @NotNull(message = "date of birth is required")
+        String dateOfBirth,
+        @NotNull(message = "gender is required")
         String gender,
-        @NotNull
+        @NotNull(message = "cat breed is required")
         String breed,
         String generalInfo,
-        @NotNull
+        @NotNull(message = "required to enter whether the  cat is spayed or neutered")
         Boolean spayedOrNeutered,
-        @NotNull
+        @NotNull(message = "vaccination status is required")
         Boolean vaccinated,
-        @NotNull
+        @NotNull(message = "name of veterinarian or vet clinic name is required")
         String veterinarianName,
-        @NotNull
+        @NotNull(message = "phone number vet clinic is required")
         String phoneVet,
         String medicationName,
         String medicationDose,
