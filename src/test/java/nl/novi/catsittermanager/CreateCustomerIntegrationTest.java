@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -23,6 +22,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
 
@@ -49,8 +50,8 @@ class CreateCustomerIntegrationTest {
                 .name("Pietje Puk")
                 .address("Straatweg 231, Ergenshuizen")
                 .email("pietjepuk@gmail.com")
-                .cats(null)
-                .orders(null)
+                .cats((new ArrayList<>()))
+                .orders((new ArrayList<>()))
                 .build();
 
         when(customerRepository.save(any(Customer.class))).thenReturn(expectedCustomer);
@@ -78,8 +79,8 @@ class CreateCustomerIntegrationTest {
         .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name()))
         .andExpect(MockMvcResultMatchers.jsonPath("$.address").value(request.address()))
         .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(request.email()))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.cats").doesNotExist())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.orders").doesNotExist());
+        .andExpect(MockMvcResultMatchers.jsonPath("$.[0].cats").doesNotExist())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.[0].orders").doesNotExist());
 
         verify(customerRepository, times(1)).save(any(Customer.class));
     }

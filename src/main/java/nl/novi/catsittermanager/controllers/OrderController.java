@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,13 +59,13 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody final OrderRequest orderRequest) {
+    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody final OrderRequest orderRequest) throws URISyntaxException {
         Order order = orderService.createOrder(
                 OrderMapper.OrderRequestToOrder(orderRequest),
                 orderRequest.customerUsername(),
                 orderRequest.catsitterUsername()
         );
-        return ResponseEntity.status(HttpStatus.CREATED).body(OrderMapper.OrderToOrderResponse(order));
+        return ResponseEntity.created(new URI("/order/" + order.getOrderNo())).body(OrderMapper.OrderToOrderResponse(order));
     }
 
     @PutMapping("/order/{id}")
