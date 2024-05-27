@@ -31,6 +31,7 @@ public record CatRequest(
         @NotNull(message = "owner name is required")
         String ownerUsername,
         ImageUpload image
+
 ) {
 }
 

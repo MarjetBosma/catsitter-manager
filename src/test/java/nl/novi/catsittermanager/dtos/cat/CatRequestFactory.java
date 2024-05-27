@@ -9,6 +9,7 @@ public class CatRequestFactory {
     private static final Faker faker = new Faker();
 
     public static CatRequest.CatRequestBuilder randomCatRequest() {
+
         return new CatRequest.CatRequestBuilder()
                 .name(faker.cat().name())
                 .dateOfBirth(randomDateOfBirth().toString())

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.order.OrderRequest;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.dtos.task.TaskResponse;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.mappers.TaskMapper;
 import nl.novi.catsittermanager.models.Order;
@@ -74,6 +75,6 @@ public class OrderController {
     @DeleteMapping("/order/{id}")
     public ResponseEntity<Object> deleteOrder(@PathVariable("id") final UUID idToDelete) {
         orderService.deleteOrder(idToDelete);
-        return ResponseEntity.ok().body("Order with id " + idToDelete + " removed from database");
+        return ResponseEntity.ok().body("Order with id " + idToDelete + " removed from database.");
     }
 }

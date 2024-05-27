@@ -20,7 +20,10 @@ public class OrderMapper {
                 order.getEndDate().toString(),
                 order.getDailyNumberOfVisits(),
                 order.getTotalNumberOfVisits(),
-                order.getTasks().stream().map(TaskMapper::TaskToTaskResponse).toList()
+                order.getTasks().stream().map(TaskMapper::TaskToTaskResponse).toList(),
+                order.getCustomer().getUsername(),
+                order.getCatsitter().getUsername(),
+                order.getInvoice()
         );
     }
 

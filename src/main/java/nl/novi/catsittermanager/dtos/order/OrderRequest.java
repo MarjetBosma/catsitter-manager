@@ -2,11 +2,13 @@ package nl.novi.catsittermanager.dtos.order;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.Builder;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 
 @Validated
+@Builder
 public record OrderRequest(
 
         @NotNull
