@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,14 +46,14 @@ public class InvoiceController {
     }
 
     @PostMapping("/invoice")
-    public ResponseEntity<?> createInvoice(@Valid @RequestBody final InvoiceRequest invoiceRequest) {
+    public ResponseEntity<?> createInvoice(@Valid @RequestBody final InvoiceRequest invoiceRequest) throws URISyntaxException {
             UUID orderNo = invoiceRequest.orderNo();
             if (invoiceService.existsByOrderNo(orderNo)) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("An invoice already exists for order number: " + orderNo);
             } else {
                 Invoice invoice = invoiceService.createInvoice(InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest), orderNo);
-                return ResponseEntity.status(HttpStatus.CREATED).body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
+                return ResponseEntity.created(new URI("/invoice/" + invoice.getInvoiceNo())).body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
             }
         }
 

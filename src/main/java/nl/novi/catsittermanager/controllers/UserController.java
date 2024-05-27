@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -39,9 +41,9 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable("id") final String username) {
+    public ResponseEntity<UserResponse> getUser(@PathVariable("id") final String username) throws URISyntaxException {
         User user = userService.getUser(username);
-        return ResponseEntity.ok(UserMapper.UserToUserResponse(user));
+        return ResponseEntity.created(new URI("/user/" + user.getUsername())).body(UserMapper.UserToUserResponse(user));
     }
 
     @PostMapping("/user")

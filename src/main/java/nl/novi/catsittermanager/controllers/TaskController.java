@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,12 +46,12 @@ public class TaskController {
     }
 
     @PostMapping("/task")
-    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody final TaskRequest taskRequest) {
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody final TaskRequest taskRequest) throws URISyntaxException {
         Task task = taskService.createTask(
                 TaskMapper.TaskRequestToTask(taskRequest),
                 taskRequest.orderNo()
         );
-        return ResponseEntity.status(HttpStatus.CREATED).body(TaskMapper.TaskToTaskResponse(task));
+        return ResponseEntity.created(new URI("/task/" + task.getTaskNo())).body(TaskMapper.TaskToTaskResponse(task));
     }
 
     @PutMapping("/task/{id}")

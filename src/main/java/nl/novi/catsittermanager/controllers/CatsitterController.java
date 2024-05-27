@@ -6,6 +6,7 @@ import nl.novi.catsittermanager.dtos.catsitter.CatsitterRequest;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
 import nl.novi.catsittermanager.dtos.customer.CustomerResponse;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
+import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.mappers.CatsitterMapper;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.mappers.OrderMapper;
@@ -23,6 +24,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -65,20 +69,20 @@ public class CatsitterController {
     }
 
    @PostMapping("/catsitter")
-   public ResponseEntity<CatsitterResponse> createCatsitter(@Valid @RequestBody final CatsitterRequest catsitterRequest) {
+   public ResponseEntity<CatsitterResponse> createCatsitter(@Valid @RequestBody final CatsitterRequest catsitterRequest) throws URISyntaxException {
        Catsitter catsitter = catsitterService.createCatsitter(CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest));
-       return ResponseEntity.status(HttpStatus.CREATED).body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
+       return ResponseEntity.created(new URI("/catsitter/" + catsitter.getUsername())).body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
    }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CatsitterResponse> editCatsitter(@PathVariable("id") final String username, @RequestBody final CatsitterRequest catsitterRequest) {
-        Catsitter catsitter = catsitterService.editCatsitter(username, CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest));
-        return ResponseEntity.ok().body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
-    }
+   @PutMapping("/{id}")
+   public ResponseEntity<CatsitterResponse> editCatsitter(@PathVariable("id") final String username, @RequestBody final CatsitterRequest catsitterRequest) {
+       Catsitter catsitter = catsitterService.editCatsitter(username, CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest));
+       return ResponseEntity.ok().body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
+   }
 
-    @DeleteMapping("/catsitter/{id}")
-    public ResponseEntity<Object> deleteCatsitter(@PathVariable("id") final String username) {
-        catsitterService.deleteCatsitter(username);
-        return ResponseEntity.ok().body("Catsitter with username " + username + " removed from database.");
-    }
+   @DeleteMapping("/catsitter/{id}")
+   public ResponseEntity<Object> deleteCatsitter(@PathVariable("id") final String username) {
+       catsitterService.deleteCatsitter(username);
+       return ResponseEntity.ok().body("Catsitter with username " + username + " removed from database.");
+   }
 }
