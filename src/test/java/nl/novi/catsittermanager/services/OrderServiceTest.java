@@ -2,7 +2,6 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
-import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.repositories.OrderRepository;
 import org.junit.jupiter.api.Test;
@@ -65,7 +64,6 @@ public class OrderServiceTest {
     void testGetOrder_shouldFetchOrderWithSpecificOrderNo() {
         // Given
         Order expectedOrder = OrderFactory.randomOrder().build();
-
         when(orderRepository.findById(expectedOrder.getOrderNo())).thenReturn(Optional.of(expectedOrder));
 
         // When
@@ -245,5 +243,4 @@ public class OrderServiceTest {
         verifyNoInteractions(customerService);
         verifyNoInteractions(catsitterService);
     }
-
 }

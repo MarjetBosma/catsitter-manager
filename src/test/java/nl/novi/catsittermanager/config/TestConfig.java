@@ -1,11 +1,9 @@
 package nl.novi.catsittermanager.config;
 
 import nl.novi.catsittermanager.repositories.*;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @TestConfiguration
