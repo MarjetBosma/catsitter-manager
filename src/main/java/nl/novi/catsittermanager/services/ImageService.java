@@ -50,14 +50,19 @@ public class ImageService {
     }
 
     public ImageUpload uploadCatImage(UUID catId, MultipartFile file) {
+        String filename = file.getOriginalFilename();
+        if (filename == null) {
+            throw new IllegalArgumentException("File must have an original filename");
+        }
+
         Optional<Cat> optionalCat = catRepository.findById(catId);
         Cat cat = optionalCat.orElseThrow(() -> new RecordNotFoundException("Cat not found with id: " + catId));
-        String fileName = file.getOriginalFilename();
+
         String url = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/cat/")
                 .path(catId.toString())
                 .path("/upload/")
-                .path(fileName)
+                .path(filename)
                 .toUriString();
         String storedFileName = storeFile(file, url);
         ImageUpload imageUpload = fileUploadRepository.save(new ImageUpload(storedFileName, file.getContentType(), url));
@@ -69,14 +74,19 @@ public class ImageService {
     }
 
     public ImageUpload uploadCatsitterImage(String username, MultipartFile file) {
+        String filename = file.getOriginalFilename();
+        if (filename == null) {
+            throw new IllegalArgumentException("File must have an original filename");
+        }
+
         Optional<Catsitter> optionalCatsitter = catsitterRepository.findById(username);
         Catsitter catsitter = optionalCatsitter.orElseThrow(() -> new RecordNotFoundException("Catsitter not found with id: " + username));
-        String fileName = file.getOriginalFilename();
+
         String url = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/catsitter/")
                 .path(username)
                 .path("/upload/")
-                .path(fileName)
+                .path(filename)
                 .toUriString();
         String storedFileName = storeFile(file, url);
         ImageUpload imageUpload = fileUploadRepository.save(new ImageUpload(storedFileName, file.getContentType(), url));
@@ -88,15 +98,15 @@ public class ImageService {
     }
 
     public String storeFile(MultipartFile file, String url) {
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        Path filePath = Paths.get(fileStoragePath + "/" + fileName);
+        String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        Path filePath = Paths.get(fileStoragePath + "/" + filename);
         try {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException("Issue in storing the file", e);
         }
-        fileUploadRepository.save(new ImageUpload(fileName, file.getContentType(), url));
-        return fileName;
+        fileUploadRepository.save(new ImageUpload(filename, file.getContentType(), url));
+        return filename;
     }
 
     private void assignImageToCat(ImageUpload imageUpload, UUID catId) {
