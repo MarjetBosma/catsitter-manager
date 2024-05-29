@@ -48,6 +48,7 @@ public class ImageService {
             throw new RuntimeException("Issue in creating file directory");
         }
     }
+
     public ImageUpload uploadCatImage(UUID catId, MultipartFile file) {
         Optional<Cat> optionalCat = catRepository.findById(catId);
         Cat cat = optionalCat.orElseThrow(() -> new RecordNotFoundException("Cat not found with id: " + catId));

@@ -40,7 +40,6 @@ public class UserService {
         user.setPassword(encodedPassword);
         user.setEnabled(true);
         user.setRole(Role.ADMIN);
-        userRepository.save(user);
         return userRepository.save(user);
     }
 

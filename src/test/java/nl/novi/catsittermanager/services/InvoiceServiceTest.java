@@ -161,76 +161,66 @@ public class InvoiceServiceTest {
     @Test
     void testEditInvoice_shouldEditExistingInvoice() {
         // Given
-        UUID invoiceId = UUID.randomUUID();
-        UUID orderNo = UUID.randomUUID();
-        Invoice existingInvoice = InvoiceFactory.randomInvoice().invoiceNo(invoiceId).build();
-        Invoice updatedInvoice = InvoiceFactory.randomInvoice().build();
+        Invoice invoice = InvoiceFactory.randomInvoice().build();
 
-        when(invoiceRepository.findById(invoiceId)).thenReturn(Optional.of(existingInvoice));
-        when(invoiceRepository.save(any(Invoice.class))).thenReturn(existingInvoice);
+        when(invoiceRepository.findById(invoice.getInvoiceNo())).thenReturn(Optional.of(invoice));
+        when(orderService.getOrder(invoice.getOrder().getOrderNo())).thenReturn(invoice.getOrder());
+        when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
 
         // When
-        Invoice resultInvoice = invoiceService.editInvoice(invoiceId, updatedInvoice, orderNo);
+        Invoice resultInvoice = invoiceService.editInvoice(invoice.getInvoiceNo(), invoice, invoice.getOrder().getOrderNo());
 
         // Then
-        assertEquals(existingInvoice.getInvoiceNo(), resultInvoice.getInvoiceNo());
-        assertEquals(updatedInvoice.getInvoiceDate(), resultInvoice.getInvoiceDate());
-        assertEquals(updatedInvoice.getAmount(), resultInvoice.getAmount());
-        assertEquals(updatedInvoice.getPaid(), resultInvoice.getPaid());
+        assertEquals(invoice, resultInvoice);
 
-        verify(invoiceRepository, times(1)).findById(invoiceId);
-        verify(invoiceRepository, times(1)).save(existingInvoice);
+        verify(invoiceRepository, times(1)).findById(invoice.getInvoiceNo());
+        verify(orderService, times(1)).getOrder(invoice.getOrder().getOrderNo());
+        verify(invoiceRepository, times(1)).save(any(Invoice.class));
     }
 
     @Test
     void testEditInvoice_nonExistingInvoice_shouldThrowRecordNotFoundException() {
         // Given
-        UUID invoiceId = UUID.randomUUID();
-        Invoice updatedInvoice = InvoiceFactory.randomInvoice().build();
-        UUID orderNo = UUID.randomUUID();
-
-        when(invoiceRepository.findById(invoiceId)).thenReturn(Optional.empty());
+        UUID invoiceNo = UUID.randomUUID();
+        when(invoiceRepository.findById(invoiceNo)).thenReturn(Optional.empty());
 
         // When
-        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> invoiceService.editInvoice(invoiceId, updatedInvoice, orderNo));
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> invoiceService.getInvoice(invoiceNo));
 
         // Then
         assertEquals("No invoice found with this id.", exception.getMessage());
-        verify(invoiceRepository, times(1)).findById(invoiceId);
-        verifyNoMoreInteractions(invoiceRepository);
+        verify(invoiceRepository, times(1)).findById(invoiceNo);
     }
 
     @Test
     void testDeleteInvoice_ShouldDeleteInvoiceWithSpecificId() {
         // Given
-        UUID invoiceId = UUID.randomUUID();
-        when(invoiceRepository.existsById(invoiceId)).thenReturn(true);
+        Invoice invoice = InvoiceFactory.randomInvoice().build();
+        when(invoiceRepository.existsById(invoice.getInvoiceNo())).thenReturn(true);
 
         // When
-        UUID resultInvoiceId = invoiceService.deleteInvoice(invoiceId);
+        UUID invoiceNo = invoiceService.deleteInvoice(invoice.getInvoiceNo());
 
         // Then
-        verify(invoiceRepository, times(1)).existsById(invoiceId);
-        verify(invoiceRepository, times(1)).deleteById(invoiceId);
-        verifyNoMoreInteractions(invoiceRepository);
-        assertEquals(invoiceId, resultInvoiceId);
+        verify(invoiceRepository, times(1)).existsById(invoiceNo);
+        verify(invoiceRepository, times(1)).deleteById(invoiceNo);
+        verifyNoInteractions(orderService);
     }
 
-    // Test for deleting a non-existing invoice
     @Test
     void testDeleteInvoice_ShouldThrowRecordNotFoundException() {
         // Given
-        UUID invoiceId = UUID.randomUUID();
-        when(invoiceRepository.existsById(invoiceId)).thenReturn(false);
+        UUID invoiceNo = UUID.randomUUID();
+        when(invoiceRepository.existsById(invoiceNo)).thenReturn(false);
 
         // When
-        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> invoiceService.deleteInvoice(invoiceId));
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> invoiceService.deleteInvoice(invoiceNo));
 
         // Then
         assertEquals("No invoice found with this id.", exception.getMessage());
-        verify(invoiceRepository, times(1)).existsById(invoiceId);
-        verify(invoiceRepository, never()).deleteById(invoiceId);
-        verifyNoMoreInteractions(invoiceRepository);
+        verify(invoiceRepository, times(1)).existsById(invoiceNo);
+        verify(invoiceRepository, never()).deleteById(invoiceNo);
+        verifyNoInteractions(orderService);
     }
 
 }

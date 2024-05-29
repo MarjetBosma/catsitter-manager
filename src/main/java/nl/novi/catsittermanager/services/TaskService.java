@@ -33,7 +33,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task editTask(final UUID idToEdit, final Task task, UUID orderNo) {
+    public Task editTask(final UUID idToEdit, final Task task, final UUID orderNo) {
         if (taskRepository.findById(idToEdit).isEmpty()) {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No task found with this id.");
         }

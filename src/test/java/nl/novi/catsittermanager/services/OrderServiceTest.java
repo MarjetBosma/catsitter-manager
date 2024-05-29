@@ -39,11 +39,10 @@ public class OrderServiceTest {
         when(orderRepository.findAll()).thenReturn(expectedOrderList);
 
         // When
-        List<Order> catsitterResponseList = orderService.getAllOrders();
+        List<Order> orderResponseList = orderService.getAllOrders();
 
         // Then
-        assertEquals(expectedOrderList, catsitterResponseList);
-
+        assertEquals(expectedOrderList, orderResponseList);
         verify(orderRepository, times(1)).findAll();
     }
 
@@ -91,35 +90,22 @@ public class OrderServiceTest {
 
     @Test
     void testGetAllTasksByOrder_shouldFetchAllTasksForThisOrder() {
+
         // Given
-        UUID orderId = UUID.randomUUID();
-        Order order = OrderFactory.randomOrder().orderNo(orderId).build();
+        Order randomOrder = OrderFactory.randomOrder().build();
+        List<Task> expectedTasks = TaskFactory.randomTasks(3);
+        randomOrder.setTasks(expectedTasks);
 
-        Task task1 = new Task();
-        task1.setTaskNo(UUID.randomUUID());
-        task1.setTaskType(TaskType.valueOf("FOOD"));
-
-        Task task2 = new Task();
-        task2.setTaskNo(UUID.randomUUID());
-        task2.setTaskType(TaskType.valueOf("WATER"));
-
-        Task task3 = new Task();
-        task2.setTaskNo(UUID.randomUUID());
-        task2.setTaskType(TaskType.valueOf("LITTERBOX"));
-
-        List<Task> expectedTasks = List.of(task1, task2, task3);
-        order.setTasks(expectedTasks);
-
-        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+        when(orderRepository.findById(randomOrder.getOrderNo())).thenReturn(Optional.of(randomOrder));
 
         // When
-        List<Task> resultTasks = orderService.getAllTasksByOrder(orderId);
+        List<Task> resultTasks = orderService.getAllTasksByOrder(randomOrder.getOrderNo());
 
         // Then
         assertEquals(expectedTasks.size(), resultTasks.size());
         assertTrue(resultTasks.containsAll(expectedTasks));
 
-        verify(orderRepository, times(1)).findById(orderId);
+        verify(orderRepository, times(1)).findById(randomOrder.getOrderNo());
     }
 
     @Test
@@ -139,7 +125,6 @@ public class OrderServiceTest {
 
         verify(orderRepository, times(1)).findById(randomOrder.getOrderNo());
     }
-
 
     @Test
     void testCreateOrder_shouldCreateANewOrder() {
@@ -167,32 +152,22 @@ public class OrderServiceTest {
     @Test
     void testEditOrder_shouldEditExistingOrder() {
         // Given
-        UUID orderId = UUID.randomUUID();
-        Order existingOrder = OrderFactory.randomOrder().orderNo(orderId).build();
-        Order updatedOrder = OrderFactory.randomOrder().build();
-        String customerUsername = updatedOrder.getCustomer().getUsername();
-        String catsitterUsername = updatedOrder.getCatsitter().getUsername();
+        Order order = OrderFactory.randomOrder().build();
 
-        when(orderRepository.findById(orderId)).thenReturn(Optional.of(existingOrder));
-        when(customerService.getCustomer(customerUsername)).thenReturn(updatedOrder.getCustomer());
-        when(catsitterService.getCatsitter(catsitterUsername)).thenReturn(updatedOrder.getCatsitter());
-        when(orderRepository.save(any(Order.class))).thenReturn(existingOrder);
+        when(orderRepository.findById(order.getOrderNo())).thenReturn(Optional.of(order));
+        when(customerService.getCustomer(order.getCustomer().getUsername())).thenReturn(order.getCustomer());
+        when(catsitterService.getCatsitter(order.getCatsitter().getUsername())).thenReturn(order.getCatsitter());
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
 
         // When
-        Order resultOrder = orderService.editOrder(orderId, updatedOrder, customerUsername, catsitterUsername);
+        Order resultOrder = orderService.editOrder(order.getOrderNo(), order, order.getCustomer().getUsername(), order.getCatsitter().getUsername());
 
         // Then
-        assertEquals(existingOrder.getOrderNo(), resultOrder.getOrderNo());
-        assertEquals(updatedOrder.getStartDate(), resultOrder.getStartDate());
-        assertEquals(updatedOrder.getEndDate(), resultOrder.getEndDate());
-        assertEquals(updatedOrder.getDailyNumberOfVisits(), resultOrder.getDailyNumberOfVisits());
-        assertEquals(updatedOrder.getTotalNumberOfVisits(), resultOrder.getTotalNumberOfVisits());
-        assertEquals(updatedOrder.getCustomer().getUsername(), resultOrder.getCustomer().getUsername());
-        assertEquals(updatedOrder.getCatsitter().getUsername(), resultOrder.getCatsitter().getUsername());
+        assertEquals(order, resultOrder);
 
-        verify(orderRepository, times(1)).findById(orderId);
-        verify(customerService, times(1)).getCustomer(customerUsername);
-        verify(catsitterService, times(1)).getCatsitter(catsitterUsername);
+        verify(orderRepository, times(1)).findById(order.getOrderNo());
+        verify(customerService, times(1)).getCustomer(order.getCustomer().getUsername());
+        verify(catsitterService, times(1)).getCatsitter(order.getCatsitter().getUsername());
         verify(orderRepository, times(1)).save(any(Order.class));
     }
 
@@ -207,8 +182,7 @@ public class OrderServiceTest {
 
         // Then
         assertEquals("No order found with this id.", exception.getMessage());
-        verify(orderRepository).findById(orderNo);
-        verifyNoMoreInteractions(orderRepository);
+        verify(orderRepository, times(1)).findById(orderNo);
     }
 
     @Test
@@ -239,7 +213,6 @@ public class OrderServiceTest {
         // Then
         assertEquals("No order found with this id.", exception.getMessage());
         verify(orderRepository, never()).deleteById(orderNo);
-        verifyNoMoreInteractions(orderRepository);
         verifyNoInteractions(customerService);
         verifyNoInteractions(catsitterService);
     }

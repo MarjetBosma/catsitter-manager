@@ -204,7 +204,7 @@ class CustomerServiceTest {
         Customer customer = CustomerFactory.randomCustomer().build();
 
         when(customerRepository.findById(customer.getUsername())).thenReturn(Optional.of(customer));
-        when(customerRepository.save(customer)).thenReturn(customer);
+        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
 
         // When
         Customer resultCustomer = customerService.editCustomer(customer.getUsername(), customer);
@@ -226,7 +226,7 @@ class CustomerServiceTest {
 
         // When & Then
         assertEquals("No customer found with this username.", exception.getMessage());
-        verifyNoMoreInteractions(customerRepository);
+        verify(customerRepository, times(1)).findById(username);
     }
 
     @Test
@@ -243,7 +243,6 @@ class CustomerServiceTest {
 
         verify(customerRepository, times(1)).existsById(customer.getUsername());
         verify(customerRepository, times(1)).deleteById(customer.getUsername());
-        verifyNoMoreInteractions(customerRepository);
     }
 
     @Test

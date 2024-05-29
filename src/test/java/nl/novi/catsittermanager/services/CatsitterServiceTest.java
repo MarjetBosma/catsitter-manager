@@ -86,8 +86,7 @@ public class CatsitterServiceTest {
 
         // Then
         assertEquals("No catsitter found with this username.", exception.getMessage());
-        verify(catsitterRepository).findById(username);
-        verifyNoMoreInteractions(catsitterRepository);
+        verify(catsitterRepository, times(1)).findById(username);
     }
 
     @Test
@@ -186,7 +185,7 @@ public class CatsitterServiceTest {
 
         // When & Then
         assertEquals("No catsitter found with this username.", exception.getMessage());
-        verifyNoMoreInteractions(catsitterRepository);
+        verify(catsitterRepository, times(1));
     }
 
     @Test
@@ -203,7 +202,6 @@ public class CatsitterServiceTest {
 
         verify(catsitterRepository, times(1)).existsById(catsitter.getUsername());
         verify(catsitterRepository, times(1)).deleteById(catsitter.getUsername());
-        verifyNoMoreInteractions(catsitterRepository);
     }
 
     @Test

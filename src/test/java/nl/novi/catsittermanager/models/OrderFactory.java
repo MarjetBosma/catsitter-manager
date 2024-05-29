@@ -1,6 +1,7 @@
 package nl.novi.catsittermanager.models;
 
 import net.datafaker.Faker;
+import nl.novi.catsittermanager.helpers.OrderFactoryHelper;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -16,8 +17,8 @@ public class OrderFactory {
 
         return Order.builder()
                 .orderNo(UUID.randomUUID())
-                .startDate(faker.date().past(30, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
-                .endDate(faker.date().future(30, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+                .startDate(OrderFactoryHelper.randomPastDate(30))
+                .endDate(OrderFactoryHelper.randomFutureDate(30))
                 .dailyNumberOfVisits(faker.number().numberBetween(1, 5))
                 .totalNumberOfVisits(faker.number().numberBetween(5, 20))
                 .tasks(new ArrayList<>())
