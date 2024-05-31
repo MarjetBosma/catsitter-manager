@@ -5,18 +5,16 @@ import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.repositories.CatRepository;
 import nl.novi.catsittermanager.repositories.CatsitterRepository;
 import nl.novi.catsittermanager.repositories.FileUploadRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.powermock.api.mockito.PowerMockito;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -26,6 +24,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,7 +34,6 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.verifyNew;
 
 @ExtendWith(MockitoExtension.class)
 class ImageServiceTest {
@@ -64,6 +62,16 @@ class ImageServiceTest {
         Files.createDirectories(fileStoragePath);
     }
 
+    @AfterEach
+    void cleanUp() throws IOException {
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(fileStoragePath)) {
+            for (Path path : directoryStream) {
+                Files.delete(path);
+            }
+        }
+    }
+
+    // todo: Deze test slaagt als je hem los draait, maar faalt als je de hele klasse draait...
     @Test
     void testUploadCatImage_imageShouldBeUploadedAssignedAndSaved() throws Exception {
         // Given
@@ -227,10 +235,7 @@ class ImageServiceTest {
         String filename = "testfile.jpg";
         String url = "http://localhost/cat/" + catId + "/images/" + filename;
 
-        Path relativePath = Paths.get("src/test/resources/uploads/testfile.jpg");
-        Path absolutePath = relativePath.toAbsolutePath().normalize();
-
-        byte[] content = Files.readAllBytes(absolutePath);
+        byte[] content = "Test content".getBytes();
         String contentType = "image/jpeg";
         MultipartFile file = new MockMultipartFile("file", filename, contentType, content);
 
@@ -242,7 +247,6 @@ class ImageServiceTest {
         // Then
         assertEquals(filename, storedFilename);
         Path expectedPath = fileStoragePath.resolve(filename);
-        System.out.println("Expected file path: " + expectedPath); // Debug statement
         assertTrue(Files.exists(expectedPath));
 
         byte[] savedContent = Files.readAllBytes(expectedPath);
@@ -409,7 +413,6 @@ class ImageServiceTest {
         String filename = "testfile.jpg";
         String fileStorageLocation = "src/test/resources/uploads/";
 
-        // Inject fileStorageLocation into the ImageService
         ImageService imageService = new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository);
 
         // When
@@ -423,14 +426,17 @@ class ImageServiceTest {
     @Test
     void createUrlResource_shouldCreateUrlResource() throws Exception {
         // Given
-        Path path = Paths.get("src/test/resources/uploads/testfile");
+        String fileStoragePath = "src/test/resources/uploads";
+        Path path = Paths.get(fileStoragePath, "testfile");
+        Files.createDirectories(path.getParent());
+        Files.createFile(path);
 
         // When
         UrlResource urlResource = imageService.createUrlResource(path);
 
         // Then
         assertNotNull(urlResource);
-        PowerMockito.verifyNew(UrlResource.class).withArguments(path.toUri());
+        assertEquals(path.toUri(), urlResource.getURI());
     }
 
     @Test

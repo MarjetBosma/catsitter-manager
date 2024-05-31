@@ -100,7 +100,6 @@ public class ImageService {
     public String storeFile(MultipartFile file, String url) {
         String filename = FilenameUtils.normalize(Objects.requireNonNull(file.getOriginalFilename()));
         Path filePath = Paths.get(fileStoragePath + "/" + filename);
-        System.out.println("Storing file at: " + filePath); // Debug statement
         try {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {

@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -44,9 +46,12 @@ class CustomUserDetailsServiceTest {
 
         // Then
         GrantedAuthority expectedAuthority = new SimpleGrantedAuthority("ROLE_ADMIN");
+        Set<GrantedAuthority> expectedAuthorities = Collections.singleton(expectedAuthority);
+
+        Set<GrantedAuthority> actualAuthorities = userDetails.getAuthorities().stream().collect(Collectors.toSet());
         assertEquals(username, userDetails.getUsername());
         assertEquals("password", userDetails.getPassword());
-        assertEquals(Collections.singletonList(expectedAuthority), userDetails.getAuthorities());
+        assertEquals(expectedAuthorities, actualAuthorities);
 
         verify(userRepository, times(1)).findById(username);
     }
