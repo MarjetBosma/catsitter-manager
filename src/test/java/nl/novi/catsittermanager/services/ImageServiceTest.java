@@ -233,7 +233,7 @@ class ImageServiceTest {
         // Given
         UUID catId = UUID.randomUUID();
         String filename = "testfile.jpg";
-        String url = "http://localhost/cat/" + catId + "/images/" + filename;
+        String url = "http://localhost/cat/" + catId + "/" + filename;
 
         byte[] content = "Test content".getBytes();
         String contentType = "image/jpeg";
@@ -260,7 +260,7 @@ class ImageServiceTest {
         // Given
         UUID catId = UUID.randomUUID();
         String filename = "testfile.jpg";
-        String url = "http://localhost/cat/" + catId + "/uploads/" + filename;
+        String url = "http://localhost/cat/" + catId + "images/uploads/" + filename;
         byte[] content = "Test Content".getBytes();
         String contentType = "image/jpeg";
 
@@ -305,7 +305,7 @@ class ImageServiceTest {
     void testAssignImageToCat_catNotFound() {
         // Given
         UUID catId = UUID.randomUUID();
-        ImageUpload imageUpload = new ImageUpload("testfile.jpg", "image/jpeg", "http://localhost/cat/" + catId + "/uploads/testfile.jpg");
+        ImageUpload imageUpload = new ImageUpload("testfile.jpg", "image/jpeg", "http://localhost/cat/" + catId + "/images/uploads/testfile.jpg");
         when(catRepository.findById(catId)).thenReturn(Optional.empty());
 
         // When & Then
@@ -323,7 +323,7 @@ class ImageServiceTest {
         // Given
         String catsitterId = "catsitter";
         Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
-        ImageUpload imageUpload = new ImageUpload("testfile1.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/uploads/testfile1.jpg");
+        ImageUpload imageUpload = new ImageUpload("testfile1.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/images/uploads/testfile1.jpg");
         when(catsitterRepository.findById(catsitterId)).thenReturn(Optional.of(catsitter));
 
         // When
@@ -339,7 +339,7 @@ class ImageServiceTest {
     void testAssignImageToCatsitter_catsitterNotFound() {
         // Given
         String catsitterId = "catsitter";
-        ImageUpload imageUpload = new ImageUpload("testfile1.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/uploads/testfile1.jpg");
+        ImageUpload imageUpload = new ImageUpload("testfile1.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/images/uploads/testfile1.jpg");
         when(catsitterRepository.findById(catsitterId)).thenReturn(Optional.empty());
 
         // When & Then
@@ -356,7 +356,7 @@ class ImageServiceTest {
     void downloadImage_imageShouldBeDownloadedCorrectly() throws IOException {
         // Given
         String filename = "testfile.jpg";
-        String fileStorageLocation = "src/test/resources/uploads/";
+        String fileStorageLocation = "src/test/resources/images/uploads/";
         Path filePath = Paths.get(fileStorageLocation).toAbsolutePath().resolve(filename);
         Files.createDirectories(filePath.getParent());
         Files.write(filePath, "Test Content".getBytes());
@@ -378,7 +378,7 @@ class ImageServiceTest {
     void downloadImage_resourceDoesNotExistOrIsNotReadable() {
         // Given
         String filename = "non_existent_file.jpg";
-        String fileStorageLocation = "src/test/resources/uploads/";
+        String fileStorageLocation = "src/test/resources/images/uploads/";
 
         imageService = new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository);
 
@@ -394,7 +394,7 @@ class ImageServiceTest {
     void downloadImage_MalformedURL() throws MalformedURLException {
         // Given
         String filename = "testfile.jpg";
-        String fileStorageLocation = "src/test/resources/uploads/";
+        String fileStorageLocation = "src/test/resources/images/uploads/";
 
         ImageService imageServiceSpy = Mockito.spy(new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository));
         Mockito.doThrow(new MalformedURLException("Malformed URL")).when(imageServiceSpy).createUrlResource(Mockito.any(Path.class));
@@ -411,7 +411,7 @@ class ImageServiceTest {
     void getFilePath_shouldReturnCorrectFilePath() {
         // Given
         String filename = "testfile.jpg";
-        String fileStorageLocation = "src/test/resources/uploads/";
+        String fileStorageLocation = "src/test/resources/images/uploads/";
 
         ImageService imageService = new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository);
 
@@ -426,8 +426,8 @@ class ImageServiceTest {
     @Test
     void createUrlResource_shouldCreateUrlResource() throws Exception {
         // Given
-        String fileStoragePath = "src/test/resources/uploads";
-        Path path = Paths.get(fileStoragePath, "testfile");
+        String fileStoragePath = "src/test/resources/images/uploads";
+        Path path = Paths.get(fileStoragePath, "testfile.jpg");
         Files.createDirectories(path.getParent());
         Files.createFile(path);
 
@@ -442,7 +442,7 @@ class ImageServiceTest {
     @Test
     void createUrlResource_shouldThrowMalformedURLException() throws MalformedURLException {
         // Given
-        Path path = Paths.get("src/test/resources/uploads/testfile");
+        Path path = Paths.get("src/test/resources/images/uploads/testfile.jpg");
         ImageService imageServiceSpy = Mockito.spy(new ImageService("src/test/resources/uploads/", fileUploadRepository, catRepository, catsitterRepository));
         doThrow(new MalformedURLException("Malformed URL")).when(imageServiceSpy).createUrlResource(Mockito.any(Path.class));
 

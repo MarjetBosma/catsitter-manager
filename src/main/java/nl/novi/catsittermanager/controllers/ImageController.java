@@ -28,25 +28,25 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    @PostMapping("/cat/{id}/upload")
+    @PostMapping("/cat/{id}/images/uploads")
     public ResponseEntity<String> uploadCatImage(@PathVariable("id") UUID catId, @RequestParam("file") MultipartFile file) {
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/image/upload/")
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/images/upload/")
                 .path(Objects.requireNonNull(file.getOriginalFilename())).toUriString();
         String contentType = file.getContentType();
         ImageUpload catImage = imageService.uploadCatImage(catId, file);
         return ResponseEntity.ok().body("Image uploaded");
     }
 
-    @PostMapping("/catsitter/{username}/upload")
+    @PostMapping("/catsitter/{username}/uploads")
     public ResponseEntity<String> uploadCatsitterImage(@PathVariable("username") String username, @RequestParam("file") MultipartFile file) {
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/image/upload/")
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/images/upload/")
                 .path(Objects.requireNonNull(file.getOriginalFilename())).toUriString();
         String contentType = file.getContentType();
         ImageUpload catsitterImage = imageService.uploadCatsitterImage(username, file);
         return ResponseEntity.ok().body("Image uploaded");
     }
 
-    @GetMapping("/download/{filename}")
+    @GetMapping("images/downloads/{filename}")
     public ResponseEntity<Resource> downloadImage(@PathVariable String filename, HttpServletRequest request) {
         Resource resource = imageService.downloadImage(filename);
         String mimeType;
@@ -59,12 +59,12 @@ public class ImageController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + resource.getFilename()).body(resource);
     }
 
-    @PostMapping(value = "/cat/{id}/image")
+    @PostMapping(value = "/cat/{id}/images")
     public void assignImageToCat(@PathVariable("id") UUID catId, @RequestParam("file") MultipartFile file) {
         ImageUpload catImage = imageService.uploadCatImage(catId, file);
     }
 
-    @PostMapping(value = "catsitter/{username}/image")
+    @PostMapping(value = "catsitter/{username}/images")
     public void assignImageToCatsitter(@PathVariable("id") String username, @RequestParam("file") MultipartFile file) {
         ImageUpload catsitterImage = imageService.uploadCatsitterImage(username, file);
     }
