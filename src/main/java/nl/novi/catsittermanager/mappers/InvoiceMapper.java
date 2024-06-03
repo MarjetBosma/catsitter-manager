@@ -15,7 +15,8 @@ public class InvoiceMapper {
                 invoice.getInvoiceDate(),
                 invoice.getAmount(),
                 invoice.getPaid(),
-                (invoice.getOrder() == null) ? null : invoice.getOrder().getOrderNo()
+                invoice.getOrder().getOrderNo()
+//                (invoice.getOrder() == null) ? null : invoice.getOrder().getOrderNo()
         );
     }
 

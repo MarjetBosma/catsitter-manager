@@ -23,30 +23,30 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/image")
+@RequestMapping("/api")
 public class ImageController {
 
     private final ImageService imageService;
 
     @PostMapping("/cat/{id}/images/uploads")
     public ResponseEntity<String> uploadCatImage(@PathVariable("id") UUID catId, @RequestParam("file") MultipartFile file) {
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/images/upload/")
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/images/uploads")
                 .path(Objects.requireNonNull(file.getOriginalFilename())).toUriString();
         String contentType = file.getContentType();
         ImageUpload catImage = imageService.uploadCatImage(catId, file);
         return ResponseEntity.ok().body("Image uploaded");
     }
 
-    @PostMapping("/catsitter/{username}/uploads")
+    @PostMapping("/catsitter/{username}/images/uploads")
     public ResponseEntity<String> uploadCatsitterImage(@PathVariable("username") String username, @RequestParam("file") MultipartFile file) {
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/images/upload/")
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/images/uploads/")
                 .path(Objects.requireNonNull(file.getOriginalFilename())).toUriString();
         String contentType = file.getContentType();
         ImageUpload catsitterImage = imageService.uploadCatsitterImage(username, file);
         return ResponseEntity.ok().body("Image uploaded");
     }
 
-    @GetMapping("images/downloads/{filename}")
+    @GetMapping("/images/downloads/{filename}")
     public ResponseEntity<Resource> downloadImage(@PathVariable String filename, HttpServletRequest request) {
         Resource resource = imageService.downloadImage(filename);
         String mimeType;

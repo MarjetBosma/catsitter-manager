@@ -18,7 +18,6 @@ public record CatsitterRequest(
         String email,
         String about,
         ImageUpload image
-
 ) {
 }
 

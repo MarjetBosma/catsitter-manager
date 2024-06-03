@@ -26,7 +26,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -50,7 +49,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
         @BeforeEach
         void setUp() {
-            // Initialize MockMvc with the WebApplicationContext
             mockMvc = MockMvcBuilders.webAppContextSetup((WebApplicationContext) mockMvc.getDispatcherServlet().getWebApplicationContext()).build();
         }
 
@@ -65,7 +63,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
             when(imageService.uploadCatImage(any(UUID.class), any(MockMultipartFile.class))).thenReturn(imageUpload);
 
             // When & Then
-            mockMvc.perform(multipart("/image/cat/" + catId + "/upload")
+            mockMvc.perform(multipart("/cat/" + catId + "/images/uploads")
                             .file(file))
                     .andExpect(status().isOk())
                     .andExpect(content().string("Image uploaded"));
@@ -84,7 +82,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
             when(imageService.uploadCatsitterImage(any(String.class), any(MockMultipartFile.class))).thenReturn(imageUpload);
 
             // When & Then
-            mockMvc.perform(multipart("/image/catsitter/" + username + "/upload")
+            mockMvc.perform(multipart("/catsitter/" + username + "/images/uploads")
                             .file(file))
                     .andExpect(status().isOk())
                     .andExpect(content().string("Image uploaded"));

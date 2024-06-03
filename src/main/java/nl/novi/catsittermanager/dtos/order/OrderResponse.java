@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.dtos.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.novi.catsittermanager.dtos.task.TaskResponse;
 import nl.novi.catsittermanager.models.Invoice;
 
@@ -13,9 +14,11 @@ public record OrderResponse(
         String endDate,
         int dailyNumberOfVisits,
         int totalNumberOfVisits,
+        @JsonIgnore
         List<TaskResponse> tasks,
         String customerUsername,
         String catsitterUsername,
+        @JsonIgnore
         Invoice invoice
 
 ) {
