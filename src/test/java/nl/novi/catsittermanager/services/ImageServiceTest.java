@@ -357,7 +357,7 @@ class ImageServiceTest {
         // Given
         String filename = "testfile.jpg";
         String fileStorageLocation = "src/test/resources/images/downloads/";
-        Path filePath = Paths.get(fileStorageLocation).toAbsolutePath().resolve(filename);
+        Path filePath = fileStoragePath.resolve(filename);
         Files.createDirectories(filePath.getParent());
         Files.write(filePath, "Test Content".getBytes());
 
@@ -426,8 +426,8 @@ class ImageServiceTest {
     @Test
     void createUrlResource_shouldCreateUrlResource() throws Exception {
         // Given
-        String fileStoragePath = "src/test/resources/images/uploads";
-        Path path = Paths.get(fileStoragePath, "testfile.jpg");
+        String fileStoragePath = "src/test/resources/images/uploads/";
+        Path path = Paths.get(fileStoragePath, "testfile1.jpg");
         Files.createDirectories(path.getParent());
         Files.createFile(path);
 
