@@ -10,7 +10,7 @@ spring:
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
+#    show-sql: true
     generate-ddl: true
     hibernate:
       ddl-auto: create-drop
@@ -25,9 +25,9 @@ spring:
   defer-datasource-initialization: true
 my:
   upload_location: Uploads
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG
 

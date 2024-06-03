@@ -93,9 +93,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/api/invoice/{id}").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/api/invoice/{id}").hasAnyRole("ADMIN")
 
-                                .requestMatchers(HttpMethod.POST, "/image/cat/{id}/upload").hasAnyRole("ADMIN", "CUSTOMER")
-                                .requestMatchers(HttpMethod.POST, "/image/catsitter/{id}/upload").hasAnyRole("ADMIN", "CATSITTER")
-                                .requestMatchers(HttpMethod.GET, "/image/download/{filename}").hasAnyRole("ADMIN", "CUSTOMER", "CATSITTER")
+                                .requestMatchers(HttpMethod.POST, "/api/cat/{id}/images").hasAnyRole("ADMIN", "CUSTOMER")
+                                .requestMatchers(HttpMethod.POST, "/api/catsitter/{id}/images").hasAnyRole("ADMIN", "CATSITTER")
+                                .requestMatchers(HttpMethod.GET, "/api/{type}/{id}/images/{filename}").hasAnyRole("ADMIN", "CUSTOMER", "CATSITTER")
 
                                 .anyRequest().denyAll()
 

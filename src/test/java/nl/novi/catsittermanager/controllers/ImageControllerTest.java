@@ -1,9 +1,7 @@
 package nl.novi.catsittermanager.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.novi.catsittermanager.config.SecurityConfig;
 import nl.novi.catsittermanager.config.TestConfig;
-import nl.novi.catsittermanager.controllers.ImageController;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.models.ImageUpload;
 import nl.novi.catsittermanager.services.ImageService;
@@ -58,12 +56,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
             // Given
             UUID catId = UUID.randomUUID();
             MockMultipartFile file = new MockMultipartFile("file", "testfile.jpg", "image/jpeg", "test image content".getBytes());
-            ImageUpload imageUpload = new ImageUpload("testfile.jpg", "image/jpeg", "/upload/testfile.jpg");
+            ImageUpload imageUpload = new ImageUpload("testfile.jpg", "image/jpeg", "/testfile.jpg");
 
             when(imageService.uploadCatImage(any(UUID.class), any(MockMultipartFile.class))).thenReturn(imageUpload);
 
             // When & Then
-            mockMvc.perform(multipart("/cat/" + catId + "/images/uploads")
+            mockMvc.perform(multipart("/api/cat/" + catId + "/images")
                             .file(file))
                     .andExpect(status().isOk())
                     .andExpect(content().string("Image uploaded"));
@@ -82,7 +80,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
             when(imageService.uploadCatsitterImage(any(String.class), any(MockMultipartFile.class))).thenReturn(imageUpload);
 
             // When & Then
-            mockMvc.perform(multipart("/catsitter/" + username + "/images/uploads")
+            mockMvc.perform(multipart("/api/catsitter/" + username + "/images")
                             .file(file))
                     .andExpect(status().isOk())
                     .andExpect(content().string("Image uploaded"));
@@ -92,15 +90,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
         @Test
         @WithMockUser(username = "admin", roles = {"ADMIN"})
-        void testDownloadImage() throws Exception {
+        void testDownloadImage_catImage() throws Exception {
             // Given
+            UUID catId = UUID.fromString(UUID.randomUUID().toString());
             String filename = "testfile.jpg";
-            UrlResource resource = new UrlResource(Paths.get("src/test/resources/downloads/testfile.jpg").toUri());
+            UrlResource resource = new UrlResource(Paths.get("src/test/resources/images/downloads/testfile.jpg").toUri());
 
             when(imageService.downloadImage(filename)).thenReturn(resource);
 
             // When & Then
-            mockMvc.perform(get("/images/downloads/" + filename))
+            mockMvc.perform(get("/api/cat/" + catId + "/images/" + filename))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.IMAGE_JPEG))
+                    .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + resource.getFilename()));
+
+            Mockito.verify(imageService).downloadImage(filename);
+        }
+
+        @Test
+        @WithMockUser(username = "admin", roles = {"ADMIN"})
+        void testDownloadImage_catsitterImage() throws Exception {
+            // Given
+            String username = "testuser";
+            String filename = "testfile.jpg";
+            UrlResource resource = new UrlResource(Paths.get("src/test/resources/images/downloads/testfile.jpg").toUri());
+
+            when(imageService.downloadImage(filename)).thenReturn(resource);
+
+            // When & Then
+            mockMvc.perform(get("/api/catsitter/" + username + "/images/" + filename))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.IMAGE_JPEG))
                     .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + resource.getFilename()));

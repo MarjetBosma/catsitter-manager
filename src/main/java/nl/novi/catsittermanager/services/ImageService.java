@@ -27,8 +27,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class ImageService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
 
     @Value("${my.upload_location}")
     private final Path fileStoragePath;
@@ -60,7 +65,7 @@ public class ImageService {
             String url = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/cat/")
                     .path(catId.toString())
-                    .path("/upload/")
+                    .path("/images/uploads/")
                     .path(filename)
                     .toUriString();
             String storedFileName = storeFile(file, url);
@@ -133,6 +138,8 @@ public class ImageService {
 
     public Resource downloadImage(String filename) {
         Path path = getFilePath(filename);
+        logger.debug("Resolved file path: {}", path.toAbsolutePath());
+
         Resource resource;
         try {
             resource = createUrlResource(path);
@@ -140,8 +147,10 @@ public class ImageService {
             throw new RuntimeException("Issue in reading the file", e);
         }
         if (resource.exists() && resource.isReadable()) {
+            logger.debug("Resource exists and is readable: {}", resource.getFilename());
             return resource;
         } else {
+            logger.error("File doesn't exist or is not readable: {}", filename);
             throw new RuntimeException("File doesn't exist or is not readable");
         }
     }

@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.models.ImageUpload;
 import nl.novi.catsittermanager.services.ImageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -28,26 +30,26 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    @PostMapping("/cat/{id}/images/uploads")
+    @PostMapping("/cat/{id}/images")
     public ResponseEntity<String> uploadCatImage(@PathVariable("id") UUID catId, @RequestParam("file") MultipartFile file) {
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/images/uploads")
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/cat/{id}/images/uploads")
                 .path(Objects.requireNonNull(file.getOriginalFilename())).toUriString();
         String contentType = file.getContentType();
         ImageUpload catImage = imageService.uploadCatImage(catId, file);
         return ResponseEntity.ok().body("Image uploaded");
     }
 
-    @PostMapping("/catsitter/{username}/images/uploads")
-    public ResponseEntity<String> uploadCatsitterImage(@PathVariable("username") String username, @RequestParam("file") MultipartFile file) {
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/images/uploads/")
+    @PostMapping("/catsitter/{id}/images")
+    public ResponseEntity<String> uploadCatsitterImage(@PathVariable("id") String username, @RequestParam("file") MultipartFile file) {
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("catsitter/{id}/images")
                 .path(Objects.requireNonNull(file.getOriginalFilename())).toUriString();
         String contentType = file.getContentType();
         ImageUpload catsitterImage = imageService.uploadCatsitterImage(username, file);
         return ResponseEntity.ok().body("Image uploaded");
     }
 
-    @GetMapping("/images/downloads/{filename}")
-    public ResponseEntity<Resource> downloadImage(@PathVariable String filename, HttpServletRequest request) {
+    @GetMapping("/{type}/{id}/images/{filename}")
+    public ResponseEntity<Resource> downloadImage(@PathVariable String type, @PathVariable String id, @PathVariable String filename, HttpServletRequest request) {
         Resource resource = imageService.downloadImage(filename);
         String mimeType;
         try {
@@ -59,13 +61,31 @@ public class ImageController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + resource.getFilename()).body(resource);
     }
 
-    @PostMapping(value = "/cat/{id}/images")
-    public void assignImageToCat(@PathVariable("id") UUID catId, @RequestParam("file") MultipartFile file) {
-        ImageUpload catImage = imageService.uploadCatImage(catId, file);
-    }
+//    @GetMapping("/cat/{id}/images/{filename}")
+//    public ResponseEntity<Resource> downloadImage(@PathVariable String filename, HttpServletRequest request) {
+//        Resource resource = imageService.downloadImage(filename);
+//        String mimeType;
+//        try {
+//            mimeType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+//        } catch (IOException e) {
+//            mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+//        }
+//        return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + resource.getFilename()).body(resource);
+//    }
+//
+//    @GetMapping("/catsitter/{id}/images/{filename}")
+//    public ResponseEntity<Resource> downloadImage(@PathVariable String filename, HttpServletRequest request) {
+//        Resource resource = imageService.downloadImage(filename);
+//        String mimeType;
+//        try {
+//            mimeType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+//        } catch (IOException e) {
+//            mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+//        }
+//        return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + resource.getFilename()).body(resource);
+//    }
+//
 
-    @PostMapping(value = "catsitter/{username}/images")
-    public void assignImageToCatsitter(@PathVariable("id") String username, @RequestParam("file") MultipartFile file) {
-        ImageUpload catsitterImage = imageService.uploadCatsitterImage(username, file);
-    }
 }
