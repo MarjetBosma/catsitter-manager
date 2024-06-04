@@ -1,7 +1,7 @@
 package nl.novi.catsittermanager.mappers;
 
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
-import nl.novi.catsittermanager.dtos.cat.CatRequestFactory;
+import nl.novi.catsittermanager.dtos.CatRequestFactory;
 import nl.novi.catsittermanager.dtos.cat.CatResponse;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.CatFactory;

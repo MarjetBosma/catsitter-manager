@@ -1,8 +1,10 @@
 package nl.novi.catsittermanager.dtos.customer;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import org.springframework.validation.annotation.Validated;
 
+@Builder
 @Validated
 public record CustomerRequest(
         @NotNull(message = "username is required")

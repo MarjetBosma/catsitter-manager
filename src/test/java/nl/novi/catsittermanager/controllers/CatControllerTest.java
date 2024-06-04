@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.novi.catsittermanager.config.SecurityConfig;
 import nl.novi.catsittermanager.config.TestConfig;
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
-import nl.novi.catsittermanager.dtos.cat.CatRequestFactory;
+import nl.novi.catsittermanager.dtos.CatRequestFactory;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.models.Cat;
