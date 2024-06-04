@@ -7,7 +7,7 @@ import net.datafaker.Faker;
 import nl.novi.catsittermanager.config.SecurityConfig;
 import nl.novi.catsittermanager.config.TestConfig;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceRequest;
-import nl.novi.catsittermanager.dtos.invoice.InvoiceRequestFactory;
+import nl.novi.catsittermanager.dtos.InvoiceRequestFactory;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;

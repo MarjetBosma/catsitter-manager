@@ -1,6 +1,7 @@
-package nl.novi.catsittermanager.dtos.order;
+package nl.novi.catsittermanager.dtos;
 
 import net.datafaker.Faker;
+import nl.novi.catsittermanager.dtos.order.OrderRequest;
 
 import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;

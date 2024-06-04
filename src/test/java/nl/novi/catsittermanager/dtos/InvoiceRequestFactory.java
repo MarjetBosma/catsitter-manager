@@ -1,7 +1,8 @@
-package nl.novi.catsittermanager.dtos.invoice;
+package nl.novi.catsittermanager.dtos;
 
 import net.datafaker.Faker;
 
+import nl.novi.catsittermanager.dtos.invoice.InvoiceRequest;
 import nl.novi.catsittermanager.helpers.InvoiceFactoryHelper;
 
 import java.util.UUID;
