@@ -66,6 +66,6 @@ public class InvoiceController {
     @DeleteMapping("/invoice/{id}")
     public ResponseEntity<Object> deleteInvoice(@PathVariable("id") final UUID idToDelete) {
         invoiceService.deleteInvoice(idToDelete);
-        return ResponseEntity.ok().body("Invoice with id " + idToDelete + " removed from database");
+        return ResponseEntity.ok().body("Invoice with id " + idToDelete + " removed from database.");
     }
 }

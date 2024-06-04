@@ -2,16 +2,17 @@ package nl.novi.catsittermanager.dtos.invoice;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.Builder;
 import org.springframework.validation.annotation.Validated;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Validated
+@Builder
 public record InvoiceRequest(
 
         @NotNull
-        LocalDate invoiceDate,
+        String invoiceDate,
         @NotNull
         @Positive
         Double amount,

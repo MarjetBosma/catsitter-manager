@@ -5,14 +5,18 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.novi.catsittermanager.config.SecurityConfig;
 import nl.novi.catsittermanager.config.TestConfig;
-import nl.novi.catsittermanager.dtos.cat.OrderRequestFactory;
+import nl.novi.catsittermanager.dtos.order.OrderRequestFactory;
 import nl.novi.catsittermanager.dtos.order.OrderRequest;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
+import nl.novi.catsittermanager.dtos.task.TaskResponse;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
+import nl.novi.catsittermanager.helpers.TaskFactoryHelper;
 import nl.novi.catsittermanager.mappers.TaskMapper;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.models.OrderFactory;
+import nl.novi.catsittermanager.models.Task;
+import nl.novi.catsittermanager.models.TaskFactory;
 import nl.novi.catsittermanager.services.OrderService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static nl.novi.catsittermanager.models.OrderFactory.randomOrder;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -45,7 +50,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(OrderController.class)
 @Import({JwtUtil.class, JwtAuthorizationFilter.class, SecurityConfig.class,  TestConfig.class})
 @ActiveProfiles("test")
-
 public class OrderControllerTest {
 
     @Autowired
@@ -71,7 +75,6 @@ public class OrderControllerTest {
     @Test
     @WithMockUser(username="admin",roles={"ADMIN"})
     void givenAValidRequest_whenGetAllOrders_thenAllOrdersShouldBeReturned() throws Exception {
-
         // Arrange
         Order expectedOrder = OrderFactory.randomOrder().build();
         List<Order> expectedOrderList = List.of(expectedOrder);
@@ -90,7 +93,7 @@ public class OrderControllerTest {
                 expectedOrder.getInvoice()
         );
 
-        String content = objectMapper.writeValueAsString(expectedOrder);
+        String content = objectMapper.writeValueAsString(expectedOrderList);
         System.out.println(content);
 
         // Act & Assert
@@ -104,10 +107,8 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.[0].endDate").value(expectedResponse.endDate()))
                 .andExpect(jsonPath("$.[0].dailyNumberOfVisits").value(expectedResponse.dailyNumberOfVisits()))
                 .andExpect(jsonPath("$.[0].totalNumberOfVisits").value(expectedResponse.totalNumberOfVisits()))
-                .andExpect(jsonPath("$.[0].tasks").isArray())
                 .andExpect(jsonPath("$.[0].customerUsername").value(expectedResponse.customerUsername()))
-                .andExpect(jsonPath("$.[0].catsitterUsername").value(expectedResponse.catsitterUsername()))
-                .andExpect(jsonPath("$.[0].invoice").isEmpty());
+                .andExpect(jsonPath("$.[0].catsitterUsername").value(expectedResponse.catsitterUsername()));
     }
 
     @Test
@@ -160,10 +161,8 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.endDate").value(expectedResponse.endDate()))
                 .andExpect(jsonPath("$.dailyNumberOfVisits").value(expectedResponse.dailyNumberOfVisits()))
                 .andExpect(jsonPath("$.totalNumberOfVisits").value(expectedResponse.totalNumberOfVisits()))
-                .andExpect(jsonPath("$.tasks").isArray())
                 .andExpect(jsonPath("$.customerUsername").value(expectedResponse.customerUsername()))
-                .andExpect(jsonPath("$.catsitterUsername").value(expectedResponse.catsitterUsername()))
-                .andExpect(jsonPath("$.invoice").isEmpty());
+                .andExpect(jsonPath("$.catsitterUsername").value(expectedResponse.catsitterUsername()));
     }
 
     @Test
@@ -182,6 +181,60 @@ public class OrderControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$").value(errorMessage));
+    }
+
+    @Test
+    @WithMockUser(username="admin",roles={"ADMIN"})
+    void givenAValidRequest_whenGetAllTasksByOrder_thenAllTasksShouldBeReturned() throws Exception {
+        // Arrange
+        UUID validOrderId = UUID.randomUUID();
+        Task expectedTask = TaskFactory.randomTask().build();
+        List<Task> expectedTaskList = List.of(expectedTask);
+
+        when(orderService.getAllTasksByOrder(validOrderId)).thenReturn(expectedTaskList);
+
+        TaskResponse expectedResponse = new TaskResponse(
+                expectedTask.getTaskNo(),
+                expectedTask.getTaskType(),
+                expectedTask.getTaskInstruction(),
+                expectedTask.getExtraInstructions(),
+                expectedTask.getPriceOfTask(),
+                expectedTask.getOrder().getOrderNo()
+        );
+
+        String content = objectMapper.writeValueAsString(expectedTaskList);
+        System.out.println(content);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/order/" + validOrderId + "/tasks")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(expectedTaskList.size()))
+                .andExpect(jsonPath("$.[0].taskNo").value(expectedResponse.taskNo().toString()))
+                .andExpect(jsonPath("$.[0].taskType").value(expectedResponse.taskType().toString()))
+                .andExpect(jsonPath("$.[0].taskInstruction").value(expectedResponse.taskInstruction()))
+                .andExpect(jsonPath("$.[0].extraInstructions").value(expectedResponse.extraInstructions()))
+                .andExpect(jsonPath("$.[0].priceOfTask").value(expectedResponse.priceOfTask()))
+                .andExpect(jsonPath("$.[0].orderNo").value(expectedResponse.orderNo().toString()));
+    }
+
+    @Test
+    @WithMockUser(username="admin",roles={"ADMIN"})
+    void givenNoTasksAvailableForASpecificOrder_whenGetAllTasksByOrder_thenEmptyListShouldBeReturned() throws Exception {
+
+        // Arrange
+        UUID orderId = UUID.randomUUID();
+
+        when(orderService.getAllTasksByOrder(orderId)).thenReturn(Collections.emptyList());
+
+        // Act & Assert
+        mockMvc.perform(get("/api/order/" + orderId + "/tasks")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
     }
 
     @Test
@@ -222,10 +275,8 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.endDate").value(expectedResponse.endDate()))
                 .andExpect(jsonPath("$.dailyNumberOfVisits").value(expectedResponse.dailyNumberOfVisits()))
                 .andExpect(jsonPath("$.totalNumberOfVisits").value(expectedResponse.totalNumberOfVisits()))
-                .andExpect(jsonPath("$.tasks").isArray())
                 .andExpect(jsonPath("$.customerUsername").value(expectedResponse.customerUsername()))
-                .andExpect(jsonPath("$.catsitterUsername").value(expectedResponse.catsitterUsername()))
-                .andExpect(jsonPath("$.invoice").isEmpty());
+                .andExpect(jsonPath("$.catsitterUsername").value(expectedResponse.catsitterUsername()));
     }
 
     @Test
@@ -243,7 +294,7 @@ public class OrderControllerTest {
                 .build();
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/cat")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidOrderRequest))
                         .accept(MediaType.APPLICATION_JSON))
@@ -291,10 +342,9 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.endDate").value(expectedResponse.endDate()))
                 .andExpect(jsonPath("$.dailyNumberOfVisits").value(expectedResponse.dailyNumberOfVisits()))
                 .andExpect(jsonPath("$.totalNumberOfVisits").value(expectedResponse.totalNumberOfVisits()))
-                .andExpect(jsonPath("$.tasks").isArray())
                 .andExpect(jsonPath("$.customerUsername").value(expectedResponse.customerUsername()))
-                .andExpect(jsonPath("$.catsitterUsername").value(expectedResponse.catsitterUsername()))
-                .andExpect(jsonPath("$.invoice").isEmpty()); // Assuming invoice should be empty in this scenario
+                .andExpect(jsonPath("$.catsitterUsername").value(expectedResponse.catsitterUsername()));
+
     }
 
     @Test
@@ -333,7 +383,7 @@ public class OrderControllerTest {
                 .build();
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/cat/{id}", invalidOrderNo)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/order/{id}", invalidOrderNo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidOrderRequest))
                         .accept(MediaType.APPLICATION_JSON))
