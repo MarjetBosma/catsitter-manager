@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CustomerMapperTest {
+
     @Test
     void testCustomerToCustomerResponse() {
 
@@ -28,6 +29,7 @@ public class CustomerMapperTest {
 
     @Test
     void testCustomerRequestToCustomer() {
+
         // Given
         CustomerRequest customerRequest = CustomerRequestFactory.randomCustomerRequest().build();
 

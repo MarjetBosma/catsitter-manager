@@ -29,6 +29,7 @@ public class CatsitterMapperTest {
 
     @Test
     void testCatsitterRequestToCatsitter() {
+
         // Given
         CatsitterRequest catsitterRequest = CatsitterRequestFactory.randomCatsitterRequest().build();
 

@@ -21,12 +21,13 @@ public class OrderMapperTest {
         OrderResponse orderResponse = OrderMapper.OrderToOrderResponse(order);
 
         // Then
+        assertEquals(order.getOrderNo(), orderResponse.orderNo());
         assertEquals(order.getStartDate().toString(), orderResponse.startDate());
         assertEquals(order.getEndDate().toString(), orderResponse.endDate());;
         assertEquals(order.getDailyNumberOfVisits(), orderResponse.dailyNumberOfVisits());
         assertEquals(order.getTotalNumberOfVisits(), orderResponse.totalNumberOfVisits());
         assertEquals(order.getCustomer().getUsername(), orderResponse.customerUsername());
-        assertEquals(order.getCatsitter().getUsername(), orderResponse.customerUsername());
+        assertEquals(order.getCatsitter().getUsername(), orderResponse.catsitterUsername());
     }
 
     @Test

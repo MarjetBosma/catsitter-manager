@@ -1,10 +1,11 @@
 package nl.novi.catsittermanager.dtos.user;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import nl.novi.catsittermanager.enumerations.Role;
 import org.springframework.validation.annotation.Validated;
 
-
+@Builder
 @Validated
 public record UserRequest(
 

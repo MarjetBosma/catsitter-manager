@@ -3,6 +3,7 @@ package nl.novi.catsittermanager.mappers;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceRequest;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
 import nl.novi.catsittermanager.models.Invoice;
+import nl.novi.catsittermanager.models.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -22,10 +23,15 @@ public class InvoiceMapper {
     }
 
     public static Invoice InvoiceRequestToInvoice(InvoiceRequest invoiceRequest) {
+
+        Order order = new Order();
+        order.setOrderNo(invoiceRequest.orderNo());
+
         return Invoice.builder()
                 .invoiceDate(LocalDate.parse(invoiceRequest.invoiceDate()))
                 .amount(invoiceRequest.amount())
                 .paid(invoiceRequest.paid())
+                .order(order)
                 .build();
     }
 }

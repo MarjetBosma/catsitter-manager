@@ -3,6 +3,7 @@ package nl.novi.catsittermanager.mappers;
 import nl.novi.catsittermanager.dtos.cat.CatRequest;
 import nl.novi.catsittermanager.dtos.cat.CatResponse;
 import nl.novi.catsittermanager.models.Cat;
+import nl.novi.catsittermanager.models.Customer;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -30,6 +31,10 @@ public class CatMapper {
     }
 
     public static Cat CatRequestToCat(CatRequest catRequest) {
+
+        Customer owner = new Customer();
+        owner.setUsername(catRequest.ownerUsername());
+
         return Cat.builder()
                 .name(catRequest.name())
                 .dateOfBirth(LocalDate.parse(catRequest.dateOfBirth()))
@@ -42,6 +47,7 @@ public class CatMapper {
                 .phoneVet(catRequest.phoneVet())
                 .medicationName(catRequest.medicationName())
                 .medicationDose(catRequest.medicationDose())
+                .owner(owner)
                 .image(catRequest.image())
                 .build();
     }

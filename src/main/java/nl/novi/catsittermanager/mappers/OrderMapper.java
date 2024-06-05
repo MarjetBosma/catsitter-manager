@@ -28,14 +28,21 @@ public class OrderMapper {
     }
 
     public static Order OrderRequestToOrder(OrderRequest orderRequest) {
+
+        Customer customer = new Customer();
+        customer.setUsername(orderRequest.customerUsername());
+
+        Catsitter catsitter = new Catsitter();
+        catsitter.setUsername(orderRequest.catsitterUsername());
+
         return Order.builder()
                 .startDate(LocalDate.parse(orderRequest.startDate()))
                 .endDate(LocalDate.parse(orderRequest.endDate()))
                 .dailyNumberOfVisits(orderRequest.dailyNumberOfVisits())
                 .totalNumberOfVisits(orderRequest.totalNumberOfVisits())
                 .tasks(new ArrayList<>())
-                .customer(new Customer())
-                .catsitter(new Catsitter())
+                .customer(customer)
+                .catsitter(catsitter)
                 .build();
     }
 }

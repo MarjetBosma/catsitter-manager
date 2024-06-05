@@ -2,9 +2,7 @@ package nl.novi.catsittermanager.dtos;
 
 import net.datafaker.Faker;
 import nl.novi.catsittermanager.dtos.order.OrderRequest;
-
-import java.time.ZoneId;
-import java.util.concurrent.TimeUnit;
+import nl.novi.catsittermanager.helpers.OrderFactoryHelper;
 
 public class OrderRequestFactory {
 
@@ -13,8 +11,8 @@ public class OrderRequestFactory {
     public static OrderRequest.OrderRequestBuilder randomOrderRequest() {
 
         return OrderRequest.builder()
-                .startDate(faker.date().past(30, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString())
-                .endDate(faker.date().future(30, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString())
+                .startDate(String.valueOf(OrderFactoryHelper.randomPastDate(30)))
+                .endDate(String.valueOf(OrderFactoryHelper.randomFutureDate(30)))
                 .dailyNumberOfVisits(faker.number().numberBetween(1, 5))
                 .totalNumberOfVisits(faker.number().numberBetween(5, 20))
                 .customerUsername(faker.name().username())

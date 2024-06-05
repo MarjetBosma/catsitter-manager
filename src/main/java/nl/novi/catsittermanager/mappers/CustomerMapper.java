@@ -20,8 +20,8 @@ public class CustomerMapper {
                 customer.getName(),
                 customer.getAddress(),
                 customer.getEmail(),
-                (customer.getCats() == null) ? null : customer.getCats().stream().map(CatMapper::CatToCatResponse).toList(),
-                (customer.getOrders() == null) ? null : customer.getOrders().stream().map(OrderMapper::OrderToOrderResponse).toList()
+                customer.getCats().stream().map(CatMapper::CatToCatResponse).toList(),
+                customer.getOrders().stream().map(OrderMapper::OrderToOrderResponse).toList()
         );
     }
 
