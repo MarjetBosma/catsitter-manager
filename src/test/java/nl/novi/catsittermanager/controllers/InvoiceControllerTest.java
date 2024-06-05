@@ -196,7 +196,7 @@ public class InvoiceControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.invoiceNo").value(expectedResponse.invoiceNo().toString()))
-                .andExpect(jsonPath("$.invoiceDate").value(expectedResponse.invoiceDate().toString()))
+                .andExpect(jsonPath("$.invoiceDate").value(expectedResponse.invoiceDate()))
                 .andExpect(jsonPath("$.amount").value(expectedResponse.amount()))
                 .andExpect(jsonPath("$.paid").value(expectedResponse.paid()))
                 .andExpect(jsonPath("$.orderNo").value(expectedResponse.orderNo().toString()));
@@ -262,7 +262,7 @@ public class InvoiceControllerTest {
         when(invoiceService.editInvoice(ArgumentMatchers.any(UUID.class), ArgumentMatchers.any(Invoice.class), ArgumentMatchers.eq(expectedInvoiceRequest.orderNo())))
                 .thenReturn(expectedInvoice);
 
-        InvoiceResponse expectedResponse = new InvoiceResponse(
+        InvoiceResponse expectedInvoiceResponse = new InvoiceResponse(
                 expectedInvoice.getInvoiceNo(),
                 expectedInvoice.getInvoiceDate().toString(),
                 expectedInvoice.getAmount(),
@@ -280,11 +280,11 @@ public class InvoiceControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.invoiceNo").value(expectedResponse.invoiceNo().toString()))
-                .andExpect(jsonPath("$.invoiceDate").value(expectedResponse.invoiceDate().toString()))
-                .andExpect(jsonPath("$.amount").value(expectedResponse.amount()))
-                .andExpect(jsonPath("$.paid").value(expectedResponse.paid()))
-                .andExpect(jsonPath("$.orderNo").value(expectedResponse.orderNo().toString()));
+                .andExpect(jsonPath("$.invoiceNo").value(expectedInvoiceResponse.invoiceNo().toString()))
+                .andExpect(jsonPath("$.invoiceDate").value(expectedInvoiceResponse.invoiceDate().toString()))
+                .andExpect(jsonPath("$.amount").value(expectedInvoiceResponse.amount()))
+                .andExpect(jsonPath("$.paid").value(expectedInvoiceResponse.paid()))
+                .andExpect(jsonPath("$.orderNo").value(expectedInvoiceResponse.orderNo().toString()));
     }
 
     @Test

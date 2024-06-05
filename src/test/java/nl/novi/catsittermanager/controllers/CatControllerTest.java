@@ -164,7 +164,8 @@ class CatControllerTest {
         CatRequest expectedCatRequest = CatRequestFactory.randomCatRequest().build();
         Cat expectedCat = CatFactory.randomCat().build();
 
-        when(catService.createCat(any(Cat.class), eq(expectedCatRequest.ownerUsername()))).thenReturn(expectedCat);
+        when(catService.createCat(any(Cat.class), eq(expectedCatRequest.ownerUsername())))
+                .thenReturn(expectedCat);
 
         String content = objectMapper.writeValueAsString(expectedCatRequest);
         System.out.println(content);
@@ -307,7 +308,7 @@ class CatControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    void givenValidId_whenDeleteCat_thenCatShouldBeDeleted() throws Exception {
+    void givenAValidId_whenDeleteCat_thenCatShouldBeDeleted() throws Exception {
 
         // Arrange
         UUID catId = UUID.randomUUID();

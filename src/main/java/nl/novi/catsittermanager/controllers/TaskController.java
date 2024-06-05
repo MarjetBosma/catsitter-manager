@@ -63,6 +63,6 @@ public class TaskController {
     @DeleteMapping("/task/{id}")
     public ResponseEntity<Object> deleteTask(@PathVariable("id") final UUID idToDelete) {
         taskService.deleteTask(idToDelete);
-        return ResponseEntity.ok().body("Task with id " + idToDelete + " removed from database");
+        return ResponseEntity.ok().body("Task with id " + idToDelete + " removed from database.");
     }
 }
