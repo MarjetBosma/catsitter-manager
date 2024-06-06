@@ -72,7 +72,7 @@ public class CatsitterController {
    }
 
    @PutMapping("/catsitter/{id}")
-   public ResponseEntity<CatsitterResponse> editCatsitter(@PathVariable("id") final String username, @RequestBody final CatsitterRequest catsitterRequest) {
+   public ResponseEntity<CatsitterResponse> editCatsitter(@PathVariable("id") final String username, @Valid @RequestBody final CatsitterRequest catsitterRequest) {
        Catsitter catsitter = catsitterService.editCatsitter(username, CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest));
        return ResponseEntity.ok().body(CatsitterMapper.CatsitterToCatsitterResponse(catsitter));
    }

@@ -52,7 +52,7 @@ public class UserController {
     }
     
     @PutMapping("/user/{id}")
-    public ResponseEntity<UserResponse> editUser(@PathVariable("id") final String username, @RequestBody final UserRequest userRequest) {
+    public ResponseEntity<UserResponse> editUser(@Valid @PathVariable("id") final String username, @Valid @RequestBody final UserRequest userRequest) {
         User user = userService.editUser(username, UserMapper.UserRequestToUser(userRequest));
         return ResponseEntity.ok().body(UserMapper.UserToUserResponse(user));
     }

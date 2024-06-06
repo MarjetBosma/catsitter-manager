@@ -238,6 +238,7 @@ public class InvoiceControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenInvalidData_whenCreateInvoice_thenBadRequest() throws Exception {
+
         // Arrange
         InvoiceRequest invalidInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest()
                 .invoiceDate(null)
@@ -316,10 +317,9 @@ public class InvoiceControllerTest {
     void givenInvalidData_whenEditInvoice_thenBadRequest() throws Exception {
 
         // Arrange
-        UUID invalidInvoiceNo = UUID.randomUUID();
+        UUID invoiceNo = UUID.randomUUID();
 
-        InvoiceRequest.InvoiceRequestBuilder builder = InvoiceRequestFactory.randomInvoiceRequest();
-        InvoiceRequest invalidInvoiceRequest = builder
+        InvoiceRequest invalidInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest()
                 .invoiceDate(null)
                 .amount(-10.00)
                 .paid(null)
@@ -327,7 +327,7 @@ public class InvoiceControllerTest {
                 .build();
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/invoice/{id}", invalidInvoiceNo)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/invoice/{id}", invoiceNo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidInvoiceRequest))
                         .accept(MediaType.APPLICATION_JSON))

@@ -190,7 +190,7 @@ public class CatsitterServiceTest {
 
         // Act & Assert
         assertEquals("No catsitter found with this username.", exception.getMessage());
-        verify(catsitterRepository, times(1));
+        verify(catsitterRepository, times(1)).findById(username);
     }
 
     @Test

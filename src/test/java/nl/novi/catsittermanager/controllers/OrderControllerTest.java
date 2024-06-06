@@ -184,6 +184,7 @@ public class OrderControllerTest {
     @Test
     @WithMockUser(username="admin",roles={"ADMIN"})
     void givenAValidRequest_whenGetAllTasksByOrder_thenAllTasksShouldBeReturned() throws Exception {
+
         // Arrange
         UUID validOrderId = UUID.randomUUID();
         Task expectedTask = TaskFactory.randomTask().build();
@@ -292,7 +293,7 @@ public class OrderControllerTest {
                 .build();
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/order")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidOrderRequest))
                         .accept(MediaType.APPLICATION_JSON))
@@ -350,14 +351,14 @@ public class OrderControllerTest {
     void givenInvalidId_whenEditOrder_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
 
         // Arrange
-        UUID orderNo = UUID.randomUUID();
+        UUID invalidOrderNo = UUID.randomUUID();
         OrderRequest expectedOrderRequest = OrderRequestFactory.randomOrderRequest().build();
 
         when(orderService.editOrder(any(UUID.class), any(Order.class), eq(expectedOrderRequest.customerUsername()), eq(expectedOrderRequest.catsitterUsername())))
                 .thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id."));
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/order/{id}", orderNo)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/order/{id}",invalidOrderNo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(expectedOrderRequest)))
                 .andExpect(status().isNotFound());
@@ -368,10 +369,9 @@ public class OrderControllerTest {
     void givenInvalidData_whenEditOrder_thenBadRequest() throws Exception {
 
         // Arrange
-        UUID invalidOrderNo = UUID.randomUUID();
+        UUID orderNo = UUID.randomUUID();
 
-        OrderRequest.OrderRequestBuilder builder = OrderRequestFactory.randomOrderRequest();
-        OrderRequest invalidOrderRequest = builder
+        OrderRequest invalidOrderRequest = OrderRequestFactory.randomOrderRequest()
                 .startDate(null)
                 .endDate(null)
                 .dailyNumberOfVisits(0)
@@ -381,7 +381,7 @@ public class OrderControllerTest {
                 .build();
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/order/{id}", invalidOrderNo)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/order/{id}", orderNo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidOrderRequest))
                         .accept(MediaType.APPLICATION_JSON))

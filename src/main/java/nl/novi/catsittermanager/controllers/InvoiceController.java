@@ -57,7 +57,7 @@ public class InvoiceController {
         }
 
     @PutMapping("/invoice/{id}")
-    public ResponseEntity<InvoiceResponse> editInvoice(@PathVariable("id") final UUID idToEdit, @RequestBody final InvoiceRequest invoiceRequest) {
+    public ResponseEntity<InvoiceResponse> editInvoice(@PathVariable("id") final UUID idToEdit, @Valid @RequestBody final InvoiceRequest invoiceRequest) {
         Invoice invoice = invoiceService.editInvoice(idToEdit, InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest), invoiceRequest.orderNo());
         return ResponseEntity.ok().body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
     }

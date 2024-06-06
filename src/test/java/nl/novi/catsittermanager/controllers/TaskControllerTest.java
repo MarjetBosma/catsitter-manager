@@ -279,13 +279,12 @@ public class TaskControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    void givenInvalidData_whenEditInvoice_thenBadRequest() throws Exception {
+    void givenInvalidData_whenEditTask_thenBadRequest() throws Exception {
 
         //  Arrange
-        UUID invalidTaskNo = UUID.randomUUID();
+        UUID taskNo = UUID.randomUUID();
 
-        TaskRequest.TaskRequestBuilder builder = TaskRequestFactory.randomTaskRequest();
-        TaskRequest invalidTaskRequest = builder
+        TaskRequest invalidTaskRequest = TaskRequestFactory.randomTaskRequest()
                 .taskType(null)
                 .taskInstruction(null)
                 .extraInstructions(null)
@@ -294,7 +293,7 @@ public class TaskControllerTest {
                 .build();
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/task/{id}", invalidTaskNo)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/task/{id}", taskNo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidTaskRequest))
                         .accept(MediaType.APPLICATION_JSON))

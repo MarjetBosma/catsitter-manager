@@ -27,7 +27,6 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-
 public class OrderController {
 
     private final OrderService orderService;
@@ -66,7 +65,7 @@ public class OrderController {
     }
 
     @PutMapping("/order/{id}")
-    public ResponseEntity<OrderResponse> editOrder(@PathVariable("id") final UUID idToEdit, @RequestBody final OrderRequest orderRequest) {
+    public ResponseEntity<OrderResponse> editOrder(@PathVariable("id") final UUID idToEdit, @Valid @RequestBody final OrderRequest orderRequest) {
         Order order = orderService.editOrder(idToEdit, OrderMapper.OrderRequestToOrder(orderRequest), orderRequest.customerUsername(), orderRequest.catsitterUsername());
         return ResponseEntity.ok().body(OrderMapper.OrderToOrderResponse(order));
     }

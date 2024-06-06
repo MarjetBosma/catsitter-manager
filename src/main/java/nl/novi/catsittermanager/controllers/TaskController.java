@@ -53,7 +53,7 @@ public class TaskController {
     }
 
     @PutMapping("/task/{id}")
-    public ResponseEntity<TaskResponse> editTask(@PathVariable("id") final UUID idToEdit, @RequestBody final TaskRequest taskRequest) {
+    public ResponseEntity<TaskResponse> editTask(@PathVariable("id") final UUID idToEdit,@Valid @RequestBody final TaskRequest taskRequest) {
         Task task = taskService.editTask(idToEdit, TaskMapper.TaskRequestToTask(taskRequest), taskRequest.orderNo());
         return ResponseEntity.ok().body(TaskMapper.TaskToTaskResponse(task));
     }

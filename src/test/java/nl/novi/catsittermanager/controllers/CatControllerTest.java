@@ -91,7 +91,8 @@ class CatControllerTest {
                 .andExpect(jsonPath("$.[0].phoneVet").value(expectedCat.getPhoneVet()))
                 .andExpect(jsonPath("$.[0].medicationName").value(expectedCat.getMedicationName()))
                 .andExpect(jsonPath("$.[0].medicationDose").value(expectedCat.getMedicationDose()))
-                .andExpect(jsonPath("$.[0].ownerUsername").value(expectedCat.getOwner().getUsername()));
+                .andExpect(jsonPath("$.[0].ownerUsername").value(expectedCat.getOwner().getUsername()))
+                .andExpect(jsonPath("$.[0].image").value(expectedCat.getImage()));
     }
 
     @Test
@@ -135,7 +136,8 @@ class CatControllerTest {
                 .andExpect(jsonPath("$.phoneVet").value(expectedCat.getPhoneVet()))
                 .andExpect(jsonPath("$.medicationName").value(expectedCat.getMedicationName()))
                 .andExpect(jsonPath("$.medicationDose").value(expectedCat.getMedicationDose()))
-                .andExpect(jsonPath("$.ownerUsername").value(expectedCat.getOwner().getUsername()));
+                .andExpect(jsonPath("$.ownerUsername").value(expectedCat.getOwner().getUsername()))
+                .andExpect(jsonPath("$.image").value(expectedCat.getImage()));
     }
 
     @Test
@@ -188,7 +190,8 @@ class CatControllerTest {
                 .andExpect(jsonPath("$.phoneVet").value(expectedCat.getPhoneVet()))
                 .andExpect(jsonPath("$.medicationName").value(expectedCat.getMedicationName()))
                 .andExpect(jsonPath("$.medicationDose").value(expectedCat.getMedicationDose()))
-                .andExpect(jsonPath("$.ownerUsername").value(expectedCat.getOwner().getUsername()));
+                .andExpect(jsonPath("$.ownerUsername").value(expectedCat.getOwner().getUsername()))
+                .andExpect(jsonPath("$.image").value(expectedCat.getImage()));
     }
 
     @Test
@@ -252,7 +255,8 @@ class CatControllerTest {
                 .andExpect(jsonPath("$.phoneVet").value(expectedCat.getPhoneVet()))
                 .andExpect(jsonPath("$.medicationName").value(expectedCat.getMedicationName()))
                 .andExpect(jsonPath("$.medicationDose").value(expectedCat.getMedicationDose()))
-                .andExpect(jsonPath("$.ownerUsername").value(expectedCat.getOwner().getUsername()));
+                .andExpect(jsonPath("$.ownerUsername").value(expectedCat.getOwner().getUsername()))
+                .andExpect(jsonPath("$.image").value(expectedCat.getImage()));
     }
 
     @Test
@@ -260,14 +264,14 @@ class CatControllerTest {
     void givenInvalidId_whenEditCat_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
 
         // Arrange
-        UUID catId = UUID.randomUUID();
+        UUID invalidCatId = UUID.randomUUID();
         CatRequest expectedCatRequest = CatRequestFactory.randomCatRequest().build();
 
-        when(catService.editCat(eq(catId), any(Cat.class), eq(expectedCatRequest.ownerUsername())))
+        when(catService.editCat(eq(invalidCatId), any(Cat.class), eq(expectedCatRequest.ownerUsername())))
                 .thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id."));
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/cat/{id}", catId)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/cat/{id}", invalidCatId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(expectedCatRequest)))
                 .andExpect(status().isNotFound());
@@ -278,9 +282,8 @@ class CatControllerTest {
     void givenInvalidData_whenEditCat_thenBadRequest() throws Exception {
 
         // Arrange
-        UUID invalidCatId = UUID.randomUUID();
+        UUID catId = UUID.randomUUID();
 
-        // Act & Assert
         CatRequest invalidCatRequest = CatRequestFactory.randomCatRequest()
                 .name(null)
                 .dateOfBirth(null)
@@ -294,9 +297,11 @@ class CatControllerTest {
                 .medicationName(null)
                 .medicationDose(null)
                 .ownerUsername(null)
+                .image(null)
                 .build();
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/cat/{id}", invalidCatId)
+        //  Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/cat/{id}", catId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCatRequest))
                         .accept(MediaType.APPLICATION_JSON))

@@ -8,13 +8,16 @@ import nl.novi.catsittermanager.dtos.login.LoginResponse;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.services.UserService;
 import nl.novi.catsittermanager.utils.JwtUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -26,40 +29,37 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 @Import(TestConfig.class)
-@WebMvcTest(AuthenticationController.class)
-@AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 public class LoginIntegrationTest {
 
     @Autowired
+    private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @Autowired
     private AuthenticationManager authenticationManager;
 
-    @MockBean
+    @Autowired
     private JwtUtil jwtUtil;
 
-    @MockBean
+    @Autowired
     private JwtAuthorizationFilter jwtAuthorizationFilter;
 
-    @MockBean
+    @Autowired
     private UserService userService;
-
 
     @BeforeEach
     void setUp() {
@@ -92,8 +92,8 @@ public class LoginIntegrationTest {
         // Assert
         String jsonResponse = result.getResponse().getContentAsString();
         LoginResponse loginResponse = objectMapper.readValue(jsonResponse, LoginResponse.class);
-        assertNotNull(loginResponse);
-        assertEquals(token, loginResponse.getToken());
+//        assertNotNull(loginResponse);
+        Assertions.assertEquals(token, loginResponse.getToken());
     }
 
     @Test

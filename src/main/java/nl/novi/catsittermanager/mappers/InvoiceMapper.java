@@ -23,6 +23,11 @@ public class InvoiceMapper {
 
     public static Invoice InvoiceRequestToInvoice(InvoiceRequest invoiceRequest) {
 
+//        LocalDate invoiceDate = null;
+//        if (invoiceRequest.invoiceDate() != null) {
+//            invoiceDate = LocalDate.parse(invoiceRequest.invoiceDate());
+//        }
+
         Order order = new Order();
         order.setOrderNo(invoiceRequest.orderNo());
 
