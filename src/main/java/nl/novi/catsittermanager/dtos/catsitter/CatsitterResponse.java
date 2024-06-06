@@ -7,7 +7,6 @@ import nl.novi.catsittermanager.models.ImageUpload;
 import java.util.List;
 
 public record CatsitterResponse(
-
         String username,
         String name,
         String address,
@@ -16,6 +15,5 @@ public record CatsitterResponse(
         @JsonIgnore
         List<OrderResponse> orders,
         ImageUpload image
-
 ) {
 }

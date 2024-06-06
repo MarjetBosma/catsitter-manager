@@ -14,13 +14,13 @@ public class UserMapperTest {
     @Test
     void testUserToUserMapper() {
 
-        // Given
+        // Arrange
         User user = UserFactory.randomUser().build();
 
-        // When
+        // Act
         UserResponse userResponse = UserMapper.UserToUserResponse(user);
 
-        // Then
+        // Assert
         assertEquals(user.getUsername(), userResponse.username());
         assertEquals(user.getName(), userResponse.name());
         assertEquals(user.getAddress(), userResponse.address());
@@ -30,13 +30,13 @@ public class UserMapperTest {
     @Test
     void testUserRequestToUser() {
 
-        // Given
+        // Arrange
         UserRequest userRequest = UserRequestFactory.randomUserRequest().build();
 
-        // When
+        // Act
         User user = UserMapper.UserRequestToUser(userRequest);
 
-        // Then
+        // Assert
         assertEquals(userRequest.username(), user.getUsername());
         assertEquals(userRequest.name(), user.getName());
         assertEquals(userRequest.address(), user.getAddress());

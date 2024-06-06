@@ -1,7 +1,6 @@
 package nl.novi.catsittermanager.dtos;
 
 import net.datafaker.Faker;
-
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterRequest;
 
 public class CatsitterRequestFactory {

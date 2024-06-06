@@ -8,30 +8,28 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Builder
 public record CatRequest(
-
-        @NotNull(message = "cat name is required")
+        @NotNull(message = "Cat name is required")
         String name,
-        @NotNull(message = "date of birth is required")
+        @NotNull(message = "Date of birth is required")
         String dateOfBirth,
-        @NotNull(message = "gender is required")
+        @NotNull(message = "Dender is required")
         String gender,
-        @NotNull(message = "cat breed is required")
+        @NotNull(message = "Cat breed is required")
         String breed,
         String generalInfo,
-        @NotNull(message = "required to enter whether the  cat is spayed or neutered")
+        @NotNull(message = "Required to enter whether the cat is spayed or neutered")
         Boolean spayedOrNeutered,
-        @NotNull(message = "vaccination status is required")
+        @NotNull(message = "Vaccination status is required")
         Boolean vaccinated,
-        @NotNull(message = "name of veterinarian or vet clinic name is required")
+        @NotNull(message = "Name of veterinarian or vet clinic name is required")
         String veterinarianName,
-        @NotNull(message = "phone number vet clinic is required")
+        @NotNull(message = "Phone number vet clinic is required")
         String phoneVet,
         String medicationName,
         String medicationDose,
-        @NotNull(message = "owner name is required")
+        @NotNull(message = "Owner name is required")
         String ownerUsername,
         ImageUpload image
-
 ) {
 }
 

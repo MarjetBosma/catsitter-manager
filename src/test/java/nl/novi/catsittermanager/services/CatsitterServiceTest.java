@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -31,126 +30,131 @@ public class CatsitterServiceTest {
 
     @Test
     void testGetAllCatsitters_shouldFetchAllCatsittersOnTheList() {
-        // Given
+
+        // Arrange
         Catsitter expectedCatsitter = CatsitterFactory.randomCatsitter().build();
         List<Catsitter> expectedCatsitterList = List.of(expectedCatsitter);
 
         when(catsitterRepository.findAll()).thenReturn(expectedCatsitterList);
 
-        // When
+        // Act
         List<Catsitter> catsitterResponseList = catsitterService.getAllCatsitters();
 
-        // Then
+        // Assert
         assertEquals(expectedCatsitterList, catsitterResponseList);
-
         verify(catsitterRepository, times(1)).findAll();
     }
 
     @Test
     void testGetAllCatsitters_noCatsittersInDatabase_shouldReturnEmptyList() {
-        // Given
+
+        // Arrange
         when(catsitterRepository.findAll()).thenReturn(Collections.emptyList());
 
-        // When
+        // Act
         List<Catsitter> catsitterResponseList = catsitterService.getAllCatsitters();
 
-        // Then
+        // Assert
         assertTrue(catsitterResponseList.isEmpty());
         verify(catsitterRepository, times(1)).findAll();
     }
 
     @Test
     void testGetCatsitter_shouldFetchCatsitterWithSpecificUsername() {
-        // Given
+
+        // Arrange
         Catsitter expectedCatsitter = CatsitterFactory.randomCatsitter().build();
 
         when(catsitterRepository.findById(expectedCatsitter.getUsername())).thenReturn(Optional.of(expectedCatsitter));
 
-        // When
+        // Act
         Catsitter resultCatsitter = catsitterService.getCatsitter(expectedCatsitter.getUsername());
 
-        // Then
+        // Assert
         assertEquals(expectedCatsitter, resultCatsitter);
         verify(catsitterRepository, times(1)).findById(expectedCatsitter.getUsername());
     }
 
     @Test
     void testGetCatsitter_shouldFetchCatsitterWithSpecificUsername_RecordNotFoundException() {
-        // Given
+
+        // Arrange
         String username = "nonExistingCatsitter";
 
         when(catsitterRepository.findById(username)).thenReturn(Optional.empty());
 
-        // When
+        // Act
         RecordNotFoundException exception=assertThrows(RecordNotFoundException.class, () -> catsitterService.getCatsitter(username));
 
-        // Then
+        // Assert
         assertEquals("No catsitter found with this username.", exception.getMessage());
         verify(catsitterRepository, times(1)).findById(username);
     }
 
     @Test
     void testGetAllOrdersByCatsitter_shouldFetchAllOrdersForThisCatsitter() {
-        // Given
+
+        // Arrange
         Catsitter randomCatsitter = CatsitterFactory.randomCatsitter().build();
         List<Order> expectedOrders = OrderFactory.randomOrders(3);
         randomCatsitter.setOrders(expectedOrders);
 
         when(catsitterRepository.findById(randomCatsitter.getUsername())).thenReturn(Optional.of(randomCatsitter));
 
-        // When
+        // Act
         List<Order> resultOrders = catsitterService.getAllOrdersByCatsitter(randomCatsitter.getUsername());
 
-        // Then
+        // Assert
         assertEquals(expectedOrders.size(), resultOrders.size());
         assertTrue(resultOrders.containsAll(expectedOrders));
-
         verify(catsitterRepository, times(1)).findById(randomCatsitter.getUsername());
     }
 
     @Test
     void testGetAllOrdersByCatsitter_noOrdersOnTheList_shouldReturnEmptyList() {
-        // Given
+
+        // Arrange
         Catsitter randomCatsitter = CatsitterFactory.randomCatsitter().build();
         randomCatsitter.setOrders(Collections.emptyList());
 
         when(catsitterRepository.findById(randomCatsitter.getUsername())).thenReturn(Optional.of(randomCatsitter));
 
-        // When
+        // Act
         List<Order> resultOrders = catsitterService.getAllOrdersByCatsitter(randomCatsitter.getUsername());
 
+        // Assert
         assertNotNull(resultOrders);
         assertTrue(resultOrders.isEmpty());
-
         verify(catsitterRepository, times(1)).findById(randomCatsitter.getUsername());
     }
 
     @Test
     void testCreateCatsitter_shouldCreateANewCatsitter() {
-        // Given
+
+        // Arrange
         Catsitter expectedCatsitter = CatsitterFactory.randomCatsitter().build();
 
         when(catsitterRepository.save(expectedCatsitter)).thenReturn(expectedCatsitter);
 
-        // When
+        // Act
         Catsitter resultCatsitter = catsitterService.createCatsitter(expectedCatsitter);
 
-        // Then
+        // Assert
         assertEquals(expectedCatsitter, resultCatsitter);
-
         verify(catsitterRepository, times(1)).save(expectedCatsitter);
     }
 
     @Test
     void testCreateCatsitter_WhenUsernameExists_shouldThrowUsernameAlreadyExistsException() {
-        // Given
+
+        // Arrange
         Catsitter existingCatsitter = CatsitterFactory.randomCatsitter().build();
         String existingUsername = "existingUsername";
         existingCatsitter.setUsername(existingUsername);
 
         when(catsitterRepository.findById(existingUsername)).thenReturn(Optional.of(existingCatsitter));
 
-        // When & Then
+        // Act & Assert
         assertThrows(UsernameAlreadyExistsException.class, () -> {
             catsitterService.createCatsitter(existingCatsitter);
         });
@@ -159,53 +163,55 @@ public class CatsitterServiceTest {
 
     @Test
     void testEditCatsitter_shouldEditExistingCatsitter() {
-        // Given
+
+        // Arrange
         Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
 
         when(catsitterRepository.findById(catsitter.getUsername())).thenReturn(Optional.of(catsitter));
         when(catsitterRepository.save(catsitter)).thenReturn(catsitter);
 
-        // When
+        // Act
         Catsitter resultCatsitter = catsitterService.editCatsitter(catsitter.getUsername(), catsitter);
 
-        // Then
+        // Assert
         assertEquals(catsitter, resultCatsitter);
-
         verify(catsitterRepository, times(1)).findById(catsitter.getUsername());
         verify(catsitterRepository, times(1)).save(catsitter);
     }
 
     @Test
     void testEditCatsitter_nonExistingCatsitter_shouldThrowRecordNotFoundException() {
-        // Given
+
+        // Arrange
         String username = "nonExistingCatsitter";
         when(catsitterRepository.findById(username)).thenReturn(Optional.empty());
 
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> catsitterService.getCatsitter(username));
 
-        // When & Then
+        // Act & Assert
         assertEquals("No catsitter found with this username.", exception.getMessage());
         verify(catsitterRepository, times(1));
     }
 
     @Test
     void testDeleteCatsitter_shouldDeleteCatsitterWithSpecificId() {
-        // Given
+
+        // Arrange
         Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
         when(catsitterRepository.existsById(catsitter.getUsername())).thenReturn(true);
 
-        // When
+        // Act
         String resultUsername = catsitterService.deleteCatsitter(catsitter.getUsername());
 
-        // Then
+        // Assert
         assertEquals(catsitter.getUsername(), resultUsername);
-
         verify(catsitterRepository, times(1)).existsById(catsitter.getUsername());
         verify(catsitterRepository, times(1)).deleteById(catsitter.getUsername());
     }
 
     @Test
     void testDeleteCatsitter_nonExistingCatsitter_shouldThrowRecordNotFoundException() {
+
         // Given
         String username = "nonExistingCatsitter";
         when(catsitterRepository.existsById(username)).thenReturn(false);

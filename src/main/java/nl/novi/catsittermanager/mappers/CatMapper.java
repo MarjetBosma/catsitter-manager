@@ -5,13 +5,13 @@ import nl.novi.catsittermanager.dtos.cat.CatResponse;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDate;
 
 @Component
 public class CatMapper {
 
     public static CatResponse CatToCatResponse(Cat cat) {
+
         return new CatResponse(
                 cat.getId(),
                 cat.getName(),

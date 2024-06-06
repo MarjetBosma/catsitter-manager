@@ -1,13 +1,12 @@
 package nl.novi.catsittermanager.models;
 
 import net.datafaker.Faker;
+
 import nl.novi.catsittermanager.helpers.OrderFactoryHelper;
 
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class OrderFactory {
 

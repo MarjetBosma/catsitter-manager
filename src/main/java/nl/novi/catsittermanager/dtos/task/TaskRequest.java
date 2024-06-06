@@ -11,14 +11,15 @@ import java.util.UUID;
 @Builder
 @Validated
 public record TaskRequest(
-        @NotNull
+        @NotNull(message = "Task type is required, choose from food, water, litterbox, medication, furcare, play and other")
         TaskType taskType,
-        @NotNull
+        @NotNull(message = "Providing a basic instruction for the task is required")
         String taskInstruction,
         String extraInstructions,
-        @NotNull
+        @NotNull(message = "Giving a price of the task is required")
         @Positive
         Double priceOfTask,
+        @NotNull(message = "Give the number of the order to which this task belongs")
         UUID orderNo
 
 ) {

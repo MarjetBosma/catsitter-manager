@@ -15,11 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import nl.novi.catsittermanager.enumerations.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,15 +34,21 @@ public class User implements Serializable {
     @Id
     @Column(nullable = false, unique = true)
     private String username;
+
     @Column(nullable = false, length = 255)
     private String password;
+
     private Role role;
+
     @Column
     private Boolean enabled;
+
     @Column
     private String name;
+
     @Column
     private String address;
+
     @Column
     private String email;
 

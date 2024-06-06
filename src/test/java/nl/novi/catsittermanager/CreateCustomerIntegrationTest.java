@@ -33,14 +33,20 @@ import static org.mockito.Mockito.*;
 @Transactional
 @Import({ExceptionController.class, TestConfig.class})
 class CreateCustomerIntegrationTest {
+
     @Autowired
     MockMvc mockMvc;
+
     @Autowired
     ObjectMapper objectMapper;
+
     @Autowired
     CustomerRepository customerRepository;
+
     Customer expectedCustomer;
+
     CustomerRequest request;
+
     @BeforeEach
     void setUp() {
         request = new CustomerRequest("pietjepuk", "qwerty", "Pietje Puk", "Straatweg 231, Ergenshuizen", "pietjepuk@gmail.com");
@@ -65,10 +71,11 @@ class CreateCustomerIntegrationTest {
 
     @Test
     void createCustomer() throws Exception {
-        // Given
+
+        // Arrange
         String jsonInput = objectMapper.writeValueAsString(request);
 
-        // When
+        // Act
         mockMvc.perform(MockMvcRequestBuilders.post("/api/customer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonInput))
@@ -82,15 +89,17 @@ class CreateCustomerIntegrationTest {
         .andExpect(MockMvcResultMatchers.jsonPath("$.[0].cats").doesNotExist())
         .andExpect(MockMvcResultMatchers.jsonPath("$.[0].orders").doesNotExist());
 
+        //  Assert
         verify(customerRepository, times(1)).save(any(Customer.class));
     }
 
     @Test
     void createCustomer_WithInvalidInput_ShouldReturnBadRequest() throws Exception {
-        // Given
+
+        // Arrange
         CustomerRequest invalidRequest = new CustomerRequest(null, null, null, null, null);
 
-        // When
+        // Act
         mockMvc.perform(MockMvcRequestBuilders.post("/api/customer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
@@ -102,7 +111,7 @@ class CreateCustomerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.address").value("address is required"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("email is required"));
 
-        // Then
+        // Assert
         verifyNoInteractions(customerRepository);
     }
 }

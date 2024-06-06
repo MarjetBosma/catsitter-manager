@@ -6,10 +6,8 @@ import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.repositories.CatRepository;
-import nl.novi.catsittermanager.repositories.FileUploadRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
 

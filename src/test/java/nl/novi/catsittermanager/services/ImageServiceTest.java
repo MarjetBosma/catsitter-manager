@@ -74,6 +74,7 @@ class ImageServiceTest {
     // todo: Deze test slaagt als je hem los draait, maar faalt als je de hele klasse draait...
     @Test
     void testUploadCatImage_imageShouldBeUploadedAssignedAndSaved() throws Exception {
+
         // Given
         UUID catId = UUID.randomUUID();
         Cat cat = CatFactory.randomCat().build();
@@ -114,13 +115,14 @@ class ImageServiceTest {
 
     @Test
     void testUploadCatImage_catNotFound() {
-        // Given
+
+        // Arrange
         UUID catId = UUID.randomUUID();
         MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "test image content".getBytes());
 
         when(catRepository.findById(catId)).thenReturn(Optional.empty());
 
-        // When & Then
+        // Act & Assert
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
             imageService.uploadCatImage(catId, file);
         });
@@ -134,11 +136,11 @@ class ImageServiceTest {
 
     @Test
     void testUploadCatImage_nullFilename() {
-        // Given
+        // Arrange
         UUID catId = UUID.randomUUID();
         MockMultipartFile file = new MockMultipartFile("file", null, "image/jpeg", "test image content".getBytes());
 
-        // When & Then
+        // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             imageService.uploadCatImage(catId, file);
         });
@@ -152,7 +154,8 @@ class ImageServiceTest {
 
     @Test
     void uploadCatsitter_imageShouldBeUploadedAssignedAndSaved() throws Exception {
-        // Given
+
+        // Arrange
         String catsitterId = "catsitter";
         Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
         String filename = "testfile1.jpg";
@@ -173,10 +176,10 @@ class ImageServiceTest {
         when(mockBuilder.path(anyString())).thenReturn(mockBuilder);
         when(mockBuilder.toUriString()).thenReturn(url);
 
-        // When
+        // Act
         ImageUpload result = imageService.uploadCatsitterImage(catsitterId, file);
 
-        // Then
+        // Assert
         assertNotNull(result);
         assertEquals(filename, result.getFilename());
         assertEquals(file.getContentType(), result.getContentType());
@@ -191,19 +194,19 @@ class ImageServiceTest {
 
     @Test
     void testUploadCatsitterImage_catsitterNotFound() {
-        // Given
+
+        // Arrange
         String catsitterId = "catsitter";
         MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "test image content".getBytes());
 
         when(catsitterRepository.findById(catsitterId)).thenReturn(Optional.empty());
 
-        // When & Then
+        // Act & Assert
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
             imageService.uploadCatsitterImage(catsitterId, file);
         });
 
         assertEquals("Catsitter not found with id: " + catsitterId, exception.getMessage());
-
         verify(catsitterRepository, times(1)).findById(catsitterId);
         verify(fileUploadRepository, never()).save(any(ImageUpload.class));
         verify(catsitterRepository, never()).save(any(Catsitter.class));
@@ -211,26 +214,26 @@ class ImageServiceTest {
 
     @Test
     void testUploadCatsitterImage_nullFilename() {
-        // Given
+
+        // Arrange
         String catsitterId = "catsitter";
         MockMultipartFile file = new MockMultipartFile("file", null, "image/jpeg", "test image content".getBytes());
 
-        // When & Then
+        // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             imageService.uploadCatsitterImage(catsitterId, file);
         });
 
         assertEquals("File must have an original filename", exception.getMessage());
-
         verify(catsitterRepository, never()).findById(catsitterId);
         verify(fileUploadRepository, never()).save(any(ImageUpload.class));
         verify(catsitterRepository, never()).save(any(Catsitter.class));
     }
 
-
     @Test
     void storeFile_fileShouldBeStoredCorrectly() throws IOException {
-        // Given
+
+        // Arrange
         UUID catId = UUID.randomUUID();
         String filename = "testfile.jpg";
         String url = "http://localhost/cat/" + catId + "/" + filename;
@@ -241,23 +244,23 @@ class ImageServiceTest {
 
         when(fileUploadRepository.save(any(ImageUpload.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // When
+        // Act
         String storedFilename = imageService.storeFile(file, url);
 
-        // Then
+        // Assert
         assertEquals(filename, storedFilename);
         Path expectedPath = fileStoragePath.resolve(filename);
         assertTrue(Files.exists(expectedPath));
 
         byte[] savedContent = Files.readAllBytes(expectedPath);
         assertArrayEquals(content, savedContent);
-
         verify(fileUploadRepository, times(1)).save(any(ImageUpload.class));
     }
 
     @Test
     void storeFile_issueInStoringFile() {
-        // Given
+
+        // Arrange
         UUID catId = UUID.randomUUID();
         String filename = "testfile.jpg";
         String url = "http://localhost/cat/" + catId + "images/uploads/" + filename;
@@ -273,29 +276,29 @@ class ImageServiceTest {
             // This catch block will never be executed because the exception is mocked
         }
 
-        // When & Then
+        // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             imageService.storeFile(fileWithIOException, url);
         });
 
         assertEquals("Issue in storing the file", exception.getMessage());
-
         verify(fileUploadRepository, never()).save(any(ImageUpload.class));
     }
 
     @Test
     void testAssignImageToCat_imageShouldBeAssignedToExistingCat() {
-        // Given
+
+        // Arrange
         UUID catId = UUID.randomUUID();
         Cat cat = CatFactory.randomCat().build();
         ImageUpload imageUpload = new ImageUpload("testfile.jpg", "image/jpeg", "http://localhost/cat/" + catId + "/uploads" +
                 "/testfile.jpg");
         when(catRepository.findById(catId)).thenReturn(Optional.of(cat));
 
-        // When
+        // Act
         imageService.assignImageToCat(imageUpload, catId);
 
-        // Then
+        // Assert
         assertEquals(imageUpload, cat.getImage());
         verify(catRepository, times(1)).findById(catId);
         verify(catRepository, times(1)).save(cat);
@@ -303,12 +306,12 @@ class ImageServiceTest {
 
     @Test
     void testAssignImageToCat_catNotFound() {
-        // Given
+        // Arrange
         UUID catId = UUID.randomUUID();
         ImageUpload imageUpload = new ImageUpload("testfile.jpg", "image/jpeg", "http://localhost/cat/" + catId + "/images/uploads/testfile.jpg");
         when(catRepository.findById(catId)).thenReturn(Optional.empty());
 
-        // When & Then
+        // Act & Assert
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
             imageService.assignImageToCat(imageUpload, catId);
         });
@@ -320,16 +323,17 @@ class ImageServiceTest {
 
     @Test
     void testAssignImageToCatsitter_imageShouldBeAssignedToExistingCatsitter() {
-        // Given
+
+        // Arrange
         String catsitterId = "catsitter";
         Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
         ImageUpload imageUpload = new ImageUpload("testfile1.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/images/uploads/testfile1.jpg");
         when(catsitterRepository.findById(catsitterId)).thenReturn(Optional.of(catsitter));
 
-        // When
+        // Act
         imageService.assignImageToCatsitter(imageUpload, catsitterId);
 
-        // Then
+        // Assert
         assertEquals(imageUpload, catsitter.getImage());
         verify(catsitterRepository, times(1)).findById(catsitterId);
         verify(catsitterRepository, times(1)).save(catsitter);
@@ -337,12 +341,13 @@ class ImageServiceTest {
 
     @Test
     void testAssignImageToCatsitter_catsitterNotFound() {
-        // Given
+
+        // Arrange
         String catsitterId = "catsitter";
         ImageUpload imageUpload = new ImageUpload("testfile1.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/images/uploads/testfile1.jpg");
         when(catsitterRepository.findById(catsitterId)).thenReturn(Optional.empty());
 
-        // When & Then
+        // Act & Assert
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
             imageService.assignImageToCatsitter(imageUpload, catsitterId);
         });
@@ -354,17 +359,18 @@ class ImageServiceTest {
 
     @Test
     void downloadImage_imageShouldBeDownloadedCorrectly() throws IOException {
-        // Given
+
+        // Arrange
         String filename = "testfile.jpg";
         String fileStorageLocation = "src/test/resources/images/downloads/";
         Path filePath = fileStoragePath.resolve(filename);
         Files.createDirectories(filePath.getParent());
         Files.write(filePath, "Test Content".getBytes());
 
-        // When
+        // Act
         Resource resource = imageService.downloadImage(filename);
 
-        // Then
+        // Assert
         assertNotNull(resource);
         assertTrue(resource.exists());
         assertTrue(resource.isReadable());
@@ -376,13 +382,14 @@ class ImageServiceTest {
 
     @Test
     void downloadImage_resourceDoesNotExistOrIsNotReadable() {
-        // Given
+
+        // Arrange
         String filename = "non_existent_file.jpg";
         String fileStorageLocation = "src/test/resources/images/downloads/";
 
         imageService = new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository);
 
-        // When & Then
+        // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             imageService.downloadImage(filename);
         });
@@ -392,61 +399,64 @@ class ImageServiceTest {
 
     @Test
     void downloadImage_MalformedURL() throws MalformedURLException {
-        // Given
+
+        // Arrange
         String filename = "testfile.jpg";
         String fileStorageLocation = "src/test/resources/images/downloads/";
 
         ImageService imageServiceSpy = Mockito.spy(new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository));
         Mockito.doThrow(new MalformedURLException("Malformed URL")).when(imageServiceSpy).createUrlResource(Mockito.any(Path.class));
 
-        // When & Then
+        // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             imageServiceSpy.downloadImage(filename);
         });
-
         assertEquals("Issue in reading the file", exception.getMessage());
     }
 
     @Test
     void getFilePath_shouldReturnCorrectFilePath() {
-        // Given
+
+        // Arrange
         String filename = "testfile.jpg";
         String fileStorageLocation = "src/test/resources/images/uploads/";
 
         ImageService imageService = new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository);
 
-        // When
+        // Act
         Path filePath = imageService.getFilePath(filename);
 
-        // Then
+        // Assert
         Path expectedPath = Paths.get(fileStorageLocation).toAbsolutePath().resolve(filename);
         assertEquals(expectedPath, filePath);
     }
 
     @Test
     void createUrlResource_shouldCreateUrlResource() throws Exception {
-        // Given
+
+        // Arrange
         String fileStoragePath = "src/test/resources/images/uploads/";
         Path path = Paths.get(fileStoragePath, "testfile1.jpg");
         Files.createDirectories(path.getParent());
         Files.createFile(path);
 
-        // When
+        // Act
         UrlResource urlResource = imageService.createUrlResource(path);
 
-        // Then
+        // Assert
         assertNotNull(urlResource);
         assertEquals(path.toUri(), urlResource.getURI());
     }
 
     @Test
     void createUrlResource_shouldThrowMalformedURLException() throws MalformedURLException {
-        // Given
+
+        // Arrange
         Path path = Paths.get("src/test/resources/images/uploads/testfile.jpg");
         ImageService imageServiceSpy = Mockito.spy(new ImageService("src/test/resources/uploads/", fileUploadRepository, catRepository, catsitterRepository));
         doThrow(new MalformedURLException("Malformed URL")).when(imageServiceSpy).createUrlResource(Mockito.any(Path.class));
 
-        // When & Then
+        // Act & Assert
         assertThrows(MalformedURLException.class, () -> {
             imageServiceSpy.createUrlResource(path);
         });

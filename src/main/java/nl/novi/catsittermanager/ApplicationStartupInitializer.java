@@ -21,6 +21,7 @@ public class ApplicationStartupInitializer implements ApplicationListener<Applic
     }
 
     private void createAdminUserIfNotExists() {
+
         if (!userRepository.existsById("admin")) {
             User adminUser = new User();
             adminUser.setUsername("admin");

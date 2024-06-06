@@ -35,31 +35,32 @@ public class CatServiceTest {
 
     @Test
     void testGetAllCats_shouldFetchAllCatsOnTheList() {
-        // Given
+
+        // Arrange
         Cat expectedCat = CatFactory.randomCat().build();
         List<Cat> expectedCatList = List.of(expectedCat);
 
         when(catRepository.findAll()).thenReturn(expectedCatList);
 
-        // When
+        // Act
         List<Cat> catResponseList = catService.getAllCats();
 
-        // Then
+        // Assert
         assertEquals(expectedCatList, catResponseList);
-
         verify(catRepository, times(1)).findAll();
         verifyNoInteractions(customerService);
     }
 
     @Test
     void testGetAllCats_noCatsInDatabase_shouldReturnEmptyList() {
-        // Given
+
+        // Arrange
         when(catRepository.findAll()).thenReturn(Collections.emptyList());
 
-        // When
+        // Act
         List<Cat> catResponseList = catService.getAllCats();
 
-        // Then
+        // Assert
         assertTrue(catResponseList.isEmpty());
         verify(catRepository, times(1)).findAll();
         verifyNoInteractions(customerService);
@@ -68,15 +69,16 @@ public class CatServiceTest {
 
     @Test
     void testGetCat_shouldFetchCatWithSpecificId() {
-        // Given
+
+        // Arrange
         Cat expectedCat = CatFactory.randomCat().build();
 
         when(catRepository.findById(expectedCat.getId())).thenReturn(Optional.of(expectedCat));
 
-        // When
+        // Act
         Cat resultCat = catService.getCat(expectedCat.getId());
 
-        // Then
+        // Assert
         assertEquals(expectedCat, resultCat);
         verify(catRepository, times(1)).findById(expectedCat.getId());
         verifyNoInteractions(customerService);
@@ -84,14 +86,15 @@ public class CatServiceTest {
 
     @Test
     void testGetCat_shouldFetchCatWithSpecificId_RecordNotFoundException() {
-        // Given
+
+        // Arrange
         UUID catId = UUID.randomUUID();
         when(catRepository.findById(catId)).thenReturn(Optional.empty());
 
-        // When
+        // Act
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> catService.getCat(catId));
 
-        // Then
+        // Assert
         assertEquals("No cat found with this id.", exception.getMessage());
         verify(catRepository).findById(catId);
         verifyNoMoreInteractions(catRepository);
@@ -99,51 +102,51 @@ public class CatServiceTest {
 
     @Test
     void testCreateCat_shouldCreateANewCat() {
-        // Given
+
+        // Arrange
         Cat expectedCat = CatFactory.randomCat().build();
         Customer customer = CustomerFactory.randomCustomer().build();
 
         when(customerService.getCustomer(customer.getUsername())).thenReturn(customer);
         when(catRepository.save(expectedCat)).thenReturn(expectedCat);
 
-        // When
+        // Act
         Cat resultCat = catService.createCat(expectedCat, customer.getUsername());
 
-        // Then
+        // Assert
         assertEquals(expectedCat, resultCat);
-
         verify(customerService, times(1)).getCustomer(customer.getUsername());
-
         verify(catRepository, times(1)).save(expectedCat);
     }
 
     @Test
     void testCreateCat_ownerUnknown_shouldThrowUsernameNotFoundException() {
-        // Given
+
+        // Arrange
         Cat expectedCat = CatFactory.randomCat().build();
         String unknownOwnername = "unknownOwnername";
         when(customerService.getCustomer(anyString())).thenReturn(null);
 
-        // When & Then
+        // Act & Assert
         assertThrows(UsernameNotFoundException.class, () -> catService.createCat(expectedCat, unknownOwnername));
         verifyNoMoreInteractions(customerService);
     }
 
     @Test
     void testEditCat_shouldEditExistingCat() {
-        // Given
+
+        // Arrange
         Cat cat = CatFactory.randomCat().build();
 
         when(catRepository.findById(cat.getId())).thenReturn(Optional.of(cat));
         when(customerService.getCustomer(cat.getOwner().getUsername())).thenReturn(cat.getOwner());
         when(catRepository.save(cat)).thenReturn(cat);
 
-        // When
+        // Act
         Cat resultCat = catService.editCat(cat.getId(), cat, cat.getOwner().getUsername());
 
-        // Then
+        // Assert
         assertEquals(cat, resultCat);
-
         verify(catRepository, times(1)).findById(cat.getId());
         verify(customerService, times(1)).getCustomer(cat.getOwner().getUsername());
         verify(catRepository, times(1)).save(cat);
@@ -151,30 +154,31 @@ public class CatServiceTest {
 
     @Test
     void testEditCat_nonExistingCat_shouldThrowRecordNotFoundException() {
-        // Given
+
+        // Arrange
         UUID catId = UUID.randomUUID();
         when(catRepository.findById(catId)).thenReturn(Optional.empty());
 
-        // When
+        // Act
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> catService.getCat(catId));
 
-        // Then
+        // Assert
         assertEquals("No cat found with this id.", exception.getMessage());
         verify(catRepository).findById(catId);
         verifyNoMoreInteractions(catRepository);
-
     }
 
     @Test
     void testDeleteCat_ShouldDeleteCatWithSpecificId() {
-        // Given
+
+        // Arrange
         Cat cat = CatFactory.randomCat().build();
         when(catRepository.existsById(cat.getId())).thenReturn(true);
 
-        // When
+        // Act
         UUID catId = catService.deleteCat(cat.getId());
 
-        // Then
+        // Assert
         verify(catRepository, times(1)).existsById(catId);
         verify(catRepository, times(1)).deleteById(catId);
         verifyNoInteractions(customerService);
@@ -182,14 +186,15 @@ public class CatServiceTest {
 
     @Test
     void testDeleteCat_shouldDeleteCatWithSpecificId_RecordNotFoundException() {
-        // Given
+
+        // Arrange
         UUID catId = UUID.randomUUID();
         when(catRepository.existsById(catId)).thenReturn(false);
 
-        // When
+        // Act
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> catService.deleteCat(catId));
 
-        // Then
+        // Assert
         assertEquals("No cat found with this id.", exception.getMessage());
         verify(catRepository, never()).deleteById(catId);
         verifyNoMoreInteractions(catRepository);

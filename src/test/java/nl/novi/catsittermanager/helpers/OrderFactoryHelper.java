@@ -1,7 +1,6 @@
 package nl.novi.catsittermanager.helpers;
 
 import net.datafaker.Faker;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;

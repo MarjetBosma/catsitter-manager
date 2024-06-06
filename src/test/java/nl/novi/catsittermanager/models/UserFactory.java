@@ -1,9 +1,11 @@
 package nl.novi.catsittermanager.models;
 
 import net.datafaker.Faker;
+
 import nl.novi.catsittermanager.enumerations.Role;
 
 public class UserFactory {
+
     private static final Faker faker = new Faker();
 
     public static User.UserBuilder randomUser() {

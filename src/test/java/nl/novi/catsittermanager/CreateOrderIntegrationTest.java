@@ -31,7 +31,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -112,10 +111,11 @@ class CreateOrderIntegrationTest {
 
     @Test
     void createOrder() throws Exception {
-        // Given
+
+        // Arrange
         ArgumentCaptor<Order> orderArgumentCaptor = ArgumentCaptor.forClass(Order.class);
 
-        // When & Then
+        // Act & Assert
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonInput))
@@ -142,14 +142,14 @@ class CreateOrderIntegrationTest {
 
     @Test
     void createOrder_WithInvalidInput_ShouldReturnBadRequest() throws Exception {
-        // Given
+
+        // Arrange
         String invalidJsonInput = "{}";
 
-        // When
+        // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/api/order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidJsonInput))
-                // Then
                 .andExpect(status().isBadRequest());
     }
 }

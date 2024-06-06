@@ -4,13 +4,13 @@ import nl.novi.catsittermanager.dtos.catsitter.CatsitterRequest;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
 import nl.novi.catsittermanager.models.Catsitter;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 
 @Component
 public class CatsitterMapper {
 
     public static CatsitterResponse CatsitterToCatsitterResponse(Catsitter catsitter) {
+
         return new CatsitterResponse(
                 catsitter.getUsername(),
                 catsitter.getName(),
@@ -23,6 +23,7 @@ public class CatsitterMapper {
     }
 
     public static Catsitter CatsitterRequestToCatsitter(CatsitterRequest catsitterRequest) {
+
         return Catsitter.CatsitterBuilder()
                 .username(catsitterRequest.username())
                 .password(catsitterRequest.password())

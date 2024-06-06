@@ -53,14 +53,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         @Test
         @WithMockUser(username = "admin", roles = {"ADMIN"})
         void testUploadCatImage() throws Exception {
-            // Given
+
+            // Arrange
             UUID catId = UUID.randomUUID();
             MockMultipartFile file = new MockMultipartFile("file", "testfile.jpg", "image/jpeg", "test image content".getBytes());
             ImageUpload imageUpload = new ImageUpload("testfile.jpg", "image/jpeg", "/testfile.jpg");
 
             when(imageService.uploadCatImage(any(UUID.class), any(MockMultipartFile.class))).thenReturn(imageUpload);
 
-            // When & Then
+            // Act & Assert
             mockMvc.perform(multipart("/api/cat/" + catId + "/images")
                             .file(file))
                     .andExpect(status().isOk())
@@ -72,14 +73,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         @Test
         @WithMockUser(username = "admin", roles = {"ADMIN"})
         void testUploadCatsitterImage() throws Exception {
-            // Given
+
+            // Arrange
             String username = "testuser";
             MockMultipartFile file = new MockMultipartFile("file", "testfile.jpg", "image/jpeg", "test image content".getBytes());
             ImageUpload imageUpload = new ImageUpload("testfile.jpg", "image/jpeg", "/upload/testfile.jpg");
 
             when(imageService.uploadCatsitterImage(any(String.class), any(MockMultipartFile.class))).thenReturn(imageUpload);
 
-            // When & Then
+            // Act & Assert
             mockMvc.perform(multipart("/api/catsitter/" + username + "/images")
                             .file(file))
                     .andExpect(status().isOk())
@@ -91,14 +93,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         @Test
         @WithMockUser(username = "admin", roles = {"ADMIN"})
         void testDownloadImage_catImage() throws Exception {
-            // Given
+
+            // Arrange
             UUID catId = UUID.fromString(UUID.randomUUID().toString());
             String filename = "testfile.jpg";
             UrlResource resource = new UrlResource(Paths.get("src/test/resources/images/downloads/testfile.jpg").toUri());
 
             when(imageService.downloadImage(filename)).thenReturn(resource);
 
-            // When & Then
+            // Act & Assert
             mockMvc.perform(get("/api/cat/" + catId + "/images/" + filename))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.IMAGE_JPEG))
@@ -110,14 +113,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         @Test
         @WithMockUser(username = "admin", roles = {"ADMIN"})
         void testDownloadImage_catsitterImage() throws Exception {
-            // Given
+
+            // Arrange
             String username = "testuser";
             String filename = "testfile.jpg";
             UrlResource resource = new UrlResource(Paths.get("src/test/resources/images/downloads/testfile.jpg").toUri());
 
             when(imageService.downloadImage(filename)).thenReturn(resource);
 
-            // When & Then
+            // Act & Assert
             mockMvc.perform(get("/api/catsitter/" + username + "/images/" + filename))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.IMAGE_JPEG))

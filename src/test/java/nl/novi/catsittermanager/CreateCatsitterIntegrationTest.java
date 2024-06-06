@@ -33,14 +33,20 @@ import static org.mockito.Mockito.*;
 @Transactional
 @Import({ExceptionController.class, TestConfig.class})
 public class CreateCatsitterIntegrationTest {
+
     @Autowired
     MockMvc mockMvc;
+
     @Autowired
     ObjectMapper objectMapper;
+
     @Autowired
     CatsitterRepository catsitterRepository;
+
     Catsitter expectedCatsitter;
+
     CatsitterRequest request;
+
     @BeforeEach
     void setUp() {
         request = new CatsitterRequest("marietjemuk", "abc123", "Marietje Muk", "Straatweg 123, Nergenshuizen", "marietjemuk@gmail.com", "blablabla", null);
@@ -66,10 +72,11 @@ public class CreateCatsitterIntegrationTest {
 
     @Test
     void createCatsitter() throws Exception {
-        // Given
+
+        // Arrange
         String jsonInput = objectMapper.writeValueAsString(request);
 
-        // When
+        // Act
         mockMvc.perform(MockMvcRequestBuilders.post("/api/catsitter")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonInput))
@@ -84,16 +91,17 @@ public class CreateCatsitterIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].orders").doesNotExist())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.image").doesNotExist());
 
-        // Then
+        // Assert
         verify(catsitterRepository, times(1)).save(any(Catsitter.class));
     }
 
     @Test
     void createCatsitter_WithInvalidInput_ShouldReturnBadRequest() throws Exception {
-        // Given
+
+        // Arrange
         CatsitterRequest invalidRequest = new CatsitterRequest(null, null, null, null, null, null, null);
 
-        // When
+        // Act
         mockMvc.perform(MockMvcRequestBuilders.post("/api/catsitter")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
@@ -105,7 +113,7 @@ public class CreateCatsitterIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.address").value("address is required"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("email is required"));
 
-        // Then
+        // Assert
         verifyNoInteractions(catsitterRepository);
     }
 }

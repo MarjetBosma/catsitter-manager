@@ -13,13 +13,13 @@ public class CatsitterMapperTest {
     @Test
     void testCatsitterToCatsitterResponse() {
 
-        // Given
+        // Arrange
         Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
 
-        // When
+        // Act
         CatsitterResponse catsitterResponse = CatsitterMapper.CatsitterToCatsitterResponse(catsitter);
 
-        // Then
+        // Assert
         assertEquals(catsitter.getUsername(), catsitterResponse.username());
         assertEquals(catsitter.getName(), catsitterResponse.name());;
         assertEquals(catsitter.getAddress(), catsitterResponse.address());
@@ -30,13 +30,13 @@ public class CatsitterMapperTest {
     @Test
     void testCatsitterRequestToCatsitter() {
 
-        // Given
+        // Arrange
         CatsitterRequest catsitterRequest = CatsitterRequestFactory.randomCatsitterRequest().build();
 
-        // When
+        // Act
         Catsitter catsitter = CatsitterMapper.CatsitterRequestToCatsitter(catsitterRequest);
 
-        // Then
+        // Assert
         assertEquals(catsitterRequest.username(), catsitter.getUsername());
         assertEquals(catsitterRequest.name(), catsitter.getName());
         assertEquals(catsitterRequest.address(), catsitter.getAddress());

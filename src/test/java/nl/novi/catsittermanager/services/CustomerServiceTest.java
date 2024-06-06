@@ -34,59 +34,62 @@ class CustomerServiceTest {
 
     @Test
     void testGetAllCustomers_shouldFetchAllCustomersOnTheList() {
-        // Given
+
+        // Arrange
         Customer expectedCustomer = CustomerFactory.randomCustomer().build();
         List<Customer> expectedCustomerList = List.of(expectedCustomer);
 
         when(customerRepository.findAll()).thenReturn(expectedCustomerList);
 
-        // When
+        // Act
         List<Customer> customerResponseList = customerService.getAllCustomers();
 
-        // Then
+        // Assert
         assertEquals(expectedCustomerList, customerResponseList);
-
         verify(customerRepository, times(1)).findAll();
     }
 
     @Test
     void testGetAllCustomers_noCustomersInDatabase_shouldReturnEmptyList() {
-        // Given
+
+        // Arrange
         when(customerRepository.findAll()).thenReturn(Collections.emptyList());
 
-        // When
+        // Act
         List<Customer> customerResponseList = customerService.getAllCustomers();
 
-        // Then
+        // Assert
         assertTrue(customerResponseList.isEmpty());
         verify(customerRepository, times(1)).findAll();
     }
 
     @Test
     void testGetCustomer_shouldFetchCustomerWithSpecificUsername() {
-        // Given
+
+        // Arrange
         Customer expectedCustomer = CustomerFactory.randomCustomer().build();
 
         when(customerRepository.findById(expectedCustomer.getUsername())).thenReturn(Optional.of(expectedCustomer));
 
-        // When
+        // Act
         Customer resultCustomer = customerService.getCustomer(expectedCustomer.getUsername());
 
-        // Then
+        // Assert
         assertEquals(expectedCustomer, resultCustomer);
         verify(customerRepository, times(1)).findById(expectedCustomer.getUsername());
     }
 
     @Test
     void testGetCustomer_shouldFetchCustomerWithSpecificUsername_RecordNotFoundException() {
-        // Given
+
+        // Arrange
         String username = "nonExistingCustomer";
         when(customerRepository.findById(username)).thenReturn(Optional.empty());
 
-        // When
+        // Act
         RecordNotFoundException exception=assertThrows(RecordNotFoundException.class, () -> customerService.getCustomer(username));
 
-        // Then
+        // Assert
         assertEquals("No customer found with this username.", exception.getMessage());
         verify(customerRepository).findById(username);
         verifyNoMoreInteractions(customerRepository);
@@ -94,80 +97,82 @@ class CustomerServiceTest {
 
     @Test
     void testGetAllCatsByCustomer_shouldFetchAllCatsForThisCustomer() {
-        // Given
+
+        // Arrange
         Customer randomCustomer = CustomerFactory.randomCustomer().build();
         List<Cat> expectedCats = CatFactory.randomCats(3);
         randomCustomer.setCats(expectedCats);
 
         when(customerRepository.findById(randomCustomer.getUsername())).thenReturn(Optional.of(randomCustomer));
 
-        // When
+        // Act
         List<Cat> resultCats = customerService.getAllCatsByCustomer(randomCustomer.getUsername());
 
-        // Then
+        // Assert
         assertEquals(expectedCats.size(), resultCats.size());
         assertTrue(resultCats.containsAll(expectedCats));
-
         verify(customerRepository, times(1)).findById(randomCustomer.getUsername());
     }
 
     @Test
     void testGetAllCatsByCustomer_noCatsOnTheList_shouldReturnEmptyList() {
-        // Given
+
+        // Arrange
         Customer randomCustomer = CustomerFactory.randomCustomer().build();
         randomCustomer.setCats(Collections.emptyList());
 
         when(customerRepository.findById(randomCustomer.getUsername())).thenReturn(Optional.of(randomCustomer));
 
-        // When
+        // Act
         List<Cat> resultCats = customerService.getAllCatsByCustomer(randomCustomer.getUsername());
 
-        // Then
+        // Assert
         assertNotNull(resultCats);
         assertTrue(resultCats.isEmpty());
-
         verify(customerRepository, times(1)).findById(randomCustomer.getUsername());
     }
 
     @Test
     void testGetAllOrdersByCustomer_shouldFetchAllOrdersForThisCustomer() {
-        // Given
+
+        // Arrange
         Customer randomCustomer = CustomerFactory.randomCustomer().build();
         List<Order> expectedOrders = OrderFactory.randomOrders(3);
         randomCustomer.setOrders(expectedOrders);
 
         when(customerRepository.findById(randomCustomer.getUsername())).thenReturn(Optional.of(randomCustomer));
 
-        // When
+        // Act
         List<Order> resultOrders = customerService.getAllOrdersByCustomer(randomCustomer.getUsername());
 
-        // Then
+        // Assert
         assertEquals(expectedOrders.size(), resultOrders.size());
         assertTrue(resultOrders.containsAll(expectedOrders));
-
         verify(customerRepository, times(1)).findById(randomCustomer.getUsername());
     }
 
     @Test
     void testGetAllOrdersByCustomer_noOrdersOnTheList_shouldReturnEmptyList() {
-        // Given
+
+        // Arrange
         Customer randomCustomer = CustomerFactory.randomCustomer()
                 .orders(new ArrayList<Order>())
                 .build();
 
         when(customerRepository.findById(randomCustomer.getUsername())).thenReturn(Optional.of(randomCustomer));
 
-        // When
+        // Act
         List<Order> resultOrders = customerService.getAllOrdersByCustomer(randomCustomer.getUsername());
 
+        //Assert
         assertNotNull(resultOrders);
         assertTrue(resultOrders.isEmpty());
-
         verify(customerRepository, times(1)).findById(randomCustomer.getUsername());
     }
 
     @Test
     void testCreateCustomer_shouldCreateANewCustomer() {
+
         // Given
         Customer expectedCustomer = CustomerFactory.randomCustomer().build();
 
@@ -184,6 +189,7 @@ class CustomerServiceTest {
 
     @Test
     void testCreateCustomer_WhenUsernameExists_shouldThrowUsernameAlreadyExistsException() {
+
         // Given
         Customer existingCustomer = CustomerFactory.randomCustomer().build();
         String existingUsername = "existingUsername";
@@ -200,6 +206,7 @@ class CustomerServiceTest {
 
     @Test
     void testEditCustomer_shouldEditExistingCustomer() {
+
         // Given
         Customer customer = CustomerFactory.randomCustomer().build();
 
@@ -218,6 +225,7 @@ class CustomerServiceTest {
 
     @Test
     void testEditCustomer_nonExistingCustomer_shouldThrowRecordNotFoundException() {
+
         // Given
         String username = "nonExistingCustomer";
         when(customerRepository.findById(username)).thenReturn(Optional.empty());
@@ -231,6 +239,7 @@ class CustomerServiceTest {
 
     @Test
     void testDeleteCustomer_shouldDeleteCustomerWithSpecificId() {
+
         // Given
         Customer customer = CustomerFactory.randomCustomer().build();
         when(customerRepository.existsById(customer.getUsername())).thenReturn(true);
@@ -247,6 +256,7 @@ class CustomerServiceTest {
 
     @Test
     void testDeleteCustomer_nonExistingCustomer_shouldThrowRecordNotFoundException() {
+
         // Given
         String username = "nonExistingCustomer";
         when(customerRepository.existsById(username)).thenReturn(false);

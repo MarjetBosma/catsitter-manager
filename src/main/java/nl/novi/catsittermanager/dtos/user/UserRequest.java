@@ -8,18 +8,17 @@ import org.springframework.validation.annotation.Validated;
 @Builder
 @Validated
 public record UserRequest(
-
-        @NotNull(message = "username is required")
+        @NotNull(message = "Username is required")
         String username,
-        @NotNull(message = "password is required")
+        @NotNull(message = "Password is required")
         String password,
         Role role,
         Boolean enabled,
-        @NotNull(message = "name is required")
+        @NotNull(message = "Full name is required")
         String name,
-        @NotNull(message = "address is required")
+        @NotNull(message = "Address is required")
         String address,
-        @NotNull(message = "email is required")
+        @NotNull(message = "Email address is required")
         String email
 
 ) {

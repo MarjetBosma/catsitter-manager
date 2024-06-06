@@ -3,7 +3,6 @@ package nl.novi.catsittermanager.dtos;
 import net.datafaker.Faker;
 import nl.novi.catsittermanager.dtos.customer.CustomerRequest;
 
-
 public class CustomerRequestFactory {
 
     private static final Faker faker = new Faker();

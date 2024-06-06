@@ -17,7 +17,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nl.novi.catsittermanager.enumerations.TaskType;
-
 import java.util.UUID;
 
 @Getter
@@ -35,7 +34,6 @@ public class Task {
     private UUID taskNo;
 
     @Column(name = "task_type")
-//    @Enumerated(EnumType.STRING)
     private TaskType taskType;
 
     @Column(name = "task_instruction")

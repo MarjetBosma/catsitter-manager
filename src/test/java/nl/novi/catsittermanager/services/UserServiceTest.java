@@ -2,8 +2,6 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
-import nl.novi.catsittermanager.models.Customer;
-import nl.novi.catsittermanager.models.CustomerFactory;
 import nl.novi.catsittermanager.models.User;
 import nl.novi.catsittermanager.models.UserFactory;
 import nl.novi.catsittermanager.repositories.UserRepository;
@@ -22,6 +20,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
+
     @Mock
     UserRepository userRepository;
 
@@ -30,59 +29,62 @@ public class UserServiceTest {
 
     @Test
     void testGetAllUsers_shouldFetchAllUsersOnTheList() {
-        // Given
+
+        // Arrange
         User expectedUser = UserFactory.randomUser().build();
         List<User> expectedUserList = List.of(expectedUser);
 
         when(userRepository.findAll()).thenReturn(expectedUserList);
 
-        // When
+        // Act
         List<User> userResponseList = userService.getAllUsers();
 
-        // Then
+        // Assert
         assertEquals(expectedUserList, userResponseList);
-
         verify(userRepository, times(1)).findAll();
     }
 
     @Test
     void testGetAllUsers_noUserInDatabase_shouldReturnEmptyList() {
-        // Given
+
+        // Arrange
         when(userRepository.findAll()).thenReturn(Collections.emptyList());
 
-        // When
+        // Act
         List<User> userResponseList = userService.getAllUsers();
 
-        // Then
+        // Assert
         assertTrue(userResponseList.isEmpty());
         verify(userRepository, times(1)).findAll();
     }
 
     @Test
     void testGetUser_shouldFetchUserWithSpecificUsername() {
-        // Given
+
+        // Arrange
         User expectedUser = UserFactory.randomUser().build();
 
         when(userRepository.findById(expectedUser.getUsername())).thenReturn(Optional.of(expectedUser));
 
-        // When
+        // Act
         User resultUser = userService.getUser(expectedUser.getUsername());
 
-        // Then
+        // Assert
         assertEquals(expectedUser, resultUser);
         verify(userRepository, times(1)).findById(expectedUser.getUsername());
     }
 
     @Test
     void testGetUser_shouldFetchUserWithSpecificUsername_RecordNotFoundException() {
-        // Given
+
+        // Arrange
         String username = "nonExistingUser";
         when(userRepository.findById(username)).thenReturn(Optional.empty());
 
-        // When
+        // Act
         RecordNotFoundException exception=assertThrows(RecordNotFoundException.class, () -> userService.getUser(username));
 
-        // Then
+        // Assert
         assertEquals("No user found with this username.", exception.getMessage());
         verify(userRepository).findById(username);
         verifyNoMoreInteractions(userRepository);
@@ -90,30 +92,31 @@ public class UserServiceTest {
 
     @Test
     void testCreateAdminAccount_shouldCreateANewAdminAccount() {
-        // Given
+
+        // Arrange
         User expectedAdminAccount = UserFactory.randomUser().build();
 
         when(userRepository.save(expectedAdminAccount)).thenReturn(expectedAdminAccount);
 
-        // When
+        // Act
         User resultAdminAccount = userService.createAdminAccount(expectedAdminAccount);
 
-        // Then
+        // Assert
         assertEquals(expectedAdminAccount, resultAdminAccount);
-
         verify(userRepository, times(1)).save(expectedAdminAccount);
     }
 
     @Test
     void testCreateNewAdminAccount_WhenUsernameExists_shouldThrowUsernameAlreadyExistsException() {
-        // Given
+
+        // Arrange
         User existingUser = UserFactory.randomUser().build();
         String existingUsername = "existingUsername";
         existingUser.setUsername(existingUsername);
 
         when(userRepository.findById(existingUsername)).thenReturn(Optional.of(existingUser));
 
-        // When & Then
+        // Act & Assert
         assertThrows(UsernameAlreadyExistsException.class, () -> {
             userService.createAdminAccount(existingUser);
         });
@@ -122,16 +125,17 @@ public class UserServiceTest {
 
     @Test
     void testEditUser_shouldEditExistingUser() {
-        // Given
+
+        // Arrange
         User user = UserFactory.randomUser().build();
 
         when(userRepository.findById(user.getUsername())).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        // When
+        // Act
         User resultUser = userService.editUser(user.getUsername(), user);
 
-        // Then
+        // Assert
         assertEquals(user, resultUser);
 
         verify(userRepository, times(1)).findById(user.getUsername());
@@ -140,43 +144,44 @@ public class UserServiceTest {
 
     @Test
     void testEditUser_nonExistingUser_shouldThrowRecordNotFoundException() {
-        // Given
+
+        // Arrange
         String username = "nonExistingUser";
         when(userRepository.findById(username)).thenReturn(Optional.empty());
 
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> userService.getUser(username));
 
-        // When & Then
+        // Act & Assert
         assertEquals("No user found with this username.", exception.getMessage());
         verify(userRepository, times(1)).findById(username);
     }
 
     @Test
     void testDeleteUser_shouldDeleteUserWithSpecificId() {
-        // Given
+
+        // Arrange
         User user = UserFactory.randomUser().build();
         when(userRepository.existsById(user.getUsername())).thenReturn(true);
 
-        // When
+        // Act
         String resultUsername = userService.deleteUser(user.getUsername());
 
-        // Then
+        // Assert
         assertEquals(user.getUsername(), resultUsername);
-
         verify(userRepository, times(1)).existsById(user.getUsername());
         verify(userRepository, times(1)).deleteById(user.getUsername());
     }
 
     @Test
     void testDeleteCustomer_nonExistingCustomer_shouldThrowRecordNotFoundException() {
-        // Given
+
+        // Arrange
         String username = "nonExistingUser";
         when(userRepository.existsById(username)).thenReturn(false);
 
-        // When & Then
+        // Act & Assert
         assertThrows(RecordNotFoundException.class, () -> userService.deleteUser(username));
         verify(userRepository).existsById(username);
         verifyNoMoreInteractions(userRepository);
     }
-
 }

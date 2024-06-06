@@ -43,11 +43,13 @@ public class ImageService {
     private final CatsitterRepository catsitterRepository;
 
     public ImageService(@Value("${my.upload_location}") String fileStorageLocation, FileUploadRepository fileUploadRepository, CatRepository catRepository, CatsitterRepository catsitterRepository) {
+
         fileStoragePath = Paths.get(fileStorageLocation).toAbsolutePath().normalize();
         this.fileStorageLocation = fileStorageLocation;
         this.fileUploadRepository = fileUploadRepository;
         this.catRepository = catRepository;
         this.catsitterRepository = catsitterRepository;
+
         try {
             Files.createDirectories(fileStoragePath);
         } catch (IOException e) {
@@ -56,6 +58,7 @@ public class ImageService {
     }
 
     public ImageUpload uploadCatImage(UUID catId, MultipartFile file) {
+
         String filename = file.getOriginalFilename();
         if (StringUtils.isBlank(filename)) {
             throw new IllegalArgumentException("File must have an original filename");
@@ -79,11 +82,12 @@ public class ImageService {
     }
 
     public ImageUpload uploadCatsitterImage(String username, MultipartFile file) {
+
         String filename = file.getOriginalFilename();
+
         if (StringUtils.isBlank(filename)) {
             throw new IllegalArgumentException("File must have an original filename");
         } else {
-
             Catsitter catsitter = catsitterRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("Catsitter not found with id: " + username));
 
             String url = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -105,6 +109,7 @@ public class ImageService {
     public String storeFile(MultipartFile file, String url) {
         String filename = FilenameUtils.normalize(Objects.requireNonNull(file.getOriginalFilename()));
         Path filePath = Paths.get(fileStoragePath + "/" + filename);
+
         try {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
@@ -116,6 +121,7 @@ public class ImageService {
 
     void assignImageToCat(ImageUpload imageUpload, UUID catId) {
         Optional<Cat> optionalCat = catRepository.findById(catId);
+
         if (optionalCat.isPresent()) {
             Cat cat = optionalCat.get();
             cat.setImage(imageUpload);
@@ -126,6 +132,7 @@ public class ImageService {
     }
 
     void assignImageToCatsitter(ImageUpload imageUpload, String username) {
+
         Optional<Catsitter> optionalCatsitter = catsitterRepository.findById(username);
         if (optionalCatsitter.isPresent()) {
             Catsitter catsitter = optionalCatsitter.get();
@@ -137,8 +144,8 @@ public class ImageService {
     }
 
     public Resource downloadImage(String filename) {
+
         Path path = getFilePath(filename);
-        logger.debug("Resolved file path: {}", path.toAbsolutePath());
 
         Resource resource;
         try {
@@ -146,11 +153,10 @@ public class ImageService {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Issue in reading the file", e);
         }
+
         if (resource.exists() && resource.isReadable()) {
-            logger.debug("Resource exists and is readable: {}", resource.getFilename());
             return resource;
         } else {
-            logger.error("File doesn't exist or is not readable: {}", filename);
             throw new RuntimeException("File doesn't exist or is not readable");
         }
     }

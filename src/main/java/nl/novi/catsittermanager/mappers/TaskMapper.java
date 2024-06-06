@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TaskMapper {
+
     public static TaskResponse TaskToTaskResponse(Task task) {
+
         return new TaskResponse(
                 task.getTaskNo(),
                 task.getTaskType(),

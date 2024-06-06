@@ -1,6 +1,5 @@
 package nl.novi.catsittermanager.services;
 
-import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.repositories.OrderRepository;
@@ -32,57 +31,61 @@ public class OrderServiceTest {
 
     @Test
     void testGetAllOrders_shouldFetchAllOrdersOnTheList() {
-        // Given
+
+        // Arrange
         Order expectedOrder = OrderFactory.randomOrder().build();
         List<Order> expectedOrderList = List.of(expectedOrder);
 
         when(orderRepository.findAll()).thenReturn(expectedOrderList);
 
-        // When
+        // Act
         List<Order> orderResponseList = orderService.getAllOrders();
 
-        // Then
+        // Assert
         assertEquals(expectedOrderList, orderResponseList);
         verify(orderRepository, times(1)).findAll();
     }
 
     @Test
     void testGetAllOrders_noOrdersInDatabase_shouldReturnEmptyList() {
-        // Given
+
+        // Arrange
         when(orderRepository.findAll()).thenReturn(Collections.emptyList());
 
-        // When
+        // Act
         List<Order> orderResponseList = orderService.getAllOrders();
 
-        // Then
+        // Assert
         assertTrue(orderResponseList.isEmpty());
         verify(orderRepository, times(1)).findAll();
     }
 
     @Test
     void testGetOrder_shouldFetchOrderWithSpecificOrderNo() {
-        // Given
+
+        // Arrange
         Order expectedOrder = OrderFactory.randomOrder().build();
         when(orderRepository.findById(expectedOrder.getOrderNo())).thenReturn(Optional.of(expectedOrder));
 
-        // When
+        // Act
         Order resultOrder = orderService.getOrder(expectedOrder.getOrderNo());
 
-        // Then
+        // Assert
         assertEquals(expectedOrder, resultOrder);
         verify(orderRepository, times(1)).findById(expectedOrder.getOrderNo());
     }
 
     @Test
     void testGetOrder_shouldFetchOrderWithSpecificOrderNo_RecordNotFoundException() {
-        // Given
+
+        // Arrange
         UUID orderNo = UUID.randomUUID();
         when(orderRepository.findById(orderNo)).thenReturn(Optional.empty());
 
-        // When
+        // Act
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> orderService.getOrder(orderNo));
 
-        // Then
+        // Assert
         assertEquals("No order found with this id.", exception.getMessage());
         verify(orderRepository).findById(orderNo);
         verifyNoMoreInteractions(orderRepository);
@@ -91,17 +94,17 @@ public class OrderServiceTest {
     @Test
     void testGetAllTasksByOrder_shouldFetchAllTasksForThisOrder() {
 
-        // Given
+        // Arrange
         Order randomOrder = OrderFactory.randomOrder().build();
         List<Task> expectedTasks = TaskFactory.randomTasks(3);
         randomOrder.setTasks(expectedTasks);
 
         when(orderRepository.findById(randomOrder.getOrderNo())).thenReturn(Optional.of(randomOrder));
 
-        // When
+        // Act
         List<Task> resultTasks = orderService.getAllTasksByOrder(randomOrder.getOrderNo());
 
-        // Then
+        // Assert
         assertEquals(expectedTasks.size(), resultTasks.size());
         assertTrue(resultTasks.containsAll(expectedTasks));
 
@@ -110,16 +113,17 @@ public class OrderServiceTest {
 
     @Test
     void testGetAllTasksByOrder_noTasksOnTheList_shouldReturnEmptyList() {
-        // Given
+
+        // Arrange
         Order randomOrder = OrderFactory.randomOrder().build();
         randomOrder.setTasks(Collections.emptyList());
 
         when(orderRepository.findById(randomOrder.getOrderNo())).thenReturn(Optional.of(randomOrder));
 
-        // When
+        // Act
         List<Task> resultTasks = orderService.getAllTasksByOrder(randomOrder.getOrderNo());
 
-        // Then
+        // Assert
         assertNotNull(resultTasks);
         assertTrue(resultTasks.isEmpty());
 
@@ -128,7 +132,8 @@ public class OrderServiceTest {
 
     @Test
     void testCreateOrder_shouldCreateANewOrder() {
-        // Given
+
+        // Arrange
         Order expectedOrder = OrderFactory.randomOrder().build();
         Customer customer = CustomerFactory.randomCustomer().build();
         Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
@@ -137,21 +142,21 @@ public class OrderServiceTest {
         when(catsitterService.getCatsitter(catsitter.getUsername())).thenReturn(catsitter);
         when(orderRepository.save(expectedOrder)).thenReturn(expectedOrder);
 
-        // When
+        // Act
         Order resultOrder = orderService.createOrder(expectedOrder, customer.getUsername(), catsitter.getUsername());
 
-        // Then
+        // Assert
         assertEquals(expectedOrder, resultOrder);
 
         verify(customerService, times(1)).getCustomer(customer.getUsername());
         verify(catsitterService, times(1)).getCatsitter(catsitter.getUsername());
-
         verify(orderRepository, times(1)).save(expectedOrder);
     }
 
     @Test
     void testEditOrder_shouldEditExistingOrder() {
-        // Given
+
+        // Arrange
         Order order = OrderFactory.randomOrder().build();
 
         when(orderRepository.findById(order.getOrderNo())).thenReturn(Optional.of(order));
@@ -159,10 +164,10 @@ public class OrderServiceTest {
         when(catsitterService.getCatsitter(order.getCatsitter().getUsername())).thenReturn(order.getCatsitter());
         when(orderRepository.save(any(Order.class))).thenReturn(order);
 
-        // When
+        // Act
         Order resultOrder = orderService.editOrder(order.getOrderNo(), order, order.getCustomer().getUsername(), order.getCatsitter().getUsername());
 
-        // Then
+        // Assert
         assertEquals(order, resultOrder);
 
         verify(orderRepository, times(1)).findById(order.getOrderNo());
@@ -173,28 +178,30 @@ public class OrderServiceTest {
 
     @Test
     void testEditOrder_nonExistingOrder_shouldThrowRecordNotFoundException() {
-        // Given
+
+        // Arrange
         UUID orderNo = UUID.randomUUID();
         when(orderRepository.findById(orderNo)).thenReturn(Optional.empty());
 
-        // When
+        // Act
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> orderService.getOrder(orderNo));
 
-        // Then
+        // Assert
         assertEquals("No order found with this id.", exception.getMessage());
         verify(orderRepository, times(1)).findById(orderNo);
     }
 
     @Test
     void testDeleteOrder_ShouldDeleteOrderWithSpecificId() {
-        // Given
+
+        // Arrange
         Order order = OrderFactory.randomOrder().build();
         when(orderRepository.existsById(order.getOrderNo())).thenReturn(true);
 
-        // When
+        // Act
         UUID orderNo = orderService.deleteOrder(order.getOrderNo());
 
-        // Then
+        // Assert
         verify(orderRepository, times(1)).existsById(orderNo);
         verify(orderRepository, times(1)).deleteById(orderNo);
         verifyNoInteractions(customerService);
@@ -203,14 +210,15 @@ public class OrderServiceTest {
 
     @Test
     void testDeleteOrder_shouldDeleteOrderWithSpecificId_RecordNotFoundException() {
-        // Given
+
+        // Arrange
         UUID orderNo = UUID.randomUUID();
         when(orderRepository.existsById(orderNo)).thenReturn(false);
 
-        // When
+        // Act
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> orderService.deleteOrder(orderNo));
 
-        // Then
+        // Assert
         assertEquals("No order found with this id.", exception.getMessage());
         verify(orderRepository, never()).deleteById(orderNo);
         verifyNoInteractions(customerService);

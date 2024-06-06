@@ -70,6 +70,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetAllInvoices_thenAllInvoicesShouldBeReturned() throws Exception {
+
         // Arrange
         Task expectedTask = TaskFactory.randomTask().build();
         List<Task> expectedTaskList = List.of(expectedTask);
@@ -105,6 +106,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenNoTasksAvailable_whenGetAllTasks_thenEmptyListShouldBeReturned() throws Exception {
+
         // Arrange
         when(taskService.getAllTasks()).thenReturn(Collections.emptyList());
 
@@ -120,6 +122,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetTask_thenTaskShouldBeReturned() throws Exception {
+
         // Arrange
         Task expectedTask = TaskFactory.randomTask().build();
 
@@ -153,6 +156,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenInvalidTaskNo_whenGetTask_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
+
         // Arrange
         UUID invalidTaskNo = UUID.randomUUID();
         final String errorMessage = "No task found with this id.";
@@ -170,6 +174,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenCreateTask_thenTaskShouldBeReturned() throws Exception {
+
         // Arrange
         TaskRequest expectedTaskRequest = TaskRequestFactory.randomTaskRequest().build();
         Task expectedTask = TaskFactory.randomTask().build();
@@ -197,6 +202,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenInvalidData_whenCreateTask_thenBadRequest() throws Exception {
+
         // Arrange
         TaskRequest invalidTaskRequest = TaskRequestFactory.randomTaskRequest()
                 .taskType(null)
@@ -220,6 +226,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenEditTask_thenEditedTaskShouldBeReturned() throws Exception {
+
         // Arrange
         TaskRequest expectedTaskRequest = TaskRequestFactory.randomTaskRequest().build();
         Task expectedTask = TaskFactory.randomTask().build();
@@ -255,6 +262,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenInvalidId_whenEditTask_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
+
         // Arrange
         UUID taskNo = UUID.randomUUID();
         TaskRequest expectedTaskRequest = TaskRequestFactory.randomTaskRequest().build();
@@ -272,6 +280,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenInvalidData_whenEditInvoice_thenBadRequest() throws Exception {
+
         //  Arrange
         UUID invalidTaskNo = UUID.randomUUID();
 
@@ -283,6 +292,7 @@ public class TaskControllerTest {
                 .priceOfTask(-10.00)
                 .orderNo(null)
                 .build();
+
         // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.put("/api/task/{id}", invalidTaskNo)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -297,6 +307,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenValidId_whenDeleteTask_thenTaskShouldBeDeleted() throws Exception {
+
         // Arrange
         UUID taskNo = UUID.randomUUID();
 
@@ -312,6 +323,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenInvalidId_whenDeleteTask_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
+
         // Arrange
         UUID invalidTaskNo = UUID.randomUUID();
         final String errorMessage = "No task found with this id";

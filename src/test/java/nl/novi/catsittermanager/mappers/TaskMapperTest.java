@@ -14,13 +14,13 @@ public class TaskMapperTest {
     @Test
     void testTaskToTaskResponse() {
 
-        // Given
+        // Arrange
         Task task = TaskFactory.randomTask().build();
 
-        // When
+        // Act
         TaskResponse taskResponse = TaskMapper.TaskToTaskResponse(task);
 
-        // Then
+        // Assert
         assertEquals(task.getTaskNo(), taskResponse.taskNo());
         assertEquals(task.getTaskType(), taskResponse.taskType());
         assertEquals(task.getTaskInstruction(), taskResponse.taskInstruction());
@@ -32,13 +32,13 @@ public class TaskMapperTest {
     @Test
     void testTaskRequestToTask() {
 
-        // Given
+        // Arrange
         TaskRequest taskRequest = TaskRequestFactory.randomTaskRequest().build();
 
-        // When
+        // Act
         Task task = TaskMapper.TaskRequestToTask(taskRequest);
 
-        // Then
+        // Assert
         assertEquals(taskRequest.taskType(), task.getTaskType());
         assertEquals(taskRequest.taskInstruction(), task.getTaskInstruction());
         assertEquals(taskRequest.extraInstructions(), task.getExtraInstructions());

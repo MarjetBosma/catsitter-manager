@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +22,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class InvoiceServiceTest {
+
     @Mock
     InvoiceRepository invoiceRepository;
 
@@ -34,58 +34,61 @@ public class InvoiceServiceTest {
 
     @Test
     void testGetAllInvoices_shouldFetchAllInvoicesOnTheList() {
-        // Given
+
+        // Arrange
         Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
         List<Invoice> expectedInvoiceList = List.of(expectedInvoice);
 
         when(invoiceRepository.findAll()).thenReturn(expectedInvoiceList);
 
-        // When
+        // Act
         List<Invoice> actualInvoiceList = invoiceService.getAllInvoices();
 
-        // Then
+        // Assert
         assertEquals(expectedInvoiceList, actualInvoiceList);
-
         verify(invoiceRepository, times(1)).findAll();
     }
 
     @Test
     void testGetAllInvoices_noInvoicesInDatabase_shouldReturnEmptyList() {
-        // Given
+
+        // Arrange
         when(invoiceRepository.findAll()).thenReturn(Collections.emptyList());
 
-        // When
+        // Act
         List<Invoice> invoiceResponseList = invoiceService.getAllInvoices();
 
-        // Then
+        // Assert
         assertTrue(invoiceResponseList.isEmpty());
         verify(invoiceRepository, times(1)).findAll();
     }
 
     @Test
     void testGetInvoice_shouldFetchInvoiceWithSpecificId() {
-        // Given
+
+        // Arrange
         Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
         when(invoiceRepository.findById(expectedInvoice.getInvoiceNo())).thenReturn(Optional.of(expectedInvoice));
 
-        // When
+        // Act
         Invoice resultInvoice = invoiceService.getInvoice(expectedInvoice.getInvoiceNo());
 
-        // Then
+        // Assert
         assertEquals(expectedInvoice, resultInvoice);
         verify(invoiceRepository, times(1)).findById(expectedInvoice.getInvoiceNo());
     }
 
     @Test
     void testGetInvoice_shouldFetchInvoiceWithSpecificId_RecordNotFoundException() {
-        // Given
+
+        // Arrange
         UUID invoiceId = UUID.randomUUID();
         when(invoiceRepository.findById(invoiceId)).thenReturn(Optional.empty());
 
-        // When
+        // Act
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> invoiceService.getInvoice(invoiceId));
 
-        // Then
+        // Assert
         assertEquals("No invoice found with this id.", exception.getMessage());
         verify(invoiceRepository).findById(invoiceId);
         verifyNoMoreInteractions(invoiceRepository);
@@ -93,7 +96,8 @@ public class InvoiceServiceTest {
 
     @Test
     void testCreateInvoice_shouldCreateANewInvoice() {
-        // Given
+
+        // Arrange
         Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
         Order expectedOrder = OrderFactory.randomOrder().build();
         UUID orderNo = expectedOrder.getOrderNo();
@@ -101,10 +105,10 @@ public class InvoiceServiceTest {
         when(orderService.getOrder(orderNo)).thenReturn(expectedOrder);
         when(invoiceRepository.save(expectedInvoice)).thenReturn(expectedInvoice);
 
-        // When
+        // Act
         Invoice resultInvoice = invoiceService.createInvoice(expectedInvoice, orderNo);
 
-        // Then
+        // Assert
         assertEquals(expectedInvoice, resultInvoice);
         assertEquals(expectedOrder, resultInvoice.getOrder());
 
@@ -114,13 +118,14 @@ public class InvoiceServiceTest {
 
     @Test
     void testCreateInvoice_shouldThrowExceptionWhenOrderNotFound() {
-        // Given
+
+        // Arrange
         Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
         UUID orderNo = UUID.randomUUID();
 
         when(orderService.getOrder(orderNo)).thenReturn(null);
 
-        // When & Then
+        // Act & Assert
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> invoiceService.createInvoice(expectedInvoice, orderNo));
         assertEquals("Order not found.", exception.getMessage());
 
@@ -130,49 +135,51 @@ public class InvoiceServiceTest {
 
     @Test
     void testExistsByOrderNo_shouldReturnTrueIfInvoiceExists() {
-        // Given
+
+        // Arrange
         UUID orderNo = UUID.randomUUID();
 
         when(invoiceRepository.existsByOrder_OrderNo(orderNo)).thenReturn(true);
 
-        // When
+        // Act
         boolean exists = invoiceService.existsByOrderNo(orderNo);
 
-        // Then
+        // Assert
         assertTrue(exists);
         verify(invoiceRepository, times(1)).existsByOrder_OrderNo(orderNo);
     }
 
     @Test
     void testExistsByOrderNo_shouldReturnFalseIfInvoiceDoesNotExist() {
-        // Given
+
+        // Arrange
         UUID orderNo = UUID.randomUUID();
 
         when(invoiceRepository.existsByOrder_OrderNo(orderNo)).thenReturn(false);
 
-        // When
+        // Act
         boolean exists = invoiceService.existsByOrderNo(orderNo);
 
-        // Then
+        // Assert
         assertFalse(exists);
         verify(invoiceRepository, times(1)).existsByOrder_OrderNo(orderNo);
     }
 
     @Test
     void testEditInvoice_shouldEditExistingInvoice() {
-        // Given
+
+        // Arrange
         Invoice invoice = InvoiceFactory.randomInvoice().build();
 
         when(invoiceRepository.findById(invoice.getInvoiceNo())).thenReturn(Optional.of(invoice));
         when(orderService.getOrder(invoice.getOrder().getOrderNo())).thenReturn(invoice.getOrder());
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
 
-        // When
+        // Act
         Invoice resultInvoice = invoiceService.editInvoice(invoice.getInvoiceNo(), invoice, invoice.getOrder().getOrderNo());
 
-        // Then
+        // Assert
         assertEquals(invoice, resultInvoice);
-
         verify(invoiceRepository, times(1)).findById(invoice.getInvoiceNo());
         verify(orderService, times(1)).getOrder(invoice.getOrder().getOrderNo());
         verify(invoiceRepository, times(1)).save(any(Invoice.class));
@@ -180,28 +187,30 @@ public class InvoiceServiceTest {
 
     @Test
     void testEditInvoice_nonExistingInvoice_shouldThrowRecordNotFoundException() {
-        // Given
+
+        // Arrange
         UUID invoiceNo = UUID.randomUUID();
         when(invoiceRepository.findById(invoiceNo)).thenReturn(Optional.empty());
 
-        // When
+        // Act
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> invoiceService.getInvoice(invoiceNo));
 
-        // Then
+        // Assert
         assertEquals("No invoice found with this id.", exception.getMessage());
         verify(invoiceRepository, times(1)).findById(invoiceNo);
     }
 
     @Test
     void testDeleteInvoice_ShouldDeleteInvoiceWithSpecificId() {
-        // Given
+
+        // Arrange
         Invoice invoice = InvoiceFactory.randomInvoice().build();
         when(invoiceRepository.existsById(invoice.getInvoiceNo())).thenReturn(true);
 
-        // When
+        // Act
         UUID invoiceNo = invoiceService.deleteInvoice(invoice.getInvoiceNo());
 
-        // Then
+        // Assert
         verify(invoiceRepository, times(1)).existsById(invoiceNo);
         verify(invoiceRepository, times(1)).deleteById(invoiceNo);
         verifyNoInteractions(orderService);
@@ -209,18 +218,18 @@ public class InvoiceServiceTest {
 
     @Test
     void testDeleteInvoice_ShouldThrowRecordNotFoundException() {
-        // Given
+
+        // Arrange
         UUID invoiceNo = UUID.randomUUID();
         when(invoiceRepository.existsById(invoiceNo)).thenReturn(false);
 
-        // When
+        // Act
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> invoiceService.deleteInvoice(invoiceNo));
 
-        // Then
+        // Assert
         assertEquals("No invoice found with this id.", exception.getMessage());
         verify(invoiceRepository, times(1)).existsById(invoiceNo);
         verify(invoiceRepository, never()).deleteById(invoiceNo);
         verifyNoInteractions(orderService);
     }
-
 }

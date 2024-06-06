@@ -14,13 +14,13 @@ public class CustomerMapperTest {
     @Test
     void testCustomerToCustomerResponse() {
 
-        // Given
+        // Arrange
         Customer customer = CustomerFactory.randomCustomer().build();
 
-        // When
+        // Act
         CustomerResponse customerResponse = CustomerMapper.CustomerToCustomerResponse(customer);
 
-        // Then
+        // Assert
         assertEquals(customer.getUsername(), customerResponse.username());
         assertEquals(customer.getName(), customerResponse.name());;
         assertEquals(customer.getAddress(), customerResponse.address());
@@ -30,13 +30,13 @@ public class CustomerMapperTest {
     @Test
     void testCustomerRequestToCustomer() {
 
-        // Given
+        // Arrange
         CustomerRequest customerRequest = CustomerRequestFactory.randomCustomerRequest().build();
 
-        // When
+        // Act
         Customer customer = CustomerMapper.CustomerRequestToCustomer(customerRequest);
 
-        // Then
+        // Assert
         assertEquals(customerRequest.username(), customer.getUsername());
         assertEquals(customerRequest.name(), customer.getName());
         assertEquals(customerRequest.address(), customer.getAddress());

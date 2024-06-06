@@ -9,7 +9,6 @@ public record UserResponse(
         String name,
         String address,
         String email
-
 ) {
 }
 

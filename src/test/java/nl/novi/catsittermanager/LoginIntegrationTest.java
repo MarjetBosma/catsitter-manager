@@ -8,7 +8,6 @@ import nl.novi.catsittermanager.dtos.login.LoginResponse;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.services.UserService;
 import nl.novi.catsittermanager.utils.JwtUtil;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,13 +22,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -73,7 +69,8 @@ public class LoginIntegrationTest {
 
     @Test
     void login_WithValidCredentials_ShouldReturnToken() throws Exception {
-        // Given
+
+        // Arrange
         LoginRequest loginRequest = new LoginRequest("username", "password");
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
@@ -82,7 +79,7 @@ public class LoginIntegrationTest {
         String token = "mocked_token";
         when(jwtUtil.createToken(anyString())).thenReturn(token);
 
-        // When
+        // Act
         String jsonInput = objectMapper.writeValueAsString(loginRequest);
 
         MvcResult result = mockMvc.perform(post("/auth/login")
@@ -92,27 +89,26 @@ public class LoginIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        // Then
+        // Assert
         String jsonResponse = result.getResponse().getContentAsString();
         LoginResponse loginResponse = objectMapper.readValue(jsonResponse, LoginResponse.class);
         assertNotNull(loginResponse);
         assertEquals(token, loginResponse.getToken());
     }
 
-
-
     @Test
     void login_WithInvalidCredentials_ShouldReturnBadRequest() throws Exception {
-        // Given
+
+        // Arrange
         LoginRequest loginRequest = new LoginRequest("", "");
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
 
-        // When
+        // Act
         String jsonInput = objectMapper.writeValueAsString(loginRequest);
 
-        // & Then
+        // Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonInput))

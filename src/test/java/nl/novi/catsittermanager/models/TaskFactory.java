@@ -1,6 +1,7 @@
 package nl.novi.catsittermanager.models;
 
 import net.datafaker.Faker;
+
 import nl.novi.catsittermanager.helpers.TaskFactoryHelper;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class TaskFactory {
     private static final Faker faker = new Faker();
 
     public static Task.TaskBuilder randomTask() {
+
         return Task.builder()
                 .taskNo(UUID.randomUUID())
                 .taskType(TaskFactoryHelper.randomTaskType())

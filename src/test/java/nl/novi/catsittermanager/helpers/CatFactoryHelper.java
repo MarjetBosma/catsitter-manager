@@ -2,7 +2,6 @@ package nl.novi.catsittermanager.helpers;
 
 import nl.novi.catsittermanager.enums.Gender;
 import nl.novi.catsittermanager.enums.MedicationName;
-
 import java.time.LocalDate;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;

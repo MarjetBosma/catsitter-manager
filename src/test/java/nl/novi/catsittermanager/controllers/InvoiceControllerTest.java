@@ -74,6 +74,7 @@ public class InvoiceControllerTest {
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
     void givenAValidRequest_whenGetAllInvoices_thenAllInvoicesShouldBeReturned() throws Exception {
+
         // Arrange
         Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
         List<Invoice> expectedInvoiceList = List.of(expectedInvoice);
@@ -107,6 +108,7 @@ public class InvoiceControllerTest {
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
     void givenNoInvoicesAvailable_whenGetAllInvoices_thenEmptyListShouldBeReturned() throws Exception {
+
         // Arrange
         when(invoiceService.getAllInvoices()).thenReturn(Collections.emptyList());
 
@@ -122,6 +124,7 @@ public class InvoiceControllerTest {
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
     void givenAValidRequest_whenGetInvoice_thenInvoiceShouldBeReturned() throws Exception {
+
         // Arrange
         Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
 
@@ -153,6 +156,7 @@ public class InvoiceControllerTest {
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
     void givenInvalidInvoiceNo_whenGetInvoice_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
+
         // Arrange
         UUID invalidInvoiceNo = UUID.randomUUID();
         final String errorMessage = "No invoice found with this id.";
@@ -170,6 +174,7 @@ public class InvoiceControllerTest {
     @Test
     @WithMockUser(username="admin", roles={"ADMIN"})
     void givenAValidRequest_whenCreateInvoice_thenInvoiceShouldBeReturned() throws Exception {
+
         // Arrange
         InvoiceRequest expectedInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().build();
         Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
@@ -205,6 +210,7 @@ public class InvoiceControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenExistingInvoiceForGivenOrder_whenCreateInvoice_thenConflictShouldBeReturned() throws Exception {
+
         // Arrange
         UUID orderNo = UUID.randomUUID();
         Faker faker = new Faker();
@@ -218,14 +224,13 @@ public class InvoiceControllerTest {
 
         when(invoiceService.existsByOrderNo(orderNo)).thenReturn(true);
 
-        // Act
+        // Act & Assert
         MvcResult result = mockMvc.perform(post("/invoice")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(expectedInvoiceRequest)))
                 .andExpect(status().isConflict())
                 .andReturn();
 
-        // Assert
         String content = result.getResponse().getContentAsString();
         assertEquals("An invoice already exists for order number: " + orderNo, content);
     }
@@ -255,6 +260,7 @@ public class InvoiceControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenEditInvoice_thenEditedInvoiceShouldBeReturned() throws Exception {
+
         // Arrange
         InvoiceRequest expectedInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().build();
         Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();

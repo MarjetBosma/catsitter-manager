@@ -5,7 +5,6 @@ import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
 import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.models.Order;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDate;
 
 @Component

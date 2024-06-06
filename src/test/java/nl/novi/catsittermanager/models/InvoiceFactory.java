@@ -1,6 +1,7 @@
 package nl.novi.catsittermanager.models;
 
 import net.datafaker.Faker;
+
 import nl.novi.catsittermanager.helpers.InvoiceFactoryHelper;
 
 import java.util.ArrayList;

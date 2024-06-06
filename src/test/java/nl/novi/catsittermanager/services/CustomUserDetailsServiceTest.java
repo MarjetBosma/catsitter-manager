@@ -32,7 +32,8 @@ class CustomUserDetailsServiceTest {
 
     @Test
     void testLoadUserByUsername_userExists() {
-        // Given
+
+        // Arrange
         String username = "testuser";
         User user = User.builder()
                 .username(username)
@@ -41,10 +42,10 @@ class CustomUserDetailsServiceTest {
                 .build();
         when(userRepository.findById(username)).thenReturn(Optional.of(user));
 
-        // When
+        // Act
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
-        // Then
+        // Assert
         GrantedAuthority expectedAuthority = new SimpleGrantedAuthority("ROLE_ADMIN");
         Set<GrantedAuthority> expectedAuthorities = Collections.singleton(expectedAuthority);
 
@@ -58,11 +59,12 @@ class CustomUserDetailsServiceTest {
 
     @Test
     void testLoadUserByUsername_userDoesNotExist() {
-        // Given
+
+        // Arrange
         String username = "nonexistentuser";
         when(userRepository.findById(username)).thenReturn(Optional.empty());
 
-        // When & Then
+        // Act & Assert
         UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> {
             customUserDetailsService.loadUserByUsername(username);
         });

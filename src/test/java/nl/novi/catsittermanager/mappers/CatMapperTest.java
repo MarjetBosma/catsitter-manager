@@ -15,13 +15,14 @@ class CatMapperTest {
 
     @Test
     void testCatToCatResponse() {
-        // Given
+
+        // Arrange
         Cat cat = CatFactory.randomCat().build();
 
-        // When
+        // Act
         CatResponse catResponse = CatMapper.CatToCatResponse(cat);
 
-        // Then
+        // Assert
         assertEquals(cat.getId(), catResponse.id());
         assertEquals(cat.getName(), catResponse.name());
         assertEquals(cat.getDateOfBirth().toString(), catResponse.dateOfBirth());
@@ -39,7 +40,8 @@ class CatMapperTest {
 
     @Test
     void testCatRequestToCat() {
-        // Given
+
+        // Arrange
         CatRequest catRequest = CatRequestFactory.randomCatRequest().build();
 
         // When

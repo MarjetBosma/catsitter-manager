@@ -7,7 +7,6 @@ import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.InvoiceRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +34,7 @@ public class InvoiceService {
         invoice.setOrder(order);
         return invoiceRepository.save(invoice);
     }
+
     public boolean existsByOrderNo(UUID orderNo) {
         return invoiceRepository.existsByOrder_OrderNo(orderNo);
     }

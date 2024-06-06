@@ -3,7 +3,6 @@ package nl.novi.catsittermanager.dtos;
 import net.datafaker.Faker;
 import nl.novi.catsittermanager.dtos.task.TaskRequest;
 import nl.novi.catsittermanager.helpers.TaskFactoryHelper;
-
 import java.util.UUID;
 
 public class TaskRequestFactory {

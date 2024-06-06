@@ -7,6 +7,7 @@ import nl.novi.catsittermanager.models.User;
 public class UserMapper {
 
     public static UserResponse UserToUserResponse(User user) {
+
         return new UserResponse(
                 user.getUsername(),
                 user.getRole(),
@@ -18,6 +19,7 @@ public class UserMapper {
     }
 
     public static User UserRequestToUser(UserRequest userRequest) {
+
         return User.builder()
                 .username(userRequest.username())
                 .password(userRequest.password())

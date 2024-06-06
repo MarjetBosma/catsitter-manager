@@ -12,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.plaf.BorderUIResource;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -35,46 +34,49 @@ public class TaskServiceTest {
 
     @Test
     void testGetAllTasks() {
-        // Given
+
+        // Arrange
         Task expectedTask = TaskFactory.randomTask().build();
         List<Task> expectedTaskList = List.of(expectedTask);
 
         when(taskRepository.findAll()).thenReturn(expectedTaskList);
 
-        // When
+        // Act
         List<Task> actualTaskList = taskService.getAllTasks();
 
-        // Then
+        // Assert
         assertEquals(expectedTaskList, actualTaskList);
         verify(taskRepository, times(1)).findAll();
     }
 
     @Test
     void testGetAllTasks_noTasksInDatabase_shouldReturnEmptyList() {
-        // Given
+
+        // Arrange
         when(taskRepository.findAll()).thenReturn(Collections.emptyList());
 
-        // When
+        // Act
         List<Task> taskResponseList = taskService.getAllTasks();
 
-        // Then
+        // Assert
         assertTrue(taskResponseList.isEmpty());
         verify(taskRepository, times(1)).findAll();
     }
 
     @Test
     void testCreateTask_shouldCreateANewTask() {
-        // Given
+
+        // Arrange
         Task expectedTask = TaskFactory.randomTask().build();
         Order order = OrderFactory.randomOrder().build();
 
         when(orderService.getOrder(order.getOrderNo())).thenReturn(order);
         when(taskRepository.save(expectedTask)).thenReturn(expectedTask);
 
-        // When
+        // Act
         Task resultTask = taskService.createTask(expectedTask, order.getOrderNo());
 
-        // Then
+        // Assert
         assertEquals(expectedTask, resultTask);
 
         verify(orderService, times(1)).getOrder(order.getOrderNo());
@@ -83,47 +85,51 @@ public class TaskServiceTest {
 
     @Test
     void testEditTask_shouldEditExistingTask() {
-        // Given
+
+        // Arrange
         Task task = TaskFactory.randomTask().build();
 
         when(taskRepository.findById(task.getTaskNo())).thenReturn(Optional.of(task));
         when(orderService.getOrder(task.getOrder().getOrderNo())).thenReturn(task.getOrder());
         when(taskRepository.save(any(Task.class))).thenReturn(task);
 
-        // When
+        // Act
         Task resultTask = taskService.editTask(task.getTaskNo(), task, task.getOrder().getOrderNo());
 
-        // Then
+        // Assert
         assertEquals(task, resultTask);
 
         verify(taskRepository, times(1)).findById(task.getTaskNo());
         verify(orderService, times(1)).getOrder(task.getOrder().getOrderNo());
         verify(taskRepository, times(1)).save(any(Task.class));
     }
+
     @Test
     void testEditTask_nonExistingTask_shouldThrowRecordNotFoundException() {
-        // Given
+
+        // Arrange
         UUID taskNo = UUID.randomUUID();
         when(taskRepository.findById(taskNo)).thenReturn(Optional.empty());
 
-        // When
+        // Act
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> taskService.getTask(taskNo));
 
-        // Then
+        // Assert
         assertEquals("No task found with this id.", exception.getMessage());
         verify(taskRepository, times(1)).findById(taskNo);
     }
 
     @Test
     void testDeleteTask_shouldDeleteTaskWithSpecificId() {
-        // Given
+
+        // Arrange
         Task task = TaskFactory.randomTask().build();
         when(taskRepository.existsById(task.getTaskNo())).thenReturn(true);
 
-        // When
+        // Act
         UUID taskNo = taskService.deleteTask(task.getTaskNo());
 
-        // Then
+        // Assert
         verify(taskRepository, times(1)).existsById(taskNo);
         verify(taskRepository, times(1)).deleteById(taskNo);
         verifyNoInteractions(orderService);
@@ -131,15 +137,17 @@ public class TaskServiceTest {
 
     @Test
     void testDeleteTask_shouldDeleteTaskWithSpecificId_RecordNotFoundException() {
-        // Given
+
+        // Arrange
         UUID taskNo = UUID.randomUUID();
         when(taskRepository.existsById(taskNo)).thenReturn(false);
 
-        // When
+        // Act
         RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> taskService.deleteTask(taskNo));
 
-        // Them
+        // Assert
         assertEquals("No task found with this id.", exception.getMessage());
+
         verify(taskRepository, times(1)).existsById(taskNo);
         verify(taskRepository, never()).deleteById(taskNo);
         verifyNoInteractions(orderService);

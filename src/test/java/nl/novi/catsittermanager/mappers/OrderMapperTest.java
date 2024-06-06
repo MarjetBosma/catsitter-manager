@@ -14,13 +14,13 @@ public class OrderMapperTest {
     @Test
     void testOrderToOrderResponse() {
 
-        // Given
+        // Arrange
         Order order = OrderFactory.randomOrder().build();
 
-        // When
+        // Act
         OrderResponse orderResponse = OrderMapper.OrderToOrderResponse(order);
 
-        // Then
+        // Assert
         assertEquals(order.getOrderNo(), orderResponse.orderNo());
         assertEquals(order.getStartDate().toString(), orderResponse.startDate());
         assertEquals(order.getEndDate().toString(), orderResponse.endDate());;
@@ -32,13 +32,13 @@ public class OrderMapperTest {
 
     @Test
     void testOrderRequestToOrder() {
-        // Given
+        // Arrange
         OrderRequest orderRequest = OrderRequestFactory.randomOrderRequest().build();
 
-        // When
+        // Act
         Order order = OrderMapper.OrderRequestToOrder(orderRequest);
 
-        // Then
+        // Assert
         assertEquals(orderRequest.startDate(), order.getStartDate().toString());
         assertEquals(orderRequest.endDate(), order.getEndDate().toString());
         assertEquals(orderRequest.dailyNumberOfVisits(), order.getDailyNumberOfVisits());

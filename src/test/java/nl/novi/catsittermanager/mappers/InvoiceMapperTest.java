@@ -14,13 +14,13 @@ public class InvoiceMapperTest {
     @Test
     void testInvoiceToinvoiceResponse() {
 
-        // Given
+        // Arrange
         Invoice invoice = InvoiceFactory.randomInvoice().build();
 
-        // When
+        // Act
         InvoiceResponse invoiceResponse = InvoiceMapper.InvoiceToInvoiceResponse(invoice);
 
-        // Then
+        // Assert
         assertEquals(invoice.getInvoiceNo(), invoiceResponse.invoiceNo());
         assertEquals(invoice.getInvoiceDate().toString(), invoiceResponse.invoiceDate());
         assertEquals(invoice.getAmount(), invoiceResponse.amount());
@@ -30,13 +30,13 @@ public class InvoiceMapperTest {
 
     @Test void testInvoiceRequestToInvoice() {
 
-        // Given
+        // Arrange
         InvoiceRequest invoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().build();
 
-        // When
+        // Act
         Invoice invoice = InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest);
 
-        // Then
+        // Assert
         assertEquals(invoiceRequest.invoiceDate(), invoice.getInvoiceDate().toString());
         assertEquals(invoiceRequest.amount(), invoice.getAmount());
         assertEquals(invoiceRequest.paid(), invoice.getPaid());
