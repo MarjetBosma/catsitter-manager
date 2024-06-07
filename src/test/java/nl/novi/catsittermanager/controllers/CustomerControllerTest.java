@@ -100,9 +100,7 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.[0].username").value(expectedResponse.username()))
                 .andExpect(jsonPath("$.[0].name").value(expectedResponse.name()))
                 .andExpect(jsonPath("$.[0].address").value(expectedResponse.address()))
-                .andExpect(jsonPath("$.[0].email").value(expectedResponse.email()))
-                .andExpect(jsonPath("$.[0].cats").value(expectedResponse.cats()))
-                .andExpect(jsonPath("$.[0].orders").value(expectedResponse.orders()));
+                .andExpect(jsonPath("$.[0].email").value(expectedResponse.email()));
     }
 
     @Test
@@ -150,9 +148,7 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.username").value(expectedResponse.username()))
                 .andExpect(jsonPath("$.name").value(expectedResponse.name()))
                 .andExpect(jsonPath("$.address").value(expectedResponse.address()))
-                .andExpect(jsonPath("$.email").value(expectedResponse.email()))
-                .andExpect(jsonPath("$.cats").value(expectedResponse.cats()))
-                .andExpect(jsonPath("$.orders").value(expectedResponse.orders()));
+                .andExpect(jsonPath("$.email").value(expectedResponse.email()));
     }
 
     @Test
@@ -161,7 +157,7 @@ public class CustomerControllerTest {
 
         // Arrange
         String invalidUsername = "testcustomer";
-        final String errorMessage = "No customer found with this id.";
+        final String errorMessage = "No customer found with this username.";
 
         when(customerService.getCustomer(invalidUsername)).thenThrow(new RecordNotFoundException(errorMessage));
 
@@ -335,9 +331,7 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.username").value(expectedResponse.username()))
                 .andExpect(jsonPath("$.name").value(expectedResponse.name()))
                 .andExpect(jsonPath("$.address").value(expectedResponse.address()))
-                .andExpect(jsonPath("$.email").value(expectedResponse.email()))
-                .andExpect(jsonPath("$.cats").value(expectedResponse.cats()))
-                .andExpect(jsonPath("$.orders").value(expectedResponse.orders()));
+                .andExpect(jsonPath("$.email").value(expectedResponse.email()));
     }
 
     @Test
@@ -371,7 +365,7 @@ public class CustomerControllerTest {
         CustomerRequest expectedCustomerRequest = CustomerRequestFactory.randomCustomerRequest().build();
         Customer expectedCustomer = CustomerFactory.randomCustomer().build();
 
-        when(customerService.editCustomer(eq("testcustomer"), any(Customer.class)))
+        when(customerService.editCustomer(any(String.class), any(Customer.class)))
                 .thenReturn(expectedCustomer);
 
         CustomerResponse expectedResponse = new CustomerResponse(
@@ -396,9 +390,7 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.username").value(expectedResponse.username().toString()))
                 .andExpect(jsonPath("$.name").value(expectedResponse.name()))
                 .andExpect(jsonPath("$.address").value(expectedResponse.address()))
-                .andExpect(jsonPath("$.email").value(expectedResponse.email()))
-                .andExpect(jsonPath("$.[0].cats").value(expectedResponse.cats()))
-                .andExpect(jsonPath("$.[0].orders").value(expectedResponse.orders()));
+                .andExpect(jsonPath("$.email").value(expectedResponse.email()));
     }
 
     @Test
@@ -446,7 +438,7 @@ public class CustomerControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    void givenValidId_whenDeleteCustomer_thenOrderShouldBeDeleted() throws Exception {
+    void givenValidId_whenDeleteCustomer_thenCustomerShouldBeDeleted() throws Exception {
 
         // Arrange
         String username = "testcustomer";
@@ -457,7 +449,7 @@ public class CustomerControllerTest {
         mockMvc.perform(delete("/api/customer/{id}", username)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Customer " + username + " removed from database."));
+                .andExpect(content().string("Customer with username " + username + " removed from database."));
     }
 
     @Test

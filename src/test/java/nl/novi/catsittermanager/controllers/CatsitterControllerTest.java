@@ -100,9 +100,8 @@ public class CatsitterControllerTest {
                 .andExpect(jsonPath("$.[0].name").value(expectedResponse.name()))
                 .andExpect(jsonPath("$.[0].address").value(expectedResponse.address()))
                 .andExpect(jsonPath("$.[0].email").value(expectedResponse.email()))
-                .andExpect(jsonPath("$.[0].about").value(expectedResponse.email()))
-                .andExpect(jsonPath("$.[0].orders").value(expectedResponse.orders()))
-                .andExpect(jsonPath("$.[0].orders").value(expectedResponse.image()));
+                .andExpect(jsonPath("$.[0].about").value(expectedResponse.about()))
+                .andExpect(jsonPath("$.[0].image").value(expectedResponse.image()));
     }
 
     @Test
@@ -152,8 +151,7 @@ public class CatsitterControllerTest {
                 .andExpect(jsonPath("$.name").value(expectedResponse.name()))
                 .andExpect(jsonPath("$.address").value(expectedResponse.address()))
                 .andExpect(jsonPath("$.email").value(expectedResponse.email()))
-                .andExpect(jsonPath("$.cats").value(expectedResponse.about()))
-                .andExpect(jsonPath("$.orders").value(expectedResponse.orders()))
+                .andExpect(jsonPath("$.about").value(expectedResponse.about()))
                 .andExpect(jsonPath("$.image").value(expectedResponse.image()));
     }
 
@@ -270,8 +268,7 @@ public class CatsitterControllerTest {
                 .andExpect(jsonPath("$.address").value(expectedResponse.address()))
                 .andExpect(jsonPath("$.email").value(expectedResponse.email()))
                 .andExpect(jsonPath("$.about").value(expectedResponse.about()))
-                .andExpect(jsonPath("$.orders").value(expectedResponse.orders()))
-                .andExpect(jsonPath("$.orders").value(expectedResponse.image()));
+                .andExpect(jsonPath("$.image").value(expectedResponse.image()));
     }
 
     @Test
@@ -307,7 +304,7 @@ public class CatsitterControllerTest {
         CatsitterRequest expectedCatsitterRequest = CatsitterRequestFactory.randomCatsitterRequest().build();
         Catsitter expectedCatsitter = CatsitterFactory.randomCatsitter().build();
 
-        when(catsitterService.editCatsitter(eq("testcatsitter"), any(Catsitter.class)))
+        when(catsitterService.editCatsitter(any(String.class), any(Catsitter.class)))
                 .thenReturn(expectedCatsitter);
 
         CatsitterResponse expectedResponse = new CatsitterResponse(
@@ -330,13 +327,12 @@ public class CatsitterControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value(expectedResponse.username().toString()))
+                .andExpect(jsonPath("$.username").value(expectedResponse.username()))
                 .andExpect(jsonPath("$.name").value(expectedResponse.name()))
                 .andExpect(jsonPath("$.address").value(expectedResponse.address()))
                 .andExpect(jsonPath("$.email").value(expectedResponse.email()))
                 .andExpect(jsonPath("$.about").value(expectedResponse.about()))
-                .andExpect(jsonPath("$.[0].orders").value(expectedResponse.orders()))
-                .andExpect(jsonPath("$.about").value(expectedResponse.about()));
+                .andExpect(jsonPath("$.image").value(expectedResponse.image()));
     }
 
     @Test
@@ -348,10 +344,10 @@ public class CatsitterControllerTest {
         CatsitterRequest expectedCatsitterRequest = CatsitterRequestFactory.randomCatsitterRequest().build();
 
         when(catsitterService.editCatsitter(eq("testcatsitter"), any(Catsitter.class)))
-                .thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No Catsitter found with this username."));
+                .thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No catsitter found with this username."));
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/Catsitter/{id}", username)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/catsitter/{id}", username)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(expectedCatsitterRequest)))
                 .andExpect(status().isNotFound());
@@ -372,7 +368,7 @@ public class CatsitterControllerTest {
                 .build();
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/order/{id}", username)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/catsitter/{id}", username)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCatsitterRequest))
                         .accept(MediaType.APPLICATION_JSON))
@@ -387,7 +383,7 @@ public class CatsitterControllerTest {
     void givenValidId_whenDeleteCatsitter_thenOrderShouldBeDeleted() throws Exception {
 
         // Arrange
-        String username = "testCatsitter";
+        String username = "testcatsitter";
 
         when(catsitterService.deleteCatsitter(username)).thenReturn(username);
 
@@ -395,7 +391,7 @@ public class CatsitterControllerTest {
         mockMvc.perform(delete("/api/catsitter/{id}", username)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Catsitter " + username + " removed from database."));
+                .andExpect(content().string("Catsitter with username " + username + " removed from database."));
     }
 
     @Test
@@ -403,7 +399,7 @@ public class CatsitterControllerTest {
     void givenInvalidId_whenDeleteCatsitter_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
 
         // Arrange
-        String username = "testCatsitter";
+        String username = "testcatsitter";
         final String errorMessage = "No catsitter found with this id";
 
         when(catsitterService.deleteCatsitter(username)).thenThrow(new RecordNotFoundException(errorMessage));

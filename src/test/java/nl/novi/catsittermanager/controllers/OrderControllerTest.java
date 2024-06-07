@@ -343,7 +343,6 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.totalNumberOfVisits").value(expectedResponse.totalNumberOfVisits()))
                 .andExpect(jsonPath("$.customerUsername").value(expectedResponse.customerUsername()))
                 .andExpect(jsonPath("$.catsitterUsername").value(expectedResponse.catsitterUsername()));
-
     }
 
     @Test

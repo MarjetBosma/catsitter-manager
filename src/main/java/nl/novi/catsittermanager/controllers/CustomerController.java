@@ -95,6 +95,6 @@ public class CustomerController {
     @DeleteMapping("/customer/{id}")
     public ResponseEntity<Object> deleteCustomer(@PathVariable("id") final String username) {
         customerService.deleteCustomer(username);
-        return ResponseEntity.ok().body("Customer " + username + " removed from database.");
+        return ResponseEntity.ok().body("Customer with username " + username + " removed from database.");
     }
 }
