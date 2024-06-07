@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,16 +40,23 @@ public class OrderExistsIntegrationTest {
 
         Order order = new Order();
         order.setOrderNo(orderNo);
-        orderRepository.save(order);
+        orderRepository.saveAndFlush(order);
 
         Invoice invoice = new Invoice();
         invoice.setOrder(order);
-        invoiceRepository.save(invoice);
+        invoiceRepository.saveAndFlush(invoice);
 
         // Act
         boolean exists = invoiceRepository.existsByOrder_OrderNo(orderNo);
 
         // Assert
         assertTrue(exists);
+
+        // Verify data is in database
+        List<Order> orders = orderRepository.findAll();
+        System.out.println("Orders in database: " + orders);
+
+        List<Invoice> invoices = invoiceRepository.findAll();
+        System.out.println("Invoices in database: " + invoices);
     }
 }

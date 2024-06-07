@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -63,10 +64,10 @@ class ImageServiceTest {
     }
 
     @AfterEach
-    void cleanUp() throws IOException {
+    void tearDown() throws IOException {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(fileStoragePath)) {
             for (Path path : directoryStream) {
-                Files.delete(path);
+                Files.deleteIfExists(path);
             }
         }
     }
@@ -78,7 +79,7 @@ class ImageServiceTest {
         // Given
         UUID catId = UUID.randomUUID();
         Cat cat = CatFactory.randomCat().build();
-        String filename = "testfile.jpg";
+        String filename = "catimage.jpg";
         String url = "http://localhost:8080/api/cat/" + catId + "/images/" + filename;
         byte[] content = "Test Content".getBytes();
 
@@ -90,35 +91,35 @@ class ImageServiceTest {
         ServletRequestAttributes requestAttributes = Mockito.mock(ServletRequestAttributes.class);
         RequestContextHolder.setRequestAttributes(requestAttributes);
         ServletUriComponentsBuilder mockBuilder = Mockito.mock(ServletUriComponentsBuilder.class);
-        mockStatic(ServletUriComponentsBuilder.class);
 
-        when(ServletUriComponentsBuilder.fromCurrentContextPath()).thenReturn(mockBuilder);
-        when(mockBuilder.path(anyString())).thenReturn(mockBuilder);
-        when(mockBuilder.toUriString()).thenReturn(url);
+        try (MockedStatic<ServletUriComponentsBuilder> mockStatic = Mockito.mockStatic(ServletUriComponentsBuilder.class)) {
+            when(ServletUriComponentsBuilder.fromCurrentContextPath()).thenReturn(mockBuilder);
+            when(mockBuilder.path(anyString())).thenReturn(mockBuilder);
+            when(mockBuilder.toUriString()).thenReturn(url);
 
-        // When
-        ImageUpload result = imageService.uploadCatImage(catId, file);
+            // When
+            ImageUpload result = imageService.uploadCatImage(catId, file);
 
-        // Then
-        assertNotNull(result);
-        assertEquals(filename, result.getFilename());
-        assertEquals(file.getContentType(), result.getContentType());
-        assertEquals(url, result.getUrl());
-        assertEquals(cat, result.getCat());
-        assertEquals(result, cat.getImage());
+            // Then
+            assertNotNull(result);
+            assertEquals(filename, result.getFilename());
+            assertEquals(file.getContentType(), result.getContentType());
+            assertEquals(url, result.getUrl());
+            assertEquals(cat, result.getCat());
+            assertEquals(result, cat.getImage());
 
-        verify(catRepository, times(2)).findById(catId);
-        verify(fileUploadRepository, times(2)).save(any(ImageUpload.class));
-        verify(catRepository, times(2)).save(cat);
+            verify(catRepository, times(2)).findById(catId);
+            verify(fileUploadRepository, times(2)).save(any(ImageUpload.class));
+            verify(catRepository, times(2)).save(cat);
+        }
     }
-
 
     @Test
     void testUploadCatImage_catNotFound() {
 
         // Arrange
         UUID catId = UUID.randomUUID();
-        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "test image content".getBytes());
+        MockMultipartFile file = new MockMultipartFile("file", "catimage.jpg", "image/jpeg", "test image content".getBytes());
 
         when(catRepository.findById(catId)).thenReturn(Optional.empty());
 
@@ -158,7 +159,7 @@ class ImageServiceTest {
         // Arrange
         String catsitterId = "catsitter";
         Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
-        String filename = "testfile1.jpg";
+        String filename = "catsitterimage.jpg";
         String url = "http://localhost:8080/api/catsitter/" + catsitterId + "/uploads/" + filename;
         byte[] content = "Test Content".getBytes();
 
@@ -235,7 +236,7 @@ class ImageServiceTest {
 
         // Arrange
         UUID catId = UUID.randomUUID();
-        String filename = "testfile.jpg";
+        String filename = "catimage.jpg";
         String url = "http://localhost/cat/" + catId + "/" + filename;
 
         byte[] content = "Test content".getBytes();
@@ -262,7 +263,7 @@ class ImageServiceTest {
 
         // Arrange
         UUID catId = UUID.randomUUID();
-        String filename = "testfile.jpg";
+        String filename = "catimage.jpg";
         String url = "http://localhost/cat/" + catId + "images/uploads/" + filename;
         byte[] content = "Test Content".getBytes();
         String contentType = "image/jpeg";
@@ -291,8 +292,7 @@ class ImageServiceTest {
         // Arrange
         UUID catId = UUID.randomUUID();
         Cat cat = CatFactory.randomCat().build();
-        ImageUpload imageUpload = new ImageUpload("testfile.jpg", "image/jpeg", "http://localhost/cat/" + catId + "/uploads" +
-                "/testfile.jpg");
+        ImageUpload imageUpload = new ImageUpload("catimage.jpg", "image/jpeg", "http://localhost/cat/" + catId + "/uploads" + "/catimage.jpg");
         when(catRepository.findById(catId)).thenReturn(Optional.of(cat));
 
         // Act
@@ -308,7 +308,7 @@ class ImageServiceTest {
     void testAssignImageToCat_catNotFound() {
         // Arrange
         UUID catId = UUID.randomUUID();
-        ImageUpload imageUpload = new ImageUpload("testfile.jpg", "image/jpeg", "http://localhost/cat/" + catId + "/images/uploads/testfile.jpg");
+        ImageUpload imageUpload = new ImageUpload("catimage.jpg", "image/jpeg", "http://localhost/cat/" + catId + "/images/uploads/catimage.jpg");
         when(catRepository.findById(catId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -327,7 +327,7 @@ class ImageServiceTest {
         // Arrange
         String catsitterId = "catsitter";
         Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
-        ImageUpload imageUpload = new ImageUpload("testfile1.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/images/uploads/testfile1.jpg");
+        ImageUpload imageUpload = new ImageUpload("catsitterimage.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/images/uploads/catsitterimage.jpg");
         when(catsitterRepository.findById(catsitterId)).thenReturn(Optional.of(catsitter));
 
         // Act
@@ -344,7 +344,7 @@ class ImageServiceTest {
 
         // Arrange
         String catsitterId = "catsitter";
-        ImageUpload imageUpload = new ImageUpload("testfile1.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/images/uploads/testfile1.jpg");
+        ImageUpload imageUpload = new ImageUpload("catsitterimage.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/images/uploads/catsitterimage.jpg");
         when(catsitterRepository.findById(catsitterId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -361,7 +361,7 @@ class ImageServiceTest {
     void downloadImage_imageShouldBeDownloadedCorrectly() throws IOException {
 
         // Arrange
-        String filename = "testfile.jpg";
+        String filename = "catimage.jpg";
         String fileStorageLocation = "src/test/resources/images/downloads/";
         Path filePath = fileStoragePath.resolve(filename);
         Files.createDirectories(filePath.getParent());
@@ -401,7 +401,7 @@ class ImageServiceTest {
     void downloadImage_MalformedURL() throws MalformedURLException {
 
         // Arrange
-        String filename = "testfile.jpg";
+        String filename = "catsitterimage.jpg";
         String fileStorageLocation = "src/test/resources/images/downloads/";
 
         ImageService imageServiceSpy = Mockito.spy(new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository));
@@ -418,7 +418,7 @@ class ImageServiceTest {
     void getFilePath_shouldReturnCorrectFilePath() {
 
         // Arrange
-        String filename = "testfile.jpg";
+        String filename = "catimage.jpg";
         String fileStorageLocation = "src/test/resources/images/uploads/";
 
         ImageService imageService = new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository);
@@ -431,12 +431,13 @@ class ImageServiceTest {
         assertEquals(expectedPath, filePath);
     }
 
+    // todo: Deze test kan maar 1x gedraaid worden, de tweede keer faalt de test, omdat dan het filepath al bestaat. De methodes onder @AfterEach zouden ervoor moeten zorgen dat dit gewist wordt na de test, maar blijkbaar gebeurt dit niet.
     @Test
     void createUrlResource_shouldCreateUrlResource() throws Exception {
 
         // Arrange
         String fileStoragePath = "src/test/resources/images/uploads/";
-        Path path = Paths.get(fileStoragePath, "testfile1.jpg");
+        Path path = Paths.get(fileStoragePath, "catimage1.jpg");
         Files.createDirectories(path.getParent());
         Files.createFile(path);
 
@@ -452,7 +453,7 @@ class ImageServiceTest {
     void createUrlResource_shouldThrowMalformedURLException() throws MalformedURLException {
 
         // Arrange
-        Path path = Paths.get("src/test/resources/images/uploads/testfile.jpg");
+        Path path = Paths.get("src/test/resources/images/uploads/catsitterimage.jpg");
         ImageService imageServiceSpy = Mockito.spy(new ImageService("src/test/resources/uploads/", fileUploadRepository, catRepository, catsitterRepository));
         doThrow(new MalformedURLException("Malformed URL")).when(imageServiceSpy).createUrlResource(Mockito.any(Path.class));
 

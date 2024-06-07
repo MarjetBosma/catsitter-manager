@@ -56,8 +56,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
             // Arrange
             UUID catId = UUID.randomUUID();
-            MockMultipartFile file = new MockMultipartFile("file", "testfile.jpg", "image/jpeg", "test image content".getBytes());
-            ImageUpload imageUpload = new ImageUpload("testfile.jpg", "image/jpeg", "/testfile.jpg");
+            MockMultipartFile file = new MockMultipartFile("file", "catimage.jpg", "image/jpeg", "test image content".getBytes());
+            ImageUpload imageUpload = new ImageUpload("catimage.jpg", "image/jpeg", "/catimage.jpg");
 
             when(imageService.uploadCatImage(any(UUID.class), any(MockMultipartFile.class))).thenReturn(imageUpload);
 
@@ -76,8 +76,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
             // Arrange
             String username = "testuser";
-            MockMultipartFile file = new MockMultipartFile("file", "testfile.jpg", "image/jpeg", "test image content".getBytes());
-            ImageUpload imageUpload = new ImageUpload("testfile.jpg", "image/jpeg", "/upload/testfile.jpg");
+            MockMultipartFile file = new MockMultipartFile("file", "catsitterimage.jpg", "image/jpeg", "test image content".getBytes());
+            ImageUpload imageUpload = new ImageUpload("catsitterimage.jpg", "image/jpeg", "src/test/upload/catsitterimage.jpg");
 
             when(imageService.uploadCatsitterImage(any(String.class), any(MockMultipartFile.class))).thenReturn(imageUpload);
 
@@ -96,8 +96,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
             // Arrange
             UUID catId = UUID.fromString(UUID.randomUUID().toString());
-            String filename = "testfile.jpg";
-            UrlResource resource = new UrlResource(Paths.get("src/test/resources/images/downloads/testfile.jpg").toUri());
+            String filename = "catimage.jpg";
+            UrlResource resource = new UrlResource(Paths.get("src/test/resources/images/downloads/catimage.jpg").toUri());
 
             when(imageService.downloadImage(filename)).thenReturn(resource);
 
@@ -116,8 +116,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
             // Arrange
             String username = "testuser";
-            String filename = "testfile.jpg";
-            UrlResource resource = new UrlResource(Paths.get("src/test/resources/images/downloads/testfile.jpg").toUri());
+            String filename = "catsitterimage.jpg";
+            UrlResource resource = new UrlResource(Paths.get("src/test/resources/images/downloads/catsitterimage.jpg").toUri());
 
             when(imageService.downloadImage(filename)).thenReturn(resource);
 
