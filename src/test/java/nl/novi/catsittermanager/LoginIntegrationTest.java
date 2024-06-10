@@ -2,7 +2,6 @@ package nl.novi.catsittermanager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.novi.catsittermanager.config.TestConfig;
-import nl.novi.catsittermanager.controllers.AuthenticationController;
 import nl.novi.catsittermanager.dtos.login.LoginRequest;
 import nl.novi.catsittermanager.dtos.login.LoginResponse;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
