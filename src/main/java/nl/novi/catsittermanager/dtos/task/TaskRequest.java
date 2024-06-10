@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import nl.novi.catsittermanager.enumerations.TaskType;
 import org.springframework.validation.annotation.Validated;
-
 import java.util.UUID;
 
 @Builder

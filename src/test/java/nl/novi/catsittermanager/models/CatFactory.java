@@ -1,9 +1,7 @@
 package nl.novi.catsittermanager.models;
 
 import net.datafaker.Faker;
-
 import nl.novi.catsittermanager.helpers.CatFactoryHelper;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

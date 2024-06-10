@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -27,13 +26,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Service
 public class ImageService {
-
-    private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
 
     @Value("${my.upload_location}")
     private final Path fileStoragePath;
@@ -71,6 +65,7 @@ public class ImageService {
                     .path("/images/uploads/")
                     .path(filename)
                     .toUriString();
+
             String storedFileName = storeFile(file, url);
             ImageUpload imageUpload = fileUploadRepository.save(new ImageUpload(storedFileName, file.getContentType(), url));
             cat.setImage(imageUpload);

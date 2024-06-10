@@ -32,7 +32,7 @@ public class OrderExistsIntegrationTest {
     @Autowired
     private OrderRepository orderRepository;
 
-    // todo: Geeft bij assertTrue false. Bij debuggen wordt de order wel gezet en opgeslagen, dus ik snap niet wat er gebeurt.
+    // todo: Geeft bij assertTrue false. Bij debuggen wordt de order wel gezet en opgeslagen en service unittest op methode existsByOrder slaagt wel, dus ik snap niet goed wat hier gebeurt.
 
     @Test
     void testExistsByOrder_OrderNo() {

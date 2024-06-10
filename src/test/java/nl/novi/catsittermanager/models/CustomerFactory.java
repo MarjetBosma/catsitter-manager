@@ -1,11 +1,8 @@
 package nl.novi.catsittermanager.models;
 
 import net.datafaker.Faker;
-
 import nl.novi.catsittermanager.enumerations.Role;
-
 import java.util.Collections;
-
 
 public class CustomerFactory {
 

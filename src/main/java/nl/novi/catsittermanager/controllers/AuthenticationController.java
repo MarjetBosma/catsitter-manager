@@ -5,7 +5,6 @@ import nl.novi.catsittermanager.dtos.login.ErrorResponse;
 import nl.novi.catsittermanager.dtos.login.LoginRequest;
 import nl.novi.catsittermanager.dtos.login.LoginResponse;
 import nl.novi.catsittermanager.utils.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequestMapping("/auth")

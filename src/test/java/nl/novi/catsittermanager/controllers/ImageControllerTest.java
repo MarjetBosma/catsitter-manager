@@ -24,10 +24,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 import java.nio.file.Paths;
 import java.util.UUID;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -47,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
         @BeforeEach
         void setUp() {
+            assert mockMvc.getDispatcherServlet().getWebApplicationContext() != null;
             mockMvc = MockMvcBuilders.webAppContextSetup((WebApplicationContext) mockMvc.getDispatcherServlet().getWebApplicationContext()).build();
         }
 
