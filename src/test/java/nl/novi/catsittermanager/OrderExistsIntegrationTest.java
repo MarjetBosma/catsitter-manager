@@ -32,6 +32,8 @@ public class OrderExistsIntegrationTest {
     @Autowired
     private OrderRepository orderRepository;
 
+    // todo: Geeft bij assertTrue false. Bij debuggen wordt de order wel gezet en opgeslagen, dus ik snap niet wat er gebeurt.
+
     @Test
     void testExistsByOrder_OrderNo() {
 
@@ -51,12 +53,5 @@ public class OrderExistsIntegrationTest {
 
         // Assert
         assertTrue(exists);
-
-        // Verify data is in database
-        List<Order> orders = orderRepository.findAll();
-        System.out.println("Orders in database: " + orders);
-
-        List<Invoice> invoices = invoiceRepository.findAll();
-        System.out.println("Invoices in database: " + invoices);
     }
 }

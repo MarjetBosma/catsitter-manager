@@ -54,13 +54,14 @@ public class InvoiceControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @MockBean
-    InvoiceService invoiceService;
-
+    @Autowired
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @MockBean
+    InvoiceService invoiceService;
 
     @BeforeEach
     void init() {
@@ -207,6 +208,7 @@ public class InvoiceControllerTest {
                 .andExpect(jsonPath("$.orderNo").value(expectedResponse.orderNo().toString()));
     }
 
+    // todo: Geeft een statuscode 404 i.p.v. 409
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenExistingInvoiceForGivenOrder_whenCreateInvoice_thenConflictShouldBeReturned() throws Exception {

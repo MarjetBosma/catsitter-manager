@@ -58,7 +58,7 @@ class AuthenticationControllerTest {
 
     @Test
     void login_ShouldReturnOk_WhenCredentialsAreValid() throws Exception {
-        // Given
+        // Arrange
         String token = "mock-token";
         LoginRequest loginRequest = new LoginRequest("testuser", "testpassword");
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
@@ -74,7 +74,7 @@ class AuthenticationControllerTest {
 
         when(jwtUtil.createToken(userDetails.getUsername())).thenReturn(token);
 
-        // When & Then
+        // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginRequestJson))
@@ -86,11 +86,11 @@ class AuthenticationControllerTest {
 
     @Test
     void login_ShouldReturnBadRequest_WhenCredentialsAreInvalid() throws Exception {
-        // Given
+        // Arrange
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Invalid credentials"));
 
-        // When & Then
+        // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginRequestJson))
