@@ -1,11 +1,13 @@
 package nl.novi.catsittermanager.controllers;
 
-import nl.novi.catsittermanager.dtos.cat.CatDto;
-import nl.novi.catsittermanager.dtos.cat.CatInputDto;
-import nl.novi.catsittermanager.exceptions.ValidationException;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import nl.novi.catsittermanager.dtos.cat.CatRequest;
+import nl.novi.catsittermanager.dtos.cat.CatResponse;
+import nl.novi.catsittermanager.mappers.CatMapper;
+import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.services.CatService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,63 +16,47 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
-import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
-
 @RestController
-@RequestMapping("/cat")
+@RequiredArgsConstructor
+@RequestMapping("/api")
 public class CatController {
 
     private final CatService catService;
 
-    public CatController(CatService catService) {
-        this.catService = catService;
+    @GetMapping("/cats")
+    public ResponseEntity<List<CatResponse>> getAllCats() {
+        List<CatResponse> catResponseList = catService.getAllCats().stream()
+                .map(CatMapper::CatToCatResponse)
+                .toList();
+        return ResponseEntity.ok(catResponseList);
     }
 
-    @GetMapping
-    public ResponseEntity<List<CatDto>> getAllCats() {
-        return ResponseEntity.ok(catService.getAllCats());
+    @GetMapping("/cat/{id}")
+    public ResponseEntity<CatResponse> getCat(@PathVariable("id") final UUID idToFind) {
+        Cat cat = catService.getCat(idToFind);
+        return ResponseEntity.ok(CatMapper.CatToCatResponse(cat));
+    }
+  
+    @PostMapping("/cat")
+    public ResponseEntity<CatResponse> createCat(@Valid @RequestBody final CatRequest catRequest) throws URISyntaxException {
+        Cat cat = catService.createCat(CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
+        return ResponseEntity.created(new URI("/cat/" + cat.getId())).body((CatMapper.CatToCatResponse(cat)));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CatDto> getCat(@PathVariable("id") final UUID idToFind) {
-        CatDto catDto = catService.getCat(idToFind);
-        if (catDto == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(catDto);
-        }
+    @PutMapping("/cat/{id}")
+    public ResponseEntity<CatResponse> editCat(@PathVariable("id") final UUID idToEdit, @Valid @RequestBody final CatRequest catRequest) {
+        Cat cat = catService.editCat(idToEdit, CatMapper.CatRequestToCat(catRequest), catRequest.ownerUsername());
+        return ResponseEntity.ok().body(CatMapper.CatToCatResponse(cat));
     }
 
-    @PostMapping
-    public ResponseEntity<CatDto> createCat(@RequestBody final CatInputDto catInputDto, final BindingResult br) {
-        if (br.hasFieldErrors()) {
-            throw new ValidationException(checkForBindingResult(br));
-        } else {
-            CatDto savedCat = catService.createCat(catInputDto);
-            URI uri = URI.create(
-                    ServletUriComponentsBuilder
-                            .fromCurrentRequest()
-                            .path("/" + savedCat).toUriString());
-            return ResponseEntity.created(uri).body(savedCat);
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<CatDto> editCat(@PathVariable("id") final UUID idToEdit, @RequestBody final CatInputDto cat) {
-        CatDto editedCat = catService.editCat(idToEdit, cat);
-        return ResponseEntity.ok().body(editedCat);
-    }
-
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/cat/{id}")
     public ResponseEntity<Object> deleteCat(@PathVariable("id") final UUID idToDelete) {
         catService.deleteCat(idToDelete);
-        return ResponseEntity.ok().body("Cat with id " + idToDelete + " removed from database");
+        return ResponseEntity.ok().body("Cat with id " + idToDelete + " removed from database.");
     }
-
 }

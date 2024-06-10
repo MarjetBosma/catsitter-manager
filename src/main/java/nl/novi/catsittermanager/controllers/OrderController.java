@@ -1,11 +1,16 @@
 package nl.novi.catsittermanager.controllers;
 
-import nl.novi.catsittermanager.dtos.order.OrderDto;
-import nl.novi.catsittermanager.dtos.order.OrderInputDto;
-import nl.novi.catsittermanager.exceptions.ValidationException;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import nl.novi.catsittermanager.dtos.order.OrderRequest;
+import nl.novi.catsittermanager.dtos.order.OrderResponse;
+import nl.novi.catsittermanager.dtos.task.TaskResponse;
+import nl.novi.catsittermanager.mappers.OrderMapper;
+import nl.novi.catsittermanager.mappers.TaskMapper;
+import nl.novi.catsittermanager.models.Order;
+import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.services.OrderService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,61 +19,60 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
-import static nl.novi.catsittermanager.controllers.ControllerHelper.checkForBindingResult;
-
 @RestController
-@RequestMapping("/order")
-
+@RequiredArgsConstructor
+@RequestMapping("/api")
 public class OrderController {
 
     private final OrderService orderService;
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
+    @GetMapping("/orders")
+    public ResponseEntity<List<OrderResponse>> getAllOrders() {
+        List<OrderResponse> orderResponseList = orderService.getAllOrders().stream()
+                .map(OrderMapper::OrderToOrderResponse)
+                .toList();
+        return ResponseEntity.ok(orderResponseList);
     }
 
-    @GetMapping
-    public ResponseEntity<List<OrderDto>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+    @GetMapping("/order/{id}")
+    public ResponseEntity<OrderResponse> getOrder(@PathVariable("id") final UUID idToFind) {
+        Order order = orderService.getOrder(idToFind);
+        return ResponseEntity.ok(OrderMapper.OrderToOrderResponse(order));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<OrderDto> getOrder(@PathVariable("id") final UUID idToFind) {
-        OrderDto orderDto = orderService.getOrder(idToFind);
-        return ResponseEntity.ok(orderDto);
+    @GetMapping("/order/{id}/tasks")
+    public ResponseEntity<List<TaskResponse>> getAllTasksByOrder(@PathVariable("id") final UUID idToFind) {
+        List<Task> tasks = orderService.getAllTasksByOrder(idToFind);
+        List<TaskResponse> taskResponseList = tasks.stream()
+                .map(TaskMapper::TaskToTaskResponse)
+                .toList();
+        return ResponseEntity.ok(taskResponseList);
     }
 
-    @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@RequestBody final OrderInputDto orderInputDto, final BindingResult br) {
-        if (br.hasFieldErrors()) {
-            throw new ValidationException(checkForBindingResult(br));
-        } else {
-            OrderDto savedOrder;
-            savedOrder = orderService.createOrder(orderInputDto);
-            URI uri = URI.create(
-                    ServletUriComponentsBuilder
-                            .fromCurrentRequest()
-                            .path("/" + savedOrder).toUriString());
-            return ResponseEntity.created(uri).body(savedOrder);
-        }
+    @PostMapping("/order")
+    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody final OrderRequest orderRequest) throws URISyntaxException {
+        Order order = orderService.createOrder(
+                OrderMapper.OrderRequestToOrder(orderRequest),
+                orderRequest.customerUsername(),
+                orderRequest.catsitterUsername()
+        );
+        return ResponseEntity.created(new URI("/order/" + order.getOrderNo())).body(OrderMapper.OrderToOrderResponse(order));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<OrderDto> editOrder(@PathVariable("id") final UUID idToEdit, @RequestBody final OrderInputDto order) {
-        OrderDto changeOrderId = orderService.editOrder(idToEdit, order);
-        return ResponseEntity.ok().body(changeOrderId);
+    @PutMapping("/order/{id}")
+    public ResponseEntity<OrderResponse> editOrder(@PathVariable("id") final UUID idToEdit, @Valid @RequestBody final OrderRequest orderRequest) {
+        Order order = orderService.editOrder(idToEdit, OrderMapper.OrderRequestToOrder(orderRequest), orderRequest.customerUsername(), orderRequest.catsitterUsername());
+        return ResponseEntity.ok().body(OrderMapper.OrderToOrderResponse(order));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/order/{id}")
     public ResponseEntity<Object> deleteOrder(@PathVariable("id") final UUID idToDelete) {
         orderService.deleteOrder(idToDelete);
-        return ResponseEntity.ok().body("Order with id " + idToDelete + " removed from database");
+        return ResponseEntity.ok().body("Order with id " + idToDelete + " removed from database.");
     }
-
 }

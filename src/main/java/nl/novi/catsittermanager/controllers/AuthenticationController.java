@@ -1,68 +1,53 @@
-//package nl.novi.catsittermanager.controllers;
-//
-//import nl.novi.catsittermanager.payload.AuthenticationRequest;
-//import nl.novi.catsittermanager.payload.AuthenticationResponse;
-//import nl.novi.catsittermanager.services.CustomUserDetailsService;
-//import nl.novi.catsittermanager.utils.JwtUtil;
-//
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.security.authentication.AuthenticationManager;
-//import org.springframework.security.authentication.BadCredentialsException;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.security.Principal;
-//
-//@CrossOrigin
-//@RestController
-//public class AuthenticationController {
-//
-//    private final AuthenticationManager authenticationManager;
-//
-//    private final CustomUserDetailsService userDetailsService;
-//
-//    private final JwtUtil jwtUtil;
-//
-//    public AuthenticationController(AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService, JwtUtil jwtUtil) {
-//        this.authenticationManager = authenticationManager;
-//        this.userDetailsService = userDetailsService;
-//        this.jwtUtil = jwtUtil;
-//    }
-//
-//    /*
-//         Deze methode geeft de principal (basis user gegevens) terug van de ingelogde gebruiker
-//     */
-//    @GetMapping(value = "/authenticated")
-//    public ResponseEntity<Object> authenticated(Authentication authentication, Principal principal) {
-//        return ResponseEntity.ok().body(principal);
-//    }
-//
-//    /*
-//    Deze methode geeft het JWT token terug wanneer de gebruiker de juiste inloggegevens op geeft.
-//     */
-//    @PostMapping(value = "/authenticate")
-//    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
-//
-//        String username = authenticationRequest.getUsername();
-//        String password = authenticationRequest.getPassword();
-//
-//        try {
-//            authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(username, password)
-//            );
-//        }
-//        catch (BadCredentialsException ex) {
-//            throw new Exception("Incorrect username or password", ex);
-//        }
-//
-//        final UserDetails userDetails = userDetailsService
-//                .loadUserByUsername(username);
-//
-//        final String jwt = jwtUtil.generateToken(userDetails);
-//
-//        return ResponseEntity.ok(new AuthenticationResponse(jwt));
-//    }
-//
-//}
+package nl.novi.catsittermanager.controllers;
+
+import lombok.AllArgsConstructor;
+import nl.novi.catsittermanager.dtos.login.ErrorResponse;
+import nl.novi.catsittermanager.dtos.login.LoginRequest;
+import nl.novi.catsittermanager.dtos.login.LoginResponse;
+import nl.novi.catsittermanager.utils.JwtUtil;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/auth")
+@AllArgsConstructor
+public class AuthenticationController {
+
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtUtil jwtUtil;
+
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            Object principal = authentication.getPrincipal();
+
+            if (principal instanceof UserDetails userDetails) {
+                String token = jwtUtil.createToken(userDetails.getUsername());
+                LoginResponse loginResponse = new LoginResponse(userDetails.getUsername(), token);
+
+                return ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(loginResponse);
+            } else {
+                throw new AuthenticationServiceException("Unexpected authentication principal: " + principal);
+            }
+
+        } catch (BadCredentialsException badCredentialsException) {
+            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(errorResponse);
+        }
+    }
+}

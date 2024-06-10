@@ -1,57 +1,107 @@
 package nl.novi.catsittermanager.config;
 
+import lombok.RequiredArgsConstructor;
+import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
+import nl.novi.catsittermanager.services.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Bean
-    protected SecurityFilterChain filter(HttpSecurity http) throws Exception {
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
-        //JWT token authentication
-        http
-                .csrf(csrf -> csrf.disable())
-                .httpBasic(basic -> basic.disable())
-                .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(auth ->
-                                auth
-                                        // Wanneer je deze uncomments, staat je hele security open. Je hebt dan alleen nog een jwt nodig.
-                                        .requestMatchers("/**").permitAll()
-//                                        .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
-//                                        .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
-//                                        .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
-//                                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
-//                                        .requestMatchers("/authenticated").authenticated()
-//                                        .requestMatchers("/authenticate").permitAll()/*alleen dit punt mag toegankelijk zijn voor niet ingelogde gebruikers*/
-//                                        .requestMatchers("/authenticated").authenticated()
-//                                        .requestMatchers("/authenticate").permitAll()
-//                                        .anyRequest().denyAll() /*Deze voeg je altijd als laatste toe, om een default beveiliging te hebben voor eventuele vergeten endpoints of endpoints die je later toevoegd. */
-                )
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        //http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+        return authenticationManagerBuilder.build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withDefaultPasswordEncoder()
-                        .username("user")
-                        .password("password")
-                        .roles("USER")
-                        .build();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-        return new InMemoryUserDetailsManager(user);
+    @Bean
+    protected SecurityFilterChain filter(HttpSecurity httpSecurity) throws Exception {
+
+        return httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+//                                .requestMatchers("/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+
+                                .requestMatchers(HttpMethod.GET, "/api/cats").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/cat/{id}").hasAnyRole("ADMIN", "CUSTOMER")
+                                .requestMatchers(HttpMethod.POST, "/api/cat").hasAnyRole("ADMIN", "CUSTOMER")
+                                .requestMatchers(HttpMethod.PUT, "/api/cat/{id}").hasAnyRole("ADMIN", "CUSTOMER")
+                                .requestMatchers(HttpMethod.DELETE, "/api/cat/{id}").hasAnyRole("ADMIN", "CUSTOMER")
+
+                                .requestMatchers(HttpMethod.GET, "/api/customers").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/customer/{username}").hasAnyRole("ADMIN", "CUSTOMER")
+                                .requestMatchers(HttpMethod.POST, "/api/customer").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/customer/{username}").hasAnyRole("ADMIN", "CUSTOMER")
+                                .requestMatchers(HttpMethod.DELETE, "/api/customer/{username}").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/customer/{username}/cats").hasAnyRole("ADMIN", "CUSTOMER", "CATSITTER")
+                                .requestMatchers(HttpMethod.GET, "/api/customer/{username}/orders").hasAnyRole("ADMIN", "CUSTOMER", "CATSITTER")
+
+                                .requestMatchers(HttpMethod.GET, "/api/catsitters").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/catsitter/{username}").hasAnyRole("ADMIN", "CATSITTER")
+                                .requestMatchers(HttpMethod.POST, "/api/catsitter").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/catsitter/{username}").hasAnyRole("ADMIN", "CATSITTER")
+                                .requestMatchers(HttpMethod.DELETE, "/api/catsitter/{username}").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/catsitter/{username}/orders").hasAnyRole("ADMIN", "CATSITTER")
+
+                                .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/user/{id}").hasAnyRole("ADMIN", "CUSTOMER", "CATSITTER")
+                                .requestMatchers(HttpMethod.POST, "/api/user").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/user/{id}").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/user/{id}").hasRole("ADMIN")
+
+                                .requestMatchers(HttpMethod.GET, "/api/orders").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/order/{id}").hasAnyRole("ADMIN", "CUSTOMER", "CATSITTER")
+                                .requestMatchers(HttpMethod.POST, "/api/order").hasAnyRole("ADMIN", "CUSTOMER")
+                                .requestMatchers(HttpMethod.PUT, "/api/order/{id}").hasAnyRole("ADMIN", "CUSTOMER")
+                                .requestMatchers(HttpMethod.DELETE, "/api/order/{id}").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/order/{id}/tasks").hasAnyRole("ADMIN", "CUSTOMER", "CATSITTER")
+                                .requestMatchers(HttpMethod.GET, "/api/order/{id}/invoice").hasAnyRole("ADMIN", "CUSTOMER")
+
+                                .requestMatchers(HttpMethod.GET, "/api/tasks").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/task/{id}").hasAnyRole("ADMIN", "CUSTOMER", "CATSITTER")
+                                .requestMatchers(HttpMethod.POST, "/api/task").hasAnyRole("ADMIN", "CUSTOMER")
+                                .requestMatchers(HttpMethod.PUT, "/api/task/{id}").hasAnyRole("ADMIN", "CUSTOMER")
+                                .requestMatchers(HttpMethod.DELETE, "/api/task/{id}").hasAnyRole("ADMIN", "CUSTOMER")
+
+                                .requestMatchers(HttpMethod.GET, "/api/invoices").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/invoice/{id}").hasAnyRole("ADMIN", "CUSTOMER")
+                                .requestMatchers(HttpMethod.POST, "/api/invoice").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/invoice/{id}").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/invoice/{id}").hasAnyRole("ADMIN")
+
+                                .requestMatchers(HttpMethod.POST, "/api/cat/{id}/images").hasAnyRole("ADMIN", "CUSTOMER")
+                                .requestMatchers(HttpMethod.POST, "/api/catsitter/{id}/images").hasAnyRole("ADMIN", "CATSITTER")
+                                .requestMatchers(HttpMethod.GET, "/api/{type}/{id}/images/{filename}").hasAnyRole("ADMIN", "CUSTOMER", "CATSITTER")
+
+                                .anyRequest().denyAll()
+
+                )
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .build();
     }
 }

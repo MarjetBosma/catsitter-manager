@@ -1,16 +1,16 @@
 package nl.novi.catsittermanager.mappers;
 
-import nl.novi.catsittermanager.dtos.user.UserDto;
-import nl.novi.catsittermanager.dtos.user.UserInputDto;
+import nl.novi.catsittermanager.dtos.user.UserRequest;
+import nl.novi.catsittermanager.dtos.user.UserResponse;
 import nl.novi.catsittermanager.models.User;
 
 public class UserMapper {
 
-    public static UserDto transferToDto(User user) {
-        return new UserDto(user.getUsername(),
-                user.getPassword(),
+    public static UserResponse UserToUserResponse(User user) {
+
+        return new UserResponse(
+                user.getUsername(),
                 user.getRole(),
-                user.getAuthorities(),
                 user.getEnabled(),
                 user.getName(),
                 user.getAddress(),
@@ -18,13 +18,16 @@ public class UserMapper {
         );
     }
 
-    public static User transferFromDto(UserInputDto userInputDto) {
+    public static User UserRequestToUser(UserRequest userRequest) {
+
         return User.builder()
-                .username(userInputDto.username())
-                .password(userInputDto.password())
-                .role(userInputDto.role())
-                .address(userInputDto.address())
-                .email(userInputDto.email())
+                .username(userRequest.username())
+                .password(userRequest.password())
+                .role(userRequest.role())
+                .enabled(userRequest.enabled())
+                .name(userRequest.name())
+                .address(userRequest.address())
+                .email(userRequest.email())
                 .build();
     }
 }

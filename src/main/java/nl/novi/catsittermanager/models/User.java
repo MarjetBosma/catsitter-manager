@@ -1,24 +1,24 @@
 package nl.novi.catsittermanager.models;
-import nl.novi.catsittermanager.enumerations.Role;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
+import lombok.extern.slf4j.Slf4j;
+import nl.novi.catsittermanager.enumerations.Role;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,7 +27,8 @@ import java.util.Set;
 @SuperBuilder
 @Entity
 @Table(name = "users")
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Slf4j
 public class User implements Serializable {
 
     @Id
@@ -39,15 +40,7 @@ public class User implements Serializable {
 
     private Role role;
 
-    @OneToMany(
-            targetEntity = Authority.class,
-            mappedBy = "username",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER)
-    private Set<Authority> authorities = new HashSet<>();
-
-    @Column(nullable = false)
+    @Column
     private Boolean enabled;
 
     @Column
@@ -59,20 +52,25 @@ public class User implements Serializable {
     @Column
     private String email;
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public <T> User(String username, String password, List<T> ts) {
+    }
+
     public void enable() {
         this.enabled = true;
     }
 
-    public Set<Authority> getAuthorities() {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        log.error("ROLE: " + getRole());
+
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + getRole()));
+
         return authorities;
     }
-
-    public void addAuthority(Authority authority) {
-        this.authorities.add(authority);
-    }
-
-    public void removeAuthority(Authority authority) {
-        this.authorities.remove(authority);
-    }
-
 }

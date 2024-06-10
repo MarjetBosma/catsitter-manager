@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +15,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nl.novi.catsittermanager.enumerations.TaskType;
-
 import java.util.UUID;
 
 @Getter
@@ -28,10 +28,19 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "task_no")
     private UUID taskNo;
+
+    @Column(name = "task_type")
     private TaskType taskType;
+
+    @Column(name = "task_instruction")
     private String taskInstruction;
+
+    @Column(name = "extra_instructions")
     private String extraInstructions;
+
+    @Column(name = "price_of_task")
     private double priceOfTask;
 
     @ManyToOne(fetch = FetchType.LAZY)
