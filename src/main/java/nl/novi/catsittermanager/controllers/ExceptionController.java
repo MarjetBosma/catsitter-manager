@@ -1,13 +1,15 @@
 package nl.novi.catsittermanager.controllers;
 
+import nl.novi.catsittermanager.exceptions.InvoiceAlreadyExistsForThisOrderException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
 import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +31,11 @@ public class ExceptionController {
 
     @ExceptionHandler(value = UsernameAlreadyExistsException.class)
     public ResponseEntity<Object> usernameAlreadyExists(UsernameAlreadyExistsException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = InvoiceAlreadyExistsForThisOrderException.class)
+    public ResponseEntity<Object> invoiceAlreadyExistsForThisOrderException(InvoiceAlreadyExistsForThisOrderException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT); // You can use HttpStatus.CONFLICT for username conflict
     }
 

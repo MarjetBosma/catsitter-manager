@@ -4,19 +4,16 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceRequest;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
+import nl.novi.catsittermanager.exceptions.InvoiceAlreadyExistsForThisOrderException;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.InvoiceMapper;
 import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.services.InvoiceService;
+import nl.novi.catsittermanager.services.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -29,6 +26,8 @@ import java.util.UUID;
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
+
+    private final OrderService orderService;
 
     @GetMapping("/invoices")
     public ResponseEntity<List<InvoiceResponse>> getAllInvoices() {
@@ -44,17 +43,32 @@ public class InvoiceController {
         return ResponseEntity.ok(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
     }
 
+//    @PostMapping("/invoice")
+//    public ResponseEntity<?> createInvoice(@Valid @RequestBody final InvoiceRequest invoiceRequest) throws URISyntaxException {
+//        UUID orderNo = invoiceRequest.orderNo();
+//        if (orderService.hasExistingInvoice(orderNo)) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT)
+//                    .body("An invoice already exists for order number: " + orderNo);
+//        } else {
+//            Invoice invoice = invoiceService.createInvoice(InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest), orderNo);
+//            return ResponseEntity.created(new URI("/invoice/" + invoice.getInvoiceNo())).body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
+//        }
+//    }
+
     @PostMapping("/invoice")
     public ResponseEntity<?> createInvoice(@Valid @RequestBody final InvoiceRequest invoiceRequest) throws URISyntaxException {
-            UUID orderNo = invoiceRequest.orderNo();
-            if (invoiceService.existsByOrderNo(orderNo)) {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("An invoice already exists for order number: " + orderNo);
-            } else {
-                Invoice invoice = invoiceService.createInvoice(InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest), orderNo);
-                return ResponseEntity.created(new URI("/invoice/" + invoice.getInvoiceNo())).body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
-            }
+        UUID orderNo = invoiceRequest.orderNo();
+        try {
+            Invoice invoice = invoiceService.createInvoice(InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest), orderNo);
+            return ResponseEntity.created(new URI("/invoice/" + invoice.getInvoiceNo())).body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
+        } catch (InvoiceAlreadyExistsForThisOrderException exception) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("An invoice already exists for order number: " + orderNo);
+        } catch (RecordNotFoundException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(exception.getMessage());
         }
+    }
 
     @PutMapping("/invoice/{id}")
     public ResponseEntity<InvoiceResponse> editInvoice(@PathVariable("id") final UUID idToEdit, @Valid @RequestBody final InvoiceRequest invoiceRequest) {

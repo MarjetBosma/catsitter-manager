@@ -6,8 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.datafaker.Faker;
 import nl.novi.catsittermanager.config.SecurityConfig;
 import nl.novi.catsittermanager.config.TestConfig;
-import nl.novi.catsittermanager.dtos.invoice.InvoiceRequest;
 import nl.novi.catsittermanager.dtos.InvoiceRequestFactory;
+import nl.novi.catsittermanager.dtos.invoice.InvoiceRequest;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
@@ -15,6 +15,7 @@ import nl.novi.catsittermanager.helpers.InvoiceFactoryHelper;
 import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.models.InvoiceFactory;
 import nl.novi.catsittermanager.services.InvoiceService;
+import nl.novi.catsittermanager.services.OrderService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,21 +33,20 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(InvoiceController.class)
-@Import({JwtUtil.class, JwtAuthorizationFilter.class, SecurityConfig.class,  TestConfig.class})
+@Import({JwtUtil.class, JwtAuthorizationFilter.class, SecurityConfig.class, TestConfig.class})
 @ActiveProfiles("test")
 public class InvoiceControllerTest {
 
@@ -62,6 +62,9 @@ public class InvoiceControllerTest {
     @MockBean
     InvoiceService invoiceService;
 
+    @MockBean
+    OrderService orderService;
+
     @BeforeEach
     void init() {
 
@@ -72,7 +75,7 @@ public class InvoiceControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin", roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetAllInvoices_thenAllInvoicesShouldBeReturned() throws Exception {
 
         // Arrange
@@ -106,7 +109,7 @@ public class InvoiceControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin", roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenNoInvoicesAvailable_whenGetAllInvoices_thenEmptyListShouldBeReturned() throws Exception {
 
         // Arrange
@@ -122,7 +125,7 @@ public class InvoiceControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin", roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetInvoice_thenInvoiceShouldBeReturned() throws Exception {
 
         // Arrange
@@ -154,7 +157,7 @@ public class InvoiceControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin", roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenInvalidInvoiceNo_whenGetInvoice_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
 
         // Arrange
@@ -172,7 +175,7 @@ public class InvoiceControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin", roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenCreateInvoice_thenInvoiceShouldBeReturned() throws Exception {
 
         // Arrange
@@ -223,17 +226,18 @@ public class InvoiceControllerTest {
                 .orderNo(orderNo)
                 .build();
 
-        when(invoiceService.existsByOrderNo(orderNo)).thenReturn(true);
+        when(orderService.hasExistingInvoice(orderNo)).thenReturn(true);
 
         // Act & Assert
         MvcResult result = mockMvc.perform(post("/invoice")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(expectedInvoiceRequest)))
                 .andExpect(status().isConflict())
+                .andExpect(content().string("An invoice already exists for order number: " + orderNo))
                 .andReturn();
 
-        String content = result.getResponse().getContentAsString();
-        assertEquals("An invoice already exists for order number: " + orderNo, content);
+        verify(orderService, times(1)).hasExistingInvoice(orderNo);
+        verify(invoiceService, times(0)).createInvoice(any(Invoice.class), eq(orderNo));
     }
 
     @Test

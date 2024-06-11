@@ -1,0 +1,377 @@
+Login
+
+    {
+       "username": "admin",
+       "password": "adminpassword"
+    }
+
+Create new customer
+
+    {
+        "username": "marjetbosma",
+        "password": "wachtwoord",
+        "name": "Marjet Bosma",
+        "address": "Schoolstraat 3, Moddergat",
+        "email": "marjet_bosma@hotmail.com",
+    }
+
+    {
+        "username": "willemhustinx",
+        "password": "1234abc",
+        "name": "Willem Hustinx",
+        "address": "Beukenlaan 30, Lutjebroek",
+        "email": "willem.hustinx@sogeti.com"
+    }
+
+    {
+        "username": "pietjepuk",
+        "password": "qwerty",
+        "name": "Pietje Puk",
+        "address": "Straatweg 231, Bakkeveen",
+        "email": "pietjepuk@gmail.com"
+    }
+
+Create new cat
+
+    {
+        "name": "Firsa",
+        "dateOfBirth": "2006-07-01",
+        "gender": "V",
+        "breed": "Europese Korthaar",
+        "generalInfo": "Niet gesteld op vreemden, laat zich zelden zien aan een kattenoppas",
+        "spayedOrNeutered": true,
+        "vaccinated": true,
+        "veterinarianName": "Dierenkliniek Moddergat",
+        "phoneVet": "0123-456789",
+        "medicationName": "Semintra",
+        "medicationDose": "2ml 1dd",
+        "ownerUsername": "marjetbosma"
+    }
+
+    {
+        "name": "Poekie",
+        "dateOfBirth": "2020-04-30",
+        "gender": "V",
+        "breed": "Siamees",
+        "generalInfo": "Luidruchtig en veeleisend, maar ook erg aanhankelijk",
+        "spayedOrNeutered": true,
+        "vaccinated": true,
+        "veterinarianName": "Dierenkliniek Lutjebroek",
+        "phoneVet": "0345-678901",
+        "medicationName": "geen",
+        "medicationDose": "geen",
+        "ownerUsername": "willemhustinx"
+    }
+
+    {
+        "name": "Pluis",
+        "dateOfBirth": "2014-10-14",
+        "gender": "M",
+        "breed": "Maine Coon",
+        "generalInfo": "Groot en knuffelig, ligt graag op schoot",
+        "spayedOrNeutered": true,
+        "vaccinated": true,
+        "veterinarianName": "Dierenkliniek Lutjebroek",
+        "phoneVet": "0345-678901",
+        "medicationName": "Thiafeline",
+        "medicationDose": "3mg 2dd",
+        "ownerUsername": "willemhustinx"
+    }
+
+    {
+        "name": "Pinkie",
+        "dateOfBirth": "2024-01-23",
+        "gender": "M",
+        "breed": "Europese korthaar",
+        "generalInfo": "Nog erg jong, zeer actief, wil graag spelen",
+        "spayedOrNeutered": false,
+        "vaccinated": false,
+        "veterinarianName": "Dierenkliniek Lutjebroek",
+        "phoneVet": "0345-678901",
+        "medicationName": "geen",
+        "medicationDose": "geen",
+        "ownerUsername": "willemhustinx"
+    }
+
+    {
+        "name": "Duchess",
+        "dateOfBirth": "2021-03-25",
+        "gender": "V",
+        "breed": "Pers",
+        "generalInfo": "Rustige en vriendelijke kat, wordt graag geaaid",
+        "spayedOrNeutered": false,
+        "vaccinated": true,
+        "veterinarianName": "Dierenkliniek Bakkeveen",
+        "phoneVet": "0891-234567",
+        "medicationName": "geen",
+        "medicationDose": "geen",
+        "ownerUsername": "pietjepuk"
+    }
+
+    {
+        "name": "Duke",
+        "dateOfBirth": "2022-02-11",
+        "gender": "M",
+        "breed": "Pers",
+        "generalInfo": "Gaat zijn eigen gang, maar wordt claimend rond etenstijd",
+        "spayedOrNeutered": false,
+        "vaccinated": true,
+        "veterinarianName": "Dierenkliniek Bakkeveen",
+        "phoneVet": "0891-234567",
+        "medicationName": "geen",
+        "medicationDose": "geen",
+        "ownerUsername": "pietjepuk"
+    }
+
+Create new catsitter
+
+{
+    "username": "karelappel",
+    "password": "Cats4Ever",
+    "name": "Karel Appel",
+    "address": "Kerkstraat 44, Lopik",
+    "email": "k.appel@gmail.com",
+    "about": "5 jaar ervaring, dol op kittens"
+}
+
+{
+    "username": "liesjepeer",
+    "password": "GimmeAllTheCats",
+    "name": "Liesje Peer",
+    "address": "Julianastraat 11, Boerenhol",
+    "email": "l.peer@gmail.com",
+    "about": "Kan goed overweg met moeilijk gedrag"
+}
+
+{
+    "username": "hannahdaalder",
+    "password": "ILoveFirsa",
+    "name": "Hannah Daalder",
+    "address": "Lindelaan 3b, Nergenshuizen",
+    "email": "hannahdaalder@kpn.com",
+    "about": "Opgegroeid met katten, wil nu die ervaring in de praktijk brengen"
+}
+
+Create new order
+
+{
+    "startDate": "2024-04-30",
+    "endDate": "2024-05-02",
+    "dailyNumberOfVisits": 1,
+    "totalNumberOfVisits": 3,
+    "customerUsername": "marjetbosma",
+    "catsitterUsername": "hannahdaalder"
+}
+
+{
+    "startDate": "2023-07-23",
+    "endDate": "2024-08-06",
+    "dailyNumberOfVisits": 1,
+    "totalNumberOfVisits": 14,
+    "customerUsername": "marjetbosma",
+    "catsitterUsername": "liesjepeer"
+}
+
+{
+    "startDate": "2023-10-09",
+    "endDate": "2023-10-13",
+    "dailyNumberOfVisits": 2,
+    "totalNumberOfVisits": 10,
+    "customerUsername": "willemhustinx",
+    "catsitterUsername": "liesjepeer"
+}
+
+{
+    "startDate": "2024-06-03",
+    "endDate": "2024-06-10",
+    "dailyNumberOfVisits": 2,
+    "totalNumberOfVisits": 7,
+    "customerUsername": "willemhustinx",
+    "catsitterUsername": "karelappel"
+}
+
+{
+    "startDate": "2023-03-20",
+    "endDate": "2023-03-25",
+    "dailyNumberOfVisits": 1,
+    "totalNumberOfVisits": 5,
+    "customerUsername": "pietjepuk",
+    "catsitterUsername": "karelappel"
+}
+
+{
+    "startDate": "2024-07-01",
+    "endDate": "2024-07-21",
+    "dailyNumberOfVisits": 1,
+    "totalNumberOfVisits": 21,
+    "customerUsername": "pietjepuk",
+    "catsitterUsername": "hannahdaalder"
+}
+
+Create new task
+
+(1e en 2e order)
+
+{
+    "taskType": "FOOD",
+    "taskInstruction": "Zorgen dat er altijd droogvoer is, en een keer per dag natvoer geven.",
+    "extraInstructions": "Al het voer staat in de kast in de gang.",
+    "priceOfTask": 3.0,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "taskType": "WATER",
+    "taskInstruction": "Zorg dat het waterniveau van de drinkfontein niet te laag is, vul dan bij",
+    "extraInstructions": "Af en toe kattenmelk geven mag ook, dit staat in de koelkast",
+    "priceOfTask": 2.0,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "taskType": "LITTERBOX",
+    "taskInstruction": "Vulling is klontvormend, klontjes en drollen dagelijks uitscheppen",
+    "extraInstructions" : "Er zijn twee kattenbakken, boven en beneden, vulling is beneden",
+    "priceOfTask": 4.0,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "taskType": "MEDICATION",
+    "taskInstruction": "Dagelijks 2 ml opzuigen en over het natvoer spuiten",
+    "extraInstructions" : "Medicatie staat in de keuken op de vensterbank",
+    "priceOfTask": 5.0,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+(3e en 4e order)
+
+{
+    "taskType": "FOOD",
+    "taskInstruction": "De katten krijgen alleen droogvoer, het bakje mag bij Poekie en Pinkie altijd gevuld zijn",
+    "extraInstructions": "Pluis is op dieet, voor hem het voer afwegen met het maatbekertje",
+    "priceOfTask": 3.0,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "taskType": "WATER",
+    "taskInstruction": "Er staan verschillende bakjes water door het huis, loop deze elke dag na en vul bij",
+    "extraInstructions": "Af en toe kattenmelk geven mag, dit staat in de koelkast, Pluis maar eens per week i.v.m. dieet",
+    "priceOfTask": 2.0,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "taskType": "LITTERBOX",
+    "taskInstruction": "De kattenbak is automatisch en verschoont zichzelf, wel dagelijks de afvallade legen en schone vulling bijvullen indien nodig",
+    "extraInstructions": "Nieuwe kattenbakvulling staat in de kast onder de trap ",
+    "priceOfTask": 4.0,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "taskType": "MEDICATION",
+    "taskInstruction": "Verstop bij elk bezoek een pilletje in Easypill pasta en leg dit in Pluis zijn voerbak",
+    "extraInstructions": "Voorraad medicatie ligt in de kast onder gootsteen",
+    "priceOfTask": 5.0,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "taskType": "PLAY",
+    "taskInstruction": "Met name Pinkie wil nog erg graag spelen, ook een goede manier om zijn vertrouwen te winnen",
+    "extraInstructions": "Speeltjes liggen in een mand naast de cat tree",
+    "priceOfTask": 1.0,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+(5e en 6e order)
+
+{
+    "taskType": "FOOD",
+    "taskInstruction": "Droogvoer aanvullen, eenmaal per dag natvoer geven",
+    "extraInstructions": "Beide katten mogen ook dagelijks enkele kattensnoepjes",
+    "priceOfTask": 3.0,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "taskType": "WATER",
+    "taskInstruction": "Zorg dat de bakjes water elke dag ververst worden",
+    "extraInstructions": "Met name Duchess is heel kritisch, als het water niet vers is drinkt ze er niet van",
+    "priceOfTask": 2.0,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "taskType": "LITTERBOX",
+    "taskInstruction": "Beide katten hebben een eigen kattenbak, ze staan in de gang",
+    "extraInstructions": "Duchess poept er soms naast als de bak niet schoon genoeg is, wees dus zeer grondig",
+    "priceOfTask": 4.0,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "taskType": "FURCARE",
+    "taskInstruction": "Als Perzische katten hebben ze elke dag een borstelbeurt nodig, borstels liggen in de lade naast de mandjes",
+    "extraInstructions": "Duchess geniet erg van vachverzorging, Duke is niet altijd in de stemming, maar blijf proberen",
+    "priceOfTask": 4.0,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+Create new invoice
+
+{
+    "invoiceDate": "2024-05-06",
+    "amount": 42.0,
+    "paid": false,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "invoiceDate": "2023-08-10",
+    "amount": 196.0,
+    "paid": true,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "invoiceDate": "2023-10-15",
+    "amount": 210.0,
+    "paid": true,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "invoiceDate": "2024-06-10",
+    "amount": 294.0,
+    "paid": false,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "invoiceDate": "2024-03-27",
+    "amount": 75.0,
+    "paid": true,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
+}
+
+{
+    "invoiceDate": "2024-07-22",
+    "amount": 315.0,
+    "paid": false,
+    "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt ***"
+}
+
+Create new admin
+
+{
+    "username": "bendegroot",
+    "password": "thebestpassword",
+    "role": "ADMIN",
+    "enabled": true,
+    "name": "Ben de Groot",
+    "address": "Dahliastraat 5, Katwijk",
+    "email": "bendegroot@yourcatsitter.nl"
+}
