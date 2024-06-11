@@ -9,8 +9,10 @@ import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.repositories.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -73,5 +75,12 @@ public class OrderService {
         orderRepository.deleteById(idToDelete);
         return idToDelete;
     }
+
+    public boolean hasExistingInvoice(UUID orderNo) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderNo);
+        return optionalOrder.map(order -> order.getInvoice() != null).
+                orElse(false);
+    }
 }
+
 

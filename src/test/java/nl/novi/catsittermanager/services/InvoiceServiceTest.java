@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.services;
 
+import nl.novi.catsittermanager.exceptions.InvoiceAlreadyExistsForThisOrderException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.models.InvoiceFactory;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -116,54 +118,36 @@ public class InvoiceServiceTest {
     }
 
     @Test
-    void testCreateInvoice_shouldThrowExceptionWhenOrderNotFound() {
-
+    void testCreateInvoice_invoiceAlreadyExists() {
         // Arrange
-        Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
         UUID orderNo = UUID.randomUUID();
-
-        when(orderService.getOrder(orderNo)).thenReturn(null);
+        Order order = new Order();
+        Invoice invoice = new Invoice();
+        when(orderService.getOrder(orderNo)).thenReturn(order);
+        when(orderService.hasExistingInvoice(orderNo)).thenReturn(true);
 
         // Act & Assert
-        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> invoiceService.createInvoice(expectedInvoice, orderNo));
-        assertEquals("Order not found.", exception.getMessage());
+        assertThrows(InvoiceAlreadyExistsForThisOrderException.class, () -> invoiceService.createInvoice(invoice, orderNo));
 
         verify(orderService, times(1)).getOrder(orderNo);
-        verify(invoiceRepository, times(0)).save(expectedInvoice);
+        verify(orderService, times(1)).hasExistingInvoice(orderNo);
+        verifyNoInteractions(invoiceRepository);
     }
 
     @Test
-    void testExistsByOrderNo_shouldReturnTrueIfInvoiceExists() {
-
+    void testCreateInvoice_orderNotFound() {
         // Arrange
         UUID orderNo = UUID.randomUUID();
+        Invoice invoice = new Invoice();
+        when(orderService.getOrder(orderNo)).thenThrow(new RecordNotFoundException("Order not found."));
 
-        when(invoiceRepository.existsByOrder_OrderNo(orderNo)).thenReturn(true);
+        // Act & Assert
+        assertThrows(RecordNotFoundException.class, () -> invoiceService.createInvoice(invoice, orderNo));
 
-        // Act
-        boolean exists = invoiceService.existsByOrderNo(orderNo);
-
-        // Assert
-        assertTrue(exists);
-        verify(invoiceRepository, times(1)).existsByOrder_OrderNo(orderNo);
+        verify(orderService, times(1)).getOrder(orderNo);
+        verifyNoInteractions(invoiceRepository);
     }
-
-    @Test
-    void testExistsByOrderNo_shouldReturnFalseIfInvoiceDoesNotExist() {
-
-        // Arrange
-        UUID orderNo = UUID.randomUUID();
-
-        when(invoiceRepository.existsByOrder_OrderNo(orderNo)).thenReturn(false);
-
-        // Act
-        boolean exists = invoiceService.existsByOrderNo(orderNo);
-
-        // Assert
-        assertFalse(exists);
-        verify(invoiceRepository, times(1)).existsByOrder_OrderNo(orderNo);
-    }
-
+    
     @Test
     void testEditInvoice_shouldEditExistingInvoice() {
 

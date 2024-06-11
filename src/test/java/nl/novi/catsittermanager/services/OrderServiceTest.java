@@ -8,7 +8,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.*;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -222,5 +226,56 @@ public class OrderServiceTest {
         verify(orderRepository, never()).deleteById(orderNo);
         verifyNoInteractions(customerService);
         verifyNoInteractions(catsitterService);
+    }
+
+    @Test
+    void TestHasExistingInvoice_shouldReturnTrueIfOrderHasAnInvoice() {
+
+        // Arrange
+        UUID orderNo = UUID.randomUUID();
+        Order order = new Order();
+        Invoice invoice = new Invoice();
+        order.setInvoice(invoice);
+
+        when(orderRepository.findById(orderNo)).thenReturn(Optional.of(order));
+
+        // Act
+        boolean result = orderService.hasExistingInvoice(orderNo);
+
+        // Assert
+        assertTrue(result);
+        verify(orderRepository, times(1)).findById(orderNo);
+    }
+
+    @Test
+    void testHasExistingInvoice_shouldReturnFalseIfOrderHasNoInvoice() {
+        // Arrange
+        UUID orderNo = UUID.randomUUID();
+        Order order = new Order();
+
+        when(orderRepository.findById(orderNo)).thenReturn(Optional.of(order));
+
+        // Act
+        boolean result = orderService.hasExistingInvoice(orderNo);
+
+        // Assert
+        assertFalse(result);
+        verify(orderRepository, times(1)).findById(orderNo);
+    }
+
+    @Test
+    void testHasExistingInvoice_orderNotFound() {
+
+        // Arrange
+        UUID orderNo = UUID.randomUUID();
+
+        when(orderRepository.findById(orderNo)).thenReturn(Optional.empty());
+
+        // Act
+        boolean result = orderService.hasExistingInvoice(orderNo);
+
+        // Assert
+        assertFalse(result);
+        verify(orderRepository, times(1)).findById(orderNo);
     }
 }
