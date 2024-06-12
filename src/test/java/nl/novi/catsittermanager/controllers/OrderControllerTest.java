@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -45,17 +46,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(OrderController.class)
-@Import({JwtUtil.class, JwtAuthorizationFilter.class, SecurityConfig.class,  TestConfig.class})
+@Import({JwtUtil.class, JwtAuthorizationFilter.class, SecurityConfig.class, TestConfig.class})
 @ActiveProfiles("test")
 public class OrderControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
-    OrderService orderService;
+    private OrderService orderService;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -70,7 +72,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetAllOrders_thenAllOrdersShouldBeReturned() throws Exception {
         // Arrange
         Order expectedOrder = OrderFactory.randomOrder().build();
@@ -109,7 +111,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenNoOrdersAvailable_whenGetAllOrders_thenEmptyListShouldBeReturned() throws Exception {
 
         // Arrange
@@ -125,7 +127,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetOrder_thenOrderShouldBeReturned() throws Exception {
 
         // Arrange
@@ -163,7 +165,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenInvalidOrderNo_whenGetOrder_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
 
         // Arrange
@@ -181,7 +183,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetAllTasksByOrder_thenAllTasksShouldBeReturned() throws Exception {
 
         // Arrange
@@ -218,7 +220,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenNoTasksAvailableForASpecificOrder_whenGetAllTasksByOrder_thenEmptyListShouldBeReturned() throws Exception {
 
         // Arrange
@@ -236,7 +238,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenCreateOrder_thenOrderShouldBeReturned() throws Exception {
 
         // Arrange
@@ -356,7 +358,7 @@ public class OrderControllerTest {
                 .thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id."));
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/order/{id}",invalidOrderNo)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/order/{id}", invalidOrderNo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(expectedOrderRequest)))
                 .andExpect(status().isNotFound());

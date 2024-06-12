@@ -30,6 +30,9 @@ public class InvoiceService {
 
     public Invoice createInvoice(final Invoice invoice, final UUID orderNo) {
         Order order = orderService.getOrder(orderNo);
+        if (!invoiceRepository.existsByOrder_OrderNo(orderNo)) {
+            throw new RecordNotFoundException("Order not found.");
+        }
         if (orderService.hasExistingInvoice(orderNo)) {
             throw new InvoiceAlreadyExistsForThisOrderException("An invoice already exists for this order.");
         }

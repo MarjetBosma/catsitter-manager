@@ -16,7 +16,6 @@ import nl.novi.catsittermanager.mappers.CatMapper;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.mappers.TaskMapper;
 import nl.novi.catsittermanager.models.*;
-import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.services.CustomerService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -45,17 +45,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CustomerController.class)
-@Import({JwtUtil.class, JwtAuthorizationFilter.class, SecurityConfig.class,  TestConfig.class})
+@Import({JwtUtil.class, JwtAuthorizationFilter.class, SecurityConfig.class, TestConfig.class})
 @ActiveProfiles("test")
 public class CustomerControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
     CustomerService customerService;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -70,7 +71,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetAllCustomers_thenAllCustomersShouldBeReturned() throws Exception {
 
         // Arrange
@@ -104,7 +105,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenNoCustomersAvailable_whenGetAllCustomers_thenEmptyListShouldBeReturned() throws Exception {
 
         // Arrange
@@ -120,7 +121,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetCustomer_thenCustomerShouldBeReturned() throws Exception {
 
         // Arrange
@@ -152,7 +153,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenInvalidUsername_whenGetCustomer_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
 
         // Arrange
@@ -170,7 +171,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetAllCatsByCustomer_thenAllCatsShouldBeReturned() throws Exception {
 
         // Arrange
@@ -222,7 +223,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenNoCatsAvailableForASpecificCustomer_whenGetAllCatsByCustomer_thenEmptyListShouldBeReturned() throws Exception {
 
         // Arrange
@@ -240,7 +241,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetAllOrdersByCustomer_thenAllOrdersShouldBeReturned() throws Exception {
 
         // Arrange
@@ -281,7 +282,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenNoOrdersAvailableForASpecificCustomer_whenGetAllOrdersByCustomer_thenEmptyListShouldBeReturned() throws Exception {
 
         // Arrange
@@ -299,7 +300,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenCreateCustomer_thenCustomerShouldBeReturned() throws Exception {
 
         // Arrange
@@ -345,7 +346,7 @@ public class CustomerControllerTest {
                 .address(null)
                 .email(null)
                 .build();
-        
+
         // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/api/customer")
                         .contentType(MediaType.APPLICATION_JSON)

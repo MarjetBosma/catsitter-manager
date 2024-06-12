@@ -13,8 +13,10 @@ import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.mappers.TaskMapper;
-import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.models.Catsitter;
+import nl.novi.catsittermanager.models.CatsitterFactory;
+import nl.novi.catsittermanager.models.Order;
+import nl.novi.catsittermanager.models.OrderFactory;
 import nl.novi.catsittermanager.services.CatsitterService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +33,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -43,17 +46,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CatsitterController.class)
-@Import({JwtUtil.class, JwtAuthorizationFilter.class, SecurityConfig.class,  TestConfig.class})
+@Import({JwtUtil.class, JwtAuthorizationFilter.class, SecurityConfig.class, TestConfig.class})
 @ActiveProfiles("test")
 public class CatsitterControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
-    CatsitterService catsitterService;
+    private CatsitterService catsitterService;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -68,7 +72,7 @@ public class CatsitterControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetAllCatsitters_thenAllCatsittersShouldBeReturned() throws Exception {
 
         // Arrange
@@ -105,7 +109,7 @@ public class CatsitterControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenNoCatsittersAvailable_whenGetAllCatsitters_thenEmptyListShouldBeReturned() throws Exception {
 
         // Arrange
@@ -121,7 +125,7 @@ public class CatsitterControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetCatsitter_thenCatsitterShouldBeReturned() throws Exception {
 
         // Arrange
@@ -156,7 +160,7 @@ public class CatsitterControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenInvalidUsername_whenGetCatsitter_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
 
         // Arrange
@@ -174,7 +178,7 @@ public class CatsitterControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetAllOrdersByCatsitter_thenAllOrdersShouldBeReturned() throws Exception {
 
         // Arrange
@@ -215,7 +219,7 @@ public class CatsitterControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenNoOrdersAvailableForASpecificCatsitter_whenGetAllOrdersByCatsitter_thenEmptyListShouldBeReturned() throws Exception {
 
         // Arrange
@@ -233,7 +237,7 @@ public class CatsitterControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenCreateCatsitter_thenCatsitterShouldBeReturned() throws Exception {
 
         // Arrange

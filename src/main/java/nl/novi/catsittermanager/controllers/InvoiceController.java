@@ -54,17 +54,21 @@ public class InvoiceController {
 //            return ResponseEntity.created(new URI("/invoice/" + invoice.getInvoiceNo())).body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
 //        }
 //    }
-
+    
     @PostMapping("/invoice")
     public ResponseEntity<?> createInvoice(@Valid @RequestBody final InvoiceRequest invoiceRequest) throws URISyntaxException {
         UUID orderNo = invoiceRequest.orderNo();
+        System.out.println("Inside createInvoice - orderNo: " + orderNo);
         try {
             Invoice invoice = invoiceService.createInvoice(InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest), orderNo);
+            System.out.println("Invoice created successfully for orderNo: " + orderNo);
             return ResponseEntity.created(new URI("/invoice/" + invoice.getInvoiceNo())).body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
         } catch (InvoiceAlreadyExistsForThisOrderException exception) {
+            System.out.println("Invoice already exists for orderNo: " + orderNo);
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("An invoice already exists for order number: " + orderNo);
         } catch (RecordNotFoundException exception) {
+            System.out.println("Order not found for orderNo: " + orderNo);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(exception.getMessage());
         }
