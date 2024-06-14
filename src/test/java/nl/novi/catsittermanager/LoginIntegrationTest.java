@@ -29,7 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -66,7 +66,7 @@ public class LoginIntegrationTest {
                 new UsernamePasswordAuthenticationToken("username", "password"));
     }
 
-    // todo: Geeft assertion error "content type not set", ondanks diverse aanpassingen waaronder in de AuthenticationController
+    // todo: Geeft melding "content type not set", ondanks diverse aanpassingen waaronder in de AuthenticationController
     @Test
     void login_WithValidCredentials_ShouldReturnToken() throws Exception {
 

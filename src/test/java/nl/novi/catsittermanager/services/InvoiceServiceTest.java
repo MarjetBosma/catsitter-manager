@@ -103,8 +103,12 @@ public class InvoiceServiceTest {
         Order expectedOrder = OrderFactory.randomOrder().build();
         UUID orderNo = expectedOrder.getOrderNo();
 
+//        when(orderService.getOrder(orderNo)).thenReturn(expectedOrder);
+//        when(invoiceRepository.save(expectedInvoice)).thenReturn(expectedInvoice);
+
         when(orderService.getOrder(orderNo)).thenReturn(expectedOrder);
-        when(invoiceRepository.save(expectedInvoice)).thenReturn(expectedInvoice);
+        when(orderService.hasExistingInvoice(orderNo)).thenReturn(false);
+        when(invoiceRepository.save(any(Invoice.class))).thenReturn(expectedInvoice);
 
         // Act
         Invoice resultInvoice = invoiceService.createInvoice(expectedInvoice, orderNo);
@@ -123,6 +127,7 @@ public class InvoiceServiceTest {
         UUID orderNo = UUID.randomUUID();
         Order order = new Order();
         Invoice invoice = new Invoice();
+
         when(orderService.getOrder(orderNo)).thenReturn(order);
         when(orderService.hasExistingInvoice(orderNo)).thenReturn(true);
 
@@ -147,7 +152,7 @@ public class InvoiceServiceTest {
         verify(orderService, times(1)).getOrder(orderNo);
         verifyNoInteractions(invoiceRepository);
     }
-    
+
     @Test
     void testEditInvoice_shouldEditExistingInvoice() {
 

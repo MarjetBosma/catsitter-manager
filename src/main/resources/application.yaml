@@ -24,4 +24,3 @@ spring:
   defer-datasource-initialization: true
 my:
   upload_location: Uploads
-

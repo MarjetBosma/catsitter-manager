@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static java.lang.String.valueOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -217,22 +218,23 @@ public class InvoiceControllerTest {
                 .andExpect(jsonPath("$.orderNo").value(expectedResponse.orderNo().toString()));
     }
 
-    // todo: Geeft een statuscode 201 i.p.v. 409
+    // todo: Geeft een statuscode 201 i.p.v. 409. In Postman werkt dit wel correct, en ook alle unittests voor createInvoice() slagen. Probleem lijkt te zitten in de hasExistingInvoice() methode (uit de OrderService). Unittests hiervan slagen, maar ik heb een SpringBootTest hiervoor geschreven (OrderHasExistingInvoiceIntegrationTest) die vooralsnog ook faalt.
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenExistingInvoiceForGivenOrder_whenCreateInvoice_thenConflictShouldBeReturned() throws Exception {
 
         // Arrange
         UUID orderNo = UUID.randomUUID();
-        System.out.println("orderNo after initialization: " + orderNo); // Als deze 100 is...
+        System.out.println("orderNo after initialization: " + orderNo); // as expected
         Order orderWithInvoice = new Order();
-        orderWithInvoice.setOrderNo(orderNo); // is deze ook 100...
-        System.out.println("orderNo after setting: " + orderNo); // en deze ook, en dat is is volgens verwachting
-
+        orderWithInvoice.setOrderNo(orderNo); // as expected
+        System.out.println("orderNo after setting: " + orderNo); // as expected
         orderWithInvoice.setInvoice(new Invoice());
 
         when(orderRepository.findById(orderNo)).thenReturn(Optional.of(orderWithInvoice));
-        when(orderService.hasExistingInvoice(orderNo)).thenReturn(true); // stelt dat er een invoice aanwezig voor dit ordernummer
+        when(orderService.hasExistingInvoice(orderNo)).thenReturn(true);  // stelt dat er een invoice aanwezig voor dit ordernummer
+        boolean exists = orderService.hasExistingInvoice(orderNo);
+        System.out.println(valueOf(exists)); // true
 
         Invoice mockInvoice = InvoiceFactory.randomInvoice()
                 .invoiceNo(UUID.randomUUID())
@@ -242,8 +244,8 @@ public class InvoiceControllerTest {
                 .order(orderWithInvoice)
                 .build();
 
-        System.out.println("orderNo of mockInvoice: " + mockInvoice.getOrder().getOrderNo()); // geeft hetzelfde ordernummer
-        when(invoiceService.createInvoice(any(Invoice.class), eq(orderNo))).thenReturn(mockInvoice);
+        System.out.println("orderNo of mockInvoice: " + mockInvoice.getOrder().getOrderNo()); // as expected
+        when(invoiceService.createInvoice(any(Invoice.class), eq(orderNo))).thenReturn(mockInvoice); // zou niet aangeroepen moeten worden i.v.m. conflict status
 
 
         Faker faker = new Faker();
@@ -259,7 +261,7 @@ public class InvoiceControllerTest {
         MvcResult result = mockMvc.perform(post("/api/invoice")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isConflict())
+                .andExpect(status().isConflict()) //  Geeft statuscode 201 (created) i.p.v. verwachte 409 (conflict)
                 .andExpect(content().string("An invoice already exists for order number: " + orderNo))
                 .andReturn();
 
@@ -317,14 +319,14 @@ public class InvoiceControllerTest {
         System.out.println(content);
 
         // Act & Assert
-        mockMvc.perform(put("/api/invoice/{invoiceNo}", expectedInvoice.getInvoiceNo())
+        mockMvc.perform(put("/api/invoice/{id}", expectedInvoice.getInvoiceNo())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.invoiceNo").value(expectedInvoiceResponse.invoiceNo().toString()))
-                .andExpect(jsonPath("$.invoiceDate").value(expectedInvoiceResponse.invoiceDate().toString()))
+                .andExpect(jsonPath("$.invoiceDate").value(expectedInvoiceResponse.invoiceDate()))
                 .andExpect(jsonPath("$.amount").value(expectedInvoiceResponse.amount()))
                 .andExpect(jsonPath("$.paid").value(expectedInvoiceResponse.paid()))
                 .andExpect(jsonPath("$.orderNo").value(expectedInvoiceResponse.orderNo().toString()));

@@ -246,7 +246,7 @@ public class TaskControllerTest {
         System.out.println(content);
 
         // Act & Assert
-        mockMvc.perform(put("/api/task/{taskNo}", expectedTask.getTaskNo())
+        mockMvc.perform(put("/api/task/{id}", expectedTask.getTaskNo())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
                         .accept(MediaType.APPLICATION_JSON))

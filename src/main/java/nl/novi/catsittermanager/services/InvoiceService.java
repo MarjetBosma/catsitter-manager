@@ -30,9 +30,6 @@ public class InvoiceService {
 
     public Invoice createInvoice(final Invoice invoice, final UUID orderNo) {
         Order order = orderService.getOrder(orderNo);
-        if (!invoiceRepository.existsByOrder_OrderNo(orderNo)) {
-            throw new RecordNotFoundException("Order not found.");
-        }
         if (orderService.hasExistingInvoice(orderNo)) {
             throw new InvoiceAlreadyExistsForThisOrderException("An invoice already exists for this order.");
         }
@@ -40,6 +37,7 @@ public class InvoiceService {
         return invoiceRepository.save(invoice);
     }
 
+    // todo: geeft 403 forbidden in Postman, tests slagen wel
     public Invoice editInvoice(final UUID idToEdit, final Invoice invoice, final UUID orderNo) {
         if (invoiceRepository.findById(idToEdit).isEmpty()) {
             throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No invoice found with this id.");

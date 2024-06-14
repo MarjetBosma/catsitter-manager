@@ -6,16 +6,14 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.novi.catsittermanager.config.SecurityConfig;
 import nl.novi.catsittermanager.config.TestConfig;
 import nl.novi.catsittermanager.dtos.OrderRequestFactory;
+import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
 import nl.novi.catsittermanager.dtos.order.OrderRequest;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.dtos.task.TaskResponse;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.mappers.TaskMapper;
-import nl.novi.catsittermanager.models.Order;
-import nl.novi.catsittermanager.models.OrderFactory;
-import nl.novi.catsittermanager.models.Task;
-import nl.novi.catsittermanager.models.TaskFactory;
+import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.services.OrderService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,8 +37,7 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -239,6 +236,54 @@ public class OrderControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void givenAValidRequest_whenGetInvoiceByOrder_thenInvoiceShouldBeReturned() throws Exception {
+        // Arrange
+        UUID orderId = UUID.randomUUID();
+        Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
+
+        when(orderService.getInvoiceByOrder(orderId)).thenReturn(expectedInvoice);
+
+        // Act & Assert
+        InvoiceResponse expectedInvoiceResponse = new InvoiceResponse(
+                expectedInvoice.getInvoiceNo(),
+                expectedInvoice.getInvoiceDate().toString(),
+                expectedInvoice.getAmount(),
+                expectedInvoice.getPaid(),
+                expectedInvoice.getOrder().getOrderNo()
+        );
+
+        mockMvc.perform(get("/api/order/" + orderId + "/invoice")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.invoiceNo").value(expectedInvoiceResponse.invoiceNo().toString()))
+                .andExpect(jsonPath("$.invoiceDate").value(expectedInvoiceResponse.invoiceDate()))
+                .andExpect(jsonPath("$.amount").value(expectedInvoiceResponse.amount()))
+                .andExpect(jsonPath("$.paid").value(expectedInvoiceResponse.paid()))
+                .andExpect(jsonPath("$.orderNo").value(expectedInvoiceResponse.orderNo().toString()));
+
+        // Verify
+        verify(orderService, times(1)).getInvoiceByOrder(orderId);
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void givenARequestWithNoInvoice_whenGetInvoiceByOrder_thenNotFoundShouldBeReturned() throws Exception {
+        // Arrange
+        UUID orderId = UUID.randomUUID();
+        when(orderService.getInvoiceByOrder(orderId)).thenReturn(null);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/order/" + orderId + "/invoice")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+        // Verify
+        verify(orderService, times(1)).getInvoiceByOrder(orderId);
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenCreateOrder_thenOrderShouldBeReturned() throws Exception {
 
         // Arrange
@@ -331,7 +376,7 @@ public class OrderControllerTest {
         System.out.println(content);
 
         // Act & Assert
-        mockMvc.perform(put("/api/order/{orderNo}", expectedOrder.getOrderNo())
+        mockMvc.perform(put("/api/order/{id}", expectedOrder.getOrderNo())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
                         .accept(MediaType.APPLICATION_JSON))
