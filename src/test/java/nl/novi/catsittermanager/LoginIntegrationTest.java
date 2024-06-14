@@ -1,46 +1,36 @@
 package nl.novi.catsittermanager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nl.novi.catsittermanager.config.TestConfig;
 import nl.novi.catsittermanager.dtos.login.LoginRequest;
-import nl.novi.catsittermanager.dtos.login.LoginResponse;
-import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
-import nl.novi.catsittermanager.services.UserService;
 import nl.novi.catsittermanager.utils.JwtUtil;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@Import(TestConfig.class)
-@ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class LoginIntegrationTest {
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
+@ActiveProfiles("test")
+class LoginIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,68 +44,58 @@ public class LoginIntegrationTest {
     @MockBean
     private JwtUtil jwtUtil;
 
-    @MockBean
-    private JwtAuthorizationFilter jwtAuthorizationFilter;
-
-    @MockBean
-    private UserService userService;
+    private String loginRequestJson;
 
     @BeforeEach
     void setUp() {
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("username", "password"));
+        loginRequestJson = """
+                {
+                    "username": "testuser",
+                    "password": "testpassword"
+                }
+                """;
     }
 
-    // todo: Geeft melding "content type not set", ondanks diverse aanpassingen waaronder in de AuthenticationController
     @Test
-    void login_WithValidCredentials_ShouldReturnToken() throws Exception {
-
+    void login_ShouldReturnOk_WhenCredentialsAreValid() throws Exception {
         // Arrange
-        LoginRequest loginRequest = new LoginRequest("username", "password");
+        String token = "mock-token";
+        LoginRequest loginRequest = new LoginRequest("testuser", "testpassword");
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                loginRequest.getUsername(),
+                loginRequest.getPassword(),
+                new ArrayList<>()
+        );
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
-
-        String token = "mocked_token";
-        when(jwtUtil.createToken(anyString())).thenReturn(token);
-
-        // Act
-        String jsonInput = objectMapper.writeValueAsString(loginRequest);
-
-        MvcResult result = mockMvc.perform(post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonInput))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.token").value(token))
-                .andReturn();
-
-        // Assert
-        String jsonResponse = result.getResponse().getContentAsString();
-        LoginResponse loginResponse = objectMapper.readValue(jsonResponse, LoginResponse.class);
-        Assertions.assertNotNull(loginResponse);
-        Assertions.assertEquals(token, loginResponse.getToken());
-    }
-
-    // todo: Geeft status 200 terug i.p.v. 401
-    @Test
-    void login_WithInvalidCredentials_ShouldReturnBadRequest() throws Exception {
-
-        // Arrange
-        LoginRequest loginRequest = new LoginRequest("", "");
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, loginRequest.getPassword(), userDetails.getAuthorities());
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenThrow(new BadCredentialsException("Invalid username or password"));
+                .thenReturn(authentication);
 
-        // Act
-        String jsonInput = objectMapper.writeValueAsString(loginRequest);
+        when(jwtUtil.createToken(userDetails.getUsername())).thenReturn(token);
 
-        // Assert
+        // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonInput))
+                        .content(loginRequestJson))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(loginRequest.getUsername()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.token").value(token));
+    }
+
+    @Test
+    void login_ShouldReturnBadRequest_WhenCredentialsAreInvalid() throws Exception {
+        // Arrange
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new BadCredentialsException("Invalid credentials"));
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginRequestJson))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("Invalid username or password"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid username or password"));
     }
 }
