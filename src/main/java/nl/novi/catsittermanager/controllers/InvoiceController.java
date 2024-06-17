@@ -9,10 +9,8 @@ import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.InvoiceMapper;
 import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.services.InvoiceService;
-import nl.novi.catsittermanager.services.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -26,10 +24,6 @@ import java.util.UUID;
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
-
-    private final OrderService orderService;
-
-    private final AuthenticationManager authentication;
 
     @GetMapping("/invoices")
     public ResponseEntity<List<InvoiceResponse>> getAllInvoices() {

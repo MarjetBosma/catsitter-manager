@@ -9,16 +9,16 @@ import nl.novi.catsittermanager.config.TestConfig;
 import nl.novi.catsittermanager.dtos.InvoiceRequestFactory;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceRequest;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
+import nl.novi.catsittermanager.exceptions.InvoiceAlreadyExistsForThisOrderException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.helpers.InvoiceFactoryHelper;
 import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.models.InvoiceFactory;
 import nl.novi.catsittermanager.models.Order;
-import nl.novi.catsittermanager.repositories.OrderRepository;
 import nl.novi.catsittermanager.services.InvoiceService;
-import nl.novi.catsittermanager.services.OrderService;
 import nl.novi.catsittermanager.utils.JwtUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -36,16 +36,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import static java.lang.String.valueOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -64,14 +62,8 @@ public class InvoiceControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @Autowired
-    private OrderRepository orderRepository;
-
     @MockBean
     private InvoiceService invoiceService;
-
-    @MockBean
-    private OrderService orderService;
 
     @BeforeEach
     void init() {
@@ -218,59 +210,33 @@ public class InvoiceControllerTest {
                 .andExpect(jsonPath("$.orderNo").value(expectedResponse.orderNo().toString()));
     }
 
-    // todo: Geeft een statuscode 201 i.p.v. 409. In Postman werkt dit wel correct, en ook alle unittests voor createInvoice() slagen. Probleem lijkt te zitten in de hasExistingInvoice() methode (uit de OrderService). Unittests hiervan slagen, maar ik heb een SpringBootTest hiervoor geschreven (OrderHasExistingInvoiceIntegrationTest) die vooralsnog ook faalt.
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenExistingInvoiceForGivenOrder_whenCreateInvoice_thenConflictShouldBeReturned() throws Exception {
 
         // Arrange
         UUID orderNo = UUID.randomUUID();
-        System.out.println("orderNo after initialization: " + orderNo); // as expected
         Order orderWithInvoice = new Order();
-        orderWithInvoice.setOrderNo(orderNo); // as expected
-        System.out.println("orderNo after setting: " + orderNo); // as expected
         orderWithInvoice.setInvoice(new Invoice());
 
-        when(orderRepository.findById(orderNo)).thenReturn(Optional.of(orderWithInvoice));
-        when(orderService.hasExistingInvoice(orderNo)).thenReturn(true);  // stelt dat er een invoice aanwezig voor dit ordernummer
-        boolean exists = orderService.hasExistingInvoice(orderNo);
-        System.out.println(valueOf(exists)); // true
-
-        Invoice mockInvoice = InvoiceFactory.randomInvoice()
-                .invoiceNo(UUID.randomUUID())
-                .invoiceDate(LocalDate.now())
-                .amount(100.0)
-                .paid(false)
-                .order(orderWithInvoice)
-                .build();
-
-        System.out.println("orderNo of mockInvoice: " + mockInvoice.getOrder().getOrderNo()); // as expected
-        when(invoiceService.createInvoice(any(Invoice.class), eq(orderNo))).thenReturn(mockInvoice); // zou niet aangeroepen moeten worden i.v.m. conflict status
-
-
+        when(invoiceService.createInvoice(any(Invoice.class), eq(orderNo))).thenThrow(new InvoiceAlreadyExistsForThisOrderException("An invoice already exists for this order."));
         Faker faker = new Faker();
-        InvoiceRequest request = InvoiceRequestFactory.randomInvoiceRequest() // nieuw request...
+        InvoiceRequest request = InvoiceRequestFactory.randomInvoiceRequest()
                 .invoiceDate(InvoiceFactoryHelper.randomDateIn2024().toString())
                 .amount(faker.number().randomDouble(2, 50, 300))
                 .paid(faker.bool().bool())
-                .orderNo(orderNo) // ...voor ordernummer dat al een invoice heeft
+                .orderNo(orderNo)
                 .build();
-        System.out.println("orderNo request: " + request.orderNo());
 
         // Act & Assert
         MvcResult result = mockMvc.perform(post("/api/invoice")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isConflict()) //  Geeft statuscode 201 (created) i.p.v. verwachte 409 (conflict)
+                .andExpect(status().isConflict())
                 .andExpect(content().string("An invoice already exists for order number: " + orderNo))
                 .andReturn();
 
-        System.out.println("Response Status: " + result.getResponse().getStatus()); // wordt niet geprint, blijkbaar wordt dit stuk niet bereikt omdat het hierboven al niet volgens verwachting gaat
-        System.out.println("Response Content: " + result.getResponse().getContentAsString()); // idem als hierboven
-
-        verify(orderRepository, times(1)).findById(orderNo);
-        verify(orderService, times(1)).hasExistingInvoice(orderNo);
-        verify(invoiceService, never()).createInvoice(any(Invoice.class), eq(orderNo));
+        Assertions.assertEquals(HttpStatus.CONFLICT.value(), result.getResponse().getStatus());
     }
 
     @Test
