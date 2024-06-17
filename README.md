@@ -33,18 +33,18 @@ installatiehandleiding aanleveren. Neem daarvoor gerust contact op!
 
 ## Belangrijkste functionaliteiten
 
-• Gebruikers moeten inloggen met een gebruikersnaam en wachtwoord. Er zijn twee rollen: admin (eigenaar), customer en
-catsitter. Authenticatie wordt gedaan middels een JWT-token.
-• De eigenaar kan nieuwe klanten, kattenoppassen, orders en rekeningen toevoegen, en bestaande gegevens wijzigen. Tevens
-beheert hij financiële gegevens, waaronder facturatie en betalingen.
-• Katteneigenaren definiëren diensten (orders) die zij willen afnemen. Bij elke order hoort een set aan taken die
-verricht moeten worden door de kattenoppas, die ze kunnen wijzigen. Zij kunnen ook zien welke rekeningen zij hebben
-betaald of nog open hebben staan.
-• Kattenbaasjes hebben toegang tot en mogelijkheid tot wijzigen van hun eigen profiel, afgenomen diensten, en informatie
-over hun kat(ten), inclusief uploadmogelijkheid voor kattenfoto's. Zij kunnen ook het profiel van de aan een order
-gekoppelde kattenoppas bekijken.
-• Kattenoppassen hebben een eigen profiel dat ze kunnen wijzigen naar wens. Zij kunnen gegevens inzien van de klanten en
-de bijbehorende katten van hun orders, maar kunnen daarin geen wijzigingen aanbrengen.
+- Gebruikers moeten inloggen met een gebruikersnaam en wachtwoord. Er zijn twee rollen: admin (eigenaar), customer en
+  catsitter. Authenticatie wordt gedaan middels een JWT-token.
+- De eigenaar kan nieuwe klanten, kattenoppassen, orders en rekeningen toevoegen, en bestaande gegevens wijzigen. Tevens
+  beheert hij financiële gegevens, waaronder facturatie en betalingen.
+- Katteneigenaren definiëren diensten (orders) die zij willen afnemen. Bij elke order hoort een set aan taken die
+  verricht moeten worden door de kattenoppas, die ze kunnen wijzigen. Zij kunnen ook zien welke rekeningen zij hebben
+  betaald of nog open hebben staan.
+- Kattenbaasjes hebben toegang tot en mogelijkheid tot wijzigen van hun eigen profiel, afgenomen diensten, en informatie
+  over hun kat(ten), inclusief uploadmogelijkheid voor kattenfoto's. Zij kunnen ook het profiel van de aan een order
+  gekoppelde kattenoppas bekijken.
+- Kattenoppassen hebben een eigen profiel dat ze kunnen wijzigen naar wens. Zij kunnen gegevens inzien van de klanten en
+  de bijbehorende katten van hun orders, maar kunnen daarin geen wijzigingen aanbrengen.
 
 ## Beperkingen en ideeën  voor doorontwikkeling
 
