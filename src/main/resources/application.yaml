@@ -1,6 +1,8 @@
 server:
   port: 8080
 spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
   datasource:
     url: jdbc:postgresql://localhost:5432/catsitter-manager
     username: postgres
@@ -12,7 +14,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         naming:
@@ -24,4 +26,3 @@ spring:
   defer-datasource-initialization: true
 my:
   upload_location: Uploads
-

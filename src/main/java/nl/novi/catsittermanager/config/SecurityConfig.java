@@ -77,7 +77,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/order/{id}").hasAnyRole("ADMIN", "CUSTOMER", "CATSITTER")
                                 .requestMatchers(HttpMethod.POST, "/api/order").hasAnyRole("ADMIN", "CUSTOMER")
                                 .requestMatchers(HttpMethod.PUT, "/api/order/{id}").hasAnyRole("ADMIN", "CUSTOMER")
-                                .requestMatchers(HttpMethod.DELETE, "/api/order/{id}").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/order/{id}").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/api/order/{id}/tasks").hasAnyRole("ADMIN", "CUSTOMER", "CATSITTER")
                                 .requestMatchers(HttpMethod.GET, "/api/order/{id}/invoice").hasAnyRole("ADMIN", "CUSTOMER")
 
@@ -89,13 +89,14 @@ public class SecurityConfig {
 
                                 .requestMatchers(HttpMethod.GET, "/api/invoices").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/api/invoice/{id}").hasAnyRole("ADMIN", "CUSTOMER")
-                                .requestMatchers(HttpMethod.POST, "/api/invoice").hasAnyRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/invoice/{id}").hasAnyRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/api/invoice/{id}").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/api/invoice").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/invoice/{id}").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/invoice/{id}").hasRole("ADMIN")
 
                                 .requestMatchers(HttpMethod.POST, "/api/cat/{id}/images").hasAnyRole("ADMIN", "CUSTOMER")
                                 .requestMatchers(HttpMethod.POST, "/api/catsitter/{id}/images").hasAnyRole("ADMIN", "CATSITTER")
-                                .requestMatchers(HttpMethod.GET, "/api/{type}/{id}/images/{filename}").hasAnyRole("ADMIN", "CUSTOMER", "CATSITTER")
+                                .requestMatchers(HttpMethod.GET, "/api/cat/{id}/images/{filename}").hasAnyRole("ADMIN", "CUSTOMER")
+                                .requestMatchers(HttpMethod.GET, "/api/catsitter/{id}/images/{filename}").hasAnyRole("ADMIN", "CATSITTER")
 
                                 .anyRequest().denyAll()
 

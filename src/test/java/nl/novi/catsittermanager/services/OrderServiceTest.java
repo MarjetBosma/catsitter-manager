@@ -134,6 +134,44 @@ public class OrderServiceTest {
     }
 
     @Test
+    void getInvoiceByOrder_shouldFetchInvoiceForThisOrder() {
+
+        // Arrange
+        Order randomOrder = OrderFactory.randomOrder().build();
+        Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
+        randomOrder.setInvoice(expectedInvoice);
+
+        when(orderRepository.findById(randomOrder.getOrderNo())).thenReturn(Optional.of(randomOrder));
+
+        // Act
+        Invoice resultInvoice = orderService.getInvoiceByOrder(randomOrder.getOrderNo());
+
+        // Assert
+        assertEquals(expectedInvoice, resultInvoice);
+
+        verify(orderRepository, times(1)).findById(randomOrder.getOrderNo());
+    }
+
+    @Test
+    void testGetInvoiceByOrder_noInvoicePresent_RecordNotFoundException() {
+
+        //  Arrange
+        UUID orderNo = UUID.randomUUID();
+        Order randomOrder = OrderFactory.randomOrder().build();
+        randomOrder.setInvoice(null);
+
+        doReturn(Optional.of(randomOrder)).when(orderRepository).findById(orderNo);
+
+        // Act & Assert
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
+            orderService.getInvoiceByOrder(orderNo);
+        });
+
+        assertEquals("No invoice found for this order.", exception.getMessage());
+        verify(orderRepository, times(1)).findById(orderNo);
+    }
+
+    @Test
     void testCreateOrder_shouldCreateANewOrder() {
 
         // Arrange
@@ -229,7 +267,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    void TestHasExistingInvoice_shouldReturnTrueIfOrderHasAnInvoice() {
+    void testHasExistingInvoice_shouldReturnTrueIfOrderHasAnInvoice() {
 
         // Arrange
         UUID orderNo = UUID.randomUUID();

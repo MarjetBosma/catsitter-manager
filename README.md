@@ -64,6 +64,11 @@ de bijbehorende katten van hun orders, maar kunnen daarin geen wijzigingen aanbr
   direct hun rekeningen kunnen betalen. Dit vraagt waarschijnlijk wel een hogere mate van security-maatregelen dan wat
   er nu aanwezig is.
 
+## Verantwoording "persoonlijke gegevens" in data.sql bestand.
+
+Voor testdoeleinden is een data.sql file aanwezig waarmee je een database kunt vullen. Alle genoemde namen, adressen en
+andere persoonsgegevens zijn fictief, en dus niet te herleiden tot bestaande personen.
+
 ## Verantwoording afbeelding logo
 
 Het CatsitterManager-logo is AI-gegenereerd op de website looka.com.

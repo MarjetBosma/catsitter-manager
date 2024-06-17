@@ -9,14 +9,16 @@ import nl.novi.catsittermanager.config.TestConfig;
 import nl.novi.catsittermanager.dtos.InvoiceRequestFactory;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceRequest;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
+import nl.novi.catsittermanager.exceptions.InvoiceAlreadyExistsForThisOrderException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.helpers.InvoiceFactoryHelper;
 import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.models.InvoiceFactory;
+import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.services.InvoiceService;
-import nl.novi.catsittermanager.services.OrderService;
 import nl.novi.catsittermanager.utils.JwtUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -40,7 +42,8 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -51,19 +54,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class InvoiceControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
     @MockBean
-    InvoiceService invoiceService;
-
-    @MockBean
-    OrderService orderService;
+    private InvoiceService invoiceService;
 
     @BeforeEach
     void init() {
@@ -102,7 +102,7 @@ public class InvoiceControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(expectedInvoiceList.size()))
                 .andExpect(jsonPath("$.[0].invoiceNo").value(expectedResponse.invoiceNo().toString()))
-                .andExpect(jsonPath("$.[0].invoiceDate").value(expectedResponse.invoiceDate().toString()))
+                .andExpect(jsonPath("$.[0].invoiceDate").value(expectedResponse.invoiceDate()))
                 .andExpect(jsonPath("$.[0].amount").value(expectedResponse.amount()))
                 .andExpect(jsonPath("$.[0].paid").value(expectedResponse.paid()))
                 .andExpect(jsonPath("$.[0].orderNo").value(expectedResponse.orderNo().toString()));
@@ -210,34 +210,33 @@ public class InvoiceControllerTest {
                 .andExpect(jsonPath("$.orderNo").value(expectedResponse.orderNo().toString()));
     }
 
-    // todo: Geeft een statuscode 404 i.p.v. 409
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenExistingInvoiceForGivenOrder_whenCreateInvoice_thenConflictShouldBeReturned() throws Exception {
 
         // Arrange
         UUID orderNo = UUID.randomUUID();
-        Faker faker = new Faker();
+        Order orderWithInvoice = new Order();
+        orderWithInvoice.setInvoice(new Invoice());
 
-        InvoiceRequest expectedInvoiceRequest = InvoiceRequest.builder()
+        when(invoiceService.createInvoice(any(Invoice.class), eq(orderNo))).thenThrow(new InvoiceAlreadyExistsForThisOrderException("An invoice already exists for this order."));
+        Faker faker = new Faker();
+        InvoiceRequest request = InvoiceRequestFactory.randomInvoiceRequest()
                 .invoiceDate(InvoiceFactoryHelper.randomDateIn2024().toString())
-                .amount(((double) faker.number().numberBetween(50, 300)))
+                .amount(faker.number().randomDouble(2, 50, 300))
                 .paid(faker.bool().bool())
                 .orderNo(orderNo)
                 .build();
 
-        when(orderService.hasExistingInvoice(orderNo)).thenReturn(true);
-
         // Act & Assert
-        MvcResult result = mockMvc.perform(post("/invoice")
+        MvcResult result = mockMvc.perform(post("/api/invoice")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(expectedInvoiceRequest)))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isConflict())
                 .andExpect(content().string("An invoice already exists for order number: " + orderNo))
                 .andReturn();
 
-        verify(orderService, times(1)).hasExistingInvoice(orderNo);
-        verify(invoiceService, times(0)).createInvoice(any(Invoice.class), eq(orderNo));
+        Assertions.assertEquals(HttpStatus.CONFLICT.value(), result.getResponse().getStatus());
     }
 
     @Test
@@ -286,14 +285,14 @@ public class InvoiceControllerTest {
         System.out.println(content);
 
         // Act & Assert
-        mockMvc.perform(put("/api/invoice/{invoiceNo}", expectedInvoice.getInvoiceNo())
+        mockMvc.perform(put("/api/invoice/{id}", expectedInvoice.getInvoiceNo())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.invoiceNo").value(expectedInvoiceResponse.invoiceNo().toString()))
-                .andExpect(jsonPath("$.invoiceDate").value(expectedInvoiceResponse.invoiceDate().toString()))
+                .andExpect(jsonPath("$.invoiceDate").value(expectedInvoiceResponse.invoiceDate()))
                 .andExpect(jsonPath("$.amount").value(expectedInvoiceResponse.amount()))
                 .andExpect(jsonPath("$.paid").value(expectedInvoiceResponse.paid()))
                 .andExpect(jsonPath("$.orderNo").value(expectedInvoiceResponse.orderNo().toString()));

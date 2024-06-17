@@ -2,10 +2,7 @@ package nl.novi.catsittermanager.services;
 
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
-import nl.novi.catsittermanager.models.Catsitter;
-import nl.novi.catsittermanager.models.Customer;
-import nl.novi.catsittermanager.models.Order;
-import nl.novi.catsittermanager.models.Task;
+import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.repositories.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -35,6 +32,15 @@ public class OrderService {
     public List<Task> getAllTasksByOrder(UUID idToFind) {
         Order order = getOrder(idToFind);
         return order.getTasks();
+    }
+
+    public Invoice getInvoiceByOrder(UUID idToFind) {
+        Order order = getOrder(idToFind);
+        if (order.getInvoice() == null) {
+            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No invoice found for this order.");
+        } else {
+            return order.getInvoice();
+        }
     }
 
     public Order createOrder(final Order order, final String customerUsername, final String catsitterUsername) {
