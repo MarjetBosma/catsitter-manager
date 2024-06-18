@@ -11,6 +11,7 @@ import nl.novi.catsittermanager.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -32,7 +33,7 @@ public class UserService {
 
     public User createAdminAccount(final User user) {
         if (userRepository.findById(user.getUsername()).isPresent()) {
-            throw new UsernameAlreadyExistsException("Username already exists.");
+            throw new UsernameAlreadyExistsException(user.getUsername());
         }
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(user.getPassword());

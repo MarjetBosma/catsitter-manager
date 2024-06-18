@@ -219,7 +219,7 @@ public class InvoiceControllerTest {
         Order orderWithInvoice = new Order();
         orderWithInvoice.setInvoice(new Invoice());
 
-        when(invoiceService.createInvoice(any(Invoice.class), eq(orderNo))).thenThrow(new InvoiceAlreadyExistsForThisOrderException("An invoice already exists for this order."));
+        when(invoiceService.createInvoice(any(Invoice.class), eq(orderNo))).thenThrow(new InvoiceAlreadyExistsForThisOrderException(orderNo));
         Faker faker = new Faker();
         InvoiceRequest request = InvoiceRequestFactory.randomInvoiceRequest()
                 .invoiceDate(InvoiceFactoryHelper.randomDateIn2024().toString())
@@ -233,10 +233,33 @@ public class InvoiceControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isConflict())
-                .andExpect(content().string("An invoice already exists for order number: " + orderNo))
+                .andExpect(content().string("An invoice already exists for order " + orderNo + "."))
                 .andReturn();
 
         Assertions.assertEquals(HttpStatus.CONFLICT.value(), result.getResponse().getStatus());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void givenNonExistingOrder_whenCreateInvoice_thenNotFoundShouldBeReturned() throws Exception {
+
+        // Arrange
+        UUID orderNo = UUID.randomUUID();
+        InvoiceRequest request = InvoiceRequestFactory.randomInvoiceRequest()
+                .orderNo(orderNo)
+                .build();
+
+        when(invoiceService.createInvoice(any(Invoice.class), eq(orderNo))).thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "Order not found"));
+
+        // Act & Assert
+        MvcResult result = mockMvc.perform(post("/api/invoice")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Order not found"))
+                .andReturn();
+
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
     }
 
     @Test

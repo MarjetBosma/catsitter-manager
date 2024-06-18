@@ -144,7 +144,7 @@ public class InvoiceServiceTest {
         // Arrange
         UUID orderNo = UUID.randomUUID();
         Invoice invoice = new Invoice();
-        when(orderService.getOrder(orderNo)).thenThrow(new RecordNotFoundException("Order not found."));
+        when(orderService.getOrder(orderNo)).thenThrow(new RecordNotFoundException("No order found with this id"));
 
         // Act & Assert
         assertThrows(RecordNotFoundException.class, () -> invoiceService.createInvoice(invoice, orderNo));
