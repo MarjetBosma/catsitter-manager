@@ -103,9 +103,6 @@ public class InvoiceServiceTest {
         Order expectedOrder = OrderFactory.randomOrder().build();
         UUID orderNo = expectedOrder.getOrderNo();
 
-//        when(orderService.getOrder(orderNo)).thenReturn(expectedOrder);
-//        when(invoiceRepository.save(expectedInvoice)).thenReturn(expectedInvoice);
-
         when(orderService.getOrder(orderNo)).thenReturn(expectedOrder);
         when(orderService.hasExistingInvoice(orderNo)).thenReturn(false);
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(expectedInvoice);
@@ -168,6 +165,7 @@ public class InvoiceServiceTest {
 
         // Assert
         assertEquals(invoice, resultInvoice);
+
         verify(invoiceRepository, times(1)).findById(invoice.getInvoiceNo());
         verify(orderService, times(1)).getOrder(invoice.getOrder().getOrderNo());
         verify(invoiceRepository, times(1)).save(any(Invoice.class));
@@ -178,10 +176,12 @@ public class InvoiceServiceTest {
 
         // Arrange
         UUID invoiceNo = UUID.randomUUID();
+        Invoice invoice = InvoiceFactory.randomInvoice().build();
+        UUID orderNo = UUID.randomUUID();
         when(invoiceRepository.findById(invoiceNo)).thenReturn(Optional.empty());
 
         // Act
-        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> invoiceService.getInvoice(invoiceNo));
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> invoiceService.editInvoice(invoiceNo, invoice, orderNo));
 
         // Assert
         assertEquals("No invoice found with this id.", exception.getMessage());

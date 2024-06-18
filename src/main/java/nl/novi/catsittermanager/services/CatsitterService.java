@@ -5,7 +5,6 @@ import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
 import nl.novi.catsittermanager.models.Catsitter;
-import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CatsitterRepository;
 import org.springframework.http.HttpStatus;
@@ -33,16 +32,6 @@ public class CatsitterService {
     public List<Order> getAllOrdersByCatsitter(String username) {
         Catsitter catsitter = getCatsitter(username);
         return catsitter.getOrders();
-    }
-
-    public List<Customer> getAllCustomersByCatsitter(String username) {
-        Catsitter catsitter = getCatsitter(username);
-        List<Order> orders = catsitter.getOrders();
-        List<Customer> customers = orders.stream()
-                .map(Order::getCustomer)
-                .distinct()
-                .toList();
-        return customers;
     }
 
     public Catsitter createCatsitter(final Catsitter catsitter) {

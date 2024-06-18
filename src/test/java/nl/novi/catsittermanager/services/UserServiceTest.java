@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class UserServiceTest {
     UserRepository userRepository;
 
     @InjectMocks
-    UserService  userService;
+    UserService userService;
 
     @Test
     void testGetAllUsers_shouldFetchAllUsersOnTheList() {
@@ -78,10 +79,11 @@ public class UserServiceTest {
 
         // Arrange
         String username = "nonExistingUser";
+        User user = UserFactory.randomUser().build();
         when(userRepository.findById(username)).thenReturn(Optional.empty());
 
         // Act
-        RecordNotFoundException exception=assertThrows(RecordNotFoundException.class, () -> userService.getUser(username));
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> userService.editUser(username, user));
 
         // Assert
         assertEquals("No user found with this username.", exception.getMessage());
