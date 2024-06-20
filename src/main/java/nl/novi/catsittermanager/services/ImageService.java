@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -60,9 +61,9 @@ public class ImageService {
             Cat cat = catRepository.findById(catId).orElseThrow(() -> new RecordNotFoundException("Cat not found with id: " + catId));
 
             String url = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/cat/")
+                    .path("api/cat/")
                     .path(catId.toString())
-                    .path("/images/uploads/")
+                    .path("/images/")
                     .path(filename)
                     .toUriString();
 
@@ -86,9 +87,9 @@ public class ImageService {
             Catsitter catsitter = catsitterRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("Catsitter not found with id: " + username));
 
             String url = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/catsitter/")
+                    .path("api/catsitter/")
                     .path(username)
-                    .path("/upload/")
+                    .path("/images/")
                     .path(filename)
                     .toUriString();
             String storedFileName = storeFile(file, url);
