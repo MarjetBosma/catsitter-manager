@@ -158,6 +158,21 @@ public class ImageService {
         }
     }
 
+//    public Resource downloadImage(String filename) {
+//        try {
+//            Path path = getFilePath(filename);
+//            Resource resource = createUrlResource(path);
+//
+//            if (!resource.exists() || !resource.isReadable()) {
+//                throw new FileNotFoundException("File does not exist or is not readable");
+//            }
+//
+//            return resource;
+//        } catch (MalformedURLException exception) {
+//            throw new RuntimeException("Issue in reading the file", exception);
+//        }
+//    }
+
     public Path getFilePath(String filename) {
         return Paths.get(fileStorageLocation).toAbsolutePath().resolve(filename);
     }

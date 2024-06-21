@@ -12,6 +12,7 @@ import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,6 +26,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -36,12 +41,13 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest({ImageController.class, ExceptionController.class})
+@WebMvcTest(controllers = {ImageController.class, ExceptionController.class})
 @Import({JwtUtil.class, JwtAuthorizationFilter.class, SecurityConfig.class, TestConfig.class})
 @ActiveProfiles("test")
 class ImageControllerTest {
@@ -182,16 +188,17 @@ class ImageControllerTest {
         String username = "testuser";
         String filename = "nonexistentimage.jpg";
 
-        when(imageService.downloadImage(anyString())).thenThrow(new FileNotFoundException("File not found"));
-
+        when(imageService.downloadImage(filename)).thenThrow(new FileNotFoundException("File does not exist or is not readable"));
 
         // Act & Assert
-        mockMvc.perform(get("/api/" + type + "/" + username + "/images/" + filename))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/{type}/{id}/images/{filename}", type, username, filename))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("File does not exist or is not readable"))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
 
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("File not found"));
-
-        verify(imageService, times(1)).downloadImage(filename);
+        verify(imageService, Mockito.times(1)).downloadImage(filename);
     }
 
     @Test

@@ -46,9 +46,7 @@ public class ImageController {
     @GetMapping("/{type}/{id}/images/{filename}")
     public ResponseEntity<Resource> downloadImage(@PathVariable String type, @PathVariable String id, @PathVariable String filename, HttpServletRequest request) throws FileNotFoundException {
         Resource resource = imageService.downloadImage(filename);
-        if (resource == null) {
-            throw new nl.novi.catsittermanager.exceptions.FileNotFoundException("File not found");
-        }
+        
         String mimeType;
         try {
             mimeType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
