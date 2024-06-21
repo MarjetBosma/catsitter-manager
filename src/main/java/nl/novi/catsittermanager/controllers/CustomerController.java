@@ -69,7 +69,7 @@ public class CustomerController {
     }
 
     @PutMapping("/customer/{id}")
-    public ResponseEntity<CustomerResponse> editCustomer(@Valid @PathVariable("id") final String username, @Valid @RequestBody final CustomerRequest customerRequest) {
+    public ResponseEntity<CustomerResponse> editCustomer(@PathVariable("id") final String username, @Valid @RequestBody final CustomerRequest customerRequest) {
         Customer customer = customerService.editCustomer(username, CustomerMapper.CustomerRequestToCustomer(customerRequest));
         return ResponseEntity.ok().body(CustomerMapper.CustomerToCustomerResponse(customer));
     }
