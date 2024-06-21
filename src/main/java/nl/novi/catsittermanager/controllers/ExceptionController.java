@@ -22,11 +22,6 @@ public class ExceptionController {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-//    @ExceptionHandler(value = FileNotFoundException.class)
-//    public ResponseEntity<String> handleFileNotFoundException(FileNotFoundException exception) {
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
-//    }
-
     @ExceptionHandler(value = nl.novi.catsittermanager.exceptions.FileNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleFileNotFoundException(nl.novi.catsittermanager.exceptions.FileNotFoundException exception) {
         Map<String, String> errorResponse = new HashMap<>();
