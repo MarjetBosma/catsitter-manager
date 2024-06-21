@@ -5,12 +5,12 @@ import nl.novi.catsittermanager.enumerations.Role;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
 import nl.novi.catsittermanager.models.Catsitter;
-import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.repositories.CatsitterRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,19 +34,9 @@ public class CatsitterService {
         return catsitter.getOrders();
     }
 
-    public List<Customer> getAllCustomersByCatsitter(String username) {
-        Catsitter catsitter = getCatsitter(username);
-        List<Order> orders = catsitter.getOrders();
-        List<Customer> customers = orders.stream()
-                .map(Order::getCustomer)
-                .distinct()
-                .toList();
-        return customers;
-    }
-
     public Catsitter createCatsitter(final Catsitter catsitter) {
         if (catsitterRepository.findById(catsitter.getUsername()).isPresent()) {
-            throw new UsernameAlreadyExistsException("Username already exists.");
+            throw new UsernameAlreadyExistsException(catsitter.getUsername());
         }
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(catsitter.getPassword());
@@ -57,11 +47,21 @@ public class CatsitterService {
         return catsitterRepository.save(catsitter);
     }
 
-    public Catsitter editCatsitter(final String username, final Catsitter catsitter) {
-        if (catsitterRepository.findById(username).isEmpty()) {
-            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No catsitter found with this username.");
-        }
-        return catsitterRepository.save(catsitter);
+    public Catsitter editCatsitter(final String username, final Catsitter updatedCatsitter) {
+        Catsitter existingCatsitter = catsitterRepository.findById(username)
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No catsitter found with this username."));
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(updatedCatsitter.getPassword());
+
+        existingCatsitter.setUsername(updatedCatsitter.getUsername());
+        existingCatsitter.setPassword(encodedPassword);
+        existingCatsitter.setName(updatedCatsitter.getName());
+        existingCatsitter.setAddress(updatedCatsitter.getAddress());
+        existingCatsitter.setEmail(updatedCatsitter.getEmail());
+        existingCatsitter.setAbout(updatedCatsitter.getAbout());
+
+        return catsitterRepository.save(updatedCatsitter);
     }
 
     public String deleteCatsitter(final String username) {

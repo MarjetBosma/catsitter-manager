@@ -11,6 +11,7 @@ import nl.novi.catsittermanager.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -32,7 +33,7 @@ public class UserService {
 
     public User createAdminAccount(final User user) {
         if (userRepository.findById(user.getUsername()).isPresent()) {
-            throw new UsernameAlreadyExistsException("Username already exists.");
+            throw new UsernameAlreadyExistsException(user.getUsername());
         }
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(user.getPassword());
@@ -42,11 +43,22 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User editUser(final String username, final User user) {
-        if (userRepository.findById(username).isEmpty()) {
-            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No user found with this username.");
-        }
-        return userRepository.save(user);
+    public User editUser(final String username, final User updatedUser) {
+        User existingUser = userRepository.findById(username)
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No user found with this username."));
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(updatedUser.getPassword());
+
+        existingUser.setUsername(updatedUser.getUsername());
+        existingUser.setPassword(encodedPassword);
+        existingUser.setName(updatedUser.getName());
+        existingUser.setAddress(updatedUser.getAddress());
+        existingUser.setEmail(updatedUser.getEmail());
+        existingUser.setEnabled(updatedUser.getEnabled());
+        existingUser.setRole(updatedUser.getRole());
+
+        return userRepository.save(updatedUser);
     }
 
     public String deleteUser(final String username) {

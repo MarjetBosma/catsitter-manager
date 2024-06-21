@@ -31,7 +31,7 @@ public class InvoiceService {
     public Invoice createInvoice(final Invoice invoice, final UUID orderNo) {
         Order order = orderService.getOrder(orderNo);
         if (orderService.hasExistingInvoice(orderNo)) {
-            throw new InvoiceAlreadyExistsForThisOrderException("An invoice already exists for this order.");
+            throw new InvoiceAlreadyExistsForThisOrderException(order.getOrderNo());
         }
         invoice.setOrder(order);
         return invoiceRepository.save(invoice);

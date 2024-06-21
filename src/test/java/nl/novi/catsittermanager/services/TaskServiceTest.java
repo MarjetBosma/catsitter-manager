@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -63,6 +64,38 @@ public class TaskServiceTest {
     }
 
     @Test
+    void testGetTask_shouldFetchTaskWithSpecificId() {
+
+        // Arrange
+        Task expectedTask = TaskFactory.randomTask().build();
+        when(taskRepository.findById(expectedTask.getTaskNo())).thenReturn(Optional.of(expectedTask));
+
+        // Act
+        Task resultTask = taskService.getTask(expectedTask.getTaskNo());
+
+        // Assert
+        assertEquals(expectedTask, resultTask);
+        verify(taskRepository, times(1)).findById(expectedTask.getTaskNo());
+    }
+
+    @Test
+    void testGetTask_shouldFetchTaskWithSpecificId_RecordNotFoundException() {
+
+        // Arrange
+        UUID taskId = UUID.randomUUID();
+        when(taskRepository.findById(taskId)).thenReturn(Optional.empty());
+
+        // Act
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> taskService.getTask(taskId));
+
+        // Assert
+        assertEquals("No task found with this id.", exception.getMessage());
+        verify(taskRepository).findById(taskId);
+        verifyNoMoreInteractions(taskRepository);
+    }
+
+
+    @Test
     void testCreateTask_shouldCreateANewTask() {
 
         // Arrange
@@ -104,19 +137,44 @@ public class TaskServiceTest {
     }
 
     @Test
+    void testEditTask_withOrder_shouldEditTaskWithOrderPresent() {
+        // Arrange
+        Task task = TaskFactory.randomTask().build();
+        Order newOrder = OrderFactory.randomOrder().build();
+        UUID orderNo = UUID.randomUUID();
+        task.setOrder(newOrder);
+
+        when(taskRepository.findById(task.getTaskNo())).thenReturn(Optional.of(task));
+        when(orderService.getOrder(orderNo)).thenReturn(newOrder);
+        when(taskRepository.save(any(Task.class))).thenReturn(task);
+
+        // Act
+        Task resultTask = taskService.editTask(task.getTaskNo(), task, orderNo);
+
+        // Assert
+        assertEquals(newOrder, resultTask.getOrder());
+        verify(taskRepository, times(1)).findById(task.getTaskNo());
+        verify(orderService, times(1)).getOrder(orderNo);
+        verify(taskRepository, times(1)).save(any(Task.class));
+    }
+
+    @Test
     void testEditTask_nonExistingTask_shouldThrowRecordNotFoundException() {
 
         // Arrange
         UUID taskNo = UUID.randomUUID();
+        Task task = TaskFactory.randomTask().build();
         when(taskRepository.findById(taskNo)).thenReturn(Optional.empty());
+        UUID orderNo = UUID.randomUUID();
 
         // Act
-        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> taskService.getTask(taskNo));
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> taskService.editTask(taskNo, task, orderNo));
 
         // Assert
         assertEquals("No task found with this id.", exception.getMessage());
         verify(taskRepository, times(1)).findById(taskNo);
     }
+
 
     @Test
     void testDeleteTask_shouldDeleteTaskWithSpecificId() {

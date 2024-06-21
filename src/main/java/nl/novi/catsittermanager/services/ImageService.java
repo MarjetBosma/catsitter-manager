@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.services;
 
+import nl.novi.catsittermanager.exceptions.FileNotFoundException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Catsitter;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -60,9 +62,9 @@ public class ImageService {
             Cat cat = catRepository.findById(catId).orElseThrow(() -> new RecordNotFoundException("Cat not found with id: " + catId));
 
             String url = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/cat/")
+                    .path("api/cat/")
                     .path(catId.toString())
-                    .path("/images/uploads/")
+                    .path("/images/")
                     .path(filename)
                     .toUriString();
 
@@ -86,9 +88,9 @@ public class ImageService {
             Catsitter catsitter = catsitterRepository.findById(username).orElseThrow(() -> new RecordNotFoundException("Catsitter not found with id: " + username));
 
             String url = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/catsitter/")
+                    .path("api/catsitter/")
                     .path(username)
-                    .path("/upload/")
+                    .path("/images/")
                     .path(filename)
                     .toUriString();
             String storedFileName = storeFile(file, url);
@@ -145,14 +147,14 @@ public class ImageService {
         Resource resource;
         try {
             resource = createUrlResource(path);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Issue in reading the file", e);
+        } catch (MalformedURLException exception) {
+            throw new RuntimeException("Issue in reading the file", exception);
         }
 
         if (resource.exists() && resource.isReadable()) {
             return resource;
         } else {
-            throw new RuntimeException("File doesn't exist or is not readable");
+            throw new FileNotFoundException("File doesn't exist or is not readable");
         }
     }
 

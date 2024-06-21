@@ -2,21 +2,23 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
-import nl.novi.catsittermanager.models.*;
+import nl.novi.catsittermanager.models.Catsitter;
+import nl.novi.catsittermanager.models.CatsitterFactory;
+import nl.novi.catsittermanager.models.Order;
+import nl.novi.catsittermanager.models.OrderFactory;
 import nl.novi.catsittermanager.repositories.CatsitterRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
 public class CatsitterServiceTest {
@@ -83,7 +85,7 @@ public class CatsitterServiceTest {
         when(catsitterRepository.findById(username)).thenReturn(Optional.empty());
 
         // Act
-        RecordNotFoundException exception=assertThrows(RecordNotFoundException.class, () -> catsitterService.getCatsitter(username));
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> catsitterService.getCatsitter(username));
 
         // Assert
         assertEquals("No catsitter found with this username.", exception.getMessage());
@@ -183,9 +185,10 @@ public class CatsitterServiceTest {
 
         // Arrange
         String username = "nonExistingCatsitter";
+        Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
         when(catsitterRepository.findById(username)).thenReturn(Optional.empty());
 
-        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> catsitterService.getCatsitter(username));
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> catsitterService.editCatsitter(username, catsitter));
 
         // Act & Assert
         assertEquals("No catsitter found with this username.", exception.getMessage());

@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -77,6 +78,33 @@ public class AuthenticationControllerTest {
 
         verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(jwtUtil, times(1)).createToken(username);
+    }
+
+    @Test
+    void givenUnexpectedPrincipal_whenLogin_thenReturnsForbidden() throws Exception {
+        // Arrange
+        String username = "testuser";
+        String password = "password";
+        LoginRequest loginRequest = new LoginRequest(username, password);
+
+        // Create a mock Authentication with unexpected principal
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(new Object());
+
+        // Mock the authentication process
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(authentication);
+
+        // Act & Assert
+        mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isForbidden())  // Expecting 403 Forbidden now
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(containsString("Unexpected authentication principal: java.lang.Object")));
+
+        verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(jwtUtil, never()).createToken(anyString());
     }
 
     @Test

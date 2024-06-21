@@ -7,6 +7,7 @@ import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.repositories.TaskRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -32,13 +33,21 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task editTask(final UUID idToEdit, final Task task, final UUID orderNo) {
-        if (taskRepository.findById(idToEdit).isEmpty()) {
-            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No task found with this id.");
+    public Task editTask(final UUID idToEdit, final Task updatedTask, final UUID orderNo) {
+        Task existingTask = taskRepository.findById(idToEdit)
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No task found with this id."));
+
+        existingTask.setTaskType(updatedTask.getTaskType());
+        existingTask.setTaskInstruction(updatedTask.getTaskInstruction());
+        existingTask.setExtraInstructions(updatedTask.getExtraInstructions());
+        updatedTask.setPriceOfTask(updatedTask.getPriceOfTask());
+
+        Order order = updatedTask.getOrder();
+        if (order != null) {
+            Order existingOrder = orderService.getOrder(orderNo);
+            existingTask.setOrder(existingOrder);
         }
-        Order order = orderService.getOrder(orderNo);
-        task.setOrder(order);
-        return taskRepository.save(task);
+        return taskRepository.save(updatedTask);
     }
 
     public UUID deleteTask(UUID idToDelete) {

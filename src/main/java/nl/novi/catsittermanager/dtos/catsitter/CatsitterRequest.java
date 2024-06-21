@@ -17,7 +17,7 @@ public record CatsitterRequest(
         String name,
         @NotNull(message = "Address is required")
         String address,
-        @NotNull(message = "Email address is required")
+        @NotNull(message = "Email is required")
         String email,
         String about,
         @JsonIgnore

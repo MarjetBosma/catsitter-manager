@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
@@ -106,11 +107,11 @@ public class CreateCatsitterIntegrationTest {
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("username is required"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.password").value("password is required"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("name is required"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.address").value("address is required"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("email is required"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("Username is required"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.password").value("Password is required"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Full name is required"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.address").value("Address is required"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("Email is required"));
 
         // Assert
         verifyNoInteractions(catsitterRepository);

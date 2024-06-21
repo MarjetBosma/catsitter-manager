@@ -2,18 +2,14 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
-import nl.novi.catsittermanager.models.Cat;
-import nl.novi.catsittermanager.models.CatFactory;
-import nl.novi.catsittermanager.models.Customer;
-import nl.novi.catsittermanager.models.CustomerFactory;
-import nl.novi.catsittermanager.models.Order;
-import nl.novi.catsittermanager.models.OrderFactory;
+import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.repositories.CustomerRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -86,7 +82,7 @@ class CustomerServiceTest {
         when(customerRepository.findById(username)).thenReturn(Optional.empty());
 
         // Act
-        RecordNotFoundException exception=assertThrows(RecordNotFoundException.class, () -> customerService.getCustomer(username));
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> customerService.getCustomer(username));
 
         // Assert
         assertEquals("No customer found with this username.", exception.getMessage());
@@ -227,9 +223,10 @@ class CustomerServiceTest {
 
         // Given
         String username = "nonExistingCustomer";
+        Customer customer = CustomerFactory.randomCustomer().build();
         when(customerRepository.findById(username)).thenReturn(Optional.empty());
 
-        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> customerService.getCustomer(username));
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> customerService.editCustomer(username, customer));
 
         // When & Then
         assertEquals("No customer found with this username.", exception.getMessage());

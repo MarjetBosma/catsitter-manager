@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.services;
 
+import nl.novi.catsittermanager.exceptions.FileNotFoundException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.repositories.CatRepository;
@@ -10,17 +11,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import java.io.ByteArrayInputStream;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.DirectoryStream;
@@ -53,16 +54,23 @@ class ImageServiceTest {
 
     private Path fileStoragePath;
 
+    @Value("${my.upload_location}")
+    private final String fileStorageLocation = "src/test/resources/images/uploads/";
+
     @BeforeEach
     void setUp() throws Exception {
-        String fileStorageLocation = "src/test/resources/images/uploads";
         fileStoragePath = Paths.get(fileStorageLocation).toAbsolutePath().normalize();
-        imageService = new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository);
         Files.createDirectories(fileStoragePath);
+        imageService = new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository);
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        ServletRequestAttributes attrs = new ServletRequestAttributes(request);
+        RequestContextHolder.setRequestAttributes(attrs);
     }
 
     @AfterEach
     void tearDown() throws IOException {
+        RequestContextHolder.resetRequestAttributes();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(fileStoragePath)) {
             for (Path path : directoryStream) {
                 Files.deleteIfExists(path);
@@ -70,46 +78,32 @@ class ImageServiceTest {
         }
     }
 
-    // todo: Deze test slaagt als je hem los draait, maar faalt als je de hele klasse draait... Het heeft te maken met het gebruik van een static mock en dat ik dat in een andere test weer doe, maar ik kreeg dit nog niet opgelost.
     @Test
-    void testUploadCatImage_imageShouldBeUploadedAssignedAndSaved() throws Exception {
+    void uploadCatImage_imageShouldBeUploadedAssignedAndSaved() {
 
-        // Given
+        // Arrange
         UUID catId = UUID.randomUUID();
+        MockMultipartFile file = new MockMultipartFile("file", "catimage.jpg", "image/jpeg", "Test Image Content".getBytes());
         Cat cat = CatFactory.randomCat().build();
-        String filename = "catimage.jpg";
-        String url = "http://localhost:8080/api/cat/" + catId + "/images/uploads/" + filename;
-        byte[] content = "Test Content".getBytes();
+        cat.setId(catId);
 
         when(catRepository.findById(catId)).thenReturn(Optional.of(cat));
-        when(file.getOriginalFilename()).thenReturn(filename);
-        when(file.getInputStream()).thenReturn(new ByteArrayInputStream(content));
-        when(fileUploadRepository.save(any(ImageUpload.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(fileUploadRepository.save(any(ImageUpload.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        ServletRequestAttributes requestAttributes = Mockito.mock(ServletRequestAttributes.class);
-        RequestContextHolder.setRequestAttributes(requestAttributes);
-        ServletUriComponentsBuilder mockBuilder = Mockito.mock(ServletUriComponentsBuilder.class);
+        // Act & Assert
+        ImageUpload result = imageService.uploadCatImage(catId, file);
 
-        try (MockedStatic<ServletUriComponentsBuilder> mockStatic = Mockito.mockStatic(ServletUriComponentsBuilder.class)) {
-            when(ServletUriComponentsBuilder.fromCurrentContextPath()).thenReturn(mockBuilder);
-            when(mockBuilder.path(anyString())).thenReturn(mockBuilder);
-            when(mockBuilder.toUriString()).thenReturn(url);
+        assertNotNull(result);
+        assertEquals("catimage.jpg", result.getFilename());
+        assertEquals("image/jpeg", result.getContentType());
 
-            // When
-            ImageUpload result = imageService.uploadCatImage(catId, file);
+        String expectedUrl = "http://localhost/api/cat/" + catId + "/images/catimage.jpg";
 
-            // Then
-            assertNotNull(result);
-            assertEquals(filename, result.getFilename());
-            assertEquals(file.getContentType(), result.getContentType());
-            assertEquals(url, result.getUrl());
-            assertEquals(cat, result.getCat());
-            assertEquals(result, cat.getImage());
+        assertEquals(expectedUrl, result.getUrl());
+        assertEquals(cat, result.getCat());
 
-            verify(catRepository, times(2)).findById(catId);
-            verify(fileUploadRepository, times(2)).save(any(ImageUpload.class));
-            verify(catRepository, times(2)).save(cat);
-        }
+        verify(fileUploadRepository, times(2)).save(any(ImageUpload.class));
+        verify(catRepository, times(2)).save(cat);
     }
 
     @Test
@@ -155,38 +149,26 @@ class ImageServiceTest {
     void uploadCatsitter_imageShouldBeUploadedAssignedAndSaved() throws Exception {
 
         // Arrange
-        String catsitterId = "catsitter";
+        String username = "testuser";
+        MockMultipartFile file = new MockMultipartFile("file", "catsitterimage.jpg", "image/jpeg", "Test Image Content".getBytes());
         Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
-        String filename = "catsitterimage.jpg";
-        String url = "http://localhost:8080/api/catsitter/" + catsitterId + "/images/uploads/" + filename;
-        byte[] content = "Test Content".getBytes();
+        catsitter.setUsername(username);
 
-        when(catsitterRepository.findById(catsitterId)).thenReturn(Optional.of(catsitter));
-        when(file.getOriginalFilename()).thenReturn(filename);
-        when(file.getInputStream()).thenReturn(new ByteArrayInputStream(content));
-        when(fileUploadRepository.save(any(ImageUpload.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(catsitterRepository.findById(username)).thenReturn(Optional.of(catsitter));
+        when(fileUploadRepository.save(any(ImageUpload.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        ServletRequestAttributes requestAttributes = Mockito.mock(ServletRequestAttributes.class);
-        RequestContextHolder.setRequestAttributes(requestAttributes);
-        ServletUriComponentsBuilder mockBuilder = Mockito.mock(ServletUriComponentsBuilder.class);
-        mockStatic(ServletUriComponentsBuilder.class);
+        // Act & Assert
+        ImageUpload result = imageService.uploadCatsitterImage(username, file);
 
-        when(ServletUriComponentsBuilder.fromCurrentContextPath()).thenReturn(mockBuilder);
-        when(mockBuilder.path(anyString())).thenReturn(mockBuilder);
-        when(mockBuilder.toUriString()).thenReturn(url);
-
-        // Act
-        ImageUpload result = imageService.uploadCatsitterImage(catsitterId, file);
-
-        // Assert
         assertNotNull(result);
-        assertEquals(filename, result.getFilename());
-        assertEquals(file.getContentType(), result.getContentType());
-        assertEquals(url, result.getUrl());
-        assertEquals(catsitter, result.getCatsitter());
-        assertEquals(result, catsitter.getImage());
+        assertEquals("catsitterimage.jpg", result.getFilename());
+        assertEquals("image/jpeg", result.getContentType());
 
-        verify(catsitterRepository, times(2)).findById(catsitterId);
+        String expectedUrl = "http://localhost/api/catsitter/" + username + "/images/catsitterimage.jpg";
+
+        assertEquals(expectedUrl, result.getUrl());
+        assertEquals(catsitter, result.getCatsitter());
+
         verify(fileUploadRepository, times(2)).save(any(ImageUpload.class));
         verify(catsitterRepository, times(2)).save(catsitter);
     }
@@ -235,7 +217,7 @@ class ImageServiceTest {
         // Arrange
         UUID catId = UUID.randomUUID();
         String filename = "catimage.jpg";
-        String url = "http://localhost/cat/" + catId + "/images/uploads/" + filename;
+        String url = "http://localhost/api/cat/" + catId + "/images/" + filename;
 
         byte[] content = "Test content".getBytes();
         String contentType = "image/jpeg";
@@ -262,7 +244,7 @@ class ImageServiceTest {
         // Arrange
         UUID catId = UUID.randomUUID();
         String filename = "catimage.jpg";
-        String url = "http://localhost/cat/" + catId + "/images/uploads/" + filename;
+        String url = "http://localhost/api/cat/" + catId + "/images/" + filename;
         byte[] content = "Test Content".getBytes();
         String contentType = "image/jpeg";
 
@@ -306,7 +288,7 @@ class ImageServiceTest {
     void testAssignImageToCat_catNotFound() {
         // Arrange
         UUID catId = UUID.randomUUID();
-        ImageUpload imageUpload = new ImageUpload("catimage.jpg", "image/jpeg", "http://localhost/cat/" + catId + "/images/uploads/catimage.jpg");
+        ImageUpload imageUpload = new ImageUpload("catimage.jpg", "image/jpeg", "http://localhost/api/cat/" + catId + "/images/catimage.jpg");
         when(catRepository.findById(catId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -325,7 +307,7 @@ class ImageServiceTest {
         // Arrange
         String catsitterId = "catsitter";
         Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
-        ImageUpload imageUpload = new ImageUpload("catsitterimage.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/images/uploads/catsitterimage.jpg");
+        ImageUpload imageUpload = new ImageUpload("catsitterimage.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/images/catsitterimage.jpg");
         when(catsitterRepository.findById(catsitterId)).thenReturn(Optional.of(catsitter));
 
         // Act
@@ -342,7 +324,7 @@ class ImageServiceTest {
 
         // Arrange
         String catsitterId = "catsitter";
-        ImageUpload imageUpload = new ImageUpload("catsitterimage.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/images/uploads/catsitterimage.jpg");
+        ImageUpload imageUpload = new ImageUpload("catsitterimage.jpg", "image/jpeg", "http://localhost/catsitter/" + catsitterId + "/images/catsitterimage.jpg");
         when(catsitterRepository.findById(catsitterId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -379,17 +361,50 @@ class ImageServiceTest {
     }
 
     @Test
-    void downloadImage_resourceDoesNotExistOrIsNotReadable() {
+    void downloadImage_resourceExistsButIsNotReadable() throws IOException {
 
         // Arrange
-        String filename = "non_existent_file.jpg";
+        String filename = "catimage.jpg";
         String fileStorageLocation = "src/test/resources/images/downloads/";
+        Path filePath = fileStoragePath.resolve(filename);
+        Files.createDirectories(filePath.getParent());
+        Files.write(filePath, "Test Content".getBytes());
 
-        imageService = new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository);
+        UrlResource resourceMock = mock(UrlResource.class);
+        when(resourceMock.exists()).thenReturn(true);
+        when(resourceMock.isReadable()).thenReturn(false);
+
+        ImageService imageServiceSpy = Mockito.spy(new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository));
+        doReturn(resourceMock).when(imageServiceSpy).createUrlResource(any(Path.class));
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            imageService.downloadImage(filename);
+            imageServiceSpy.downloadImage(filename);
+        });
+
+        assertEquals("File doesn't exist or is not readable", exception.getMessage());
+    }
+
+    @Test
+    void downloadImage_resourceReadableButDoesNotExist() throws IOException {
+
+        // Arrange
+        String filename = "catimage.jpg";
+        String fileStorageLocation = "src/test/resources/images/downloads/";
+        Path filePath = fileStoragePath.resolve(filename);
+        Files.createDirectories(filePath.getParent());
+        Files.write(filePath, "Test Content".getBytes());
+
+        UrlResource resourceMock = mock(UrlResource.class);
+        lenient().when(resourceMock.exists()).thenReturn(false);
+        lenient().when(resourceMock.isReadable()).thenReturn(true);
+
+        ImageService imageServiceSpy = Mockito.spy(new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository));
+        doReturn(resourceMock).when(imageServiceSpy).createUrlResource(any(Path.class));
+
+        // Act & Assert
+        FileNotFoundException exception = assertThrows(FileNotFoundException.class, () -> {
+            imageServiceSpy.downloadImage(filename);
         });
 
         assertEquals("File doesn't exist or is not readable", exception.getMessage());

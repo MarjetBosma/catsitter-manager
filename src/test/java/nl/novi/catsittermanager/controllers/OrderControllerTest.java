@@ -269,9 +269,10 @@ public class OrderControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenARequestWithNoInvoice_whenGetInvoiceByOrder_thenNotFoundShouldBeReturned() throws Exception {
+        
         // Arrange
         UUID orderId = UUID.randomUUID();
-        when(orderService.getInvoiceByOrder(orderId)).thenReturn(null);
+        when(orderService.getInvoiceByOrder(orderId)).thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No invoice found for this order."));
 
         // Act & Assert
         mockMvc.perform(get("/api/order/" + orderId + "/invoice")

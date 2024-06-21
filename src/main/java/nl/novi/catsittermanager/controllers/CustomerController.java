@@ -3,28 +3,19 @@ package nl.novi.catsittermanager.controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import nl.novi.catsittermanager.dtos.cat.CatResponse;
-import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
 import nl.novi.catsittermanager.dtos.customer.CustomerRequest;
 import nl.novi.catsittermanager.dtos.customer.CustomerResponse;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.mappers.CatMapper;
-import nl.novi.catsittermanager.mappers.CatsitterMapper;
 import nl.novi.catsittermanager.mappers.CustomerMapper;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.models.Cat;
-import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.services.CustomerService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -71,23 +62,14 @@ public class CustomerController {
         return ResponseEntity.ok(orderResponseList);
     }
 
-    @GetMapping("/order/{id}/catsitters")
-    public ResponseEntity<List<CatsitterResponse>> getAllCatsittersByCustomer(@PathVariable("id") final String username) {
-        List<Catsitter> catsitters = customerService.getAllCatsittersByCustomer(username);
-        List<CatsitterResponse> customerResponseList = catsitters.stream()
-                .map(CatsitterMapper::CatsitterToCatsitterResponse)
-                .toList();
-        return ResponseEntity.ok(customerResponseList);
+    @PostMapping("/customer")
+    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest) throws URISyntaxException {
+        Customer customer = customerService.createCustomer(CustomerMapper.CustomerRequestToCustomer(customerRequest));
+        return ResponseEntity.created(new URI("/customer/" + customer.getUsername())).body(CustomerMapper.CustomerToCustomerResponse(customer));
     }
 
-   @PostMapping("/customer")
-   public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody final CustomerRequest customerRequest) throws URISyntaxException {
-       Customer customer = customerService.createCustomer(CustomerMapper.CustomerRequestToCustomer(customerRequest));
-       return ResponseEntity.created(new URI("/customer/" + customer.getUsername())).body(CustomerMapper.CustomerToCustomerResponse(customer));
-   }
-
     @PutMapping("/customer/{id}")
-    public ResponseEntity<CustomerResponse> editCustomer(@Valid @PathVariable("id") final String username, @Valid @RequestBody final CustomerRequest customerRequest) {
+    public ResponseEntity<CustomerResponse> editCustomer(@PathVariable("id") final String username, @Valid @RequestBody final CustomerRequest customerRequest) {
         Customer customer = customerService.editCustomer(username, CustomerMapper.CustomerRequestToCustomer(customerRequest));
         return ResponseEntity.ok().body(CustomerMapper.CustomerToCustomerResponse(customer));
     }

@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
@@ -76,17 +77,17 @@ class CreateCustomerIntegrationTest {
 
         // Act
         mockMvc.perform(MockMvcRequestBuilders.post("/api/customer")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonInput))
-        .andDo(MockMvcResultHandlers.print())
-        .andExpect(MockMvcResultMatchers.status().isCreated())
-        .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(request.username()))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name()))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.address").value(request.address()))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(request.email()))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.[0].cats").doesNotExist())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.[0].orders").doesNotExist());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonInput))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(request.username()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.address").value(request.address()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(request.email()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].cats").doesNotExist())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].orders").doesNotExist());
 
         //  Assert
         verify(customerRepository, times(1)).save(any(Customer.class));
@@ -104,11 +105,11 @@ class CreateCustomerIntegrationTest {
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("username is required"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.password").value("password is required"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("name is required"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.address").value("address is required"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("email is required"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("Username is required"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.password").value("Password is required"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Full name is required"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.address").value("Address is required"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("Email is required"));
 
         // Assert
         verifyNoInteractions(customerRepository);

@@ -38,7 +38,7 @@ public class ImageController {
         } else if (type.equals("catsitter")) {
             imageUpload = imageService.uploadCatsitterImage(id, file);
         } else {
-            throw new InvalidTypeException("Invalid type: " + type);
+            throw new InvalidTypeException(type);
         }
         return ResponseEntity.ok().body("Image uploaded");
     }
@@ -46,9 +46,7 @@ public class ImageController {
     @GetMapping("/{type}/{id}/images/{filename}")
     public ResponseEntity<Resource> downloadImage(@PathVariable String type, @PathVariable String id, @PathVariable String filename, HttpServletRequest request) throws FileNotFoundException {
         Resource resource = imageService.downloadImage(filename);
-        if (resource == null) {
-            throw new FileNotFoundException("File not found");
-        }
+        
         String mimeType;
         try {
             mimeType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
