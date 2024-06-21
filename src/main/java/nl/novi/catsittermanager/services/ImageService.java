@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.services;
 
+import nl.novi.catsittermanager.exceptions.FileNotFoundException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.Cat;
 import nl.novi.catsittermanager.models.Catsitter;
@@ -146,14 +147,14 @@ public class ImageService {
         Resource resource;
         try {
             resource = createUrlResource(path);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Issue in reading the file", e);
+        } catch (MalformedURLException exception) {
+            throw new RuntimeException("Issue in reading the file", exception);
         }
 
         if (resource.exists() && resource.isReadable()) {
             return resource;
         } else {
-            throw new RuntimeException("File doesn't exist or is not readable");
+            throw new FileNotFoundException("File doesn't exist or is not readable");
         }
     }
 

@@ -8,6 +8,7 @@ import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.repositories.CatRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -36,13 +37,30 @@ public class CatService {
         return catRepository.save(cat);
     }
 
-    public Cat editCat(final UUID idToEdit, final Cat cat, String ownerUsername) {
-        if (catRepository.findById(idToEdit).isEmpty()) {
-            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id.");
+    public Cat editCat(final UUID idToEdit, final Cat updatedCat, String ownerUsername) {
+        Cat existingCat = catRepository.findById(idToEdit)
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No cat found with this id."));
+
+        existingCat.setName(updatedCat.getName());
+        existingCat.setDateOfBirth(updatedCat.getDateOfBirth());
+        existingCat.setGender(updatedCat.getGender());
+        existingCat.setBreed(updatedCat.getBreed());
+        existingCat.setGeneralInfo(updatedCat.getGeneralInfo());
+        existingCat.setSpayedOrNeutered(updatedCat.getSpayedOrNeutered());
+        existingCat.setVaccinated(updatedCat.getVaccinated());
+        existingCat.setVeterinarianName(updatedCat.getVeterinarianName());
+        existingCat.setPhoneVet(updatedCat.getPhoneVet());
+        existingCat.setMedicationName(updatedCat.getMedicationName());
+        existingCat.setMedicationDose(updatedCat.getMedicationDose());
+        existingCat.setOwner(updatedCat.getOwner());
+        existingCat.setImage(updatedCat.getImage());
+
+        Customer owner = updatedCat.getOwner();
+        if (owner != null) {
+            Customer existingOwner = customerService.getCustomer(ownerUsername);
+            existingCat.setOwner(existingOwner);
         }
-        Customer owner = customerService.getCustomer(ownerUsername);
-        cat.setOwner(owner);
-        return catRepository.save(cat);
+        return catRepository.save(updatedCat);
     }
 
     public UUID deleteCat(UUID idToDelete) {

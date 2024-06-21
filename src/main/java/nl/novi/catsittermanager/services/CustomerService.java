@@ -54,11 +54,20 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    public Customer editCustomer(final String username, final Customer customer) {
-        if (customerRepository.findById(username).isEmpty()) {
-            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username.");
-        }
-        return customerRepository.save(customer);
+    public Customer editCustomer(final String username, final Customer updatedCustomer) {
+        Customer existingCustomer = customerRepository.findById(username)
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No customer found with this username."));
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(updatedCustomer.getPassword());
+
+        existingCustomer.setUsername(updatedCustomer.getUsername());
+        existingCustomer.setPassword(encodedPassword);
+        existingCustomer.setName(updatedCustomer.getName());
+        existingCustomer.setAddress(updatedCustomer.getAddress());
+        existingCustomer.setEmail(updatedCustomer.getEmail());
+
+        return customerRepository.save(updatedCustomer);
     }
 
     public String deleteCustomer(final String username) {

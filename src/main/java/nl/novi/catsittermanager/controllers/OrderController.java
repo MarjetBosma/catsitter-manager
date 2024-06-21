@@ -2,23 +2,20 @@ package nl.novi.catsittermanager.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
 import nl.novi.catsittermanager.dtos.order.OrderRequest;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.dtos.task.TaskResponse;
+import nl.novi.catsittermanager.mappers.InvoiceMapper;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.mappers.TaskMapper;
+import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.services.OrderService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -52,6 +49,13 @@ public class OrderController {
                 .map(TaskMapper::TaskToTaskResponse)
                 .toList();
         return ResponseEntity.ok(taskResponseList);
+    }
+
+    @GetMapping("/order/{id}/invoice")
+    public ResponseEntity<InvoiceResponse> getInvoiceByOrder(@PathVariable("id") final UUID idToFind) {
+        Invoice invoice = orderService.getInvoiceByOrder(idToFind);
+        InvoiceResponse invoiceResponse = InvoiceMapper.InvoiceToInvoiceResponse(invoice);
+        return ResponseEntity.ok(invoiceResponse);
     }
 
     @PostMapping("/order")

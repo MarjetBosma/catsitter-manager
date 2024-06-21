@@ -66,6 +66,29 @@ public class CatServiceTest {
         verifyNoInteractions(customerService);
     }
 
+    @Test
+    void testEditCat_withOwner_shouldEditCatWithOwnerPresent() {
+        
+        // Arrange
+        Cat cat = CatFactory.randomCat().build();
+        Customer newOwner = CustomerFactory.randomCustomer().build();
+        String ownerUsername = "newOwnerUsername";
+
+        cat.setOwner(newOwner);
+
+        when(catRepository.findById(cat.getId())).thenReturn(Optional.of(cat));
+        when(customerService.getCustomer(ownerUsername)).thenReturn(newOwner);
+        when(catRepository.save(any(Cat.class))).thenReturn(cat);
+
+        // Act
+        Cat resultCat = catService.editCat(cat.getId(), cat, ownerUsername);
+
+        // Assert
+        assertEquals(newOwner, resultCat.getOwner());
+        verify(catRepository, times(1)).findById(cat.getId());
+        verify(customerService, times(1)).getCustomer(ownerUsername);
+        verify(catRepository, times(1)).save(any(Cat.class));
+    }
 
     @Test
     void testGetCat_shouldFetchCatWithSpecificId() {

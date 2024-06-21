@@ -172,6 +172,28 @@ public class InvoiceServiceTest {
     }
 
     @Test
+    void testEditInvoice_withOrder_shouldEditInvoiceWithOrderPresent() {
+        // Arrange
+        Invoice invoice = InvoiceFactory.randomInvoice().build();
+        Order newOrder = OrderFactory.randomOrder().build();
+        UUID orderNo = UUID.randomUUID();
+        invoice.setOrder(newOrder);
+
+        when(invoiceRepository.findById(invoice.getInvoiceNo())).thenReturn(Optional.of(invoice));
+        when(orderService.getOrder(orderNo)).thenReturn(newOrder);
+        when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
+
+        // Act
+        Invoice resultInvoice = invoiceService.editInvoice(invoice.getInvoiceNo(), invoice, orderNo);
+
+        // Assert
+        assertEquals(newOrder, resultInvoice.getOrder());
+        verify(invoiceRepository, times(1)).findById(invoice.getInvoiceNo());
+        verify(orderService, times(1)).getOrder(orderNo);
+        verify(invoiceRepository, times(1)).save(any(Invoice.class));
+    }
+
+    @Test
     void testEditInvoice_nonExistingInvoice_shouldThrowRecordNotFoundException() {
 
         // Arrange

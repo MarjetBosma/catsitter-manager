@@ -137,6 +137,28 @@ public class TaskServiceTest {
     }
 
     @Test
+    void testEditTask_withOrder_shouldEditTaskWithOrderPresent() {
+        // Arrange
+        Task task = TaskFactory.randomTask().build();
+        Order newOrder = OrderFactory.randomOrder().build();
+        UUID orderNo = UUID.randomUUID();
+        task.setOrder(newOrder);
+
+        when(taskRepository.findById(task.getTaskNo())).thenReturn(Optional.of(task));
+        when(orderService.getOrder(orderNo)).thenReturn(newOrder);
+        when(taskRepository.save(any(Task.class))).thenReturn(task);
+
+        // Act
+        Task resultTask = taskService.editTask(task.getTaskNo(), task, orderNo);
+
+        // Assert
+        assertEquals(newOrder, resultTask.getOrder());
+        verify(taskRepository, times(1)).findById(task.getTaskNo());
+        verify(orderService, times(1)).getOrder(orderNo);
+        verify(taskRepository, times(1)).save(any(Task.class));
+    }
+
+    @Test
     void testEditTask_nonExistingTask_shouldThrowRecordNotFoundException() {
 
         // Arrange
@@ -152,6 +174,7 @@ public class TaskServiceTest {
         assertEquals("No task found with this id.", exception.getMessage());
         verify(taskRepository, times(1)).findById(taskNo);
     }
+
 
     @Test
     void testDeleteTask_shouldDeleteTaskWithSpecificId() {

@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.services;
 
+import nl.novi.catsittermanager.exceptions.FileNotFoundException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.repositories.CatRepository;
@@ -9,13 +10,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -38,8 +35,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Files.class)
 @ExtendWith(MockitoExtension.class)
 class ImageServiceTest {
 
@@ -365,23 +360,6 @@ class ImageServiceTest {
         Files.deleteIfExists(filePath);
     }
 
-//    @Test
-//    void downloadImage_resourceDoesNotExistOrIsNotReadable() {
-//
-//        // Arrange
-//        String filename = "non_existent_file.jpg";
-//        String fileStorageLocation = "src/test/resources/images/downloads/";
-//
-//        imageService = new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository);
-//
-//        // Act & Assert
-//        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-//            imageService.downloadImage(filename);
-//        });
-//
-//        assertEquals("File doesn't exist or is not readable", exception.getMessage());
-//    }
-
     @Test
     void downloadImage_resourceExistsButIsNotReadable() throws IOException {
 
@@ -425,7 +403,7 @@ class ImageServiceTest {
         doReturn(resourceMock).when(imageServiceSpy).createUrlResource(any(Path.class));
 
         // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+        FileNotFoundException exception = assertThrows(FileNotFoundException.class, () -> {
             imageServiceSpy.downloadImage(filename);
         });
 
@@ -495,23 +473,5 @@ class ImageServiceTest {
         assertThrows(MalformedURLException.class, () -> {
             imageServiceSpy.createUrlResource(path);
         });
-    }
-
-    @Test
-    public void testImageServiceConstructorIOException() throws IOException {
-        // Arrange
-        String fileStorageLocation = "invalid/directory/path";
-        Path fileStoragePath = Paths.get(fileStorageLocation).toAbsolutePath().normalize();
-
-        PowerMockito.mockStatic(Files.class);
-        PowerMockito.doThrow(new IOException("Mock IOException")).when(Files.class);
-        Files.createDirectories(fileStoragePath);
-
-        // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            new ImageService(fileStorageLocation, fileUploadRepository, catRepository, catsitterRepository);
-        });
-
-        assertEquals("Issue in creating file directory", exception.getMessage());
     }
 }

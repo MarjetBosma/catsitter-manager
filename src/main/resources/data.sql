@@ -1,4 +1,3 @@
--- NB: Ik heb dit helaas niet werkend gekregen, en ik kon de oorzaak niet achterhalen.
 
 INSERT INTO users (username, password, role, enabled, name, address, email) VALUES
 ('bendegroot', 'thebestpassword', 2, true, 'Ben de Groot', 'Dahliastraat 5, Katwijk', 'bendegroot@yourcatsitter.nl'),

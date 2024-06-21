@@ -3,6 +3,7 @@ package nl.novi.catsittermanager.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.novi.catsittermanager.config.SecurityConfig;
 import nl.novi.catsittermanager.config.TestConfig;
+import nl.novi.catsittermanager.exceptions.FileNotFoundException;
 import nl.novi.catsittermanager.exceptions.InvalidTypeException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.models.ImageUpload;
@@ -11,7 +12,6 @@ import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,12 +36,12 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ImageController.class)
+@WebMvcTest({ImageController.class, ExceptionController.class})
 @Import({JwtUtil.class, JwtAuthorizationFilter.class, SecurityConfig.class, TestConfig.class})
 @ActiveProfiles("test")
 class ImageControllerTest {
@@ -80,7 +80,7 @@ class ImageControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Image uploaded"));
 
-        Mockito.verify(imageService).uploadCatImage(any(UUID.class), any(MockMultipartFile.class));
+        verify(imageService).uploadCatImage(any(UUID.class), any(MockMultipartFile.class));
     }
 
     @Test
@@ -100,7 +100,7 @@ class ImageControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Image uploaded"));
 
-        Mockito.verify(imageService).uploadCatsitterImage(any(String.class), any(MockMultipartFile.class));
+        verify(imageService).uploadCatsitterImage(any(String.class), any(MockMultipartFile.class));
     }
 
     @Test
@@ -135,7 +135,7 @@ class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    void testDownloadImage_catImage() throws Exception {
+    void testDownloadImage_catImage_succesfulDownload() throws Exception {
 
         // Arrange
         UUID catId = UUID.fromString(UUID.randomUUID().toString());
@@ -150,12 +150,12 @@ class ImageControllerTest {
                 .andExpect(content().contentType(MediaType.IMAGE_JPEG))
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + resource.getFilename()));
 
-        Mockito.verify(imageService).downloadImage(filename);
+        verify(imageService).downloadImage(filename);
     }
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    void testDownloadImage_catsitterImage() throws Exception {
+    void testDownloadImage_catsitterImage_succesfulDownload() throws Exception {
 
         // Arrange
         String username = "testuser";
@@ -170,22 +170,28 @@ class ImageControllerTest {
                 .andExpect(content().contentType(MediaType.IMAGE_JPEG))
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + resource.getFilename()));
 
-        Mockito.verify(imageService).downloadImage(filename);
+        verify(imageService).downloadImage(filename);
     }
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenNonExistentFile_whenDownloadImage_thenNotFoundShouldBeReturned() throws Exception {
-        // Arrange
-        String type = "cat";
-        String id = UUID.randomUUID().toString();
-        String filename = "nonexistent.jpg";
 
-        when(imageService.downloadImage(anyString())).thenReturn(null);
+        // Arrange
+        String type = "catsitter";
+        String username = "testuser";
+        String filename = "nonexistentimage.jpg";
+
+        when(imageService.downloadImage(anyString())).thenThrow(new FileNotFoundException("File not found"));
+
 
         // Act & Assert
-        mockMvc.perform(get("/api/" + type + "/" + id + "/images/" + filename))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/" + type + "/" + username + "/images/" + filename))
+
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("File not found"));
+
+        verify(imageService, times(1)).downloadImage(filename);
     }
 
     @Test

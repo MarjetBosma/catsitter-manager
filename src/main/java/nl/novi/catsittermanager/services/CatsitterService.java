@@ -47,11 +47,21 @@ public class CatsitterService {
         return catsitterRepository.save(catsitter);
     }
 
-    public Catsitter editCatsitter(final String username, final Catsitter catsitter) {
-        if (catsitterRepository.findById(username).isEmpty()) {
-            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No catsitter found with this username.");
-        }
-        return catsitterRepository.save(catsitter);
+    public Catsitter editCatsitter(final String username, final Catsitter updatedCatsitter) {
+        Catsitter existingCatsitter = catsitterRepository.findById(username)
+                .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No catsitter found with this username."));
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(updatedCatsitter.getPassword());
+
+        existingCatsitter.setUsername(updatedCatsitter.getUsername());
+        existingCatsitter.setPassword(encodedPassword);
+        existingCatsitter.setName(updatedCatsitter.getName());
+        existingCatsitter.setAddress(updatedCatsitter.getAddress());
+        existingCatsitter.setEmail(updatedCatsitter.getEmail());
+        existingCatsitter.setAbout(updatedCatsitter.getAbout());
+
+        return catsitterRepository.save(updatedCatsitter);
     }
 
     public String deleteCatsitter(final String username) {
