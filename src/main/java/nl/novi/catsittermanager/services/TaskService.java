@@ -40,7 +40,7 @@ public class TaskService {
         existingTask.setTaskType(updatedTask.getTaskType());
         existingTask.setTaskInstruction(updatedTask.getTaskInstruction());
         existingTask.setExtraInstructions(updatedTask.getExtraInstructions());
-        updatedTask.setPriceOfTask(updatedTask.getPriceOfTask());
+        existingTask.setPriceOfTask(updatedTask.getPriceOfTask());
 
         Order order = updatedTask.getOrder();
         if (order != null) {

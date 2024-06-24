@@ -12,15 +12,15 @@ Create new customer
         "password": "wachtwoord",
         "name": "Marjet Bosma",
         "address": "Schoolstraat 3, Moddergat",
-        "email": "marjet_bosma@hotmail.com",
+        "email": "marjet_bosma@hotmail.com"
     }
 
     {
-        "username": "willemhustinx",
+        "username": "willemjansen",
         "password": "1234abc",
-        "name": "Willem Hustinx",
+        "name": "Willem Jansen",
         "address": "Beukenlaan 30, Lutjebroek",
-        "email": "willem.hustinx@sogeti.com"
+        "email": "willem.jansen@ziggo.com"
     }
 
     {
@@ -60,7 +60,7 @@ Create new cat
         "phoneVet": "0345-678901",
         "medicationName": "geen",
         "medicationDose": "geen",
-        "ownerUsername": "willemhustinx"
+        "ownerUsername": "willemjansen"
     }
 
     {
@@ -75,7 +75,7 @@ Create new cat
         "phoneVet": "0345-678901",
         "medicationName": "Thiafeline",
         "medicationDose": "3mg 2dd",
-        "ownerUsername": "willemhustinx"
+        "ownerUsername": "willemjansen"
     }
 
     {
@@ -90,7 +90,7 @@ Create new cat
         "phoneVet": "0345-678901",
         "medicationName": "geen",
         "medicationDose": "geen",
-        "ownerUsername": "willemhustinx"
+        "ownerUsername": "willemjansen"
     }
 
     {
@@ -144,11 +144,11 @@ Create new catsitter
 }
 
 {
-    "username": "hannahdaalder",
-    "password": "ILoveFirsa",
-    "name": "Hannah Daalder",
+    "username": "annagulden",
+    "password": "ILoveCats",
+    "name": "Anna Gulden",
     "address": "Lindelaan 3b, Nergenshuizen",
-    "email": "hannahdaalder@kpn.com",
+    "email": "annagulden@kpn.com",
     "about": "Opgegroeid met katten, wil nu die ervaring in de praktijk brengen"
 }
 
@@ -160,7 +160,7 @@ Create new order
     "dailyNumberOfVisits": 1,
     "totalNumberOfVisits": 3,
     "customerUsername": "marjetbosma",
-    "catsitterUsername": "hannahdaalder"
+    "catsitterUsername": "annagulden"
 }
 
 {
@@ -177,7 +177,7 @@ Create new order
     "endDate": "2023-10-13",
     "dailyNumberOfVisits": 2,
     "totalNumberOfVisits": 10,
-    "customerUsername": "willemhustinx",
+    "customerUsername": "willemjansen",
     "catsitterUsername": "liesjepeer"
 }
 
@@ -186,7 +186,7 @@ Create new order
     "endDate": "2024-06-10",
     "dailyNumberOfVisits": 2,
     "totalNumberOfVisits": 7,
-    "customerUsername": "willemhustinx",
+    "customerUsername": "willemjansen",
     "catsitterUsername": "karelappel"
 }
 
