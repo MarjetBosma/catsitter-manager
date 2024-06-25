@@ -26,11 +26,13 @@ public class TaskMapper {
         Order order = new Order();
         order.setOrderNo(taskRequest.orderNo());
 
+        double priceOfTask = taskRequest.taskType().getPrice();
+
         return Task.builder()
                 .taskType(taskRequest.taskType())
                 .taskInstruction(taskRequest.taskInstruction())
                 .extraInstructions(taskRequest.extraInstructions())
-                .priceOfTask(taskRequest.priceOfTask())
+                .priceOfTask(priceOfTask)
                 .build();
     }
 }

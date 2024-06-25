@@ -10,6 +10,7 @@ import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
 import nl.novi.catsittermanager.dtos.order.OrderRequest;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.dtos.task.TaskResponse;
+import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.mappers.TaskMapper;
@@ -59,8 +60,15 @@ public class OrderControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    private List<Task> tasks;
+
     @BeforeEach
     void init() {
+
+        tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
@@ -72,7 +80,7 @@ public class OrderControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetAllOrders_thenAllOrdersShouldBeReturned() throws Exception {
         // Arrange
-        Order expectedOrder = OrderFactory.randomOrder().build();
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
         List<Order> expectedOrderList = List.of(expectedOrder);
 
         when(orderService.getAllOrders()).thenReturn(expectedOrderList);
@@ -128,7 +136,7 @@ public class OrderControllerTest {
     void givenAValidRequest_whenGetOrder_thenOrderShouldBeReturned() throws Exception {
 
         // Arrange
-        Order expectedOrder = OrderFactory.randomOrder().build();
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
 
         when(orderService.getOrder(expectedOrder.getOrderNo())).thenReturn(expectedOrder);
 
@@ -269,7 +277,7 @@ public class OrderControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenARequestWithNoInvoice_whenGetInvoiceByOrder_thenNotFoundShouldBeReturned() throws Exception {
-        
+
         // Arrange
         UUID orderId = UUID.randomUUID();
         when(orderService.getInvoiceByOrder(orderId)).thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No invoice found for this order."));
@@ -289,7 +297,7 @@ public class OrderControllerTest {
 
         // Arrange
         OrderRequest expectedOrderRequest = OrderRequestFactory.randomOrderRequest().build();
-        Order expectedOrder = OrderFactory.randomOrder().build();
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
 
         when(orderService.createOrder(any(Order.class), eq(expectedOrderRequest.customerUsername()), eq(expectedOrderRequest.catsitterUsername())))
                 .thenReturn(expectedOrder);
@@ -334,7 +342,6 @@ public class OrderControllerTest {
                 .startDate(null)
                 .endDate(null)
                 .dailyNumberOfVisits(0)
-                .totalNumberOfVisits(0)
                 .customerUsername(null)
                 .catsitterUsername(null)
                 .build();
@@ -356,7 +363,7 @@ public class OrderControllerTest {
 
         // Arrange
         OrderRequest expectedOrderRequest = OrderRequestFactory.randomOrderRequest().build();
-        Order expectedOrder = OrderFactory.randomOrder().build();
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
 
         when(orderService.editOrder(any(UUID.class), any(Order.class), eq(expectedOrderRequest.customerUsername()), eq(expectedOrderRequest.catsitterUsername())))
                 .thenReturn(expectedOrder);
@@ -421,7 +428,6 @@ public class OrderControllerTest {
                 .startDate(null)
                 .endDate(null)
                 .dailyNumberOfVisits(0)
-                .totalNumberOfVisits(0)
                 .customerUsername(null)
                 .catsitterUsername(null)
                 .build();

@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.models;
 
 import net.datafaker.Faker;
 import nl.novi.catsittermanager.helpers.InvoiceFactoryHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -14,9 +15,9 @@ public class InvoiceFactory {
         return Invoice.builder()
                 .invoiceNo(UUID.randomUUID())
                 .invoiceDate(InvoiceFactoryHelper.randomDateIn2024())
-                .amount((double) faker.number().numberBetween(50, 300))
+                .amount(null)
                 .paid(faker.bool().bool())
-                .order(OrderFactory.randomOrder().build());
+                .order(null);
     }
 
     public static List<Invoice> randomInvoices(int count) {

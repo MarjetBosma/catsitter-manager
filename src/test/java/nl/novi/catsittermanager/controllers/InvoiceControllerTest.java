@@ -223,7 +223,6 @@ public class InvoiceControllerTest {
         Faker faker = new Faker();
         InvoiceRequest request = InvoiceRequestFactory.randomInvoiceRequest()
                 .invoiceDate(InvoiceFactoryHelper.randomDateIn2024().toString())
-                .amount(faker.number().randomDouble(2, 50, 300))
                 .paid(faker.bool().bool())
                 .orderNo(orderNo)
                 .build();
@@ -269,7 +268,6 @@ public class InvoiceControllerTest {
         // Arrange
         InvoiceRequest invalidInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest()
                 .invoiceDate(null)
-                .amount(-10.00)
                 .paid(null)
                 .orderNo(null)
                 .build();
@@ -348,7 +346,6 @@ public class InvoiceControllerTest {
 
         InvoiceRequest invalidInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest()
                 .invoiceDate(null)
-                .amount(-10.00)
                 .paid(null)
                 .orderNo(null)
                 .build();

@@ -1,11 +1,9 @@
 package nl.novi.catsittermanager.services;
 
+import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.exceptions.InvoiceAlreadyExistsForThisOrderException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
-import nl.novi.catsittermanager.models.Invoice;
-import nl.novi.catsittermanager.models.InvoiceFactory;
-import nl.novi.catsittermanager.models.Order;
-import nl.novi.catsittermanager.models.OrderFactory;
+import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.repositories.InvoiceRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -100,21 +98,25 @@ public class InvoiceServiceTest {
 
         // Arrange
         Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
-        Order expectedOrder = OrderFactory.randomOrder().build();
-        UUID orderNo = expectedOrder.getOrderNo();
 
-        when(orderService.getOrder(orderNo)).thenReturn(expectedOrder);
-        when(orderService.hasExistingInvoice(orderNo)).thenReturn(false);
-        when(invoiceRepository.save(any(Invoice.class))).thenReturn(expectedInvoice);
+        List<Task> tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
+
+        when(orderService.getOrder(expectedOrder.getOrderNo())).thenReturn(expectedOrder);
+        when(orderService.hasExistingInvoice(expectedOrder.getOrderNo())).thenReturn(false);
+        when(invoiceRepository.save(expectedInvoice)).thenReturn(expectedInvoice);
 
         // Act
-        Invoice resultInvoice = invoiceService.createInvoice(expectedInvoice, orderNo);
+        Invoice resultInvoice = invoiceService.createInvoice(expectedInvoice, expectedOrder.getOrderNo());
 
         // Assert
         assertEquals(expectedInvoice, resultInvoice);
         assertEquals(expectedOrder, resultInvoice.getOrder());
 
-        verify(orderService, times(1)).getOrder(orderNo);
+        verify(orderService, times(1)).getOrder(expectedOrder.getOrderNo());
         verify(invoiceRepository, times(1)).save(expectedInvoice);
     }
 
@@ -151,13 +153,20 @@ public class InvoiceServiceTest {
     }
 
     @Test
-    void testEditInvoice_shouldEditExistingInvoice() {
-
+    void testEditInvoice_withOrder_shouldEditInvoiceWithOrderPresent() {
         // Arrange
         Invoice invoice = InvoiceFactory.randomInvoice().build();
 
+        List<Task> tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
+        invoice.setOrder(expectedOrder);
+
         when(invoiceRepository.findById(invoice.getInvoiceNo())).thenReturn(Optional.of(invoice));
-        when(orderService.getOrder(invoice.getOrder().getOrderNo())).thenReturn(invoice.getOrder());
+        when(orderService.getOrder(invoice.getOrder().getOrderNo())).thenReturn(expectedOrder);
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
 
         // Act
@@ -165,31 +174,10 @@ public class InvoiceServiceTest {
 
         // Assert
         assertEquals(invoice, resultInvoice);
+        assertEquals(expectedOrder, resultInvoice.getOrder());
 
         verify(invoiceRepository, times(1)).findById(invoice.getInvoiceNo());
         verify(orderService, times(1)).getOrder(invoice.getOrder().getOrderNo());
-        verify(invoiceRepository, times(1)).save(any(Invoice.class));
-    }
-
-    @Test
-    void testEditInvoice_withOrder_shouldEditInvoiceWithOrderPresent() {
-        // Arrange
-        Invoice invoice = InvoiceFactory.randomInvoice().build();
-        Order newOrder = OrderFactory.randomOrder().build();
-        UUID orderNo = UUID.randomUUID();
-        invoice.setOrder(newOrder);
-
-        when(invoiceRepository.findById(invoice.getInvoiceNo())).thenReturn(Optional.of(invoice));
-        when(orderService.getOrder(orderNo)).thenReturn(newOrder);
-        when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
-
-        // Act
-        Invoice resultInvoice = invoiceService.editInvoice(invoice.getInvoiceNo(), invoice, orderNo);
-
-        // Assert
-        assertEquals(newOrder, resultInvoice.getOrder());
-        verify(invoiceRepository, times(1)).findById(invoice.getInvoiceNo());
-        verify(orderService, times(1)).getOrder(orderNo);
         verify(invoiceRepository, times(1)).save(any(Invoice.class));
     }
 

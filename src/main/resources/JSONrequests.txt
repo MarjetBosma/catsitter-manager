@@ -315,7 +315,7 @@ Create new task
 {
     "taskType": "FURCARE",
     "taskInstruction": "Als Perzische katten hebben ze elke dag een borstelbeurt nodig, borstels liggen in de lade naast de mandjes",
-    "extraInstructions": "Duchess geniet erg van vachverzorging, Duke is niet altijd in de stemming, maar blijf proberen",
+    "extraInstructions": "Duchess geniet erg van vachtverzorging, Duke is niet altijd in de stemming, maar blijf proberen",
     "priceOfTask": 4.0,
     "orderNo": "***overnemen uit bijbehorende order, is automatisch aangemaakt***"
 }

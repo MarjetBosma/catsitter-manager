@@ -1,8 +1,10 @@
 package nl.novi.catsittermanager.services;
 
+import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.repositories.OrderRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,11 +34,21 @@ public class OrderServiceTest {
     @InjectMocks
     OrderService orderService;
 
+    private List<Task> tasks;
+
+    @BeforeEach
+    void init() {
+        tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+    }
+
     @Test
     void testGetAllOrders_shouldFetchAllOrdersOnTheList() {
 
         // Arrange
-        Order expectedOrder = OrderFactory.randomOrder().build();
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
         List<Order> expectedOrderList = List.of(expectedOrder);
 
         when(orderRepository.findAll()).thenReturn(expectedOrderList);
@@ -67,7 +79,7 @@ public class OrderServiceTest {
     void testGetOrder_shouldFetchOrderWithSpecificOrderNo() {
 
         // Arrange
-        Order expectedOrder = OrderFactory.randomOrder().build();
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
         when(orderRepository.findById(expectedOrder.getOrderNo())).thenReturn(Optional.of(expectedOrder));
 
         // Act
@@ -98,7 +110,7 @@ public class OrderServiceTest {
     void testGetAllTasksByOrder_shouldFetchAllTasksForThisOrder() {
 
         // Arrange
-        Order randomOrder = OrderFactory.randomOrder().build();
+        Order randomOrder = OrderFactory.randomOrder(tasks).build();
         List<Task> expectedTasks = TaskFactory.randomTasks(3);
         randomOrder.setTasks(expectedTasks);
 
@@ -118,7 +130,7 @@ public class OrderServiceTest {
     void testGetAllTasksByOrder_noTasksOnTheList_shouldReturnEmptyList() {
 
         // Arrange
-        Order randomOrder = OrderFactory.randomOrder().build();
+        Order randomOrder = OrderFactory.randomOrder(tasks).build();
         randomOrder.setTasks(Collections.emptyList());
 
         when(orderRepository.findById(randomOrder.getOrderNo())).thenReturn(Optional.of(randomOrder));
@@ -137,7 +149,7 @@ public class OrderServiceTest {
     void getInvoiceByOrder_shouldFetchInvoiceForThisOrder() {
 
         // Arrange
-        Order randomOrder = OrderFactory.randomOrder().build();
+        Order randomOrder = OrderFactory.randomOrder(tasks).build();
         Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
         randomOrder.setInvoice(expectedInvoice);
 
@@ -157,7 +169,7 @@ public class OrderServiceTest {
 
         //  Arrange
         UUID orderNo = UUID.randomUUID();
-        Order randomOrder = OrderFactory.randomOrder().build();
+        Order randomOrder = OrderFactory.randomOrder(tasks).build();
         randomOrder.setInvoice(null);
 
         doReturn(Optional.of(randomOrder)).when(orderRepository).findById(orderNo);
@@ -175,7 +187,7 @@ public class OrderServiceTest {
     void testCreateOrder_shouldCreateANewOrder() {
 
         // Arrange
-        Order expectedOrder = OrderFactory.randomOrder().build();
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
         Customer customer = CustomerFactory.randomCustomer().build();
         Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
 
@@ -198,7 +210,7 @@ public class OrderServiceTest {
     void testEditOrder_shouldEditExistingOrder() {
 
         // Arrange
-        Order order = OrderFactory.randomOrder().build();
+        Order order = OrderFactory.randomOrder(tasks).build();
 
         when(orderRepository.findById(order.getOrderNo())).thenReturn(Optional.of(order));
         when(customerService.getCustomer(order.getCustomer().getUsername())).thenReturn(order.getCustomer());
@@ -221,7 +233,7 @@ public class OrderServiceTest {
     void testEditOrder_withCatsitter_shouldEditOrderWithCatsitterPresent() {
 
         // Arrange
-        Order order = OrderFactory.randomOrder().build();
+        Order order = OrderFactory.randomOrder(tasks).build();
         Catsitter newCatsitter = CatsitterFactory.randomCatsitter().build();
         order.setCatsitter(newCatsitter);
 
@@ -243,7 +255,7 @@ public class OrderServiceTest {
     void testEditOrder_withCustomer_shouldEditOrderWithCustomerPresent() {
 
         // Arrange
-        Order order = OrderFactory.randomOrder().build();
+        Order order = OrderFactory.randomOrder(tasks).build();
         Customer newCustomer = CustomerFactory.randomCustomer().build();
         order.setCustomer(newCustomer);
 
@@ -280,7 +292,7 @@ public class OrderServiceTest {
     void testDeleteOrder_ShouldDeleteOrderWithSpecificId() {
 
         // Arrange
-        Order order = OrderFactory.randomOrder().build();
+        Order order = OrderFactory.randomOrder(tasks).build();
         when(orderRepository.existsById(order.getOrderNo())).thenReturn(true);
 
         // Act

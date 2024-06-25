@@ -6,7 +6,9 @@ import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
 import org.springframework.stereotype.Component;
+
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 @Component
@@ -35,11 +37,18 @@ public class OrderMapper {
         Catsitter catsitter = new Catsitter();
         catsitter.setUsername(orderRequest.catsitterUsername());
 
+        LocalDate startDate = LocalDate.parse(orderRequest.startDate());
+        LocalDate endDate = LocalDate.parse(orderRequest.endDate());
+
+        int dailyNumberOfVisits = orderRequest.dailyNumberOfVisits();
+        long durationInDays = ChronoUnit.DAYS.between(startDate, endDate) + 1;
+        int totalNumberOfVisits = (int) durationInDays * dailyNumberOfVisits;
+
         return Order.builder()
                 .startDate(LocalDate.parse(orderRequest.startDate()))
                 .endDate(LocalDate.parse(orderRequest.endDate()))
                 .dailyNumberOfVisits(orderRequest.dailyNumberOfVisits())
-                .totalNumberOfVisits(orderRequest.totalNumberOfVisits())
+                .totalNumberOfVisits(totalNumberOfVisits)
                 .tasks(new ArrayList<>())
                 .customer(customer)
                 .catsitter(catsitter)

@@ -1,4 +1,3 @@
-
 INSERT INTO users (username, password, role, enabled, name, address, email) VALUES
 ('bendegroot', 'thebestpassword', 2, true, 'Ben de Groot', 'Dahliastraat 5, Katwijk', 'bendegroot@yourcatsitter.nl'),
 ('jessicabosman', 'wachtwoord', 0, true, 'Jessica Bosman', 'Schoolstraat 3, Moddergat', 'jessica_bosman@hotmail.com'),

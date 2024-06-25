@@ -10,6 +10,7 @@ import nl.novi.catsittermanager.dtos.cat.CatResponse;
 import nl.novi.catsittermanager.dtos.customer.CustomerRequest;
 import nl.novi.catsittermanager.dtos.customer.CustomerResponse;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
+import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.mappers.CatMapper;
@@ -246,7 +247,13 @@ public class CustomerControllerTest {
 
         // Arrange
         String username = "testcustomer";
-        Order expectedOrder = OrderFactory.randomOrder().build();
+
+        List<Task> tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
         List<Order> expectedOrderList = List.of(expectedOrder);
 
         when(customerService.getAllOrdersByCustomer(username)).thenReturn(expectedOrderList);

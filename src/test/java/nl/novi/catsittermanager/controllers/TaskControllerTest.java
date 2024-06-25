@@ -208,7 +208,6 @@ public class TaskControllerTest {
                 .taskType(null)
                 .taskInstruction(null)
                 .extraInstructions(null)
-                .priceOfTask(-10.00)
                 .build();
 
         // Act & Assert
@@ -288,7 +287,6 @@ public class TaskControllerTest {
                 .taskType(null)
                 .taskInstruction(null)
                 .extraInstructions(null)
-                .priceOfTask(-10.00)
                 .orderNo(null)
                 .build();
 

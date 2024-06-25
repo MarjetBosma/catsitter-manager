@@ -9,14 +9,12 @@ import nl.novi.catsittermanager.dtos.CatsitterRequestFactory;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterRequest;
 import nl.novi.catsittermanager.dtos.catsitter.CatsitterResponse;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
+import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.mappers.TaskMapper;
-import nl.novi.catsittermanager.models.Catsitter;
-import nl.novi.catsittermanager.models.CatsitterFactory;
-import nl.novi.catsittermanager.models.Order;
-import nl.novi.catsittermanager.models.OrderFactory;
+import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.services.CatsitterService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -183,7 +181,12 @@ public class CatsitterControllerTest {
 
         // Arrange
         String username = "testcatsitter";
-        Order expectedOrder = OrderFactory.randomOrder().build();
+        List<Task> tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+        
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
         List<Order> expectedOrderList = List.of(expectedOrder);
 
         when(catsitterService.getAllOrdersByCatsitter(username)).thenReturn(expectedOrderList);

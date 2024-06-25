@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.services;
 
+import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.models.OrderFactory;
@@ -100,61 +101,53 @@ public class TaskServiceTest {
 
         // Arrange
         Task expectedTask = TaskFactory.randomTask().build();
-        Order order = OrderFactory.randomOrder().build();
 
-        when(orderService.getOrder(order.getOrderNo())).thenReturn(order);
+        List<Task> existingTasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+        Order expectedOrder = OrderFactory.randomOrder(existingTasks).build();
+
+        when(orderService.getOrder(expectedOrder.getOrderNo())).thenReturn(expectedOrder);
         when(taskRepository.save(expectedTask)).thenReturn(expectedTask);
 
         // Act
-        Task resultTask = taskService.createTask(expectedTask, order.getOrderNo());
+        Task resultTask = taskService.createTask(expectedTask, expectedOrder.getOrderNo());
 
         // Assert
         assertEquals(expectedTask, resultTask);
+        assertEquals(expectedOrder, resultTask.getOrder());
 
-        verify(orderService, times(1)).getOrder(order.getOrderNo());
+        verify(orderService, times(1)).getOrder(expectedOrder.getOrderNo());
         verify(taskRepository, times(1)).save(expectedTask);
-    }
-
-    @Test
-    void testEditTask_shouldEditExistingTask() {
-
-        // Arrange
-        Task task = TaskFactory.randomTask().build();
-
-        when(taskRepository.findById(task.getTaskNo())).thenReturn(Optional.of(task));
-        when(orderService.getOrder(task.getOrder().getOrderNo())).thenReturn(task.getOrder());
-        when(taskRepository.save(any(Task.class))).thenReturn(task);
-
-        // Act
-        Task resultTask = taskService.editTask(task.getTaskNo(), task, task.getOrder().getOrderNo());
-
-        // Assert
-        assertEquals(task, resultTask);
-
-        verify(taskRepository, times(1)).findById(task.getTaskNo());
-        verify(orderService, times(1)).getOrder(task.getOrder().getOrderNo());
-        verify(taskRepository, times(1)).save(any(Task.class));
     }
 
     @Test
     void testEditTask_withOrder_shouldEditTaskWithOrderPresent() {
         // Arrange
         Task task = TaskFactory.randomTask().build();
-        Order newOrder = OrderFactory.randomOrder().build();
-        UUID orderNo = UUID.randomUUID();
-        task.setOrder(newOrder);
+
+        List<Task> existingTasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+
+        Order expectedOrder = OrderFactory.randomOrder(existingTasks).build();
+        task.setOrder(expectedOrder);
 
         when(taskRepository.findById(task.getTaskNo())).thenReturn(Optional.of(task));
-        when(orderService.getOrder(orderNo)).thenReturn(newOrder);
+        when(orderService.getOrder(expectedOrder.getOrderNo())).thenReturn(expectedOrder);
         when(taskRepository.save(any(Task.class))).thenReturn(task);
 
         // Act
-        Task resultTask = taskService.editTask(task.getTaskNo(), task, orderNo);
+        Task resultTask = taskService.editTask(task.getTaskNo(), task, expectedOrder.getOrderNo());
 
         // Assert
-        assertEquals(newOrder, resultTask.getOrder());
+        assertEquals(task, resultTask);
+        assertEquals(expectedOrder, resultTask.getOrder());
+
         verify(taskRepository, times(1)).findById(task.getTaskNo());
-        verify(orderService, times(1)).getOrder(orderNo);
+        verify(orderService, times(1)).getOrder(expectedOrder.getOrderNo());
         verify(taskRepository, times(1)).save(any(Task.class));
     }
 
