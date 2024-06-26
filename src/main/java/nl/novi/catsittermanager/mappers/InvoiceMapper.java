@@ -25,10 +25,9 @@ public class InvoiceMapper {
 
     public static Invoice InvoiceRequestToInvoice(InvoiceRequest invoiceRequest) {
 
-        Order order = Order.builder()
-                .orderNo(invoiceRequest.orderNo())
-                .tasks(new ArrayList<>())
-                .build();
+        Order order = new Order();
+        order.setOrderNo(invoiceRequest.orderNo());
+        order.setTasks(new ArrayList<>());
 
         return Invoice.builder()
                 .invoiceDate(LocalDate.parse(invoiceRequest.invoiceDate()))

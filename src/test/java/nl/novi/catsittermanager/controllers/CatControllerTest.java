@@ -73,6 +73,9 @@ class CatControllerTest {
 
         when(catService.getAllCats()).thenReturn(expectedCatList);
 
+        String content = objectMapper.writeValueAsString(expectedCatList);
+        System.out.println(content);
+
         // Act & Assert
         mockMvc.perform(get("/api/cats")
                         .accept(MediaType.APPLICATION_JSON))

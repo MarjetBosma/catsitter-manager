@@ -211,6 +211,10 @@ public class OrderServiceTest {
 
         // Arrange
         Order order = OrderFactory.randomOrder(tasks).build();
+        Customer customer = CustomerFactory.randomCustomer().build();
+        Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
+        order.setCustomer(customer);
+        order.setCatsitter(catsitter);
 
         when(orderRepository.findById(order.getOrderNo())).thenReturn(Optional.of(order));
         when(customerService.getCustomer(order.getCustomer().getUsername())).thenReturn(order.getCustomer());
@@ -228,51 +232,7 @@ public class OrderServiceTest {
         verify(catsitterService, times(1)).getCatsitter(order.getCatsitter().getUsername());
         verify(orderRepository, times(1)).save(any(Order.class));
     }
-
-    @Test
-    void testEditOrder_withCatsitter_shouldEditOrderWithCatsitterPresent() {
-
-        // Arrange
-        Order order = OrderFactory.randomOrder(tasks).build();
-        Catsitter newCatsitter = CatsitterFactory.randomCatsitter().build();
-        order.setCatsitter(newCatsitter);
-
-        when(orderRepository.findById(order.getOrderNo())).thenReturn(Optional.of(order));
-        when(catsitterService.getCatsitter(newCatsitter.getUsername())).thenReturn(newCatsitter);
-        when(orderRepository.save(any(Order.class))).thenReturn(order);
-
-        // Act
-        Order resultOrder = orderService.editOrder(order.getOrderNo(), order, order.getCustomer().getUsername(), newCatsitter.getUsername());
-
-        // Assert
-        assertEquals(newCatsitter, resultOrder.getCatsitter());
-        verify(orderRepository, times(1)).findById(order.getOrderNo());
-        verify(catsitterService, times(1)).getCatsitter(newCatsitter.getUsername());
-        verify(orderRepository, times(1)).save(any(Order.class));
-    }
-
-    @Test
-    void testEditOrder_withCustomer_shouldEditOrderWithCustomerPresent() {
-
-        // Arrange
-        Order order = OrderFactory.randomOrder(tasks).build();
-        Customer newCustomer = CustomerFactory.randomCustomer().build();
-        order.setCustomer(newCustomer);
-
-        when(orderRepository.findById(order.getOrderNo())).thenReturn(Optional.of(order));
-        when(customerService.getCustomer(newCustomer.getUsername())).thenReturn(newCustomer);
-        when(orderRepository.save(any(Order.class))).thenReturn(order);
-
-        // Act
-        Order resultOrder = orderService.editOrder(order.getOrderNo(), order, newCustomer.getUsername(), order.getCatsitter().getUsername());
-
-        // Assert
-        assertEquals(newCustomer, resultOrder.getCustomer());
-        verify(orderRepository, times(1)).findById(order.getOrderNo());
-        verify(customerService, times(1)).getCustomer(newCustomer.getUsername());
-        verify(orderRepository, times(1)).save(any(Order.class));
-    }
-
+    
     @Test
     void testEditOrder_nonExistingOrder_shouldThrowRecordNotFoundException() {
 

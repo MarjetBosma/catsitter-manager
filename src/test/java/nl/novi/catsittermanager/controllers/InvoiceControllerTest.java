@@ -9,13 +9,12 @@ import nl.novi.catsittermanager.config.TestConfig;
 import nl.novi.catsittermanager.dtos.InvoiceRequestFactory;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceRequest;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
+import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.exceptions.InvoiceAlreadyExistsForThisOrderException;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.helpers.InvoiceFactoryHelper;
-import nl.novi.catsittermanager.models.Invoice;
-import nl.novi.catsittermanager.models.InvoiceFactory;
-import nl.novi.catsittermanager.models.Order;
+import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.services.InvoiceService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.Assertions;
@@ -36,6 +35,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -79,7 +79,40 @@ public class InvoiceControllerTest {
     void givenAValidRequest_whenGetAllInvoices_thenAllInvoicesShouldBeReturned() throws Exception {
 
         // Arrange
-        Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
+        List<Task> tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+
+        Customer customer = new Customer();
+        customer.setUsername("customerUsername");
+
+        Catsitter catsitter = new Catsitter();
+        catsitter.setUsername("catsitterUsername");
+
+        Order expectedOrder = Order.builder()
+                .orderNo(UUID.randomUUID())
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(5))
+                .dailyNumberOfVisits(2)
+                .totalNumberOfVisits(10)
+                .tasks(tasks)
+                .customer(customer)
+                .catsitter(catsitter)
+                .build();
+
+        for (Task task : tasks) {
+            task.setOrder(expectedOrder);
+        }
+
+        Invoice expectedInvoice = Invoice.builder()
+                .invoiceNo(UUID.randomUUID())
+                .invoiceDate(LocalDate.now())
+                .amount(100.0)
+                .paid(false)
+                .order(expectedOrder)
+                .build();
+
         List<Invoice> expectedInvoiceList = List.of(expectedInvoice);
 
         when(invoiceService.getAllInvoices()).thenReturn(expectedInvoiceList);
@@ -129,7 +162,39 @@ public class InvoiceControllerTest {
     void givenAValidRequest_whenGetInvoice_thenInvoiceShouldBeReturned() throws Exception {
 
         // Arrange
-        Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
+        List<Task> tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+
+        Customer customer = new Customer();
+        customer.setUsername("customerUsername");
+
+        Catsitter catsitter = new Catsitter();
+        catsitter.setUsername("catsitterUsername");
+
+        Order expectedOrder = Order.builder()
+                .orderNo(UUID.randomUUID())
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(5))
+                .dailyNumberOfVisits(2)
+                .totalNumberOfVisits(10)
+                .tasks(tasks)
+                .customer(customer)
+                .catsitter(catsitter)
+                .build();
+
+        for (Task task : tasks) {
+            task.setOrder(expectedOrder);
+        }
+
+        Invoice expectedInvoice = Invoice.builder()
+                .invoiceNo(UUID.randomUUID())
+                .invoiceDate(LocalDate.now())
+                .amount(100.0)
+                .paid(false)
+                .order(expectedOrder)
+                .build();
 
         when(invoiceService.getInvoice(expectedInvoice.getInvoiceNo())).thenReturn(expectedInvoice);
 
@@ -181,6 +246,46 @@ public class InvoiceControllerTest {
         // Arrange
         InvoiceRequest expectedInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().build();
         Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
+
+        Customer customer = new Customer();
+        customer.setUsername("customerUsername");
+
+        Catsitter catsitter = new Catsitter();
+        catsitter.setUsername("catsitterUsername");
+
+        List<Task> tasks = List.of(
+                Task.builder()
+                        .taskNo(UUID.randomUUID())
+                        .taskType(TaskType.FOOD)
+                        .priceOfTask(TaskType.FOOD.getPrice())
+                        .taskInstruction("Feed the cat")
+                        .extraInstructions("Use the blue bowl")
+                        .build(),
+                Task.builder()
+                        .taskNo(UUID.randomUUID())
+                        .taskType(TaskType.WATER)
+                        .priceOfTask(TaskType.WATER.getPrice())
+                        .taskInstruction("Give water to the cat")
+                        .extraInstructions("Use the red bowl")
+                        .build()
+        );
+
+        Order expectedOrder = Order.builder()
+                .orderNo(UUID.randomUUID())
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(5))
+                .dailyNumberOfVisits(2)
+                .totalNumberOfVisits(10)
+                .tasks(tasks)
+                .customer(customer)
+                .catsitter(catsitter)
+                .build();
+
+        for (Task task : tasks) {
+            task.setOrder(expectedOrder);
+        }
+
+        expectedInvoice.setOrder(expectedOrder);
 
         when(invoiceService.createInvoice(any(Invoice.class), eq(expectedInvoiceRequest.orderNo())))
                 .thenReturn(expectedInvoice);
@@ -290,6 +395,10 @@ public class InvoiceControllerTest {
         // Arrange
         InvoiceRequest expectedInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().build();
         Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
+
+        Order expectedOrder = new Order();
+        expectedOrder.setOrderNo(UUID.randomUUID());
+        expectedInvoice.setOrder(expectedOrder);
 
         when(invoiceService.editInvoice(ArgumentMatchers.any(UUID.class), ArgumentMatchers.any(Invoice.class), ArgumentMatchers.eq(expectedInvoiceRequest.orderNo())))
                 .thenReturn(expectedInvoice);

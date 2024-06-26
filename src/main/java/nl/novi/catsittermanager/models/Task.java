@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import nl.novi.catsittermanager.enumerations.TaskType;
@@ -34,6 +35,7 @@ public class Task {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_no")
+    @JsonBackReference
     private Order order;
 
     @PrePersist
@@ -43,5 +45,4 @@ public class Task {
             this.priceOfTask = this.taskType.getPrice();
         }
     }
-
 }

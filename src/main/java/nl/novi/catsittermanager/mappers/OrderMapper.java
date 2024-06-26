@@ -5,11 +5,13 @@ import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.models.Catsitter;
 import nl.novi.catsittermanager.models.Customer;
 import nl.novi.catsittermanager.models.Order;
+import nl.novi.catsittermanager.models.Task;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class OrderMapper {
@@ -44,14 +46,32 @@ public class OrderMapper {
         long durationInDays = ChronoUnit.DAYS.between(startDate, endDate) + 1;
         int totalNumberOfVisits = (int) durationInDays * dailyNumberOfVisits;
 
-        return Order.builder()
-                .startDate(LocalDate.parse(orderRequest.startDate()))
-                .endDate(LocalDate.parse(orderRequest.endDate()))
-                .dailyNumberOfVisits(orderRequest.dailyNumberOfVisits())
+        List<Task> tasks = new ArrayList<>();
+
+        Order order = Order.builder()
+                .startDate(startDate)
+                .endDate(endDate)
+                .dailyNumberOfVisits(dailyNumberOfVisits)
                 .totalNumberOfVisits(totalNumberOfVisits)
-                .tasks(new ArrayList<>())
+                .tasks(tasks)
                 .customer(customer)
                 .catsitter(catsitter)
                 .build();
+
+        for (Task task : tasks) {
+            task.setOrder(order);
+        }
+
+        return order;
+
+//        return Order.builder()
+//                .startDate(LocalDate.parse(orderRequest.startDate()))
+//                .endDate(LocalDate.parse(orderRequest.endDate()))
+//                .dailyNumberOfVisits(orderRequest.dailyNumberOfVisits())
+//                .totalNumberOfVisits(totalNumberOfVisits)
+//                .tasks(new ArrayList<>())
+//                .customer(customer)
+//                .catsitter(catsitter)
+//                .build();
     }
 }

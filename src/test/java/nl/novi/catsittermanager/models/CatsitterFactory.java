@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.models;
 
 import net.datafaker.Faker;
 import nl.novi.catsittermanager.enumerations.Role;
+
 import java.util.Collections;
 
 public class CatsitterFactory {
@@ -16,6 +17,7 @@ public class CatsitterFactory {
                 .name(faker.name().fullName())
                 .address(faker.address().fullAddress())
                 .email(faker.internet().emailAddress())
+                .about(faker.lorem().toString())
                 .enabled(true)
                 .role(Role.CATSITTER)
                 .orders(Collections.emptyList());

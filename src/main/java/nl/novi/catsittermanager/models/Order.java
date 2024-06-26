@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,6 +38,7 @@ public class Order {
 
     @Column(name = "tasks")
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Task> tasks;
 
     @JoinColumn(name = "customer_username")
@@ -65,5 +67,18 @@ public class Order {
             totalCost += task.getTaskType().getPrice() * this.calculateTotalNumberOfVisits();
         }
         return totalCost;
+    }
+
+    public OrderBuilder toBuilder() {
+        return Order.builder()
+                .orderNo(this.orderNo)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
+                .dailyNumberOfVisits(this.dailyNumberOfVisits)
+                .totalNumberOfVisits(this.totalNumberOfVisits)
+                .tasks(this.tasks)
+                .customer(this.customer)
+                .catsitter(this.catsitter)
+                .invoice(this.invoice);
     }
 }

@@ -1,7 +1,7 @@
 package nl.novi.catsittermanager;
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.transaction.Transactional;
 import nl.novi.catsittermanager.config.TestConfig;
 import nl.novi.catsittermanager.models.Catsitter;
@@ -27,7 +27,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
@@ -67,7 +70,6 @@ class CreateOrderIntegrationTest {
                     "startDate": "2024-06-01",
                     "endDate": "2024-06-10",
                     "dailyNumberOfVisits": 2,
-                    "totalNumberOfVisits": 18,
                     "customerUsername": "pietjepuk",
                     "catsitterUsername": "marietjemuk"
                 }
@@ -99,6 +101,7 @@ class CreateOrderIntegrationTest {
                     Catsitter catsitter = catsitterService.getCatsitter(catsitterUsername);
                     order.setCatsitter(catsitter);
                     order.setOrderNo(uuid);
+                    order.setTasks(new ArrayList<>());
                     return order;
                 });
     }
@@ -126,7 +129,7 @@ class CreateOrderIntegrationTest {
         System.out.println("Response Headers: " + response.getHeaderNames());
 
         Assertions.assertNotNull(result.getResponse().getHeader("location"));
-        Assertions.assertTrue(result.getResponse().getHeader("location").endsWith("/order/" + uuid));
+        Assertions.assertTrue(Objects.requireNonNull(result.getResponse().getHeader("location")).endsWith("/order/" + uuid));
 
         verify(orderRepository, times(1)).save(orderArgumentCaptor.capture());
         Order capturedOrder = orderArgumentCaptor.getValue();
@@ -134,7 +137,7 @@ class CreateOrderIntegrationTest {
         Assertions.assertEquals(LocalDate.of(2024, 6, 1), capturedOrder.getStartDate());
         Assertions.assertEquals(LocalDate.of(2024, 6, 10), capturedOrder.getEndDate());
         Assertions.assertEquals(2, capturedOrder.getDailyNumberOfVisits());
-        Assertions.assertEquals(18, capturedOrder.getTotalNumberOfVisits());
+        Assertions.assertEquals(20, capturedOrder.getTotalNumberOfVisits());
         Assertions.assertEquals("pietjepuk", capturedOrder.getCustomer().getUsername());
         Assertions.assertEquals("marietjemuk", capturedOrder.getCatsitter().getUsername());
     }

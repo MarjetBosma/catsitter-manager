@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -65,11 +66,6 @@ public class OrderControllerTest {
     @BeforeEach
     void init() {
 
-        tasks = List.of(
-                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
-                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
-        );
-
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         objectMapper.registerModule(new JavaTimeModule());
@@ -79,8 +75,34 @@ public class OrderControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetAllOrders_thenAllOrdersShouldBeReturned() throws Exception {
+
         // Arrange
-        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
+        Customer customer = new Customer();
+        customer.setUsername("customerUsername");
+
+        Catsitter catsitter = new Catsitter();
+        catsitter.setUsername("catsitterUsername");
+
+        tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+
+        Order expectedOrder = Order.builder()
+                .orderNo(UUID.randomUUID())
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(5))
+                .dailyNumberOfVisits(2)
+                .totalNumberOfVisits(10)
+                .tasks(tasks)
+                .customer(customer)
+                .catsitter(catsitter)
+                .build();
+
+        for (Task task : tasks) {
+            task.setOrder(expectedOrder);
+        }
+
         List<Order> expectedOrderList = List.of(expectedOrder);
 
         when(orderService.getAllOrders()).thenReturn(expectedOrderList);
@@ -136,7 +158,31 @@ public class OrderControllerTest {
     void givenAValidRequest_whenGetOrder_thenOrderShouldBeReturned() throws Exception {
 
         // Arrange
-        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
+        Customer customer = new Customer();
+        customer.setUsername("customerUsername");
+
+        Catsitter catsitter = new Catsitter();
+        catsitter.setUsername("catsitterUsername");
+
+        tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+
+        Order expectedOrder = Order.builder()
+                .orderNo(UUID.randomUUID())
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(5))
+                .dailyNumberOfVisits(2)
+                .totalNumberOfVisits(10)
+                .tasks(tasks)
+                .customer(customer)
+                .catsitter(catsitter)
+                .build();
+
+        for (Task task : tasks) {
+            task.setOrder(expectedOrder);
+        }
 
         when(orderService.getOrder(expectedOrder.getOrderNo())).thenReturn(expectedOrder);
 
@@ -192,36 +238,78 @@ public class OrderControllerTest {
     void givenAValidRequest_whenGetAllTasksByOrder_thenAllTasksShouldBeReturned() throws Exception {
 
         // Arrange
-        UUID validOrderId = UUID.randomUUID();
-        Task expectedTask = TaskFactory.randomTask().build();
-        List<Task> expectedTaskList = List.of(expectedTask);
+        Customer customer = new Customer();
+        customer.setUsername("customerUsername");
 
-        when(orderService.getAllTasksByOrder(validOrderId)).thenReturn(expectedTaskList);
+        Catsitter catsitter = new Catsitter();
+        catsitter.setUsername("catsitterUsername");
 
-        TaskResponse expectedResponse = new TaskResponse(
-                expectedTask.getTaskNo(),
-                expectedTask.getTaskType(),
-                expectedTask.getTaskInstruction(),
-                expectedTask.getExtraInstructions(),
-                expectedTask.getPriceOfTask(),
-                expectedTask.getOrder().getOrderNo()
+        Order expectedOrder = Order.builder()
+                .orderNo(UUID.randomUUID())
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(5))
+                .dailyNumberOfVisits(2)
+                .totalNumberOfVisits(10)
+                .tasks(tasks)
+                .customer(customer)
+                .catsitter(catsitter)
+                .build();
+
+        List<Task> tasks = List.of(
+                Task.builder()
+                        .taskNo(UUID.randomUUID())
+                        .taskType(TaskType.FOOD)
+                        .priceOfTask(TaskType.FOOD.getPrice())
+                        .taskInstruction("Feed the cat")
+                        .extraInstructions("Use the blue bowl")
+                        .build(),
+                Task.builder()
+                        .taskNo(UUID.randomUUID())
+                        .taskType(TaskType.WATER)
+                        .priceOfTask(TaskType.WATER.getPrice())
+                        .taskInstruction("Give water to the cat")
+                        .extraInstructions("Use the red bowl")
+                        .build()
         );
 
-        String content = objectMapper.writeValueAsString(expectedTaskList);
+
+        for (Task task : tasks) {
+            task.setOrder(expectedOrder);
+        }
+
+        when(orderService.getAllTasksByOrder(expectedOrder.getOrderNo())).thenReturn(tasks);
+
+        List<TaskResponse> expectedResponses = tasks.stream()
+                .map(task -> new TaskResponse(
+                        task.getTaskNo(),
+                        task.getTaskType(),
+                        task.getTaskInstruction(),
+                        task.getExtraInstructions(),
+                        task.getPriceOfTask(),
+                        task.getOrder().getOrderNo()
+                )).toList();
+
+        String content = objectMapper.writeValueAsString(tasks);
         System.out.println(content);
 
         // Act & Assert
-        mockMvc.perform(get("/api/order/" + validOrderId + "/tasks")
+        mockMvc.perform(get("/api/order/" + expectedOrder.getOrderNo() + "/tasks")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(expectedTaskList.size()))
-                .andExpect(jsonPath("$.[0].taskNo").value(expectedResponse.taskNo().toString()))
-                .andExpect(jsonPath("$.[0].taskType").value(expectedResponse.taskType().toString()))
-                .andExpect(jsonPath("$.[0].taskInstruction").value(expectedResponse.taskInstruction()))
-                .andExpect(jsonPath("$.[0].extraInstructions").value(expectedResponse.extraInstructions()))
-                .andExpect(jsonPath("$.[0].priceOfTask").value(expectedResponse.priceOfTask()))
-                .andExpect(jsonPath("$.[0].orderNo").value(expectedResponse.orderNo().toString()));
+                .andExpect(jsonPath("$.length()").value(tasks.size()))
+                .andExpect(jsonPath("$.[0].taskNo").value(expectedResponses.get(0).taskNo().toString()))
+                .andExpect(jsonPath("$.[0].taskType").value(expectedResponses.get(0).taskType().toString()))
+                .andExpect(jsonPath("$.[0].taskInstruction").value(expectedResponses.get(0).taskInstruction()))
+                .andExpect(jsonPath("$.[0].extraInstructions").value(expectedResponses.get(0).extraInstructions()))
+                .andExpect(jsonPath("$.[0].priceOfTask").value(expectedResponses.get(0).priceOfTask()))
+                .andExpect(jsonPath("$.[0].orderNo").value(expectedResponses.get(0).orderNo().toString()))
+                .andExpect(jsonPath("$.[1].taskNo").value(expectedResponses.get(1).taskNo().toString()))
+                .andExpect(jsonPath("$.[1].taskType").value(expectedResponses.get(1).taskType().toString()))
+                .andExpect(jsonPath("$.[1].taskInstruction").value(expectedResponses.get(1).taskInstruction()))
+                .andExpect(jsonPath("$.[1].extraInstructions").value(expectedResponses.get(1).extraInstructions()))
+                .andExpect(jsonPath("$.[1].priceOfTask").value(expectedResponses.get(1).priceOfTask()))
+                .andExpect(jsonPath("$.[1].orderNo").value(expectedResponses.get(1).orderNo().toString()));
     }
 
     @Test
@@ -246,32 +334,67 @@ public class OrderControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenGetInvoiceByOrder_thenInvoiceShouldBeReturned() throws Exception {
         // Arrange
-        UUID orderId = UUID.randomUUID();
-        Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
+        Customer customer = new Customer();
+        customer.setUsername("customerUsername");
 
-        when(orderService.getInvoiceByOrder(orderId)).thenReturn(expectedInvoice);
+        Catsitter catsitter = new Catsitter();
+        catsitter.setUsername("catsitterUsername");
 
-        // Act & Assert
-        InvoiceResponse expectedInvoiceResponse = new InvoiceResponse(
-                expectedInvoice.getInvoiceNo(),
-                expectedInvoice.getInvoiceDate().toString(),
-                expectedInvoice.getAmount(),
-                expectedInvoice.getPaid(),
-                expectedInvoice.getOrder().getOrderNo()
+        tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
         );
 
-        mockMvc.perform(get("/api/order/" + orderId + "/invoice")
+        Order expectedOrder = Order.builder()
+                .orderNo(UUID.randomUUID())
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(5))
+                .dailyNumberOfVisits(2)
+                .totalNumberOfVisits(10)
+                .tasks(tasks)
+                .customer(customer)
+                .catsitter(catsitter)
+                .build();
+
+        for (Task task : tasks) {
+            task.setOrder(expectedOrder);
+        }
+
+        Invoice invoice = Invoice.builder()
+                .invoiceNo(UUID.randomUUID())
+                .invoiceDate(LocalDate.now())
+                .amount(expectedOrder.calculateTotalCost())
+                .paid(false)
+                .order(expectedOrder)
+                .build();
+
+        InvoiceResponse invoiceResponse = new InvoiceResponse(
+                invoice.getInvoiceNo(),
+                invoice.getInvoiceDate().toString(),
+                invoice.getAmount(),
+                invoice.getPaid(),
+                invoice.getOrder().getOrderNo()
+        );
+
+        String content = objectMapper.writeValueAsString(tasks);
+        System.out.println(content);
+
+        when(orderService.getInvoiceByOrder(expectedOrder.getOrderNo())).thenReturn(invoice);
+
+        // Act & Assert
+
+        mockMvc.perform(get("/api/order/" + expectedOrder.getOrderNo() + "/invoice")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.invoiceNo").value(expectedInvoiceResponse.invoiceNo().toString()))
-                .andExpect(jsonPath("$.invoiceDate").value(expectedInvoiceResponse.invoiceDate()))
-                .andExpect(jsonPath("$.amount").value(expectedInvoiceResponse.amount()))
-                .andExpect(jsonPath("$.paid").value(expectedInvoiceResponse.paid()))
-                .andExpect(jsonPath("$.orderNo").value(expectedInvoiceResponse.orderNo().toString()));
+                .andExpect(jsonPath("$.invoiceNo").value(invoiceResponse.invoiceNo().toString()))
+                .andExpect(jsonPath("$.invoiceDate").value(invoiceResponse.invoiceDate()))
+                .andExpect(jsonPath("$.amount").value(invoiceResponse.amount()))
+                .andExpect(jsonPath("$.paid").value(invoiceResponse.paid()))
+                .andExpect(jsonPath("$.orderNo").value(invoiceResponse.orderNo().toString()));
 
         // Verify
-        verify(orderService, times(1)).getInvoiceByOrder(orderId);
+        verify(orderService, times(1)).getInvoiceByOrder(expectedOrder.getOrderNo());
     }
 
     @Test
@@ -296,8 +419,39 @@ public class OrderControllerTest {
     void givenAValidRequest_whenCreateOrder_thenOrderShouldBeReturned() throws Exception {
 
         // Arrange
-        OrderRequest expectedOrderRequest = OrderRequestFactory.randomOrderRequest().build();
-        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
+        Customer customer = new Customer();
+        customer.setUsername("customerUsername");
+
+        Catsitter catsitter = new Catsitter();
+        catsitter.setUsername("catsitterUsername");
+
+        tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+
+        OrderRequest expectedOrderRequest = OrderRequest.builder()
+                .startDate("2024-06-26")
+                .endDate("2024-06-30")
+                .dailyNumberOfVisits(2)
+                .customerUsername("customerUsername")
+                .catsitterUsername("catsitterUsername")
+                .build();
+
+        Order expectedOrder = Order.builder()
+                .orderNo(UUID.randomUUID())
+                .startDate(LocalDate.parse(expectedOrderRequest.startDate()))
+                .endDate(LocalDate.parse(expectedOrderRequest.endDate()))
+                .dailyNumberOfVisits(expectedOrderRequest.dailyNumberOfVisits())
+                .totalNumberOfVisits(10) // Example calculation
+                .tasks(tasks)
+                .customer(customer)
+                .catsitter(catsitter)
+                .build();
+
+        for (Task task : tasks) {
+            task.setOrder(expectedOrder);
+        }
 
         when(orderService.createOrder(any(Order.class), eq(expectedOrderRequest.customerUsername()), eq(expectedOrderRequest.catsitterUsername())))
                 .thenReturn(expectedOrder);
@@ -362,10 +516,41 @@ public class OrderControllerTest {
     void givenAValidRequest_whenEditOrder_thenEditedOrderShouldBeReturned() throws Exception {
 
         // Arrange
-        OrderRequest expectedOrderRequest = OrderRequestFactory.randomOrderRequest().build();
-        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
+        Customer customer = new Customer();
+        customer.setUsername("customerUsername");
 
-        when(orderService.editOrder(any(UUID.class), any(Order.class), eq(expectedOrderRequest.customerUsername()), eq(expectedOrderRequest.catsitterUsername())))
+        Catsitter catsitter = new Catsitter();
+        catsitter.setUsername("catsitterUsername");
+
+        tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+
+        OrderRequest expectedOrderRequest = OrderRequest.builder()
+                .startDate("2024-06-26")
+                .endDate("2024-06-30")
+                .dailyNumberOfVisits(2)
+                .customerUsername("customerUsername")
+                .catsitterUsername("catsitterUsername")
+                .build();
+
+        Order expectedOrder = Order.builder()
+                .orderNo(UUID.randomUUID())
+                .startDate(LocalDate.parse(expectedOrderRequest.startDate()))
+                .endDate(LocalDate.parse(expectedOrderRequest.endDate()))
+                .dailyNumberOfVisits(expectedOrderRequest.dailyNumberOfVisits())
+                .totalNumberOfVisits(10)
+                .tasks(tasks)
+                .customer(customer)
+                .catsitter(catsitter)
+                .build();
+
+        for (Task task : tasks) {
+            task.setOrder(expectedOrder);
+        }
+
+        when(orderService.createOrder(any(Order.class), eq(expectedOrderRequest.customerUsername()), eq(expectedOrderRequest.catsitterUsername())))
                 .thenReturn(expectedOrder);
 
         OrderResponse expectedResponse = new OrderResponse(
@@ -379,6 +564,9 @@ public class OrderControllerTest {
                 expectedOrder.getCatsitter().getUsername(),
                 expectedOrder.getInvoice()
         );
+
+        when(orderService.editOrder(any(UUID.class), any(Order.class), eq(expectedOrderRequest.customerUsername()), eq(expectedOrderRequest.catsitterUsername())))
+                .thenReturn(expectedOrder);
 
         String content = objectMapper.writeValueAsString(expectedOrderRequest);
         System.out.println(content);

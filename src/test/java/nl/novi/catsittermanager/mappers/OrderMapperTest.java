@@ -4,9 +4,7 @@ import nl.novi.catsittermanager.dtos.OrderRequestFactory;
 import nl.novi.catsittermanager.dtos.order.OrderRequest;
 import nl.novi.catsittermanager.dtos.order.OrderResponse;
 import nl.novi.catsittermanager.enumerations.TaskType;
-import nl.novi.catsittermanager.models.Order;
-import nl.novi.catsittermanager.models.OrderFactory;
-import nl.novi.catsittermanager.models.Task;
+import nl.novi.catsittermanager.models.*;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -21,12 +19,19 @@ public class OrderMapperTest {
     void testOrderToOrderResponse() {
 
         // Arrange
+        Customer customer = new Customer();
+        customer.setUsername("customerUsername");
+
+        Catsitter catsitter = new Catsitter();
+        catsitter.setUsername("catsitterUsername");
 
         List<Task> tasks = List.of(
                 Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
                 Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
         );
         Order order = OrderFactory.randomOrder(tasks).build();
+        order.setCustomer(customer);
+        order.setCatsitter(catsitter);
 
         // Act
         OrderResponse orderResponse = OrderMapper.OrderToOrderResponse(order);

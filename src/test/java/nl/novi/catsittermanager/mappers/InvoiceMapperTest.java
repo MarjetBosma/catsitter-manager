@@ -48,6 +48,7 @@ public class InvoiceMapperTest {
         );
 
         Order order = OrderFactory.randomOrder(tasks).build();
+
         order.setOrderNo(invoiceRequest.orderNo());
         order.setStartDate(LocalDate.now());
         order.setEndDate(LocalDate.now().plusDays(5));
@@ -56,9 +57,27 @@ public class InvoiceMapperTest {
 
         double expectedAmount = order.calculateTotalCost();
 
+        // Print statements for debugging
+        System.out.println("Order Details:");
+        System.out.println("Order No: " + order.getOrderNo());
+        System.out.println("Start Date: " + order.getStartDate());
+        System.out.println("End Date: " + order.getEndDate());
+        System.out.println("Daily Number of Visits: " + order.getDailyNumberOfVisits());
+        System.out.println("Total Number of Visits: " + order.calculateTotalNumberOfVisits());
+        System.out.println("Tasks: " + order.getTasks());
+        System.out.println("Expected Amount: " + expectedAmount);
+
         // Act
         Invoice invoice = InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest);
         invoice.setOrder(order);
+
+        // Print statements for debugging
+        System.out.println("Invoice Details:");
+        System.out.println("Invoice No: " + invoice.getInvoiceNo());
+        System.out.println("Invoice Date: " + invoice.getInvoiceDate());
+        System.out.println("Amount: " + invoice.getAmount());
+        System.out.println("Paid: " + invoice.getPaid());
+        System.out.println("Order No in Invoice: " + invoice.getOrder().getOrderNo());
 
         // Assert
         assertEquals(invoiceRequest.invoiceDate(), invoice.getInvoiceDate().toString());
