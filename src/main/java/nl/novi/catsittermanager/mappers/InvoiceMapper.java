@@ -7,7 +7,6 @@ import nl.novi.catsittermanager.models.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 @Component
 public class InvoiceMapper {
@@ -23,11 +22,11 @@ public class InvoiceMapper {
         );
     }
 
-    public static Invoice InvoiceRequestToInvoice(InvoiceRequest invoiceRequest) {
+    public static Invoice InvoiceRequestToInvoice(InvoiceRequest invoiceRequest, Order order) {
 
-        Order order = new Order();
-        order.setOrderNo(invoiceRequest.orderNo());
-        order.setTasks(new ArrayList<>());
+//        Order order = new Order();
+//        order.setOrderNo(invoiceRequest.orderNo());
+//        order.setTasks(new ArrayList<>());
 
         return Invoice.builder()
                 .invoiceDate(LocalDate.parse(invoiceRequest.invoiceDate()))

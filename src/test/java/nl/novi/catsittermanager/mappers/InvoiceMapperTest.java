@@ -68,7 +68,7 @@ public class InvoiceMapperTest {
         System.out.println("Expected Amount: " + expectedAmount);
 
         // Act
-        Invoice invoice = InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest);
+        Invoice invoice = InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest, order);
         invoice.setOrder(order);
 
         // Print statements for debugging

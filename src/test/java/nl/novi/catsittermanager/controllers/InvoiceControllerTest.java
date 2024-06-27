@@ -14,13 +14,14 @@ import nl.novi.catsittermanager.exceptions.InvoiceAlreadyExistsForThisOrderExcep
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.helpers.InvoiceFactoryHelper;
+import nl.novi.catsittermanager.mappers.InvoiceMapper;
 import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.services.InvoiceService;
+import nl.novi.catsittermanager.services.OrderService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -64,6 +65,9 @@ public class InvoiceControllerTest {
 
     @MockBean
     private InvoiceService invoiceService;
+
+    @MockBean
+    private OrderService orderService;
 
     @BeforeEach
     void init() {
@@ -287,7 +291,7 @@ public class InvoiceControllerTest {
 
         expectedInvoice.setOrder(expectedOrder);
 
-        when(invoiceService.createInvoice(any(Invoice.class), eq(expectedInvoiceRequest.orderNo())))
+        when(invoiceService.createInvoice(any(InvoiceRequest.class), eq(expectedInvoiceRequest.orderNo())))
                 .thenReturn(expectedInvoice);
 
         InvoiceResponse expectedResponse = new InvoiceResponse(
@@ -324,7 +328,7 @@ public class InvoiceControllerTest {
         Order orderWithInvoice = new Order();
         orderWithInvoice.setInvoice(new Invoice());
 
-        when(invoiceService.createInvoice(any(Invoice.class), eq(orderNo))).thenThrow(new InvoiceAlreadyExistsForThisOrderException(orderNo));
+        when(invoiceService.createInvoice(any(InvoiceRequest.class), eq(orderNo))).thenThrow(new InvoiceAlreadyExistsForThisOrderException(orderNo));
         Faker faker = new Faker();
         InvoiceRequest request = InvoiceRequestFactory.randomInvoiceRequest()
                 .invoiceDate(InvoiceFactoryHelper.randomDateIn2024().toString())
@@ -353,7 +357,7 @@ public class InvoiceControllerTest {
                 .orderNo(orderNo)
                 .build();
 
-        when(invoiceService.createInvoice(any(Invoice.class), eq(orderNo))).thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "Order not found"));
+        when(invoiceService.createInvoice(any(InvoiceRequest.class), eq(orderNo))).thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "Order not found"));
 
         // Act & Assert
         MvcResult result = mockMvc.perform(post("/api/invoice")
@@ -391,17 +395,43 @@ public class InvoiceControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenEditInvoice_thenEditedInvoiceShouldBeReturned() throws Exception {
-
         // Arrange
-        InvoiceRequest expectedInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().build();
-        Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
+        UUID invoiceId = UUID.randomUUID();
+        UUID orderNo = UUID.randomUUID();
 
-        Order expectedOrder = new Order();
-        expectedOrder.setOrderNo(UUID.randomUUID());
-        expectedInvoice.setOrder(expectedOrder);
+        InvoiceRequest expectedInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().orderNo(orderNo).build();
 
-        when(invoiceService.editInvoice(ArgumentMatchers.any(UUID.class), ArgumentMatchers.any(Invoice.class), ArgumentMatchers.eq(expectedInvoiceRequest.orderNo())))
-                .thenReturn(expectedInvoice);
+        Customer customer = new Customer();
+        customer.setUsername("customerUsername");
+
+        Catsitter catsitter = new Catsitter();
+        catsitter.setUsername("catsitterUsername");
+
+        List<Task> tasks = List.of(
+                Task.builder().taskNo(UUID.randomUUID()).taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).taskInstruction("Feed the cat").extraInstructions("Use the blue bowl").build(),
+                Task.builder().taskNo(UUID.randomUUID()).taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).taskInstruction("Give water to the cat").extraInstructions("Use the red bowl").build()
+        );
+
+        Order expectedOrder = Order.builder()
+                .orderNo(orderNo)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(5))
+                .dailyNumberOfVisits(2)
+                .totalNumberOfVisits(10)
+                .tasks(tasks)
+                .customer(customer)
+                .catsitter(catsitter)
+                .build();
+
+        for (Task task : tasks) {
+            task.setOrder(expectedOrder);
+        }
+
+        Invoice expectedInvoice = InvoiceMapper.InvoiceRequestToInvoice(expectedInvoiceRequest, expectedOrder);
+        expectedInvoice.setInvoiceNo(invoiceId);
+
+        when(orderService.getOrder(orderNo)).thenReturn(expectedOrder);
+        when(invoiceService.editInvoice(any(Invoice.class))).thenReturn(expectedInvoice);
 
         InvoiceResponse expectedInvoiceResponse = new InvoiceResponse(
                 expectedInvoice.getInvoiceNo(),
@@ -415,7 +445,7 @@ public class InvoiceControllerTest {
         System.out.println(content);
 
         // Act & Assert
-        mockMvc.perform(put("/api/invoice/{id}", expectedInvoice.getInvoiceNo())
+        mockMvc.perform(put("/api/invoice/" + invoiceId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
                         .accept(MediaType.APPLICATION_JSON))
@@ -431,13 +461,12 @@ public class InvoiceControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenInvalidId_whenEditInvoice_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
-
         // Arrange
         UUID invoiceNo = UUID.randomUUID();
-        InvoiceRequest expectedInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().build();
+        UUID orderNo = UUID.randomUUID();
+        InvoiceRequest expectedInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().orderNo(orderNo).build();
 
-        when(invoiceService.editInvoice(any(UUID.class), any(Invoice.class), eq(expectedInvoiceRequest.orderNo())))
-                .thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No invoice found with this id."));
+        when(orderService.getOrder(orderNo)).thenReturn(null);  // Mocking orderService to return null
 
         // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.put("/api/invoice/{id}", invoiceNo)

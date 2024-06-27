@@ -8,7 +8,9 @@ import nl.novi.catsittermanager.exceptions.InvoiceAlreadyExistsForThisOrderExcep
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.InvoiceMapper;
 import nl.novi.catsittermanager.models.Invoice;
+import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.services.InvoiceService;
+import nl.novi.catsittermanager.services.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,8 @@ import java.util.UUID;
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
+
+    private final OrderService orderService;
 
     @GetMapping("/invoices")
     public ResponseEntity<List<InvoiceResponse>> getAllInvoices() {
@@ -43,7 +47,8 @@ public class InvoiceController {
     public ResponseEntity<?> createInvoice(@Valid @RequestBody final InvoiceRequest invoiceRequest) throws URISyntaxException {
         UUID orderNo = invoiceRequest.orderNo();
         try {
-            Invoice invoice = invoiceService.createInvoice(InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest), orderNo);
+            // Call the service method with the request and orderNo
+            Invoice invoice = invoiceService.createInvoice(invoiceRequest, orderNo);
             System.out.println("Invoice created successfully for orderNo: " + orderNo);
             return ResponseEntity.created(new URI("/invoice/" + invoice.getInvoiceNo())).body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
         } catch (InvoiceAlreadyExistsForThisOrderException exception) {
@@ -57,9 +62,40 @@ public class InvoiceController {
 
     @PutMapping("/invoice/{id}")
     public ResponseEntity<InvoiceResponse> editInvoice(@PathVariable("id") final UUID idToEdit, @Valid @RequestBody final InvoiceRequest invoiceRequest) {
-        Invoice invoice = invoiceService.editInvoice(idToEdit, InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest), invoiceRequest.orderNo());
-        return ResponseEntity.ok().body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
+        UUID orderNo = invoiceRequest.orderNo();
+        Order order = orderService.getOrder(orderNo);
+
+        if (order == null) {
+            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id");
+        }
+
+        Invoice updatedInvoice = InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest, order);
+        updatedInvoice.setInvoiceNo(idToEdit);
+        Invoice savedInvoice = invoiceService.editInvoice(updatedInvoice);
+
+        return ResponseEntity.ok().body(InvoiceMapper.InvoiceToInvoiceResponse(savedInvoice));
     }
+
+//    @PutMapping("/invoice/{id}")
+//    public ResponseEntity<?> editInvoice(@PathVariable("id") final UUID idToEdit, @Valid @RequestBody final InvoiceRequest invoiceRequest) {
+//        UUID orderNo = invoiceRequest.orderNo();
+//        try {
+//            Order order = orderService.getOrder(orderNo);
+//
+//            Invoice updatedInvoice = InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest, order);
+//            updatedInvoice.setInvoiceNo(idToEdit);
+//
+//            Invoice savedInvoice = invoiceService.editInvoice(updatedInvoice);
+//
+//            return ResponseEntity.ok().body(InvoiceMapper.InvoiceToInvoiceResponse(savedInvoice));
+//        } catch (RecordNotFoundException exception) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body("No invoice or order found with the provided id.");
+//        } catch (Exception exception) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                    .body("An error occurred while updating the invoice.");
+//        }
+//    }
 
     @DeleteMapping("/invoice/{id}")
     public ResponseEntity<Object> deleteInvoice(@PathVariable("id") final UUID idToDelete) {

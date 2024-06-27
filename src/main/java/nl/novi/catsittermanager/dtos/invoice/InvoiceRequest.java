@@ -11,10 +11,7 @@ import java.util.UUID;
 public record InvoiceRequest(
         @NotNull(message = "Invoice date is required")
         String invoiceDate,
-//        @NotNull(message = "Amount to pay is required")
-//        @Positive
-//        Double amount,
-        @NotNull(message = "Pay status is required")
+        Double amount,
         Boolean paid,
         @NotNull(message = "Give the number of the order to which this invoice belongs")
         UUID orderNo
