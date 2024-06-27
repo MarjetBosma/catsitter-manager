@@ -4,13 +4,16 @@ import nl.novi.catsittermanager.dtos.InvoiceRequestFactory;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceRequest;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
 import nl.novi.catsittermanager.enumerations.TaskType;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.*;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class InvoiceMapperTest {
 
@@ -85,5 +88,24 @@ public class InvoiceMapperTest {
         assertEquals(invoiceRequest.paid(), invoice.getPaid());
         assertEquals(invoiceRequest.orderNo(), invoice.getOrder().getOrderNo());
         assertEquals(tasks, invoice.getOrder().getTasks());
+    }
+
+    @Test
+    void testInvoiceRequestToInvoice_orderIsNull() {
+        // Arrange
+        InvoiceRequest invoiceRequest = new InvoiceRequest(
+                "2024-06-27",
+                100.0,
+                false,
+                UUID.fromString("37bdb809-7069-437d-be13-bdea36bff009"));
+
+        Order order = null;
+
+        // Act & Assert
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
+            InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest, order);
+        });
+
+        assertEquals("Order not found", exception.getMessage());
     }
 }

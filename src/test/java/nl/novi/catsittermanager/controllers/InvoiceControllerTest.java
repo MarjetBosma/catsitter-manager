@@ -3,7 +3,6 @@ package nl.novi.catsittermanager.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import net.datafaker.Faker;
 import nl.novi.catsittermanager.config.SecurityConfig;
 import nl.novi.catsittermanager.config.TestConfig;
 import nl.novi.catsittermanager.dtos.InvoiceRequestFactory;
@@ -37,6 +36,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -249,6 +249,7 @@ public class InvoiceControllerTest {
 
         // Arrange
         InvoiceRequest expectedInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().build();
+        UUID orderNo = expectedInvoiceRequest.orderNo();
         Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
 
         Customer customer = new Customer();
@@ -275,7 +276,7 @@ public class InvoiceControllerTest {
         );
 
         Order expectedOrder = Order.builder()
-                .orderNo(UUID.randomUUID())
+                .orderNo(expectedInvoiceRequest.orderNo())
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now().plusDays(5))
                 .dailyNumberOfVisits(2)
@@ -291,7 +292,8 @@ public class InvoiceControllerTest {
 
         expectedInvoice.setOrder(expectedOrder);
 
-        when(invoiceService.createInvoice(any(InvoiceRequest.class), eq(expectedInvoiceRequest.orderNo())))
+        when(orderService.getOrder(orderNo)).thenReturn(expectedOrder);
+        when(invoiceService.createInvoice(any(Invoice.class), eq(expectedInvoiceRequest.orderNo())))
                 .thenReturn(expectedInvoice);
 
         InvoiceResponse expectedResponse = new InvoiceResponse(
@@ -303,7 +305,6 @@ public class InvoiceControllerTest {
         );
 
         String content = objectMapper.writeValueAsString(expectedInvoiceRequest);
-        System.out.println(content);
 
         // Act & Assert
         mockMvc.perform(post("/api/invoice")
@@ -325,21 +326,35 @@ public class InvoiceControllerTest {
 
         // Arrange
         UUID orderNo = UUID.randomUUID();
-        Order orderWithInvoice = new Order();
-        orderWithInvoice.setInvoice(new Invoice());
-
-        when(invoiceService.createInvoice(any(InvoiceRequest.class), eq(orderNo))).thenThrow(new InvoiceAlreadyExistsForThisOrderException(orderNo));
-        Faker faker = new Faker();
         InvoiceRequest request = InvoiceRequestFactory.randomInvoiceRequest()
                 .invoiceDate(InvoiceFactoryHelper.randomDateIn2024().toString())
-                .paid(faker.bool().bool())
+                .paid(false)  // setting paid to false as per business logic
                 .orderNo(orderNo)
                 .build();
+
+        Order expectedOrder = Order.builder()
+                .orderNo(orderNo)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(5))
+                .dailyNumberOfVisits(2)
+                .totalNumberOfVisits(10)
+                .tasks(new ArrayList<>())
+                .build();
+
+        // Mocking orderService to return expectedOrder
+        when(orderService.getOrder(orderNo)).thenReturn(expectedOrder);
+
+        // Mocking invoiceService to throw InvoiceAlreadyExistsForThisOrderException
+        when(invoiceService.createInvoice(any(Invoice.class), eq(orderNo)))
+                .thenThrow(new InvoiceAlreadyExistsForThisOrderException(orderNo));
+
+        String content = objectMapper.writeValueAsString(request);
 
         // Act & Assert
         MvcResult result = mockMvc.perform(post("/api/invoice")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(content))
+                .andDo(print())
                 .andExpect(status().isConflict())
                 .andExpect(content().string("An invoice already exists for order " + orderNo + "."))
                 .andReturn();
@@ -357,7 +372,7 @@ public class InvoiceControllerTest {
                 .orderNo(orderNo)
                 .build();
 
-        when(invoiceService.createInvoice(any(InvoiceRequest.class), eq(orderNo))).thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "Order not found"));
+        when(invoiceService.createInvoice(any(Invoice.class), eq(orderNo))).thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "Order not found"));
 
         // Act & Assert
         MvcResult result = mockMvc.perform(post("/api/invoice")

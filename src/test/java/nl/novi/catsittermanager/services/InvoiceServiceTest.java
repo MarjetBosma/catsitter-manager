@@ -108,7 +108,6 @@ public class InvoiceServiceTest {
                 Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
         );
 
-        // Initialize the expected Order with correct values
         Order expectedOrder = OrderFactory.randomOrder(tasks).build();
         expectedOrder.setOrderNo(expectedInvoiceRequest.orderNo());
         expectedOrder.setStartDate(LocalDate.now());
@@ -118,18 +117,13 @@ public class InvoiceServiceTest {
 
         double expectedAmount = expectedOrder.calculateTotalCost();
 
-        // Initialize the expected Invoice
         Invoice expectedInvoice = InvoiceMapper.InvoiceRequestToInvoice(expectedInvoiceRequest, expectedOrder);
 
-        // Mock the Order Service
         when(orderService.getOrder(expectedOrder.getOrderNo())).thenReturn(expectedOrder);
         when(orderService.hasExistingInvoice(expectedOrder.getOrderNo())).thenReturn(false);
-
-        // Mock the Invoice Repository
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(expectedInvoice);
 
-        // Act
-        Invoice resultInvoice = invoiceService.createInvoice(expectedInvoiceRequest, expectedOrder.getOrderNo());
+        Invoice resultInvoice = invoiceService.createInvoice(expectedInvoice, expectedInvoice.getOrder().getOrderNo());
 
         // Assert
         assertNotNull(resultInvoice);
@@ -142,28 +136,6 @@ public class InvoiceServiceTest {
         verify(orderService, times(1)).getOrder(expectedOrder.getOrderNo());
         verify(orderService, times(1)).hasExistingInvoice(expectedOrder.getOrderNo());
         verify(invoiceRepository, times(1)).save(any(Invoice.class));
-//        // Arrange
-//        Invoice expectedInvoice = InvoiceFactory.randomInvoice().build();
-//
-//        List<Task> tasks = List.of(
-//                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
-//                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
-//        );
-//        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
-//
-//        when(orderService.getOrder(expectedOrder.getOrderNo())).thenReturn(expectedOrder);
-//        when(orderService.hasExistingInvoice(expectedOrder.getOrderNo())).thenReturn(false);
-//        when(invoiceRepository.save(expectedInvoice)).thenReturn(expectedInvoice);
-//
-//        // Act
-//        Invoice resultInvoice = invoiceService.createInvoice(expectedInvoice, expectedOrder.getOrderNo());
-//
-//        // Assert
-//        assertEquals(expectedInvoice, resultInvoice);
-//        assertEquals(expectedOrder, resultInvoice.getOrder());
-//
-//        verify(orderService, times(1)).getOrder(expectedOrder.getOrderNo());
-//        verify(invoiceRepository, times(1)).save(expectedInvoice);
     }
 
     @Test
@@ -171,63 +143,59 @@ public class InvoiceServiceTest {
         // Arrange
         UUID orderNo = UUID.randomUUID();
         InvoiceRequest invoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().orderNo(orderNo).build();
-        Order order = new Order();
 
-        when(orderService.getOrder(orderNo)).thenReturn(order);
+        List<Task> tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+
+        Order existingOrder = OrderFactory.randomOrder(tasks).build();
+        existingOrder.setOrderNo(orderNo);
+        existingOrder.setOrderNo(invoiceRequest.orderNo());
+        existingOrder.setStartDate(LocalDate.now());
+        existingOrder.setEndDate(LocalDate.now().plusDays(5));
+        existingOrder.setDailyNumberOfVisits(2);
+        existingOrder.setTasks(tasks);
+
+        Invoice mappedInvoice = InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest, existingOrder);
+        mappedInvoice.setOrder(existingOrder);
+
+        when(orderService.getOrder(existingOrder.getOrderNo())).thenReturn(existingOrder);
         when(orderService.hasExistingInvoice(orderNo)).thenReturn(true);
 
         // Act & Assert
         assertThrows(InvoiceAlreadyExistsForThisOrderException.class, () -> {
-            invoiceService.createInvoice(invoiceRequest, orderNo);
+            invoiceService.createInvoice(mappedInvoice, orderNo);
         });
 
         verify(orderService, times(1)).getOrder(orderNo);
         verify(orderService, times(1)).hasExistingInvoice(orderNo);
         verifyNoInteractions(invoiceRepository);
-
-
-//        // Arrange
-//        UUID orderNo = UUID.randomUUID();
-//        Order order = new Order();
-//        Invoice invoice = new Invoice();
-//
-//        when(orderService.getOrder(orderNo)).thenReturn(order);
-//        when(orderService.hasExistingInvoice(orderNo)).thenReturn(true);
-//
-//        // Act & Assert
-//        assertThrows(InvoiceAlreadyExistsForThisOrderException.class, () -> invoiceService.createInvoice(invoice, orderNo));
-//
-//        verify(orderService, times(1)).getOrder(orderNo);
-//        verify(orderService, times(1)).hasExistingInvoice(orderNo);
-//        verifyNoInteractions(invoiceRepository);
     }
 
     @Test
     void testCreateInvoice_orderNotFound() {
+
         // Arrange
         UUID orderNo = UUID.randomUUID();
-        InvoiceRequest invoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().orderNo(orderNo).build();
+        InvoiceRequest invoiceRequest = new InvoiceRequest(
+                "2024-06-27",
+                100.0,
+                false,
+                orderNo);
 
-        when(orderService.getOrder(orderNo)).thenThrow(new RecordNotFoundException("No order found with this id"));
+        when(orderService.getOrder(orderNo)).thenReturn(null);
 
         // Act & Assert
-        assertThrows(RecordNotFoundException.class, () -> {
-            invoiceService.createInvoice(invoiceRequest, orderNo);
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
+            invoiceService.createInvoice(InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest, null), orderNo);
         });
 
+        assertEquals("Order not found", exception.getMessage());
+
+        // Verify interactions
         verify(orderService, times(1)).getOrder(orderNo);
         verifyNoInteractions(invoiceRepository);
-
-//        // Arrange
-//        UUID orderNo = UUID.randomUUID();
-//        Invoice invoice = new Invoice();
-//        when(orderService.getOrder(orderNo)).thenThrow(new RecordNotFoundException("No order found with this id"));
-//
-//        // Act & Assert
-//        assertThrows(RecordNotFoundException.class, () -> invoiceService.createInvoice(invoice, orderNo));
-//
-//        verify(orderService, times(1)).getOrder(orderNo);
-//        verifyNoInteractions(invoiceRepository);
     }
 
     @Test
@@ -268,66 +236,26 @@ public class InvoiceServiceTest {
         verify(invoiceRepository, times(1)).save(any(Invoice.class));
 
     }
-//        // Arrange
-//        Invoice invoice = InvoiceFactory.randomInvoice().build();
-//
-//        List<Task> tasks = List.of(
-//                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
-//                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
-//        );
-//
-//        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
-//        invoice.setOrder(expectedOrder);
-//
-//        when(invoiceRepository.findById(invoice.getInvoiceNo())).thenReturn(Optional.of(invoice));
-//        when(orderService.getOrder(invoice.getOrder().getOrderNo())).thenReturn(expectedOrder);
-//        when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
-//
-//        // Act
-//        Invoice resultInvoice = invoiceService.editInvoice(invoice.getInvoiceNo(), invoice, invoice.getOrder().getOrderNo());
-//
-//        // Assert
-//        assertEquals(invoice, resultInvoice);
-//        assertEquals(expectedOrder, resultInvoice.getOrder());
-//
-//        verify(invoiceRepository, times(1)).findById(invoice.getInvoiceNo());
-//        verify(orderService, times(1)).getOrder(invoice.getOrder().getOrderNo());
-//        verify(invoiceRepository, times(1)).save(any(Invoice.class));
-//    }
 
     @Test
     void testEditInvoice_nonExistingInvoice_shouldThrowRecordNotFoundException() {
 
-//        // Arrange
-//        UUID invoiceNo = UUID.randomUUID();
-//        UUID orderNo = UUID.randomUUID();
-//        InvoiceRequest updatedInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().orderNo(orderNo).build();
-//
-//        when(invoiceRepository.findById(invoiceNo)).thenReturn(Optional.empty());
-//
-//        // Act
-//        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
-//            invoiceService.editInvoice(invoiceNo, updatedInvoiceRequest, orderNo);
-//        });
-//
-//        // Assert
-//        assertEquals("No invoice found with this id.", exception.getMessage());
-//        verify(invoiceRepository, times(1)).findById(invoiceNo);
-//        verifyNoMoreInteractions(invoiceRepository);
-//        verifyNoInteractions(orderService);
+        // Arrange
+        UUID invoiceNo = UUID.randomUUID();
+        UUID orderNo = UUID.randomUUID();
 
-//        // Arrange
-//        UUID invoiceNo = UUID.randomUUID();
-//        Invoice invoice = InvoiceFactory.randomInvoice().build();
-//        UUID orderNo = UUID.randomUUID();
-//        when(invoiceRepository.findById(invoiceNo)).thenReturn(Optional.empty());
-//
-//        // Act
-//        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> invoiceService.editInvoice(invoiceNo, invoice, orderNo));
-//
-//        // Assert
-//        assertEquals("No invoice found with this id.", exception.getMessage());
-//        verify(invoiceRepository, times(1)).findById(invoiceNo);
+        InvoiceRequest updatedInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().orderNo(orderNo).build();
+
+        when(invoiceRepository.findById(invoiceNo)).thenReturn(Optional.empty());
+
+        // Act
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
+            invoiceService.getInvoice(invoiceNo);
+        });
+
+        // Assert
+        verifyNoMoreInteractions(invoiceRepository);
+        verifyNoInteractions(orderService);
     }
 
     @Test

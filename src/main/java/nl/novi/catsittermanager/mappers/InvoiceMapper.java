@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.mappers;
 
 import nl.novi.catsittermanager.dtos.invoice.InvoiceRequest;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.models.Invoice;
 import nl.novi.catsittermanager.models.Order;
 import org.springframework.stereotype.Component;
@@ -24,9 +25,10 @@ public class InvoiceMapper {
 
     public static Invoice InvoiceRequestToInvoice(InvoiceRequest invoiceRequest, Order order) {
 
-//        Order order = new Order();
-//        order.setOrderNo(invoiceRequest.orderNo());
-//        order.setTasks(new ArrayList<>());
+        if (order == null) {
+            throw new RecordNotFoundException("Order not found");
+        }
+        order.setOrderNo(invoiceRequest.orderNo());
 
         return Invoice.builder()
                 .invoiceDate(LocalDate.parse(invoiceRequest.invoiceDate()))

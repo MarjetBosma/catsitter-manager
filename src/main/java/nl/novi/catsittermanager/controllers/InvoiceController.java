@@ -47,18 +47,41 @@ public class InvoiceController {
     public ResponseEntity<?> createInvoice(@Valid @RequestBody final InvoiceRequest invoiceRequest) throws URISyntaxException {
         UUID orderNo = invoiceRequest.orderNo();
         try {
-            // Call the service method with the request and orderNo
-            Invoice invoice = invoiceService.createInvoice(invoiceRequest, orderNo);
-            System.out.println("Invoice created successfully for orderNo: " + orderNo);
-            return ResponseEntity.created(new URI("/invoice/" + invoice.getInvoiceNo())).body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
+            Order order = orderService.getOrder(orderNo);
+            Invoice invoice = InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest, order);
+            invoice.setPaid(false);
+
+            Invoice savedInvoice = invoiceService.createInvoice(invoice, orderNo);
+            return ResponseEntity.created(new URI("/invoice/" + savedInvoice.getInvoiceNo()))
+                    .body(InvoiceMapper.InvoiceToInvoiceResponse(savedInvoice));
         } catch (InvoiceAlreadyExistsForThisOrderException exception) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("An invoice already exists for order " + orderNo + ".");
         } catch (RecordNotFoundException exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Order not found");
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("An error occurred while creating the invoice.");
         }
     }
+
+//    @PostMapping("/invoice")
+//    public ResponseEntity<?> createInvoice(@Valid @RequestBody final InvoiceRequest invoiceRequest) throws URISyntaxException {
+//        UUID orderNo = invoiceRequest.orderNo();
+//        try {
+//            // Call the service method with the request and orderNo
+//            Invoice invoice = invoiceService.createInvoice(invoiceRequest, orderNo);
+//            System.out.println("Invoice created successfully for orderNo: " + orderNo);
+//            return ResponseEntity.created(new URI("/invoice/" + invoice.getInvoiceNo())).body(InvoiceMapper.InvoiceToInvoiceResponse(invoice));
+//        } catch (InvoiceAlreadyExistsForThisOrderException exception) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT)
+//                    .body("An invoice already exists for order " + orderNo + ".");
+//        } catch (RecordNotFoundException exception) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body("Order not found");
+//        }
+//    }
 
     @PutMapping("/invoice/{id}")
     public ResponseEntity<InvoiceResponse> editInvoice(@PathVariable("id") final UUID idToEdit, @Valid @RequestBody final InvoiceRequest invoiceRequest) {
@@ -76,26 +99,6 @@ public class InvoiceController {
         return ResponseEntity.ok().body(InvoiceMapper.InvoiceToInvoiceResponse(savedInvoice));
     }
 
-//    @PutMapping("/invoice/{id}")
-//    public ResponseEntity<?> editInvoice(@PathVariable("id") final UUID idToEdit, @Valid @RequestBody final InvoiceRequest invoiceRequest) {
-//        UUID orderNo = invoiceRequest.orderNo();
-//        try {
-//            Order order = orderService.getOrder(orderNo);
-//
-//            Invoice updatedInvoice = InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest, order);
-//            updatedInvoice.setInvoiceNo(idToEdit);
-//
-//            Invoice savedInvoice = invoiceService.editInvoice(updatedInvoice);
-//
-//            return ResponseEntity.ok().body(InvoiceMapper.InvoiceToInvoiceResponse(savedInvoice));
-//        } catch (RecordNotFoundException exception) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body("No invoice or order found with the provided id.");
-//        } catch (Exception exception) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//                    .body("An error occurred while updating the invoice.");
-//        }
-//    }
 
     @DeleteMapping("/invoice/{id}")
     public ResponseEntity<Object> deleteInvoice(@PathVariable("id") final UUID idToDelete) {

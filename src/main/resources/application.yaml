@@ -28,9 +28,9 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
-#  sql:
-#    init:
-#      mode: always
+  sql:
+    init:
+      mode: always
 my:
   upload_location: Uploads
 

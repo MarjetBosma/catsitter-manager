@@ -2,6 +2,7 @@ package nl.novi.catsittermanager.services;
 
 import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
+import nl.novi.catsittermanager.exceptions.UsernameNotFoundException;
 import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.repositories.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -17,6 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -207,6 +210,36 @@ public class OrderServiceTest {
     }
 
     @Test
+    void testCreateOrder_customerUnknown_shouldThrowUsernameNotFoundException() {
+
+        // Arrange
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
+        Catsitter catsitter = CatsitterFactory.randomCatsitter().build();
+        String unknownCustomer = "unknownCustomer";
+
+        when(customerService.getCustomer(anyString())).thenReturn(null);
+
+        // Act & Assert
+        assertThrows(UsernameNotFoundException.class, () -> orderService.createOrder(expectedOrder, unknownCustomer, catsitter.getUsername()));
+        verifyNoMoreInteractions(customerService);
+    }
+
+    @Test
+    void testCreateOrder_catsitterUnknown_shouldThrowUsernameNotFoundException() {
+
+        // Arrange
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
+        Customer customer = CustomerFactory.randomCustomer().build();
+        String unknownCatsitter = "unknownCatsitter";
+
+        Mockito.lenient().when(catsitterService.getCatsitter(anyString())).thenReturn(null);
+
+        // Act & Assert
+        assertThrows(UsernameNotFoundException.class, () -> orderService.createOrder(expectedOrder, customer.getUsername(), unknownCatsitter));
+        verifyNoMoreInteractions(catsitterService);
+    }
+
+    @Test
     void testEditOrder_shouldEditExistingOrder() {
 
         // Arrange
@@ -232,7 +265,7 @@ public class OrderServiceTest {
         verify(catsitterService, times(1)).getCatsitter(order.getCatsitter().getUsername());
         verify(orderRepository, times(1)).save(any(Order.class));
     }
-    
+
     @Test
     void testEditOrder_nonExistingOrder_shouldThrowRecordNotFoundException() {
 
