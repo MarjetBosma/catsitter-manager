@@ -10,8 +10,10 @@ import nl.novi.catsittermanager.dtos.task.TaskRequest;
 import nl.novi.catsittermanager.dtos.task.TaskResponse;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
+import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.models.TaskFactory;
+import nl.novi.catsittermanager.services.OrderService;
 import nl.novi.catsittermanager.services.TaskService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,6 +54,9 @@ public class TaskControllerTest {
     @MockBean
     private TaskService taskService;
 
+    @MockBean
+    private OrderService orderService;
+
     @Autowired
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -69,11 +74,18 @@ public class TaskControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    void givenAValidRequest_whenGetAllInvoices_thenAllInvoicesShouldBeReturned() throws Exception {
+    void givenAValidRequest_whenGetAllTasks_thenAllTasksShouldBeReturned() throws Exception {
 
         // Arrange
         Task expectedTask = TaskFactory.randomTask().build();
         List<Task> expectedTaskList = List.of(expectedTask);
+
+        Order expectedOrder = new Order();
+        expectedOrder.setOrderNo(UUID.randomUUID());
+
+        for (Task task : expectedTaskList) {
+            task.setOrder(expectedOrder);
+        }
 
         when(taskService.getAllTasks()).thenReturn(expectedTaskList);
 
@@ -126,6 +138,12 @@ public class TaskControllerTest {
         // Arrange
         Task expectedTask = TaskFactory.randomTask().build();
 
+        Order expectedOrder = new Order();
+        expectedOrder.setOrderNo(UUID.randomUUID());
+
+        expectedTask.setOrder(expectedOrder);
+        expectedTask.setTaskNo(UUID.randomUUID());
+
         when(taskService.getTask(expectedTask.getTaskNo())).thenReturn(expectedTask);
 
         TaskResponse expectedResponse = new TaskResponse(
@@ -177,10 +195,25 @@ public class TaskControllerTest {
 
         // Arrange
         TaskRequest expectedTaskRequest = TaskRequestFactory.randomTaskRequest().build();
+        UUID orderNo = expectedTaskRequest.orderNo();
         Task expectedTask = TaskFactory.randomTask().build();
 
+        Order expectedOrder = new Order();
+        expectedOrder.setOrderNo(orderNo);
+        expectedTask.setOrder(expectedOrder);
+
+        when(orderService.getOrder(orderNo)).thenReturn(expectedOrder);
         when(taskService.createTask(any(Task.class), eq(expectedTaskRequest.orderNo())))
                 .thenReturn(expectedTask);
+
+        TaskResponse expectedResponse = new TaskResponse(
+                expectedTask.getTaskNo(),
+                expectedTask.getTaskType(),
+                expectedTask.getTaskInstruction(),
+                expectedTask.getExtraInstructions(),
+                expectedTask.getPriceOfTask(),
+                expectedTask.getOrder().getOrderNo()
+        );
 
         String content = objectMapper.writeValueAsString(expectedTaskRequest);
         System.out.println(content);
@@ -192,11 +225,11 @@ public class TaskControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.taskNo").value(expectedTask.getTaskNo().toString()))
-                .andExpect(jsonPath("$.taskType").value(expectedTask.getTaskType().toString()))
-                .andExpect(jsonPath("$.taskInstruction").value(expectedTask.getTaskInstruction()))
-                .andExpect(jsonPath("$.extraInstructions").value(expectedTask.getExtraInstructions()))
-                .andExpect(jsonPath("$.priceOfTask").value(expectedTask.getPriceOfTask()));
+                .andExpect(jsonPath("$.taskNo").value(expectedResponse.taskNo().toString()))
+                .andExpect(jsonPath("$.taskType").value(expectedResponse.taskType().toString()))
+                .andExpect(jsonPath("$.taskInstruction").value(expectedResponse.taskInstruction()))
+                .andExpect(jsonPath("$.extraInstructions").value(expectedResponse.extraInstructions()))
+                .andExpect(jsonPath("$.priceOfTask").value(expectedResponse.priceOfTask()));
     }
 
     @Test
@@ -208,7 +241,6 @@ public class TaskControllerTest {
                 .taskType(null)
                 .taskInstruction(null)
                 .extraInstructions(null)
-                .priceOfTask(-10.00)
                 .build();
 
         // Act & Assert
@@ -222,18 +254,31 @@ public class TaskControllerTest {
         verifyNoInteractions(taskService);
     }
 
-
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenEditTask_thenEditedTaskShouldBeReturned() throws Exception {
-
         // Arrange
-        TaskRequest expectedTaskRequest = TaskRequestFactory.randomTaskRequest().build();
-        Task expectedTask = TaskFactory.randomTask().build();
+        UUID taskNo = UUID.randomUUID();
+        UUID orderNo = UUID.randomUUID();
 
-        when(taskService.editTask(ArgumentMatchers.any(UUID.class), ArgumentMatchers.any(Task.class), ArgumentMatchers.eq(expectedTaskRequest.orderNo())))
+        TaskRequest expectedTaskRequest = TaskRequestFactory.randomTaskRequest().orderNo(orderNo).build();
+        Task expectedTask = TaskFactory.randomTask()
+                .taskNo(taskNo)
+                .taskType(expectedTaskRequest.taskType())
+                .taskInstruction(expectedTaskRequest.taskInstruction())
+                .extraInstructions(expectedTaskRequest.extraInstructions())
+                .priceOfTask(expectedTaskRequest.taskType().getPrice())
+                .build();
+
+        Order expectedOrder = new Order();
+        expectedOrder.setOrderNo(orderNo);
+        expectedTask.setOrder(expectedOrder);
+
+        when(orderService.getOrder(orderNo)).thenReturn(expectedOrder);
+        when(taskService.editTask(ArgumentMatchers.any(Task.class)))
                 .thenReturn(expectedTask);
-        TaskResponse expectedTaskResponse = new TaskResponse(
+
+        TaskResponse expectedResponse = new TaskResponse(
                 expectedTask.getTaskNo(),
                 expectedTask.getTaskType(),
                 expectedTask.getTaskInstruction(),
@@ -246,17 +291,17 @@ public class TaskControllerTest {
         System.out.println(content);
 
         // Act & Assert
-        mockMvc.perform(put("/api/task/{id}", expectedTask.getTaskNo())
+        mockMvc.perform(put("/api/task/{id}", taskNo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.taskNo").value(expectedTask.getTaskNo().toString()))
-                .andExpect(jsonPath("$.taskType").value(expectedTask.getTaskType().toString()))
-                .andExpect(jsonPath("$.taskInstruction").value(expectedTask.getTaskInstruction()))
-                .andExpect(jsonPath("$.extraInstructions").value(expectedTask.getExtraInstructions()))
-                .andExpect(jsonPath("$.priceOfTask").value(expectedTask.getPriceOfTask()));
+                .andExpect(jsonPath("$.taskNo").value(expectedResponse.taskNo().toString()))
+                .andExpect(jsonPath("$.taskType").value(expectedResponse.taskType().toString()))
+                .andExpect(jsonPath("$.taskInstruction").value(expectedResponse.taskInstruction()))
+                .andExpect(jsonPath("$.extraInstructions").value(expectedResponse.extraInstructions()))
+                .andExpect(jsonPath("$.priceOfTask").value(expectedResponse.priceOfTask()));
     }
 
     @Test
@@ -267,7 +312,7 @@ public class TaskControllerTest {
         UUID taskNo = UUID.randomUUID();
         TaskRequest expectedTaskRequest = TaskRequestFactory.randomTaskRequest().build();
 
-        when(taskService.editTask(any(UUID.class), any(Task.class), eq(expectedTaskRequest.orderNo())))
+        when(taskService.editTask(any(Task.class)))
                 .thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No task found with this id."));
 
         //  Act & Assert
@@ -276,6 +321,30 @@ public class TaskControllerTest {
                         .content(objectMapper.writeValueAsString(expectedTaskRequest)))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void givenInvalidOrderId_whenEditTask_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
+
+        // Arrange
+        UUID taskNo = UUID.randomUUID();
+        UUID orderNo = UUID.randomUUID();
+
+        TaskRequest expectedTaskRequest = TaskRequestFactory.randomTaskRequest().orderNo(orderNo).build();
+
+        when(orderService.getOrder(orderNo)).thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id"));
+
+        String content = objectMapper.writeValueAsString(expectedTaskRequest);
+
+        // Act & Assert
+        mockMvc.perform(put("/api/task/{id}", taskNo)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
@@ -288,7 +357,6 @@ public class TaskControllerTest {
                 .taskType(null)
                 .taskInstruction(null)
                 .extraInstructions(null)
-                .priceOfTask(-10.00)
                 .orderNo(null)
                 .build();
 

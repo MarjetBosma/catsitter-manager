@@ -4,18 +4,16 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nl.novi.catsittermanager.dtos.task.TaskRequest;
 import nl.novi.catsittermanager.dtos.task.TaskResponse;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.mappers.TaskMapper;
+import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.models.Task;
+import nl.novi.catsittermanager.services.OrderService;
 import nl.novi.catsittermanager.services.TaskService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -28,6 +26,8 @@ import java.util.UUID;
 public class TaskController {
 
     private final TaskService taskService;
+
+    private final OrderService orderService;
 
     @GetMapping("/tasks")
     public ResponseEntity<List<TaskResponse>> getAllTasks() {
@@ -45,17 +45,32 @@ public class TaskController {
 
     @PostMapping("/task")
     public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody final TaskRequest taskRequest) throws URISyntaxException {
+        UUID orderNo = taskRequest.orderNo();
+        Order order = orderService.getOrder(orderNo);
         Task task = taskService.createTask(
-                TaskMapper.TaskRequestToTask(taskRequest),
+                TaskMapper.TaskRequestToTask(taskRequest, order),
                 taskRequest.orderNo()
         );
-        return ResponseEntity.created(new URI("/task/" + task.getTaskNo())).body(TaskMapper.TaskToTaskResponse(task));
+        Task savedTask = taskService.createTask(task, orderNo);
+
+        return ResponseEntity.created(new URI("/task/" + task.getTaskNo()))
+                .body(TaskMapper.TaskToTaskResponse(savedTask));
     }
 
     @PutMapping("/task/{id}")
-    public ResponseEntity<TaskResponse> editTask(@PathVariable("id") final UUID idToEdit,@Valid @RequestBody final TaskRequest taskRequest) {
-        Task task = taskService.editTask(idToEdit, TaskMapper.TaskRequestToTask(taskRequest), taskRequest.orderNo());
-        return ResponseEntity.ok().body(TaskMapper.TaskToTaskResponse(task));
+    public ResponseEntity<TaskResponse> editTask(@PathVariable("id") final UUID idToEdit, @Valid @RequestBody final TaskRequest taskRequest) {
+        UUID orderNo = taskRequest.orderNo();
+        Order order = orderService.getOrder(orderNo);
+
+        if (order == null) {
+            throw new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id");
+        }
+
+        Task updatedTask = TaskMapper.TaskRequestToTask(taskRequest, order);
+        updatedTask.setTaskNo(idToEdit);
+        Task savedTask = taskService.editTask(updatedTask);
+
+        return ResponseEntity.ok().body(TaskMapper.TaskToTaskResponse(savedTask));
     }
 
     @DeleteMapping("/task/{id}")

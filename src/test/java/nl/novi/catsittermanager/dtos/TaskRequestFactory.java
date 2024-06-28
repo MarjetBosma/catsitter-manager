@@ -3,6 +3,7 @@ package nl.novi.catsittermanager.dtos;
 import net.datafaker.Faker;
 import nl.novi.catsittermanager.dtos.task.TaskRequest;
 import nl.novi.catsittermanager.helpers.TaskFactoryHelper;
+
 import java.util.UUID;
 
 public class TaskRequestFactory {
@@ -15,7 +16,6 @@ public class TaskRequestFactory {
                 .taskType(TaskFactoryHelper.randomTaskType())
                 .taskInstruction(faker.lorem().sentence())
                 .extraInstructions(faker.lorem().sentence())
-                .priceOfTask(faker.number().randomDouble(2, 10, 100))
                 .orderNo(UUID.randomUUID());
     }
 }

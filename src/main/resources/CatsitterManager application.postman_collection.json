@@ -279,7 +279,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"pietjepuk\",\n    \"password\": \"qwerty\",\n    \"name\": \"Pietje Puk\",\n    \"address\": \"Straatweg 231, Bakkeveen\",\n    \"email\": \"pietjepuk@gmail.com\"\n}",
+							"raw": "    {\n        \"username\": \"marietjemuk\",\n        \"password\": \"qwerty\",\n        \"name\": \"Marietje Muk\",\n        \"address\": \"Straatweg 231, Bakkeveen\",\n        \"email\": \"mmuk@ziggo.com\"\n    }\n\n\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -589,7 +589,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"annagulden\",\n    \"password\": \"ILoveCats\",\n    \"name\": \"Anna Gulden\",\n    \"address\": \"Lindelaan 3b, Nergenshuizen\",\n    \"email\": \"annagulden@kpn.com\",\n    \"about\": \"Opgegroeid met katten, wil nu die ervaring in de praktijk brengen\"\n}",
+							"raw": "{\n    \"username\": \"lisadubbel\",\n    \"password\": \"ILoveFirsa\",\n    \"name\": \"Lisa Dubbel\",\n    \"address\": \"Lindelaan 3b, Nergenshuizen\",\n    \"email\": \"lisadubbel@kpn.com\",\n    \"about\": \"Opgegroeid met katten, wil nu die ervaring in de praktijk brengen\"\n}\n\n\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -864,7 +864,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Duke\",\n    \"dateOfBirth\": \"2022-02-11\",\n    \"gender\": \"M\",\n    \"breed\": \"Pers\",\n    \"generalInfo\": \"Gaat zijn eigen gang, maar wordt claimend rond etenstijd\",\n    \"spayedOrNeutered\": false,\n    \"vaccinated\": true,\n    \"veterinarianName\": \"Dierenkliniek Bakkeveen\",\n    \"phoneVet\": \"0891-234567\",\n    \"medicationName\": \"geen\",\n    \"medicationDose\": \"geen\",\n    \"ownerUsername\": \"pietjepuk\"\n}",
+							"raw": "    {\n        \"name\": \"Duke\",\n        \"dateOfBirth\": \"2022-02-11\",\n        \"gender\": \"M\",\n        \"breed\": \"Pers\",\n        \"generalInfo\": \"Gaat zijn eigen gang, maar wordt claimend rond etenstijd\",\n        \"spayedOrNeutered\": false,\n        \"vaccinated\": true,\n        \"veterinarianName\": \"Dierenkliniek Bakkeveen\",\n        \"phoneVet\": \"0891-234567\",\n        \"medicationName\": \"geen\",\n        \"medicationDose\": \"geen\",\n        \"ownerUsername\": \"marietjemuk\"\n    }\n\n\n\n\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -919,7 +919,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Poekie\",\n    \"dateOfBirth\": \"2020-04-30\",\n    \"gender\": \"V\",\n    \"breed\": \"Siamees\",\n    \"generalInfo\": \"Luidruchtig en veeleisend, maar ook erg aanhankelijk\",\n    \"spayedOrNeutered\": true,\n    \"vaccinated\": true,\n    \"veterinarianName\": \"Dierenkliniek Lutjebroek\",\n    \"phoneVet\": \"0345-678901\",\n    \"medicationName\": \"geen\",\n    \"medicationDose\": \"geen\",\n    \"ownerUsername\": \"willemjansen\"\n}",
+							"raw": "    {\n        \"name\": \"Duke\",\n        \"dateOfBirth\": \"2022-02-11\",\n        \"gender\": \"M\",\n        \"breed\": \"Pers\",\n        \"generalInfo\": \"Gaat zijn eigen gang, maar wordt claimend rond etenstijd\",\n        \"spayedOrNeutered\": false,\n        \"vaccinated\": true,\n        \"veterinarianName\": \"Dierenkliniek Bakkeveen\",\n        \"phoneVet\": \"0891-234567\",\n        \"medicationName\": \"geen\",\n        \"medicationDose\": \"geen\",\n        \"ownerUsername\": \"marietjemuk\"\n    }\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -927,7 +927,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/cat/61093c40-6c44-4354-93ea-c91a18b9a6ae",
+							"raw": "http://localhost:8080/api/cat/438ddcfa-a78b-40a8-8ab4-86ede3f5a974",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -936,7 +936,7 @@
 							"path": [
 								"api",
 								"cat",
-								"61093c40-6c44-4354-93ea-c91a18b9a6ae"
+								"438ddcfa-a78b-40a8-8ab4-86ede3f5a974"
 							]
 						},
 						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
@@ -983,7 +983,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/cat/63fc4320-25c5-47d8-9d6c-9d38226633ce",
+							"raw": "http://localhost:8080/api/cat/888156d8-6d70-48f2-b50d-95bc3edc1cfc",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -992,7 +992,7 @@
 							"path": [
 								"api",
 								"cat",
-								"63fc4320-25c5-47d8-9d6c-9d38226633ce"
+								"888156d8-6d70-48f2-b50d-95bc3edc1cfc"
 							]
 						},
 						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
@@ -1079,7 +1079,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/order/0237fdf5-8823-451a-afb9-2be1100d46c5",
+							"raw": "http://localhost:8080/api/order/6e337a29-f104-4320-b6e5-7d061e1772d3",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1088,7 +1088,7 @@
 							"path": [
 								"api",
 								"order",
-								"0237fdf5-8823-451a-afb9-2be1100d46c5"
+								"6e337a29-f104-4320-b6e5-7d061e1772d3"
 							]
 						},
 						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
@@ -1191,7 +1191,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"startDate\": \"2024-07-01\",\n    \"endDate\": \"2024-07-21\",\n    \"dailyNumberOfVisits\": 1,\n    \"totalNumberOfVisits\": 21,\n    \"customerUsername\": \"pietjepuk\",\n    \"catsitterUsername\": \"annagulden\"\n}",
+							"raw": "{\n    \"startDate\": \"2024-07-01\",\n    \"endDate\": \"2024-07-21\",\n    \"dailyNumberOfVisits\": 1,\n    \"customerUsername\": \"marietjemuk\",\n    \"catsitterUsername\": \"lisadubbel\"\n}\n\n\n\n\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1246,7 +1246,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"startDate\": \"2024-04-30\",\n    \"endDate\": \"2024-05-02\",\n    \"dailyNumberOfVisits\": 1,\n    \"totalNumberOfVisits\": 3,\n    \"customerUsername\": \"marjetbosma\",\n    \"catsitterUsername\": \"hannahdaalder\"\n}",
+							"raw": "    {\n        \"orderNo\": \"be7e95b4-bb87-40dd-a4a7-c47d6c7673d9\",\n        \"startDate\": \"2024-07-01\",\n        \"endDate\": \"2024-07-21\",\n        \"dailyNumberOfVisits\": 1,\n        \"totalNumberOfVisits\": 21,\n        \"customerUsername\": \"peterdejong\",\n        \"catsitterUsername\": \"annagulden\"\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1254,7 +1254,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/order/0237fdf5-8823-451a-afb9-2be1100d46c5",
+							"raw": "http://localhost:8080/api/order/be7e95b4-bb87-40dd-a4a7-c47d6c7673d9",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1263,7 +1263,7 @@
 							"path": [
 								"api",
 								"order",
-								"0237fdf5-8823-451a-afb9-2be1100d46c5"
+								"be7e95b4-bb87-40dd-a4a7-c47d6c7673d9"
 							]
 						},
 						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
@@ -1320,6 +1320,269 @@
 								"api",
 								"order",
 								"076ef7b5-0b16-45a0-8db0-fb8117c5c9a5"
+							]
+						},
+						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TaskController",
+			"item": [
+				{
+					"name": "Get all tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTkzMzQwMjY2Nn0.L9aFhsjOtorsYtpEBecBG6Dne_mj2zwb2h2JxF_uoJg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/tasks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"tasks"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Get one task by taskno",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTkzMzQwMjY2Nn0.L9aFhsjOtorsYtpEBecBG6Dne_mj2zwb2h2JxF_uoJg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/task/c06639a0-4255-4bb0-a794-05f4e29c3690",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"task",
+								"c06639a0-4255-4bb0-a794-05f4e29c3690"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Create new task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTkzMzQwMjY2Nn0.L9aFhsjOtorsYtpEBecBG6Dne_mj2zwb2h2JxF_uoJg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"taskType\": \"FURCARE\",\n    \"taskInstruction\": \"Als Perzische katten hebben ze elke dag een borstelbeurt nodig, borstels liggen in de lade naast de mandjes\",\n    \"extraInstructions\": \"Duchess geniet erg van vachverzorging, Duke is niet altijd in de stemming, maar blijf proberen\",\n    \"orderNo\": \"e506a243-b944-444e-a2b7-3187e025845d\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/task",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"task"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Edit task by taskno",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTkzMzQwMjY2Nn0.L9aFhsjOtorsYtpEBecBG6Dne_mj2zwb2h2JxF_uoJg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "   {\n        \"taskNo\": \"5ffb173d-896b-4b3a-bea4-3232d742bf88\",\n        \"taskType\": \"LITTERBOX\",\n        \"taskInstruction\": \"Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.\",\n        \"extraInstructions\": \"Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.\",\n        \"priceOfTask\": 6.0,\n        \"orderNo\": \"7639b001-810e-446f-bd24-1bed57cacf7f\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/task/5ffb173d-896b-4b3a-bea4-3232d742bf88",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"task",
+								"5ffb173d-896b-4b3a-bea4-3232d742bf88"
+							]
+						},
+						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete task by taskno",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTkzMzQwMjY2Nn0.L9aFhsjOtorsYtpEBecBG6Dne_mj2zwb2h2JxF_uoJg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/task/1eb9933d-67e3-492f-a2b7-a23a39da2935",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"task",
+								"1eb9933d-67e3-492f-a2b7-a23a39da2935"
 							]
 						},
 						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
@@ -1509,7 +1772,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "    {\n        \"invoiceNo\": \"45ee46bf-f916-4930-a339-49761be7a41f\",\n        \"invoiceDate\": \"2024-06-10\",\n        \"amount\": 294.0,\n        \"paid\": false,\n        \"orderNo\": \"85765971-7505-49e5-9ec9-de35c8703c59\"\n    }",
+							"raw": "{\n    \"invoiceNo\": \"60e73b3f-7b0b-4640-a1d5-91eb08522369\",\n    \"invoiceDate\": \"2024-07-22\",\n    \"amount\": 420.0,\n    \"paid\": true,\n    \"orderNo\": \"e506a243-b944-444e-a2b7-3187e025845d\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1517,7 +1780,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/invoice/45ee46bf-f916-4930-a339-49761be7a41f",
+							"raw": "http://localhost:8080/api/invoice/60e73b3f-7b0b-4640-a1d5-91eb08522369",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1526,7 +1789,7 @@
 							"path": [
 								"api",
 								"invoice",
-								"45ee46bf-f916-4930-a339-49761be7a41f"
+								"60e73b3f-7b0b-4640-a1d5-91eb08522369"
 							]
 						},
 						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
@@ -1573,7 +1836,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/invoice/75db48bd-df06-4c0b-8bc2-0a15f190ffe5",
+							"raw": "http://localhost:8080/api/invoice/e506a243-b944-444e-a2b7-3187e025845d",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1582,270 +1845,7 @@
 							"path": [
 								"api",
 								"invoice",
-								"75db48bd-df06-4c0b-8bc2-0a15f190ffe5"
-							]
-						},
-						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "TaskController",
-			"item": [
-				{
-					"name": "Get all tasks",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTkzMzQwMjY2Nn0.L9aFhsjOtorsYtpEBecBG6Dne_mj2zwb2h2JxF_uoJg",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/tasks",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"tasks"
-							]
-						},
-						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
-					},
-					"response": []
-				},
-				{
-					"name": "Get one task by taskno",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTkzMzQwMjY2Nn0.L9aFhsjOtorsYtpEBecBG6Dne_mj2zwb2h2JxF_uoJg",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/task/c06639a0-4255-4bb0-a794-05f4e29c3690",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"task",
-								"c06639a0-4255-4bb0-a794-05f4e29c3690"
-							]
-						},
-						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
-					},
-					"response": []
-				},
-				{
-					"name": "Create new task",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful POST request\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-									"});",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTkzMzQwMjY2Nn0.L9aFhsjOtorsYtpEBecBG6Dne_mj2zwb2h2JxF_uoJg",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"taskType\": \"FURCARE\",\n    \"taskInstruction\": \"Als Perzische katten hebben ze elke dag een borstelbeurt nodig, borstels liggen in de lade naast de mandjes\",\n    \"extraInstructions\": \"Duchess geniet erg van vachverzorging, Duke is niet altijd in de stemming, maar blijf proberen\",\n    \"priceOfTask\": 4.0,\n    \"orderNo\": \"4acabf7f-a57e-4ef7-a2c7-a3c8af28b76c\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/task",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"task"
-							]
-						},
-						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-					},
-					"response": []
-				},
-				{
-					"name": "Edit task by taskno",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful PUT request\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
-									"});",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTkzMzQwMjY2Nn0.L9aFhsjOtorsYtpEBecBG6Dne_mj2zwb2h2JxF_uoJg",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"taskNo\": \"d4c46135-f55d-47fa-8d76-7952365e8a46\",\n    \"taskType\": \"WATER\",\n    \"taskInstruction\": \"Zorg dat het waterniveau van de drinkfontein niet te laag is, vul dan bij\",\n    \"extraInstructions\": \"Af en toe kattenmelk geven mag ook, dit staat in de koelkast\",\n    \"priceOfTask\": 2.0,\n    \"orderNo\": \"7323a769-188f-45dc-96a1-54639099f33c\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/task/d4c46135-f55d-47fa-8d76-7952365e8a46",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"task",
-								"d4c46135-f55d-47fa-8d76-7952365e8a46"
-							]
-						},
-						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
-					},
-					"response": []
-				},
-				{
-					"name": "Delete task by taskno",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful DELETE request\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
-									"});",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTkzMzQwMjY2Nn0.L9aFhsjOtorsYtpEBecBG6Dne_mj2zwb2h2JxF_uoJg",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/task/f79f115f-d894-48d2-928a-76d55684eb37",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"task",
-								"f79f115f-d894-48d2-928a-76d55684eb37"
+								"e506a243-b944-444e-a2b7-3187e025845d"
 							]
 						},
 						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
@@ -1898,7 +1898,7 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/cat/54b0c029-e2fc-4c64-8d90-db0cd3d57966/images",
+							"raw": "http://localhost:8080/api/cat/86be1447-dd98-4753-ba73-f8279e9c69c6/images",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1907,7 +1907,7 @@
 							"path": [
 								"api",
 								"cat",
-								"54b0c029-e2fc-4c64-8d90-db0cd3d57966",
+								"86be1447-dd98-4753-ba73-f8279e9c69c6",
 								"images"
 							]
 						},
@@ -1945,7 +1945,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/cat/5a1010da9-da88-4ff5-9db0-a7f1821ea2d3/images/catimage.jpg",
+							"raw": "http://localhost:8080/api/cat/54b0c029-e2fc-4c64-8d90-db0cd3d57966/images/catimage.jpg",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1954,7 +1954,7 @@
 							"path": [
 								"api",
 								"cat",
-								"5a1010da9-da88-4ff5-9db0-a7f1821ea2d3",
+								"54b0c029-e2fc-4c64-8d90-db0cd3d57966",
 								"images",
 								"catimage.jpg"
 							]
@@ -2307,7 +2307,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/user/admin1",
+							"raw": "http://localhost:8080/api/user/bendegroot",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -2316,7 +2316,7 @@
 							"path": [
 								"api",
 								"user",
-								"admin1"
+								"bendegroot"
 							]
 						},
 						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."

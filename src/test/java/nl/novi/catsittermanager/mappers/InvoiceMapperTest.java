@@ -3,11 +3,17 @@ package nl.novi.catsittermanager.mappers;
 import nl.novi.catsittermanager.dtos.InvoiceRequestFactory;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceRequest;
 import nl.novi.catsittermanager.dtos.invoice.InvoiceResponse;
-import nl.novi.catsittermanager.models.Invoice;
-import nl.novi.catsittermanager.models.InvoiceFactory;
+import nl.novi.catsittermanager.enumerations.TaskType;
+import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
+import nl.novi.catsittermanager.models.*;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class InvoiceMapperTest {
 
@@ -15,7 +21,12 @@ public class InvoiceMapperTest {
     void testInvoiceToinvoiceResponse() {
 
         // Arrange
-        Invoice invoice = InvoiceFactory.randomInvoice().build();
+        List<Task> tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+        Order order = OrderFactory.randomOrder(tasks).build();
+        Invoice invoice = InvoiceFactory.randomInvoice().order(order).build();
 
         // Act
         InvoiceResponse invoiceResponse = InvoiceMapper.InvoiceToInvoiceResponse(invoice);
@@ -28,18 +39,73 @@ public class InvoiceMapperTest {
         assertEquals(invoice.getOrder().getOrderNo(), invoiceResponse.orderNo());
     }
 
-    @Test void testInvoiceRequestToInvoice() {
+    @Test
+    void testInvoiceRequestToInvoice() {
 
         // Arrange
         InvoiceRequest invoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().build();
 
+        List<Task> tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+
+        Order order = OrderFactory.randomOrder(tasks).build();
+
+        order.setOrderNo(invoiceRequest.orderNo());
+        order.setStartDate(LocalDate.now());
+        order.setEndDate(LocalDate.now().plusDays(5));
+        order.setDailyNumberOfVisits(2);
+        order.setTasks(tasks);
+
+        double expectedAmount = order.calculateTotalCost();
+
+        // Print statements for debugging
+        System.out.println("Order Details:");
+        System.out.println("Order No: " + order.getOrderNo());
+        System.out.println("Start Date: " + order.getStartDate());
+        System.out.println("End Date: " + order.getEndDate());
+        System.out.println("Daily Number of Visits: " + order.getDailyNumberOfVisits());
+        System.out.println("Total Number of Visits: " + order.calculateTotalNumberOfVisits());
+        System.out.println("Tasks: " + order.getTasks());
+        System.out.println("Expected Amount: " + expectedAmount);
+
         // Act
-        Invoice invoice = InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest);
+        Invoice invoice = InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest, order);
+        invoice.setOrder(order);
+
+        // Print statements for debugging
+        System.out.println("Invoice Details:");
+        System.out.println("Invoice No: " + invoice.getInvoiceNo());
+        System.out.println("Invoice Date: " + invoice.getInvoiceDate());
+        System.out.println("Amount: " + invoice.getAmount());
+        System.out.println("Paid: " + invoice.getPaid());
+        System.out.println("Order No in Invoice: " + invoice.getOrder().getOrderNo());
 
         // Assert
         assertEquals(invoiceRequest.invoiceDate(), invoice.getInvoiceDate().toString());
-        assertEquals(invoiceRequest.amount(), invoice.getAmount());
+        assertEquals(expectedAmount, invoice.getAmount());
         assertEquals(invoiceRequest.paid(), invoice.getPaid());
         assertEquals(invoiceRequest.orderNo(), invoice.getOrder().getOrderNo());
+        assertEquals(tasks, invoice.getOrder().getTasks());
+    }
+
+    @Test
+    void testInvoiceRequestToInvoice_orderIsNull() {
+        // Arrange
+        InvoiceRequest invoiceRequest = new InvoiceRequest(
+                "2024-06-27",
+                100.0,
+                false,
+                UUID.fromString("37bdb809-7069-437d-be13-bdea36bff009"));
+
+        Order order = null;
+
+        // Act & Assert
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
+            InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest, order);
+        });
+
+        assertEquals("Order not found", exception.getMessage());
     }
 }

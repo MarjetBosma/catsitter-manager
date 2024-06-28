@@ -15,6 +15,7 @@ spring:
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    defer-datasource-initialization: true
     generate-ddl: true
     show-sql: true
     hibernate:
@@ -27,9 +28,9 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
-
-  defer-datasource-initialization: true
-
+  sql:
+    init:
+      mode: always
 my:
   upload_location: Uploads
 
