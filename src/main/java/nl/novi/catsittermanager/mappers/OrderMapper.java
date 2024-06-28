@@ -63,15 +63,5 @@ public class OrderMapper {
         }
 
         return order;
-
-//        return Order.builder()
-//                .startDate(LocalDate.parse(orderRequest.startDate()))
-//                .endDate(LocalDate.parse(orderRequest.endDate()))
-//                .dailyNumberOfVisits(orderRequest.dailyNumberOfVisits())
-//                .totalNumberOfVisits(totalNumberOfVisits)
-//                .tasks(new ArrayList<>())
-//                .customer(customer)
-//                .catsitter(catsitter)
-//                .build();
     }
 }

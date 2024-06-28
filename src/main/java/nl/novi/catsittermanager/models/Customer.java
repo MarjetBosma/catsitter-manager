@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import nl.novi.catsittermanager.enumerations.Role;
+
 import java.util.List;
 
 @Getter
@@ -26,6 +28,11 @@ public class Customer extends User {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Cat> cats;
 
+    public Customer(String username, String password, Role role, boolean enabled, String name, String address, String email, List<Order> orders, List<Cat> cats) {
+        super(username, password);
+        this.orders = orders;
+        this.cats = cats;
+    }
 }
 
 

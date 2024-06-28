@@ -1,12 +1,6 @@
 package nl.novi.catsittermanager.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import nl.novi.catsittermanager.enumerations.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +18,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @SuperBuilder
 @Entity
 @Table(name = "users")
@@ -38,6 +32,7 @@ public class User implements Serializable {
     @Column(nullable = false, length = 255)
     private String password;
 
+    @Column
     private Role role;
 
     @Column
@@ -55,6 +50,16 @@ public class User implements Serializable {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public User(String username, String password, Role role, Boolean enabled, String name, String address, String email) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.enabled = enabled;
+        this.name = name;
+        this.address = address;
+        this.email = email;
     }
 
     public <T> User(String username, String password, List<T> ts) {

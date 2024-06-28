@@ -35,7 +35,7 @@ public class Invoice {
 
     @PrePersist
     @PreUpdate
-    private void calculateAmount() {
+    void calculateAmount() {
         if (this.order != null) {
             this.amount = this.order.calculateTotalCost();
         }

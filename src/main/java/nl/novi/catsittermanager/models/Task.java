@@ -40,7 +40,7 @@ public class Task {
 
     @PrePersist
     @PreUpdate
-    private void updatePriceOfTask() {
+    void updatePriceOfTask() {
         if (this.taskType != null) {
             this.priceOfTask = this.taskType.getPrice();
         }
