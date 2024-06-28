@@ -33,21 +33,16 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task editTask(final UUID idToEdit, final Task updatedTask, final UUID orderNo) {
-        Task existingTask = taskRepository.findById(idToEdit)
+    public Task editTask(final Task updatedTask) {
+        Task existingTask = taskRepository.findById(updatedTask.getTaskNo())
                 .orElseThrow(() -> new RecordNotFoundException(HttpStatus.NOT_FOUND, "No task found with this id."));
 
         existingTask.setTaskType(updatedTask.getTaskType());
         existingTask.setTaskInstruction(updatedTask.getTaskInstruction());
         existingTask.setExtraInstructions(updatedTask.getExtraInstructions());
-        updatedTask.setPriceOfTask(updatedTask.getPriceOfTask());
+        existingTask.setPriceOfTask(updatedTask.getPriceOfTask());
 
-        Order order = updatedTask.getOrder();
-        if (order != null) {
-            Order existingOrder = orderService.getOrder(orderNo);
-            existingTask.setOrder(existingOrder);
-        }
-        return taskRepository.save(updatedTask);
+        return taskRepository.save(existingTask);
     }
 
     public UUID deleteTask(UUID idToDelete) {

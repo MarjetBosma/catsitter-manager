@@ -33,8 +33,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -245,11 +248,29 @@ public class CustomerControllerTest {
     void givenAValidRequest_whenGetAllOrdersByCustomer_thenAllOrdersShouldBeReturned() throws Exception {
 
         // Arrange
-        String username = "testcustomer";
-        Order expectedOrder = OrderFactory.randomOrder().build();
+        String customerUsername = "customerUsername";
+        Customer customer = new Customer();
+        customer.setUsername(customerUsername);
+
+        Order expectedOrder = Order.builder()
+                .orderNo(UUID.randomUUID())
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(5))
+                .dailyNumberOfVisits(2)
+                .totalNumberOfVisits(10)
+                .tasks(new ArrayList<>())
+                .customer(customer)
+                .catsitter(new Catsitter())
+                .build();
+
+        List<Task> tasks = List.of(Task.builder().build());
+        for (Task task : tasks) {
+            task.setOrder(expectedOrder);
+        }
+
         List<Order> expectedOrderList = List.of(expectedOrder);
 
-        when(customerService.getAllOrdersByCustomer(username)).thenReturn(expectedOrderList);
+        when(customerService.getAllOrdersByCustomer(customerUsername)).thenReturn(expectedOrderList);
 
         OrderResponse expectedResponse = new OrderResponse(
                 expectedOrder.getOrderNo(),
@@ -267,7 +288,7 @@ public class CustomerControllerTest {
         System.out.println(content);
 
         // Act & Assert
-        mockMvc.perform(get("/api/customer/" + username + "/orders")
+        mockMvc.perform(get("/api/customer/" + customerUsername + "/orders")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())

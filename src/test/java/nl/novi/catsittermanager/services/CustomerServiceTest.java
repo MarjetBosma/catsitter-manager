@@ -1,5 +1,6 @@
 package nl.novi.catsittermanager.services;
 
+import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
 import nl.novi.catsittermanager.models.*;
@@ -132,7 +133,14 @@ class CustomerServiceTest {
 
         // Arrange
         Customer randomCustomer = CustomerFactory.randomCustomer().build();
-        List<Order> expectedOrders = OrderFactory.randomOrders(3);
+
+        List<Task> tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
+        List<Order> expectedOrders = List.of(expectedOrder);
         randomCustomer.setOrders(expectedOrders);
 
         when(customerRepository.findById(randomCustomer.getUsername())).thenReturn(Optional.of(randomCustomer));

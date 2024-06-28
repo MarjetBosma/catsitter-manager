@@ -1,11 +1,9 @@
 package nl.novi.catsittermanager.services;
 
+import nl.novi.catsittermanager.enumerations.TaskType;
 import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.exceptions.UsernameAlreadyExistsException;
-import nl.novi.catsittermanager.models.Catsitter;
-import nl.novi.catsittermanager.models.CatsitterFactory;
-import nl.novi.catsittermanager.models.Order;
-import nl.novi.catsittermanager.models.OrderFactory;
+import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.repositories.CatsitterRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -97,7 +95,14 @@ public class CatsitterServiceTest {
 
         // Arrange
         Catsitter randomCatsitter = CatsitterFactory.randomCatsitter().build();
-        List<Order> expectedOrders = OrderFactory.randomOrders(3);
+
+        List<Task> tasks = List.of(
+                Task.builder().taskType(TaskType.FOOD).priceOfTask(TaskType.FOOD.getPrice()).build(),
+                Task.builder().taskType(TaskType.WATER).priceOfTask(TaskType.WATER.getPrice()).build()
+        );
+
+        Order expectedOrder = OrderFactory.randomOrder(tasks).build();
+        List<Order> expectedOrders = List.of(expectedOrder);
         randomCatsitter.setOrders(expectedOrders);
 
         when(catsitterRepository.findById(randomCatsitter.getUsername())).thenReturn(Optional.of(randomCatsitter));

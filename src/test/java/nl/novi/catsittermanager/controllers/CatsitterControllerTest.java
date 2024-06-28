@@ -13,10 +13,7 @@ import nl.novi.catsittermanager.exceptions.RecordNotFoundException;
 import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.mappers.OrderMapper;
 import nl.novi.catsittermanager.mappers.TaskMapper;
-import nl.novi.catsittermanager.models.Catsitter;
-import nl.novi.catsittermanager.models.CatsitterFactory;
-import nl.novi.catsittermanager.models.Order;
-import nl.novi.catsittermanager.models.OrderFactory;
+import nl.novi.catsittermanager.models.*;
 import nl.novi.catsittermanager.services.CatsitterService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,12 +27,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -182,11 +181,34 @@ public class CatsitterControllerTest {
     void givenAValidRequest_whenGetAllOrdersByCatsitter_thenAllOrdersShouldBeReturned() throws Exception {
 
         // Arrange
-        String username = "testcatsitter";
-        Order expectedOrder = OrderFactory.randomOrder().build();
+        String catsitterUsername = "catsitterUsername";
+        Catsitter catsitter = new Catsitter();
+        catsitter.setUsername(catsitterUsername);
+
+        Order expectedOrder = Order.builder()
+                .orderNo(UUID.randomUUID())
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(5))
+                .dailyNumberOfVisits(2)
+                .totalNumberOfVisits(10)
+                .tasks(new ArrayList<>())
+                .customer(new Customer())
+                .catsitter(catsitter)
+                .build();
+
+        List<Task> tasks = List.of(Task.builder().build());
+        for (Task task : tasks) {
+            task.setOrder(expectedOrder);
+        }
+
+        UUID orderNo = UUID.randomUUID();
+        expectedOrder.setTasks(tasks);
+        expectedOrder.setOrderNo(orderNo);
+        expectedOrder.setCatsitter(catsitter);
+
         List<Order> expectedOrderList = List.of(expectedOrder);
 
-        when(catsitterService.getAllOrdersByCatsitter(username)).thenReturn(expectedOrderList);
+        when(catsitterService.getAllOrdersByCatsitter(catsitterUsername)).thenReturn(expectedOrderList);
 
         OrderResponse expectedResponse = new OrderResponse(
                 expectedOrder.getOrderNo(),
@@ -204,7 +226,7 @@ public class CatsitterControllerTest {
         System.out.println(content);
 
         // Act & Assert
-        mockMvc.perform(get("/api/catsitter/" + username + "/orders")
+        mockMvc.perform(get("/api/catsitter/" + catsitterUsername + "/orders")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -290,7 +312,7 @@ public class CatsitterControllerTest {
                 .build();
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/catsitter")
+        mockMvc.perform(post("/api/catsitter")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCatsitterRequest))
                         .accept(MediaType.APPLICATION_JSON))
@@ -351,7 +373,7 @@ public class CatsitterControllerTest {
                 .thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No catsitter found with this username."));
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/catsitter/{id}", username)
+        mockMvc.perform(put("/api/catsitter/{id}", username)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(expectedCatsitterRequest)))
                 .andExpect(status().isNotFound());
@@ -372,7 +394,7 @@ public class CatsitterControllerTest {
                 .build();
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/catsitter/{id}", username)
+        mockMvc.perform(put("/api/catsitter/{id}", username)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCatsitterRequest))
                         .accept(MediaType.APPLICATION_JSON))
