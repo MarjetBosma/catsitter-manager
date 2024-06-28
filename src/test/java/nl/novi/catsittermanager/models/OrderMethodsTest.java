@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class OrderTest {
+class OrderMethodsTest {
 
     private Order order;
 

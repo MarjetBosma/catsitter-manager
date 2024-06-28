@@ -492,6 +492,29 @@ public class InvoiceControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void givenInvalidOrderId_whenEditInvoice_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
+
+        // Arrange
+        UUID invoiceNo = UUID.randomUUID();
+        UUID orderNo = UUID.randomUUID();
+
+        InvoiceRequest expectedInvoiceRequest = InvoiceRequestFactory.randomInvoiceRequest().orderNo(orderNo).build();
+
+        when(orderService.getOrder(orderNo)).thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id"));
+
+        String content = objectMapper.writeValueAsString(expectedInvoiceRequest);
+
+        // Act & Assert
+        mockMvc.perform(put("/api/invoice/{id}", invoiceNo)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenInvalidData_whenEditInvoice_thenBadRequest() throws Exception {
 
         // Arrange

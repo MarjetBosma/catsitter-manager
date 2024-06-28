@@ -49,7 +49,7 @@ public class TaskMapperTest {
         Order order = Order.builder().orderNo(taskRequest.orderNo()).build();
 
         // Act
-        Task task = TaskMapper.TaskRequestToTask(taskRequest);
+        Task task = TaskMapper.TaskRequestToTask(taskRequest, order);
         task.setOrder(order);
 
         // Assert

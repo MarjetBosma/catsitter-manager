@@ -13,6 +13,7 @@ import nl.novi.catsittermanager.filters.JwtAuthorizationFilter;
 import nl.novi.catsittermanager.models.Order;
 import nl.novi.catsittermanager.models.Task;
 import nl.novi.catsittermanager.models.TaskFactory;
+import nl.novi.catsittermanager.services.OrderService;
 import nl.novi.catsittermanager.services.TaskService;
 import nl.novi.catsittermanager.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,6 +53,9 @@ public class TaskControllerTest {
 
     @MockBean
     private TaskService taskService;
+
+    @MockBean
+    private OrderService orderService;
 
     @Autowired
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -191,9 +195,14 @@ public class TaskControllerTest {
 
         // Arrange
         TaskRequest expectedTaskRequest = TaskRequestFactory.randomTaskRequest().build();
+        UUID orderNo = expectedTaskRequest.orderNo();
         Task expectedTask = TaskFactory.randomTask().build();
-        expectedTask.setOrder(new Order());
 
+        Order expectedOrder = new Order();
+        expectedOrder.setOrderNo(orderNo);
+        expectedTask.setOrder(expectedOrder);
+
+        when(orderService.getOrder(orderNo)).thenReturn(expectedOrder);
         when(taskService.createTask(any(Task.class), eq(expectedTaskRequest.orderNo())))
                 .thenReturn(expectedTask);
 
@@ -245,20 +254,28 @@ public class TaskControllerTest {
         verifyNoInteractions(taskService);
     }
 
-
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void givenAValidRequest_whenEditTask_thenEditedTaskShouldBeReturned() throws Exception {
-
         // Arrange
-        TaskRequest expectedTaskRequest = TaskRequestFactory.randomTaskRequest().build();
-        Task expectedTask = TaskFactory.randomTask().build();
+        UUID taskNo = UUID.randomUUID();
+        UUID orderNo = UUID.randomUUID();
+
+        TaskRequest expectedTaskRequest = TaskRequestFactory.randomTaskRequest().orderNo(orderNo).build();
+        Task expectedTask = TaskFactory.randomTask()
+                .taskNo(taskNo)
+                .taskType(expectedTaskRequest.taskType())
+                .taskInstruction(expectedTaskRequest.taskInstruction())
+                .extraInstructions(expectedTaskRequest.extraInstructions())
+                .priceOfTask(expectedTaskRequest.taskType().getPrice())
+                .build();
 
         Order expectedOrder = new Order();
-        expectedOrder.setOrderNo(UUID.randomUUID());
+        expectedOrder.setOrderNo(orderNo);
         expectedTask.setOrder(expectedOrder);
 
-        when(taskService.editTask(ArgumentMatchers.any(UUID.class), ArgumentMatchers.any(Task.class), ArgumentMatchers.eq(expectedTaskRequest.orderNo())))
+        when(orderService.getOrder(orderNo)).thenReturn(expectedOrder);
+        when(taskService.editTask(ArgumentMatchers.any(Task.class)))
                 .thenReturn(expectedTask);
 
         TaskResponse expectedResponse = new TaskResponse(
@@ -274,7 +291,7 @@ public class TaskControllerTest {
         System.out.println(content);
 
         // Act & Assert
-        mockMvc.perform(put("/api/task/{id}", expectedTask.getTaskNo())
+        mockMvc.perform(put("/api/task/{id}", taskNo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
                         .accept(MediaType.APPLICATION_JSON))
@@ -295,7 +312,7 @@ public class TaskControllerTest {
         UUID taskNo = UUID.randomUUID();
         TaskRequest expectedTaskRequest = TaskRequestFactory.randomTaskRequest().build();
 
-        when(taskService.editTask(any(UUID.class), any(Task.class), eq(expectedTaskRequest.orderNo())))
+        when(taskService.editTask(any(Task.class)))
                 .thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No task found with this id."));
 
         //  Act & Assert
@@ -304,6 +321,30 @@ public class TaskControllerTest {
                         .content(objectMapper.writeValueAsString(expectedTaskRequest)))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void givenInvalidOrderId_whenEditTask_thenRecordNotFoundExceptionShouldBeThrown() throws Exception {
+
+        // Arrange
+        UUID taskNo = UUID.randomUUID();
+        UUID orderNo = UUID.randomUUID();
+
+        TaskRequest expectedTaskRequest = TaskRequestFactory.randomTaskRequest().orderNo(orderNo).build();
+
+        when(orderService.getOrder(orderNo)).thenThrow(new RecordNotFoundException(HttpStatus.NOT_FOUND, "No order found with this id"));
+
+        String content = objectMapper.writeValueAsString(expectedTaskRequest);
+
+        // Act & Assert
+        mockMvc.perform(put("/api/task/{id}", taskNo)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})

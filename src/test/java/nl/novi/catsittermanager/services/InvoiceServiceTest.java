@@ -175,25 +175,14 @@ public class InvoiceServiceTest {
 
     @Test
     void testCreateInvoice_orderNotFound() {
-
         // Arrange
         UUID orderNo = UUID.randomUUID();
-        InvoiceRequest invoiceRequest = new InvoiceRequest(
-                "2024-06-27",
-                100.0,
-                false,
-                orderNo);
-
-        when(orderService.getOrder(orderNo)).thenReturn(null);
+        Invoice invoice = new Invoice();
+        when(orderService.getOrder(orderNo)).thenThrow(new RecordNotFoundException("No order found with this id"));
 
         // Act & Assert
-        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
-            invoiceService.createInvoice(InvoiceMapper.InvoiceRequestToInvoice(invoiceRequest, null), orderNo);
-        });
+        assertThrows(RecordNotFoundException.class, () -> invoiceService.createInvoice(invoice, orderNo));
 
-        assertEquals("Order not found", exception.getMessage());
-
-        // Verify interactions
         verify(orderService, times(1)).getOrder(orderNo);
         verifyNoInteractions(invoiceRepository);
     }
@@ -254,7 +243,8 @@ public class InvoiceServiceTest {
         });
 
         // Assert
-        verifyNoMoreInteractions(invoiceRepository);
+        assertEquals("No invoice found with this id.", exception.getMessage());
+        verify(invoiceRepository, times(1)).findById(invoiceNo);
         verifyNoInteractions(orderService);
     }
 
